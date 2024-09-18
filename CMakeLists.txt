@@ -24,8 +24,13 @@ if (NOT CLIENT_SOURCES)
     message(FATAL_ERROR "No source files found for r-type_client")
 endif()
 
-add_executable(r-type_server ${SERVER_SOURCES})
-add_executable(r-type_client ${CLIENT_SOURCES})
+add_executable(r-type_server ${SERVER_SOURCES}
+        src/server/UdpServer.cpp
+        src/server/UdpServer.hpp
+)
+add_executable(r-type_client ${CLIENT_SOURCES}
+        src/client/package.cpp
+        src/client/package.hpp)
 
 add_custom_target(clean-all
         COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_SOURCE_DIR}/CMakeCache.txt
