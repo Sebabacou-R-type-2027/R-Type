@@ -13,7 +13,7 @@
 class package {
     public:
         package() = default;
-        create_package(const std::string& data) : data_(data) {}
+        // create_package(const std::string& data) : data_(data) {}
     private:
         std::string data_;
 
