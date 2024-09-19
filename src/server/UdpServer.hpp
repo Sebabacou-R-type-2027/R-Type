@@ -1,12 +1,10 @@
-//
-// Created by shooting_star_t33 on 9/18/24.
-//
-
 #ifndef UDPSERVER_HPP
 #define UDPSERVER_HPP
 
 #include <iostream>
 #include <asio.hpp>
+
+#include "client.hpp"
 
 using asio::ip::udp;
 
@@ -15,12 +13,13 @@ class UdpServer {
         UdpServer(asio::io_context& io_context, short port);
     private:
         void start_receive();
-
         void handle_receive(std::size_t bytes_transferred);
+        void handle_new_connection(const udp::endpoint& client_endpoint);
 
         udp::socket socket_;
         udp::endpoint remote_endpoint_;
         std::array<char, 1024> recv_buffer_;
+        std::vector<client> connected_clients_;
 };
 
 #endif //UDPSERVER_HPP
