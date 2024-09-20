@@ -11,10 +11,12 @@ using asio::ip::udp;
 class UdpServer {
     public:
         UdpServer(asio::io_context& io_context, short port);
+
     private:
         void start_receive();
         void handle_receive(std::size_t bytes_transferred);
         void handle_new_connection(const udp::endpoint& client_endpoint);
+        void handle_disconnect(const udp::endpoint& client_endpoint);
 
         udp::socket socket_;
         udp::endpoint remote_endpoint_;

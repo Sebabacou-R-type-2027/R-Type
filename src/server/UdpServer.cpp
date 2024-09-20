@@ -1,7 +1,3 @@
-//
-// Created by shooting_star_t33 on 9/18/24.
-//
-
 #include "UdpServer.hpp"
 
 #include <iostream>
@@ -36,6 +32,8 @@ void UdpServer::handle_receive(std::size_t bytes_transferred) {
     }
     if (message == "login") {
         handle_new_connection(remote_endpoint_);
+    } else if (message == "logout") {
+        handle_disconnect(remote_endpoint_);
     } else {
         auto it = std::find_if(connected_clients_.begin(), connected_clients_.end(), [&client_str](const client& cli) {
             return cli.get_ip() + ":" + cli.get_port() == client_str;
@@ -63,5 +61,21 @@ void UdpServer::handle_new_connection(const udp::endpoint& client_endpoint) {
         std::cout << "New authorised client: " << client_address << ":" << client_port << std::endl;
     } else {
         std::cout << "Client already authorised: " << client_address << ":" << client_port << std::endl;
+    }
+}
+
+void UdpServer::handle_disconnect(const udp::endpoint& client_endpoint) {
+    std::string client_address = client_endpoint.address().to_string();
+    std::string client_port = std::to_string(client_endpoint.port());
+
+    auto it = std::remove_if(connected_clients_.begin(), connected_clients_.end(), [&client_address, &client_port](const client& cli) {
+        return cli.get_ip() == client_address && cli.get_port() == client_port;
+    });
+
+    if (it != connected_clients_.end()) {
+        connected_clients_.erase(it, connected_clients_.end());
+        std::cout << "Client disconnected: " << client_address << ":" << client_port << std::endl;
+    } else {
+        std::cout << "Client not found: " << client_address << ":" << client_port << std::endl;
     }
 }
