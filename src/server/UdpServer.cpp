@@ -3,6 +3,9 @@
 #include <iostream>
 #include <asio.hpp>
 
+#include "client/client.hpp"
+#include "client/ClientSaver.hpp"
+
 
 UdpServer::UdpServer(asio::io_context& io_context, short port)
     : socket_(io_context, udp::endpoint(udp::v4(), port)) {
@@ -30,12 +33,20 @@ void UdpServer::handle_receive(std::size_t bytes_transferred) {
     for (const auto& client : connected_clients_) {
         std::cout << "\t" << client << std::endl;
     }
-    if (message == "login") {
-        handle_new_connection(remote_endpoint_);
+    if (message.rfind("login", 0) == 0) {
+        std::string username, password;
+        std::istringstream iss(message.substr(5));
+
+        iss >> username >> password;
+        if (!username.empty() && !password.empty()) {
+            handle_new_connection(remote_endpoint_, username, password);
+        } else {
+            std::cout << "Invalid login format" << std::endl;
+        }
     } else if (message == "logout") {
         handle_disconnect(remote_endpoint_);
     } else {
-        auto it = std::find_if(connected_clients_.begin(), connected_clients_.end(), [&client_str](const client& cli) {
+        auto it = std::find_if(connected_clients_.begin(), connected_clients_.end(), [&client_str](const server::client& cli) {
             return cli.get_ip() + ":" + cli.get_port() == client_str;
         });
         if (it != connected_clients_.end()) {
@@ -48,17 +59,19 @@ void UdpServer::handle_receive(std::size_t bytes_transferred) {
     start_receive();
 }
 
-void UdpServer::handle_new_connection(const udp::endpoint& client_endpoint) {
+void UdpServer::handle_new_connection(const udp::endpoint& client_endpoint, const std::string& username, const std::string& password) {
     std::string client_address = client_endpoint.address().to_string();
     std::string client_port = std::to_string(client_endpoint.port());
+    server::ClientSaver saver("clients.csv");
 
-    auto it = std::find_if(connected_clients_.begin(), connected_clients_.end(), [&client_endpoint](const client& cli) {
+    auto it = std::find_if(connected_clients_.begin(), connected_clients_.end(), [&client_endpoint](const server::client& cli) {
         return cli.get_id() == std::hash<std::string>{}(client_endpoint.address().to_string() + std::to_string(client_endpoint.port()));
     });
 
     if (it == connected_clients_.end()) {
-        connected_clients_.emplace_back(client_address, client_port, "default_nickname");
+        connected_clients_.emplace_back(client_address, client_port, username, password);
         std::cout << "New authorised client: " << client_address << ":" << client_port << std::endl;
+        saver.save_client(connected_clients_.back());
     } else {
         std::cout << "Client already authorised: " << client_address << ":" << client_port << std::endl;
     }
@@ -68,7 +81,7 @@ void UdpServer::handle_disconnect(const udp::endpoint& client_endpoint) {
     std::string client_address = client_endpoint.address().to_string();
     std::string client_port = std::to_string(client_endpoint.port());
 
-    auto it = std::remove_if(connected_clients_.begin(), connected_clients_.end(), [&client_address, &client_port](const client& cli) {
+    auto it = std::remove_if(connected_clients_.begin(), connected_clients_.end(), [&client_address, &client_port](const server::client& cli) {
         return cli.get_ip() == client_address && cli.get_port() == client_port;
     });
 
