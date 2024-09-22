@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 
 project(R-Type)
 
+# Check if we are on Windows or Unix
 if (WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DWIN32")
 elseif (UNIX)
@@ -10,8 +11,15 @@ endif()
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 
+# Include directories for ecs headers
+include_directories(${CMAKE_SOURCE_DIR}/src/ecs)
+
+# Find SFML
+find_package(SFML 2.5 COMPONENTS graphics window system REQUIRED)
+
+# Correct the paths for SERVER_SOURCES and CLIENT_SOURCES
 file(GLOB SERVER_SOURCES src/server/*.cpp src/server/*.hpp src/share/*.cpp src/share/*.hpp)
-file(GLOB CLIENT_SOURCES src/client/*.cpp src/client/*.hpp src/share/*.cpp src/share/*.hpp)
+file(GLOB CLIENT_SOURCES src/ecs/*.cpp src/ecs/*.hpp src/client/*.cpp src/client/*.hpp src/share/*.cpp src/share/*.hpp)
 
 message(STATUS "SERVER_SOURCES: ${SERVER_SOURCES}")
 message(STATUS "CLIENT_SOURCES: ${CLIENT_SOURCES}")
@@ -24,18 +32,23 @@ if (NOT CLIENT_SOURCES)
     message(FATAL_ERROR "No source files found for r-type_client")
 endif()
 
+# Add executable targets
 add_executable(r-type_server ${SERVER_SOURCES})
 add_executable(r-type_client ${CLIENT_SOURCES})
 
+# Link SFML to r-type_client
+target_link_libraries(r-type_client sfml-graphics sfml-window sfml-system)
+
+# Custom clean-all target to remove build artifacts
 add_custom_target(clean-all
-        COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_SOURCE_DIR}/CMakeCache.txt
-        COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_SOURCE_DIR}/cmake_install.cmake
-        COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_SOURCE_DIR}/build.ninja
-        COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_SOURCE_DIR}/.ninja*
-        COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_SOURCE_DIR}/CMakeFiles
-        COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_SOURCE_DIR}/cmake-build-debug
-        COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_SOURCE_DIR}/Testing
-        COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_SOURCE_DIR}/r-type_client
-        COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_SOURCE_DIR}/r-type_server
-        COMMENT "Cleaning log and build files"
+    COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_SOURCE_DIR}/CMakeCache.txt
+    COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_SOURCE_DIR}/cmake_install.cmake
+    COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_SOURCE_DIR}/build.ninja
+    COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_SOURCE_DIR}/.ninja*
+    COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_SOURCE_DIR}/CMakeFiles
+    COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_SOURCE_DIR}/cmake-build-debug
+    COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_SOURCE_DIR}/Testing
+    COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_SOURCE_DIR}/r-type_client
+    COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_SOURCE_DIR}/r-type_server
+    COMMENT "Cleaning log and build files"
 )
