@@ -22,7 +22,8 @@ namespace server {
 
                     /// \brief Returns the error message
                     /// \return the error message with the filename
-                    [[nodiscard]] const char* what() const noexcept override {
+                    [[nodiscard]]
+                    const char* what() const noexcept override {
                         return (error_ + msg_).c_str();
                     }
 
@@ -50,12 +51,30 @@ namespace server {
 
             /// \brief Save the client information
             /// \param cli the client to save
-            void save_client(const client& cli);
+            void save_client(const client& cli) const;
 
-      private:
+            /// \brief Get the username by the id
+            /// \param id the id to search
+            /// \return the username of the client
+            [[nodiscard]]
+            std::string get_username_by_id(uint32_t id) const;
+
+            /// \brief Check if the client already exists in the file
+            /// \param username the username to check
+            /// \param password the password to check
+            /// \return the id of the client
+            uint32_t check_if_user_already_exists_in_db(const std::string &username, const std::string &password) const;
+
+            /// \brief Change a field of the client
+            /// \param id the id of the client
+            /// \param field the field to change
+            /// \param value the value to set
+            void change_field(uint32_t id, const std::string& field, const std::string& value) const;
+
+    private:
             /// \brief Initialize the file
             /// \details Open the file and write the header
-            void init_file();
+            void init_file() const;
 
             std::ofstream file; ///< The file to save the client information
             std::string filename_; ///< The filename to save the client information

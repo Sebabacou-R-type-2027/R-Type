@@ -33,12 +33,14 @@ void UdpServer::handle_receive(std::size_t bytes_transferred) {
     for (const auto& client : connected_clients_) {
         std::cout << "\t" << client << std::endl;
     }
-    if (message.rfind("login", 0) == 0) {
+    if (message.rfind("login ", 0) == 0) {
         std::string username, password;
-        std::istringstream iss(message.substr(5));
+        std::istringstream iss(message.substr(6));
 
-        iss >> username >> password;
-        if (!username.empty() && !password.empty()) {
+        std::getline(iss, username, ' ');
+        std::getline(iss, password);
+
+        if (!username.empty() && !password.empty() && password.find(' ') == std::string::npos) {
             handle_new_connection(remote_endpoint_, username, password);
         } else {
             std::cout << "Invalid login format" << std::endl;
@@ -62,18 +64,33 @@ void UdpServer::handle_receive(std::size_t bytes_transferred) {
 void UdpServer::handle_new_connection(const udp::endpoint& client_endpoint, const std::string& username, const std::string& password) {
     std::string client_address = client_endpoint.address().to_string();
     std::string client_port = std::to_string(client_endpoint.port());
-    server::ClientSaver saver("clients.csv");
+    server::ClientSaver cs("clients.csv");
 
     auto it = std::find_if(connected_clients_.begin(), connected_clients_.end(), [&client_endpoint](const server::client& cli) {
         return cli.get_id() == std::hash<std::string>{}(client_endpoint.address().to_string() + std::to_string(client_endpoint.port()));
     });
 
-    if (it == connected_clients_.end()) {
-        connected_clients_.emplace_back(client_address, client_port, username, password);
-        std::cout << "New authorised client: " << client_address << ":" << client_port << std::endl;
-        saver.save_client(connected_clients_.back());
-    } else {
-        std::cout << "Client already authorised: " << client_address << ":" << client_port << std::endl;
+    try {
+        uint32_t id = cs.check_if_user_already_exists_in_db(username, password);
+        if (id) {
+            try {
+                connected_clients_.emplace_back(client_address, client_port, username, password, id);
+                std::cout << "New authorised client from db: " << client_address << ":" << client_port << std::endl;
+            } catch (const server::client::ClientException& e) {
+                std::cout << e.what() << std::endl;
+            }
+        } else if (it == connected_clients_.end()) {
+            connected_clients_.emplace_back(client_address, client_port, username, password);
+            std::cout << "New authorised client: " << client_address << ":" << client_port << std::endl;
+            cs.save_client(connected_clients_.back());
+        } else {
+            std::cout << "Client already authorised: " << client_address << ":" << client_port << std::endl;
+        }
+    } catch (const server::ClientSaver::ClientSaverException& e) {
+        std::cerr << e.what() << std::endl;
+    } catch (const server::client::ClientException& e) {
+        std::cout << e.what() << std::endl;
+        std::cout << "Password or Username is not correct" << std::endl;
     }
 }
 
