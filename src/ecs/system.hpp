@@ -12,27 +12,31 @@
 #include "position_system.hpp"
 #include "loop_movement_system.hpp"
 
+namespace ecs {
+
 class System {
-    public:
-        void control_system(Registry& reg) {
-            controlSystem.control_system(reg);
-        }
+public:
+    void control_system(Registry& reg) {
+        controlSystem.update(reg);
+    }
 
-        void position_system(Registry& reg) {
-            positionSystem.position_system(reg);
-        }
+    void position_system(Registry& reg) {
+        positionSystem.update(reg);
+    }
 
-        void loop_movement_system(Registry& reg) {
-            loopMovementSystem.loop_movement_system(reg);
-        }
+    void loop_movement_system(Registry& reg) {
+        loopMovementSystem.update(reg);
+    }
 
-        void draw_system(Registry& reg, sf::RenderWindow& window, sf::Sprite& playerSprite) {
-            drawSystem.draw_system(reg, window, playerSprite);
-        }
+    void draw_system(Registry& reg, sf::RenderWindow& window, sf::Sprite& playerSprite) {
+        drawSystem.update(reg, window, playerSprite);
+    }
 
-    private:
-        ControlSystem controlSystem;
-        DrawSystem drawSystem;
-        PositionSystem positionSystem;
-        LoopMovementSystem loopMovementSystem;
-    };
+private:
+    systems::ControlSystem controlSystem;
+    systems::DrawSystem drawSystem;
+    systems::PositionSystem positionSystem;
+    systems::LoopMovementSystem loopMovementSystem;
+};
+
+}

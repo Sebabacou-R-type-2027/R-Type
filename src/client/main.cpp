@@ -3,17 +3,14 @@
 
 #include "registry.hpp"
 #include "components.hpp"
-#include "control_system.hpp"
-#include "draw_system.hpp"
-#include "position_system.hpp"
-#include "loop_movement_system.hpp"
+#include "system.hpp"
 
 int main() {
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "SFML Game");
     window.setFramerateLimit(60);
 
     Registry reg;
-    System system;
+    ecs::System system;
 
     reg.register_all_components();
 
