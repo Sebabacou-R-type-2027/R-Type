@@ -12,6 +12,7 @@
 #include <typeindex>
 #include <any>
 #include <algorithm>
+#include "components.hpp"
 #include "sparse_array.hpp"
 #include "entity.hpp"
 
@@ -42,7 +43,7 @@ class Registry {
             return new_entity;
         }
 
-        Entity entity_from_index(size_t idx) const {
+        Entity entity_from_index(std::size_t idx) const {
             return _entities.at(idx);
         }
 
@@ -50,7 +51,7 @@ class Registry {
             for (auto& [type, component_array] : _components) {
                 try {
                     auto& sparse_array_ref = std::any_cast<sparse_array<std::optional<std::remove_reference_t<decltype(component_array)>>> &>(component_array);
-                    sparse_array_ref.erase(static_cast<size_t>(e));
+                    sparse_array_ref.erase(static_cast<std::size_t>(e));
                 } catch (const std::bad_any_cast&) {
 
                 }
@@ -60,21 +61,30 @@ class Registry {
 
         template <typename Component>
         typename sparse_array<Component>::reference_type add_component(Entity const& to, Component&& component) {
-            return get_components<Component>().insert_at(static_cast<size_t>(to), std::forward<Component>(component));
+            return get_components<Component>().insert_at(static_cast<std::size_t>(to), std::forward<Component>(component));
         }
 
         template <typename Component, typename... Params>
         typename sparse_array<Component>::reference_type emplace_component(Entity const& to, Params&&... params) {
-            return get_components<Component>().emplace_at(static_cast<size_t>(to), std::forward<Params>(params)...);
+            return get_components<Component>().emplace_at(static_cast<std::size_t>(to), std::forward<Params>(params)...);
         }
 
         template <typename Component>
         void remove_component(Entity const& from) {
-            get_components<Component>().erase(static_cast<size_t>(from));
+            get_components<Component>().erase(static_cast<std::size_t>(from));
         }
 
+        void register_all_components() {
+            register_component<Position>();
+            register_component<Velocity>();
+            register_component<Controllable>();
+            register_component<Drawable>();
+            register_component<Acceleration>();
+            register_component<LoopMovement>();
+            register_component<Collision>();
+        }
     private:
-        size_t _next_entity_id = 0;
+        std::size_t _next_entity_id = 0;
         std::vector<Entity> _entities;
 
         std::unordered_map<std::type_index, std::any> _components;

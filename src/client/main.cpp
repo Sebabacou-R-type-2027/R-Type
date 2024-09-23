@@ -9,19 +9,18 @@ int main() {
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "SFML Game");
     window.setFramerateLimit(60);
 
-    Registry registry;
+    Registry reg;
+    System system;
 
-    registry.register_component<Position>();
-    registry.register_component<Velocity>();
-    registry.register_component<Drawable>();
-    registry.register_component<Controllable>();
+    reg.register_all_components();
 
-    Entity player = registry.spawn_entity();
-
-    registry.add_component<Position>(player, Position{400.0f, 300.0f});
-    registry.add_component<Velocity>(player, Velocity{0.0f, 0.0f});
-    registry.add_component<Drawable>(player, Drawable{});
-    registry.add_component<Controllable>(player, Controllable{});
+    auto movable_entity = reg.spawn_entity();
+    reg.emplace_component<Position>(movable_entity, 400.0f, 300.0f);
+    reg.emplace_component<Velocity>(movable_entity, 0.0f, 0.0f);
+    reg.emplace_component<Drawable>(movable_entity, true, sf::Sprite(), sf::Texture(), sf::IntRect(), sf::Color::Red, 50.0f, "square");
+    reg.emplace_component<Controllable>(movable_entity, true, 5.0f);
+    reg.emplace_component<Acceleration>(movable_entity, 0.0f, 0.0f);
+    reg.emplace_component<Collision>(movable_entity, 0.0f, false, sf::Rect<float>(0.0f, 0.0f, 50.0f, 50.0f));
 
     sf::Texture playerTexture;
     if (!playerTexture.loadFromFile("src/assets/Ship/Ship.png")) {
@@ -39,15 +38,14 @@ int main() {
                 window.close();
         }
 
-        control_system(registry);
-
-        position_system(registry);
-
-        auto& positions = registry.get_components<Position>();
-        for (size_t i = 0; i < positions.size(); ++i) {
+        system.control_system(reg);
+        system.position_system(reg);
+        system.loop_movement_system(reg);
+        auto& positions = reg.get_components<Position>();
+        for (std::size_t i = 0; i < positions.size(); ++i) {
             if (positions[i]) {
                 if (positions[i]->x < 0) positions[i]->x = 0;
-                if (positions[i]->x > window.getSize().x - playerSprite.getGlobalBounds().width)
+                    if (positions[i]->x > window.getSize().x - playerSprite.getGlobalBounds().width)
                     positions[i]->x = window.getSize().x - playerSprite.getGlobalBounds().width;
                 if (positions[i]->y < 0) positions[i]->y = 0;
                 if (positions[i]->y > window.getSize().y - playerSprite.getGlobalBounds().height)
@@ -56,7 +54,7 @@ int main() {
         }
 
         window.clear();
-        draw_system(registry, window, playerSprite);
+        system.draw_system(reg, window, playerSprite);
         window.display();
     }
 

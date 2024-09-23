@@ -9,3 +9,4 @@ cmake_install.cmake
 r-type_client
 r-type_server
 build.ninja
+.vscode
