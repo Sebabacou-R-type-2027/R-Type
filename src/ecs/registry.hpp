@@ -16,6 +16,8 @@
 #include "sparse_array.hpp"
 #include "entity.hpp"
 
+namespace ecs {
+
 class Registry {
     public:
         template <typename Component>
@@ -89,3 +91,5 @@ class Registry {
 
         std::unordered_map<std::type_index, std::any> _components;
 };
+
+}

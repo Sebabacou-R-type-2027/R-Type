@@ -9,6 +9,9 @@
 
 #include <vector>
 #include <optional>
+#include <algorithm> // For std::find
+
+namespace ecs {
 
 template <typename Component>
 class sparse_array {
@@ -71,3 +74,5 @@ class sparse_array {
     private:
         container_t _data;
 };
+
+}

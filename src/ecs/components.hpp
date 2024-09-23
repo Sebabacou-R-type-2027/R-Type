@@ -10,6 +10,8 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 
+namespace ecs {
+
 // Component for 2D position
 struct Position {
     float x = 0;
@@ -45,7 +47,6 @@ struct Drawable {
 struct Controllable {
     bool active;
     float speed;
-    std::string direction;
 
     Controllable(bool active = true, float speed = 100.0f)
         : active(active), speed(speed) {}
@@ -74,3 +75,5 @@ struct Acceleration {
     float ay = 0;
     Acceleration(float ax = 0, float ay = 0) : ax(ax), ay(ay) {}
 };
+
+}
