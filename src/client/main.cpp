@@ -3,7 +3,10 @@
 
 #include "registry.hpp"
 #include "components.hpp"
-#include "systems.hpp"
+#include "control_system.hpp"
+#include "draw_system.hpp"
+#include "position_system.hpp"
+#include "loop_movement_system.hpp"
 
 int main() {
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "SFML Game");
