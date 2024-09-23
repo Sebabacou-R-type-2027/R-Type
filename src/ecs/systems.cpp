@@ -7,14 +7,12 @@
 
 #include "systems.hpp"
 
-float acceleration = 0.1f;
-float maxSpeed = 4.0f;
 
-void position_system(Registry& registry) {
+void System::position_system(Registry& registry) {
     auto& positions = registry.get_components<Position>();
     auto& velocities = registry.get_components<Velocity>();
 
-    for (size_t i = 0; i < positions.size(); ++i) {
+    for (std::size_t i = 0; i < positions.size(); ++i) {
         if (positions[i] && velocities[i]) {
             positions[i]->x += velocities[i]->vx;
             positions[i]->y += velocities[i]->vy;
@@ -22,11 +20,11 @@ void position_system(Registry& registry) {
     }
 }
 
-void control_system(Registry& registry) {
+void System::control_system(Registry& registry) {
     auto& velocities = registry.get_components<Velocity>();
     auto& controllables = registry.get_components<Controllable>();
 
-    for (size_t i = 0; i < controllables.size(); ++i) {
+    for (std::size_t i = 0; i < controllables.size(); ++i) {
         if (controllables[i] && velocities[i]) {
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
                 velocities[i]->vx += acceleration;
@@ -54,10 +52,10 @@ void control_system(Registry& registry) {
     }
 }
 
-void draw_system(Registry& registry, sf::RenderWindow& window, sf::CircleShape& playerShape) {
+void System::draw_system(Registry& registry, sf::RenderWindow& window, sf::CircleShape& playerShape) {
     auto& positions = registry.get_components<Position>();
 
-    for (size_t i = 0; i < positions.size(); ++i) {
+    for (std::size_t i = 0; i < positions.size(); ++i) {
         if (positions[i]) {
             playerShape.setPosition(positions[i]->x, positions[i]->y);
             window.draw(playerShape);
@@ -65,13 +63,42 @@ void draw_system(Registry& registry, sf::RenderWindow& window, sf::CircleShape& 
     }
 }
 
-void draw_system(Registry& registry, sf::RenderWindow& window, sf::Sprite& playerSprite) {
+void System::draw_system(Registry& registry, sf::RenderWindow& window, sf::Sprite& playerSprite) {
     auto& positions = registry.get_components<Position>();
 
-    for (size_t i = 0; i < positions.size(); ++i) {
+    for (std::size_t i = 0; i < positions.size(); ++i) {
         if (positions[i]) {
             playerSprite.setPosition(positions[i]->x, positions[i]->y);
             window.draw(playerSprite);
+        }
+    }
+}
+
+void System::loop_movement_system(Registry &registry)
+{
+    auto &positions = registry.get_components<Position>();
+    auto &loop_movements = registry.get_components<LoopMovement>();
+
+    for (std::size_t i = 0; i < positions.size() && i < loop_movements.size(); ++i) {
+        if (positions[i].has_value() && loop_movements[i].has_value()) {
+            auto &position = positions[i].value();
+            auto &loop = loop_movements[i].value();
+
+            // position.x += loop.speed * 0.01f;
+            if (position.x > loop.max_x) {
+                position.x = loop.min_x;
+            } else if (position.x < loop.min_x) {
+                position.x = loop.max_x;
+            }
+
+            position.y += loop.speed * 0.01f;
+            if (position.y > loop.max_y) {
+                position.y = loop.min_y;
+                position.x += 100;
+            } else if (position.y < loop.min_y) {
+                position.y = loop.max_y;
+                position.x += 100;
+            }
         }
     }
 }

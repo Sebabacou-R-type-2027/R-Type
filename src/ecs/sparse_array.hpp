@@ -49,11 +49,11 @@ class sparse_array {
         }
 
         template <class... Params>
-        reference_type emplace_at(size_type pos, Params&&... args) {
+        reference_type emplace_at(size_type pos, Params&&... params) {
             if (pos >= _data.size()) {
                 _data.resize(pos + 1);
             }
-            _data[pos].emplace(std::forward<Params>(args)...);
+            _data[pos].emplace(std::forward<Params>(params)...);
             return _data[pos];
         }
 
