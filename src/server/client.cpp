@@ -49,8 +49,20 @@ bool client::is_in_game() const {
     return this->in_game_;
 }
 
+bool client::is_ready() const {
+    return this->is_ready_;
+}
+
+void client::set_ready(const bool ready) {
+    this->is_ready_ = ready;
+}
+
 void client::set_in_game(bool in_game) {
     this->in_game_ = in_game;
+}
+
+void client::start_game() {
+    this->in_game_ = true;
 }
 
 uint32_t client::generate_id() const {

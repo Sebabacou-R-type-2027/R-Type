@@ -48,6 +48,8 @@ class client {
       /// \brief Destructor for Client class
       ~client() = default;
 
+      void start_game();
+
       /// \brief Get the ip of the client
       /// \return the ip of the client
       [[nodiscard]] std::string get_ip() const;
@@ -107,6 +109,17 @@ class client {
       /// \return the client assigned
       client& operator=(const client& cli);
 
+      /// \brief Set the client as ready
+      /// \param ready true if the client is ready, false otherwise
+      /// \details The client has to be in a lobby to be ready
+      void set_ready(bool ready);
+
+      /// \brief Check if the client is ready
+      /// \return true if the client is ready, false otherwise
+      [[nodiscard]] bool is_ready() const;
+
+
+
     private:
       /// \brief Generate a unique id for the client
       /// \details The id is generated using the ip, port and the current timestamp
@@ -119,6 +132,7 @@ class client {
       uint32_t id_; ///< Unique id of the client, max value is 2^32
       bool host_; ///< True if the client is the host
       bool in_game_; ///< True if the client is in game
+      bool is_ready_ = false; ///< True if the client is ready
 
 };
 
