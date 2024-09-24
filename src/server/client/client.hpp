@@ -110,6 +110,17 @@ namespace server {
             /// \param in_game true if the client is in game, false otherwise
             void set_in_game(bool in_game);
 
+            /// \brief Set the client as ready
+            /// \param ready true if the client is ready, false otherwise
+            /// \details The client has to be in a lobby to be ready
+            void set_ready(bool ready);
+
+            /// \brief Check if the client is ready
+            /// \return true if the client is ready, false otherwise
+            [[nodiscard]] bool is_ready() const;
+
+            void start_game();
+
             /// \brief Overload the << operator to print the client information
             /// \param os the output stream
             /// \param cli the client to be printed
@@ -148,6 +159,8 @@ namespace server {
             asio::ip::udp::endpoint endpoint_; ///< Endpoint of the client
             bool host_; ///< True if the client is the host
             bool in_game_; ///< True if the client is in game
+            bool is_ready_ = false; ///< True if the client is ready
+
         };
 }
 

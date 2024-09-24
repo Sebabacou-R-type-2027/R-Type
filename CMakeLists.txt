@@ -10,11 +10,7 @@ endif()
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 
-file(GLOB SERVER_SOURCES
-        src/server/*.cpp src/server/*.hpp
-        src/share/*.cpp src/share/*.hpp
-)
-
+file(GLOB SERVER_SOURCES src/server/*.cpp src/server/*.hpp src/share/*.cpp src/share/*.hpp)
 file(GLOB CLIENT_SOURCES src/client/*.cpp src/client/*.hpp src/share/*.cpp src/share/*.hpp)
 
 message(STATUS "SERVER_SOURCES: ${SERVER_SOURCES}")
@@ -28,22 +24,16 @@ if (NOT CLIENT_SOURCES)
     message(FATAL_ERROR "No source files found for r-type_client")
 endif()
 
-
 add_executable(r-type_server ${SERVER_SOURCES}
         src/server/UdpServer.cpp
+        src/server/UdpServer.hpp
+        src/server/Lobby.cpp
+        src/server/Lobby.hpp
         src/server/client/client.cpp
-        src/server/client/ClientSaver.cpp
 )
-
-target_include_directories(r-type_server PRIVATE
-        src/server
-        src/server/client
-)
-
 add_executable(r-type_client ${CLIENT_SOURCES}
         src/client/package.cpp
-        src/client/package.hpp
-)
+        src/client/package.hpp)
 
 add_custom_target(clean-all
         COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_SOURCE_DIR}/CMakeCache.txt
