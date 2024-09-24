@@ -88,8 +88,11 @@ struct Button {
     sf::RectangleShape rect;
     sf::Text text;
     std::function<void()> onClick;
+    bool isPressed = false;
+
     Button(const sf::RectangleShape& shape, const sf::Text& btnText, std::function<void()> action)
         : rect(shape), text(btnText), onClick(action) {}
 };
+
 
 }

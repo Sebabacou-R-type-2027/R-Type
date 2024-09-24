@@ -1,0 +1,50 @@
+[
+{
+  "directory": "/home/valentin/github/R-Type/build",
+  "command": "/usr/bin/c++  -I/home/valentin/github/R-Type/src -I/home/valentin/github/R-Type/src/ecs -I/home/valentin/github/R-Type/src/ecs/systems  -DUNIX -g -o CMakeFiles/r-type_server.dir/src/server/main.cpp.o -c /home/valentin/github/R-Type/src/server/main.cpp",
+  "file": "/home/valentin/github/R-Type/src/server/main.cpp",
+  "output": "CMakeFiles/r-type_server.dir/src/server/main.cpp.o"
+},
+{
+  "directory": "/home/valentin/github/R-Type/build",
+  "command": "/usr/bin/c++  -I/home/valentin/github/R-Type/src -I/home/valentin/github/R-Type/src/ecs -I/home/valentin/github/R-Type/src/ecs/systems  -DUNIX -g -o CMakeFiles/r-type_client.dir/src/client/game.cpp.o -c /home/valentin/github/R-Type/src/client/game.cpp",
+  "file": "/home/valentin/github/R-Type/src/client/game.cpp",
+  "output": "CMakeFiles/r-type_client.dir/src/client/game.cpp.o"
+},
+{
+  "directory": "/home/valentin/github/R-Type/build",
+  "command": "/usr/bin/c++  -I/home/valentin/github/R-Type/src -I/home/valentin/github/R-Type/src/ecs -I/home/valentin/github/R-Type/src/ecs/systems  -DUNIX -g -o CMakeFiles/r-type_client.dir/src/client/main.cpp.o -c /home/valentin/github/R-Type/src/client/main.cpp",
+  "file": "/home/valentin/github/R-Type/src/client/main.cpp",
+  "output": "CMakeFiles/r-type_client.dir/src/client/main.cpp.o"
+},
+{
+  "directory": "/home/valentin/github/R-Type/build",
+  "command": "/usr/bin/c++  -I/home/valentin/github/R-Type/src -I/home/valentin/github/R-Type/src/ecs -I/home/valentin/github/R-Type/src/ecs/systems  -DUNIX -g -o CMakeFiles/r-type_client.dir/src/ecs/systems/button_system.cpp.o -c /home/valentin/github/R-Type/src/ecs/systems/button_system.cpp",
+  "file": "/home/valentin/github/R-Type/src/ecs/systems/button_system.cpp",
+  "output": "CMakeFiles/r-type_client.dir/src/ecs/systems/button_system.cpp.o"
+},
+{
+  "directory": "/home/valentin/github/R-Type/build",
+  "command": "/usr/bin/c++  -I/home/valentin/github/R-Type/src -I/home/valentin/github/R-Type/src/ecs -I/home/valentin/github/R-Type/src/ecs/systems  -DUNIX -g -o CMakeFiles/r-type_client.dir/src/ecs/systems/control_system.cpp.o -c /home/valentin/github/R-Type/src/ecs/systems/control_system.cpp",
+  "file": "/home/valentin/github/R-Type/src/ecs/systems/control_system.cpp",
+  "output": "CMakeFiles/r-type_client.dir/src/ecs/systems/control_system.cpp.o"
+},
+{
+  "directory": "/home/valentin/github/R-Type/build",
+  "command": "/usr/bin/c++  -I/home/valentin/github/R-Type/src -I/home/valentin/github/R-Type/src/ecs -I/home/valentin/github/R-Type/src/ecs/systems  -DUNIX -g -o CMakeFiles/r-type_client.dir/src/ecs/systems/draw_system.cpp.o -c /home/valentin/github/R-Type/src/ecs/systems/draw_system.cpp",
+  "file": "/home/valentin/github/R-Type/src/ecs/systems/draw_system.cpp",
+  "output": "CMakeFiles/r-type_client.dir/src/ecs/systems/draw_system.cpp.o"
+},
+{
+  "directory": "/home/valentin/github/R-Type/build",
+  "command": "/usr/bin/c++  -I/home/valentin/github/R-Type/src -I/home/valentin/github/R-Type/src/ecs -I/home/valentin/github/R-Type/src/ecs/systems  -DUNIX -g -o CMakeFiles/r-type_client.dir/src/ecs/systems/loop_movement_system.cpp.o -c /home/valentin/github/R-Type/src/ecs/systems/loop_movement_system.cpp",
+  "file": "/home/valentin/github/R-Type/src/ecs/systems/loop_movement_system.cpp",
+  "output": "CMakeFiles/r-type_client.dir/src/ecs/systems/loop_movement_system.cpp.o"
+},
+{
+  "directory": "/home/valentin/github/R-Type/build",
+  "command": "/usr/bin/c++  -I/home/valentin/github/R-Type/src -I/home/valentin/github/R-Type/src/ecs -I/home/valentin/github/R-Type/src/ecs/systems  -DUNIX -g -o CMakeFiles/r-type_client.dir/src/ecs/systems/position_system.cpp.o -c /home/valentin/github/R-Type/src/ecs/systems/position_system.cpp",
+  "file": "/home/valentin/github/R-Type/src/ecs/systems/position_system.cpp",
+  "output": "CMakeFiles/r-type_client.dir/src/ecs/systems/position_system.cpp.o"
+}
+]
