@@ -36,11 +36,17 @@ struct Drawable {
     float size;
     std::string shape;
 
-    Drawable(bool visible = true, sf::Sprite sprite = sf::Sprite(), sf::Texture texture = sf::Texture(),
+    Drawable(const std::string& texturePath, bool visible = true,
              sf::IntRect texture_rect = sf::IntRect(), sf::Color color = sf::Color::White,
              float size = 50.0f, std::string shape = "square")
-        : visible(visible), sprite(sprite), texture(texture), texture_rect(texture_rect),
-          color(color), size(size), shape(shape) {}
+        : visible(visible), texture(), texture_rect(texture_rect),
+          color(color), size(size), shape(shape) {
+        if (!texture.loadFromFile(texturePath)) {
+            // Handle error (log, assert, etc.)
+            throw std::runtime_error("Failed to load texture from " + texturePath);
+        }
+        sprite.setTexture(texture);
+    }
 };
 
 // Component for entities controlled by user input

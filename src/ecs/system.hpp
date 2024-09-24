@@ -28,8 +28,8 @@ public:
         loopMovementSystem.update(reg);
     }
 
-    void draw_system(Registry& reg, sf::RenderWindow& window, sf::Sprite& playerSprite) {
-        drawSystem.update(reg, window, playerSprite);
+    void draw_system(Registry& reg, sf::RenderWindow& window) {
+        drawSystem.update(reg, window);
     }
 
 private:

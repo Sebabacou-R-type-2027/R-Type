@@ -31,4 +31,18 @@ void DrawSystem::update(Registry& registry, sf::RenderWindow& window, sf::Sprite
     }
 }
 
+void DrawSystem::update(Registry& registry, sf::RenderWindow& window) {
+    auto& drawables = registry.get_components<Drawable>();
+    auto& positions = registry.get_components<Position>();
+
+    for (std::size_t i = 0; i < drawables.size(); ++i) {
+        if (drawables[i] && positions[i]) {
+            sf::Sprite sprite;
+            sprite.setTexture(drawables[i]->texture); // Use the existing texture
+            sprite.setPosition(positions[i]->x, positions[i]->y);
+            window.draw(sprite); // Draw the sprite
+        }
+    }
+}
+
 }
