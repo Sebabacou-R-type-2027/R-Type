@@ -1,5 +1,5 @@
 #include "UdpServer.hpp"
-
+#include <random>
 #include <iostream>
 #include <asio.hpp>
 
@@ -9,6 +9,12 @@
 
 UdpServer::UdpServer(asio::io_context& io_context, short port)
     : socket_(io_context, udp::endpoint(udp::v4(), port)) {
+    function_map_ = {
+        {"create_lobby", [this](const std::string& message) { create_lobby(message); }},
+        {"join_lobby", [this](const std::string& message) { join_lobby(message); }},
+        {"leave_lobby", [this](const std::string& message) { leave_lobby(message); }},
+        {"start_game", [this](const std::string& message) { choose_host(remote_endpoint_); }}
+    };
     start_receive();
 }
 
@@ -22,6 +28,61 @@ void UdpServer::start_receive() {
                 start_receive();
             }
         });
+}
+
+server::client UdpServer::get_client(const udp::endpoint &client_endpoint) {
+    for (const auto& cli : connected_clients_) {
+        if (cli.get_endpoint() == client_endpoint) {
+            return cli;
+        }
+    }
+    throw std::runtime_error("Client not found");
+}
+
+void UdpServer::create_lobby(const std::string& message) {
+    static std::random_device rd; // Seed for the random number engine
+    static std::mt19937 gen(rd()); // Mersenne Twister engine
+    static std::uniform_int_distribution<> dis(1, 1000000); // Uniform distribution
+
+    int lobby_id = dis(gen); // Generate a random lobby ID
+    Lobby new_lobby(lobby_id, get_client(remote_endpoint_));
+
+    new_lobby.add_client(get_client(remote_endpoint_));
+    lobbies_.insert(std::make_pair(new_lobby.get_id(), new_lobby));
+    std::cout << "Lobby created: " << new_lobby.get_id() << std::endl;
+    std::cout << "Client added to lobby: " << remote_endpoint_.address().to_string() << ":" << remote_endpoint_.port()
+            << std::endl;
+}
+
+void UdpServer::join_lobby(const std::string& message) {
+    const int lobby_id = std::stoi(message.substr(10));
+
+    try {
+        lobbies_.at(lobby_id).add_client(get_client(remote_endpoint_));
+        std::cout << "Client joined lobby: " << remote_endpoint_.address().to_string() << ":" << remote_endpoint_.
+                port() << std::endl;
+    } catch (const std::out_of_range &e) {
+        throw std::runtime_error("Lobby not found");
+    }
+}
+
+void UdpServer::leave_lobby(std::string message) {
+    const int lobby_id = std::stoi(message.substr(11));
+
+    try {
+        auto client = get_client(remote_endpoint_);
+
+        if (client.is_host()) {
+            lobbies_.erase(lobby_id);
+            std::cout << "Lobby deleted: " << lobby_id << std::endl;
+        } else {
+            lobbies_.at(lobby_id).remove_client(client);
+            std::cout << "Client left lobby: " << remote_endpoint_.address().to_string() << ":" << remote_endpoint_.
+                port() << std::endl;
+        }
+    } catch (const std::out_of_range &e) {
+        throw std::runtime_error("Lobby not found");
+    }
 }
 
 void UdpServer::handle_receive(std::size_t bytes_transferred) {
@@ -53,6 +114,17 @@ void UdpServer::handle_receive(std::size_t bytes_transferred) {
         });
         if (it != connected_clients_.end()) {
             std::cout << "Received: " << message << " from: " << client_str << std::endl;
+            bool command_found = false;
+            for (const auto& [command, func] : function_map_) {
+                if (message.find(command) == 0) { // Check if the message starts with the command
+                    func(message);
+                    command_found = true;
+                    break;
+                }
+            }
+            if (!command_found) {
+                std::cout << "Unknown command: " << message << std::endl;
+            }
         } else {
             std::cout << "Not login client: " << client_str << std::endl;
         }
@@ -92,6 +164,31 @@ void UdpServer::handle_new_connection(const udp::endpoint& client_endpoint, cons
         std::cout << e.what() << std::endl;
         std::cout << "Password or Username is not correct" << std::endl;
     }
+}
+
+void UdpServer::handle_client_message(const std::string &message, const udp::endpoint &client_endpoint) {
+    int lobby_id = 0;
+
+    std::cout << "Handling message: " << message << std::endl;
+    if (message == "login") {
+        handle_new_connection(client_endpoint);
+    }
+}
+
+void UdpServer::choose_host(const udp::endpoint &client_endpoint) {
+    int lobby_id = -42;
+    for (const auto &[id, lobby]: lobbies_) {
+        if (lobby.is_host(get_client(client_endpoint))) {
+            lobby_id = id;
+            break;
+        }
+    }
+
+    if (lobby_id == -42) {
+        throw std::runtime_error("Client is not host");
+    }
+
+    lobbies_.at(lobby_id).get_host().start_game();
 }
 
 void UdpServer::handle_disconnect(const udp::endpoint& client_endpoint) {

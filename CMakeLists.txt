@@ -31,9 +31,11 @@ if (NOT CLIENT_SOURCES)
     message(FATAL_ERROR "No source files found for r-type_client")
 endif()
 
-
 add_executable(r-type_server ${SERVER_SOURCES}
         src/server/UdpServer.cpp
+        src/server/UdpServer.hpp
+        src/server/Lobby.cpp
+        src/server/Lobby.hpp
         src/server/client/client.cpp
         src/server/client/ClientSaver.cpp
 )
@@ -45,7 +47,6 @@ target_include_directories(r-type_server PRIVATE
 
 add_executable(r-type_client ${CLIENT_SOURCES}
         src/client/package.cpp
-        src/client/package.hpp
 )
 
 target_include_directories(r-type_client PRIVATE

@@ -99,6 +99,17 @@ namespace server {
         return std::to_string(hasher(password));
     }
 
+    bool client::is_ready() const {
+        return this->is_ready_;
+    }
+
+    void client::set_ready(const bool ready) {
+        this->is_ready_ = ready;
+    }
+
+    void client::start_game() {
+        this->in_game_ = true;
+    }
 
     std::ostream& operator<<(std::ostream& os, const client& cli) {
         os << "Client[ID: " << cli.id_
