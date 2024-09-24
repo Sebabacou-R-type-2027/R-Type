@@ -1,9 +1,4 @@
-/*
-** EPITECH PROJECT, 2024
-** R-Type
-** File description:
-** button_system
-*/
+// button_system.cpp
 
 #include "button_system.hpp"
 
@@ -17,19 +12,19 @@ void ButtonSystem::update(Registry& registry, sf::RenderWindow& window) {
         if (buttons[i]) {
             bool containsMouse = buttons[i]->rect.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePos));
 
-            // Scale factor for hover and click
+            // Scale factor for hover
             float scaleFactor = containsMouse ? 1.1f : 1.0f;
 
-            // Scale button
+            // Scale button and text
             buttons[i]->rect.setScale(scaleFactor, scaleFactor);
-            // Scale text
             buttons[i]->text.setScale(scaleFactor, scaleFactor);
 
             // Handle click
             if (containsMouse) {
-                buttons[i]->rect.setFillColor(sf::Color::Cyan); // Hover color
+                buttons[i]->rect.setFillColor(buttons[i]->hoverColor); // Use hover color
                 if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
                     buttons[i]->rect.setScale(0.9f, 0.9f); // Scale down on click
+                    buttons[i]->rect.setFillColor(buttons[i]->clickColor); // Use click color
                     if (!buttons[i]->isPressed) {
                         buttons[i]->isPressed = true; // Set pressed state
                         buttons[i]->onClick(); // Call action
@@ -38,14 +33,12 @@ void ButtonSystem::update(Registry& registry, sf::RenderWindow& window) {
                     buttons[i]->isPressed = false; // Reset pressed state when released
                 }
             } else {
-                buttons[i]->rect.setFillColor(sf::Color::Blue); // Default color
+                buttons[i]->rect.setFillColor(buttons[i]->defaultColor); // Use default color
                 buttons[i]->isPressed = false; // Reset pressed state
             }
         }
     }
 }
-
-
 
 void ButtonSystem::render(Registry& registry, sf::RenderWindow& window) {
     auto& buttons = registry.get_components<Button>();
@@ -56,6 +49,5 @@ void ButtonSystem::render(Registry& registry, sf::RenderWindow& window) {
         }
     }
 }
-
 
 }

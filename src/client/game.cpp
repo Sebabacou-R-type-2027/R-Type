@@ -37,11 +37,14 @@ namespace rtype {
                 sf::Vector2f(400.0f, 400.0f),
                 sf::Vector2f(200.0f, 50.0f),
                 font,
-                sf::Color::White,
-                24,
-                []() { std::cout << "Button clicked!" << std::endl; }
+                sf::Color::Blue,      // Set default button color
+                sf::Color::Cyan,     // Set hover color
+                sf::Color::Green,     // Set click color
+                24,                   // Set text size
+                []() { std::cout << "Button clicked!" << std::endl; } // Click action
             )
         );
+
 
         while (window.isOpen()) {
             processEvents();
