@@ -85,12 +85,9 @@ struct Acceleration {
 };
 
 struct Button {
-    bool isHovered;
-    bool isClicked;
-    std::function<void()> onClick; // Function to call when the button is clicked
-
-    Button(bool isHovered = false, bool isClicked = false, std::function<void()> onClick = nullptr)
-        : isHovered(isHovered), isClicked(isClicked), onClick(onClick) {}
+    sf::RectangleShape rect;
+    sf::Text text;
+    std::function<void()> onClick;
 };
 
 }

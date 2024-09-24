@@ -37,6 +37,10 @@ public:
         buttonSystem.update(reg, window);
     }
 
+    void button_system_render(Registry& reg, sf::RenderWindow& window) {
+        buttonSystem.render(reg, window);
+    }
+
 private:
     systems::ControlSystem controlSystem;
     systems::DrawSystem drawSystem;
