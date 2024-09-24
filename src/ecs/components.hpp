@@ -9,6 +9,8 @@
 
 #include <SFML/Graphics.hpp>
 #include <string>
+#include <functional>
+
 
 namespace ecs {
 
@@ -80,6 +82,15 @@ struct Acceleration {
     float ax = 0;
     float ay = 0;
     Acceleration(float ax = 0, float ay = 0) : ax(ax), ay(ay) {}
+};
+
+struct Button {
+    bool isHovered;
+    bool isClicked;
+    std::function<void()> onClick; // Function to call when the button is clicked
+
+    Button(bool isHovered = false, bool isClicked = false, std::function<void()> onClick = nullptr)
+        : isHovered(isHovered), isClicked(isClicked), onClick(onClick) {}
 };
 
 }
