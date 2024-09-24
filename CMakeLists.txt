@@ -15,7 +15,10 @@ file(GLOB SERVER_SOURCES
         src/share/*.cpp src/share/*.hpp
 )
 
-file(GLOB CLIENT_SOURCES src/client/*.cpp src/client/*.hpp src/share/*.cpp src/share/*.hpp)
+file(GLOB CLIENT_SOURCES
+        src/client/*.cpp src/client/*.hpp
+        src/share/*.cpp src/share/*.hpp
+)
 
 message(STATUS "SERVER_SOURCES: ${SERVER_SOURCES}")
 message(STATUS "CLIENT_SOURCES: ${CLIENT_SOURCES}")
@@ -43,6 +46,10 @@ target_include_directories(r-type_server PRIVATE
 add_executable(r-type_client ${CLIENT_SOURCES}
         src/client/package.cpp
         src/client/package.hpp
+)
+
+target_include_directories(r-type_client PRIVATE
+        src/client
 )
 
 add_custom_target(clean-all
