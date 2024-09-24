@@ -1,9 +1,10 @@
-#include <SFML/Graphics.hpp>
-#include <iostream>
+/*
+** EPITECH PROJECT, 2024
+** R-Type
+** File description:
+** main
+*/
 
-#include "registry.hpp"
-#include "components.hpp"
-#include "system.hpp"
 #include "game.hpp"
 
 int main() {

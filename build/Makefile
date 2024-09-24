@@ -203,6 +203,30 @@ src/client/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/r-type_client.dir/build.make CMakeFiles/r-type_client.dir/src/client/main.cpp.s
 .PHONY : src/client/main.cpp.s
 
+src/ecs/factories/button_factory.o: src/ecs/factories/button_factory.cpp.o
+.PHONY : src/ecs/factories/button_factory.o
+
+# target to build an object file
+src/ecs/factories/button_factory.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/r-type_client.dir/build.make CMakeFiles/r-type_client.dir/src/ecs/factories/button_factory.cpp.o
+.PHONY : src/ecs/factories/button_factory.cpp.o
+
+src/ecs/factories/button_factory.i: src/ecs/factories/button_factory.cpp.i
+.PHONY : src/ecs/factories/button_factory.i
+
+# target to preprocess a source file
+src/ecs/factories/button_factory.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/r-type_client.dir/build.make CMakeFiles/r-type_client.dir/src/ecs/factories/button_factory.cpp.i
+.PHONY : src/ecs/factories/button_factory.cpp.i
+
+src/ecs/factories/button_factory.s: src/ecs/factories/button_factory.cpp.s
+.PHONY : src/ecs/factories/button_factory.s
+
+# target to generate assembly for a file
+src/ecs/factories/button_factory.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/r-type_client.dir/build.make CMakeFiles/r-type_client.dir/src/ecs/factories/button_factory.cpp.s
+.PHONY : src/ecs/factories/button_factory.cpp.s
+
 src/ecs/systems/button_system.o: src/ecs/systems/button_system.cpp.o
 .PHONY : src/ecs/systems/button_system.o
 
@@ -364,6 +388,9 @@ help:
 	@echo "... src/client/main.o"
 	@echo "... src/client/main.i"
 	@echo "... src/client/main.s"
+	@echo "... src/ecs/factories/button_factory.o"
+	@echo "... src/ecs/factories/button_factory.i"
+	@echo "... src/ecs/factories/button_factory.s"
 	@echo "... src/ecs/systems/button_system.o"
 	@echo "... src/ecs/systems/button_system.i"
 	@echo "... src/ecs/systems/button_system.s"

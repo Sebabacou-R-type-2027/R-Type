@@ -12,9 +12,18 @@
 #include <typeindex>
 #include <any>
 #include <algorithm>
-#include "components.hpp"
 #include "sparse_array.hpp"
 #include "entity.hpp"
+
+// include all components
+#include "components/Position.hpp"
+#include "components/Velocity.hpp"
+#include "components/Controllable.hpp"
+#include "components/Drawable.hpp"
+#include "components/Acceleration.hpp"
+#include "components/LoopMovement.hpp"
+#include "components/Collision.hpp"
+#include "components/Button.hpp"
 
 namespace ecs {
 

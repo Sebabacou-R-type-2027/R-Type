@@ -15,13 +15,15 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/src)
 include_directories(${CMAKE_SOURCE_DIR}/src/ecs)
 include_directories(${CMAKE_SOURCE_DIR}/src/ecs/systems)
+include_directories(${CMAKE_SOURCE_DIR}/src/ecs/factories)
+include_directories(${CMAKE_SOURCE_DIR}/src/ecs/components)
 
 # Find SFML
 find_package(SFML 2.5 COMPONENTS graphics window system REQUIRED)
 
 # Correct the paths for SERVER_SOURCES and CLIENT_SOURCES
 file(GLOB SERVER_SOURCES src/server/*.cpp src/share/*.cpp)
-file(GLOB CLIENT_SOURCES src/client/*.cpp src/ecs/*.cpp src/ecs/systems/*.cpp)
+file(GLOB CLIENT_SOURCES src/client/*.cpp src/ecs/*.cpp src/ecs/systems/*.cpp src/ecs/factories/*.cpp)
 
 message(STATUS "SERVER_SOURCES: ${SERVER_SOURCES}")
 message(STATUS "CLIENT_SOURCES: ${CLIENT_SOURCES}")
