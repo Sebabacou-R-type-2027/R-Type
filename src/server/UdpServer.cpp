@@ -13,7 +13,8 @@ UdpServer::UdpServer(asio::io_context& io_context, short port)
         {"create_lobby", [this](const std::string& message) { create_lobby(message); }},
         {"join_lobby", [this](const std::string& message) { join_lobby(message); }},
         {"leave_lobby", [this](const std::string& message) { leave_lobby(message); }},
-        {"start_game", [this](const std::string& message) { choose_host(remote_endpoint_); }}
+        {"start_game", [this](const std::string& message) { choose_host(remote_endpoint_); }},
+        {"logout", [this](const std::string& message) { logout(message); }}
     };
     start_receive();
 }
@@ -85,6 +86,10 @@ void UdpServer::leave_lobby(std::string message) {
     }
 }
 
+void UdpServer::logout(const std::string& message) {
+    handle_disconnect(remote_endpoint_);
+}
+
 void UdpServer::handle_receive(std::size_t bytes_transferred) {
     const auto message = std::string(recv_buffer_.data(), bytes_transferred);
     std::string client_str = remote_endpoint_.address().to_string() + ":" + std::to_string(remote_endpoint_.port());
@@ -106,8 +111,6 @@ void UdpServer::handle_receive(std::size_t bytes_transferred) {
         } else {
             std::cout << "Invalid login format" << std::endl;
         }
-    } else if (message == "logout") {
-        handle_disconnect(remote_endpoint_);
     } else {
         auto it = std::find_if(connected_clients_.begin(), connected_clients_.end(), [&client_str](const server::client& cli) {
             return cli.get_ip() + ":" + cli.get_port() == client_str;
@@ -163,15 +166,6 @@ void UdpServer::handle_new_connection(const udp::endpoint& client_endpoint, cons
     } catch (const server::client::ClientException& e) {
         std::cout << e.what() << std::endl;
         std::cout << "Password or Username is not correct" << std::endl;
-    }
-}
-
-void UdpServer::handle_client_message(const std::string &message, const udp::endpoint &client_endpoint) {
-    int lobby_id = 0;
-
-    std::cout << "Handling message: " << message << std::endl;
-    if (message == "login") {
-        handle_new_connection(client_endpoint);
     }
 }
 
