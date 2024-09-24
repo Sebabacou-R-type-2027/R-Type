@@ -1,18 +1,26 @@
 #include "client.hpp"
+#include "ClientSaver.hpp"
 #include <chrono>
+#include <iostream>
 
 namespace server {
-    client::client(const std::string& ip, const std::string& port, const std::string& username, const std::string& password) {
+    client::client(const std::string& ip, const std::string& port, const std::string& username, const std::string& password, uint32_t id) {
         if (ip.empty() || port.empty()) {
             throw ClientException("IP or port cannot be empty", *this);
         }
-        set_nickname(username);
+
         this->ip_ = ip;
         this->port_ = port;
-        this->id_ = generate_id();
+        if (id == 0) {
+            set_nickname(username);
+            this->id_ = generate_id();
+        } else {
+            this->id_ = id;
+            this->username_ = username;
+        }
         this->host_ = false;
         this->in_game_ = false;
-        this->password_ = password; // TODO: hash the password
+        this->password_ = hash_password(password);
     }
 
     std::string client::get_ip() const {
@@ -28,8 +36,17 @@ namespace server {
     }
 
     void client::set_nickname(const std::string& username) {
+        ClientSaver cs("clients.csv");
         if (username.empty()) {
             throw ClientException("username cannot be empty", *this);
+        }
+
+        try {
+            if (cs.check_if_user_already_exists_in_db(username, "") != 0) {
+                throw ClientException("Username already exists", *this);
+            }
+        } catch (const ClientException& e) {
+            throw ClientException("Username already exists", *this);
         }
         this->username_ = username;
     }
@@ -43,7 +60,7 @@ namespace server {
     }
 
     void client::set_password(const std::string& password) {
-        this->password_ = password;
+        this->password_ = hash_password(password);
     }
 
     asio::ip::udp::endpoint client::get_endpoint() const {
@@ -75,6 +92,11 @@ namespace server {
     uint32_t client::generate_id() const {
         auto timestamp = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
         return std::hash<std::string>{}(this->ip_ + this->port_ + std::to_string(timestamp));
+    }
+
+    std::string client::hash_password(const std::string &password) {
+        std::hash<std::string> hasher;
+        return std::to_string(hasher(password));
     }
 
     bool client::is_ready() const {
