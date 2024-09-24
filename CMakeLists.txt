@@ -29,6 +29,7 @@ add_executable(r-type_server ${SERVER_SOURCES}
         src/server/UdpServer.hpp
         src/server/Lobby.cpp
         src/server/Lobby.hpp
+        src/server/client/client.cpp
 )
 add_executable(r-type_client ${CLIENT_SOURCES}
         src/client/package.cpp
