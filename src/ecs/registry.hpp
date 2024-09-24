@@ -12,9 +12,20 @@
 #include <typeindex>
 #include <any>
 #include <algorithm>
-#include "components.hpp"
 #include "sparse_array.hpp"
 #include "entity.hpp"
+
+// include all components
+#include "components/Position.hpp"
+#include "components/Velocity.hpp"
+#include "components/Controllable.hpp"
+#include "components/Drawable.hpp"
+#include "components/Acceleration.hpp"
+#include "components/LoopMovement.hpp"
+#include "components/Collision.hpp"
+#include "components/Button.hpp"
+
+namespace ecs {
 
 class Registry {
     public:
@@ -69,6 +80,7 @@ class Registry {
             return get_components<Component>().emplace_at(static_cast<std::size_t>(to), std::forward<Params>(params)...);
         }
 
+
         template <typename Component>
         void remove_component(Entity const& from) {
             get_components<Component>().erase(static_cast<std::size_t>(from));
@@ -82,6 +94,7 @@ class Registry {
             register_component<Acceleration>();
             register_component<LoopMovement>();
             register_component<Collision>();
+            register_component<Button>();
         }
     private:
         std::size_t _next_entity_id = 0;
@@ -89,3 +102,5 @@ class Registry {
 
         std::unordered_map<std::type_index, std::any> _components;
 };
+
+}
