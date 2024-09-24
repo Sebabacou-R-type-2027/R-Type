@@ -39,12 +39,11 @@ void Lobby::mark_unready(const server::client& cli) {
 }
 
 bool Lobby::is_everyone_ready() const {
-    return std::all_of(clients_lobby_.begin(), clients_lobby_.end(), [](const server::client& cli) {
-        return cli.is_ready();
-    });
+  return std::all_of(clients_lobby_.begin(), clients_lobby_.end(),
+                     [](const server::client &cli) { return cli.is_ready(); });
 }
 
-const std::vector<server::client>& Lobby::get_clients() const {
+std::vector<server::client> Lobby::get_clients() const {
     return clients_lobby_;
 }
 

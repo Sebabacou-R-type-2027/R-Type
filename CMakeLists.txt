@@ -33,7 +33,9 @@ add_executable(r-type_server ${SERVER_SOURCES}
 )
 add_executable(r-type_client ${CLIENT_SOURCES}
         src/client/package.cpp
-        src/client/package.hpp)
+        src/client/package.hpp
+        src/client/Client.cpp
+        src/client/Client.hpp)
 
 add_custom_target(clean-all
         COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_SOURCE_DIR}/CMakeCache.txt

@@ -20,7 +20,7 @@ class Lobby {
         void mark_ready(const server::client& cli);
         void mark_unready(const server::client& cli);
         [[nodiscard]] bool is_everyone_ready() const;
-        [[nodiscard]] const std::vector<server::client>& get_clients() const;
+        [[nodiscard]] std::vector<server::client> get_clients() const;
         void set_host(const server::client& cli);
         [[nodiscard]] int get_id() const;
         [[nodiscard]] server::client get_host() const;
