@@ -17,15 +17,32 @@ void ButtonSystem::update(Registry& registry, sf::RenderWindow& window) {
         if (buttons[i]) {
             bool containsMouse = buttons[i]->rect.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePos));
 
-            if (containsMouse && sf::Mouse::isButtonPressed(sf::Mouse::Left) && !buttons[i]->isPressed) {
-                buttons[i]->isPressed = true; // Set the pressed state
-                buttons[i]->onClick(); // Call the button's action
-            } else if (!sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                buttons[i]->isPressed = false; // Reset when mouse is released
+            // Scale factor for hover and click
+            float scaleFactor = containsMouse ? 1.1f : 1.0f;
+
+            // Scale button
+            buttons[i]->rect.setScale(scaleFactor, scaleFactor);
+
+            // Handle click
+            if (containsMouse) {
+                buttons[i]->rect.setFillColor(sf::Color::Cyan); // Hover color
+                if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                    buttons[i]->rect.setScale(0.9f, 0.9f); // Scale down on click
+                    if (!buttons[i]->isPressed) {
+                        buttons[i]->isPressed = true; // Set pressed state
+                        buttons[i]->onClick(); // Call action
+                    }
+                } else {
+                    buttons[i]->isPressed = false; // Reset pressed state when released
+                }
+            } else {
+                buttons[i]->rect.setFillColor(sf::Color::Blue); // Default color
+                buttons[i]->isPressed = false; // Reset pressed state
             }
         }
     }
 }
+
 
 
 void ButtonSystem::render(Registry& registry, sf::RenderWindow& window) {
@@ -37,5 +54,6 @@ void ButtonSystem::render(Registry& registry, sf::RenderWindow& window) {
         }
     }
 }
+
 
 }

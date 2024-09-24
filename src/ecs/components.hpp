@@ -91,7 +91,13 @@ struct Button {
     bool isPressed = false;
 
     Button(const sf::RectangleShape& shape, const sf::Text& btnText, std::function<void()> action)
-        : rect(shape), text(btnText), onClick(action) {}
+        : rect(shape), text(btnText), onClick(action) {
+        rect.setOrigin(rect.getSize().x / 2, rect.getSize().y / 2);
+        // text.setOrigin(text.getGlobalBounds().width / 2, text.getGlobalBounds().height / 2);
+        // text.setPosition(rect.getPosition());
+    }
+
+
 };
 
 

@@ -7,6 +7,7 @@
 
 #include "game.hpp"
 #include <iostream>
+#include "button_factory.hpp"
 
 namespace rtype {
     Game::Game(const std::string& title, unsigned int width, unsigned int height, const std::string& playerTexturePath)
@@ -25,32 +26,14 @@ namespace rtype {
         registry.emplace_component<ecs::Acceleration>(movable_entity, 0.0f, 0.0f);
         // registry.emplace_component<ecs::Collision>(movable_entity, 0.0f, false, sf::Rect<float>(0.0f, 0.0f, 50.0f, 50.0f));
 
-        auto button_entity = registry.spawn_entity();
-        sf::RectangleShape buttonShape;
-        buttonShape.setSize(sf::Vector2f(200.0f, 50.0f));
-        buttonShape.setPosition(300.0f, 200.0f);
-        buttonShape.setFillColor(sf::Color(0, 0, 255)); // Default color
-
         sf::Font font;
-        if (!font.loadFromFile("assets/fonts/NimbusSanL-Bol.otf")) {
-            std::cerr << "Failed to load font!" << std::endl;
-            return;
-        }
+        font.loadFromFile("assets/fonts/NimbusSanL-Bol.otf");
 
-        sf::Text buttonText;
-        buttonText.setFont(font);
-        buttonText.setString("Click Me");
-        buttonText.setCharacterSize(24);
-        buttonText.setFillColor(sf::Color::White);
-        buttonText.setPosition(320.0f, 210.0f); // Position text relative to the button
-
+        auto button_entity = registry.spawn_entity();
         registry.emplace_component<ecs::Button>(
             button_entity,
-            buttonShape,
-            buttonText,
-            []() { std::cout << "Button Clicked!" << std::endl; }
+            ecs::ButtonFactory::create_button("Click on Me", {300.0f, 200.0f}, {200.0f, 50.0f}, font, []() { std::cout << "Button Clicked!" << std::endl; })
         );
-
 
         while (window.isOpen()) {
             processEvents();
@@ -95,6 +78,10 @@ namespace rtype {
         window.clear();
         system.draw_system(registry, window); // Update to just pass the registry and window
         system.button_system_render(registry, window);
+        // display a square shape in 0, 0, 100, 100
+        sf::RectangleShape shape(sf::Vector2f(300, 200));
+        shape.setFillColor(sf::Color::Green);
+        window.draw(shape);
         window.display();
     }
 }
