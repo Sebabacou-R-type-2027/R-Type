@@ -22,6 +22,8 @@ void ButtonSystem::update(Registry& registry, sf::RenderWindow& window) {
 
             // Scale button
             buttons[i]->rect.setScale(scaleFactor, scaleFactor);
+            // Scale text
+            buttons[i]->text.setScale(scaleFactor, scaleFactor);
 
             // Handle click
             if (containsMouse) {
