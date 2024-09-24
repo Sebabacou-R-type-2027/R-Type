@@ -71,6 +71,7 @@ class Registry {
             return get_components<Component>().emplace_at(static_cast<std::size_t>(to), std::forward<Params>(params)...);
         }
 
+
         template <typename Component>
         void remove_component(Entity const& from) {
             get_components<Component>().erase(static_cast<std::size_t>(from));
@@ -84,6 +85,7 @@ class Registry {
             register_component<Acceleration>();
             register_component<LoopMovement>();
             register_component<Collision>();
+            register_component<Button>();
         }
     private:
         std::size_t _next_entity_id = 0;

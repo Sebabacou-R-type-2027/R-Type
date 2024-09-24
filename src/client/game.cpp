@@ -23,7 +23,34 @@ namespace rtype {
         registry.emplace_component<ecs::Drawable>(movable_entity, "assets/Ship/Ship.png");
         registry.emplace_component<ecs::Controllable>(movable_entity, true, 5.0f);
         registry.emplace_component<ecs::Acceleration>(movable_entity, 0.0f, 0.0f);
-        registry.emplace_component<ecs::Collision>(movable_entity, 0.0f, false, sf::Rect<float>(0.0f, 0.0f, 50.0f, 50.0f));
+        // registry.emplace_component<ecs::Collision>(movable_entity, 0.0f, false, sf::Rect<float>(0.0f, 0.0f, 50.0f, 50.0f));
+
+        auto button_entity = registry.spawn_entity();
+        sf::RectangleShape buttonShape;
+        buttonShape.setSize(sf::Vector2f(200.0f, 50.0f));
+        buttonShape.setPosition(300.0f, 200.0f);
+        buttonShape.setFillColor(sf::Color(0, 0, 255)); // Default color
+
+        sf::Font font;
+        if (!font.loadFromFile("assets/fonts/NimbusSanL-Bol.otf")) {
+            std::cerr << "Failed to load font!" << std::endl;
+            return;
+        }
+
+        sf::Text buttonText;
+        buttonText.setFont(font);
+        buttonText.setString("Click Me");
+        buttonText.setCharacterSize(24);
+        buttonText.setFillColor(sf::Color::White);
+        buttonText.setPosition(320.0f, 210.0f); // Position text relative to the button
+
+        registry.emplace_component<ecs::Button>(
+            button_entity,
+            buttonShape,
+            buttonText,
+            []() { std::cout << "Button Clicked!" << std::endl; }
+        );
+
 
         while (window.isOpen()) {
             processEvents();
@@ -44,6 +71,8 @@ namespace rtype {
         system.control_system(registry);
         system.position_system(registry);
         system.loop_movement_system(registry);
+        system.button_system(registry, window);
+
 
         auto& positions = registry.get_components<ecs::Position>();
         auto& drawables = registry.get_components<ecs::Drawable>();
@@ -65,6 +94,7 @@ namespace rtype {
     void Game::render() {
         window.clear();
         system.draw_system(registry, window); // Update to just pass the registry and window
+        system.button_system_render(registry, window);
         window.display();
     }
 }
