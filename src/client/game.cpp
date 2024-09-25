@@ -40,6 +40,7 @@ namespace rtype {
                 sf::Color::Blue,      // Set default button color
                 sf::Color::Cyan,     // Set hover color
                 sf::Color::Green,     // Set click color
+                sf::Color::White,      // Set text color
                 24,                   // Set text size
                 []() { std::cout << "Button clicked!" << std::endl; } // Click action
             )

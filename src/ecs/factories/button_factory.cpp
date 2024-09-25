@@ -17,6 +17,7 @@ Button ButtonFactory::create_button(
     const sf::Color& defaultColor,
     const sf::Color& hoverColor,
     const sf::Color& clickColor,
+    const sf::Color& textColor,
     const unsigned int text_size,
     std::function<void()> action) {
 
@@ -28,7 +29,7 @@ Button ButtonFactory::create_button(
     buttonText.setFont(font);
     buttonText.setString(text);
     buttonText.setCharacterSize(text_size);
-    buttonText.setFillColor(sf::Color::White);
+    buttonText.setFillColor(textColor);
     buttonText.setOrigin(buttonText.getGlobalBounds().width / 2, buttonText.getGlobalBounds().height / 2 + buttonText.getGlobalBounds().top);
     buttonText.setPosition(position);
 
