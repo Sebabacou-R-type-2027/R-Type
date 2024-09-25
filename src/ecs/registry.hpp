@@ -86,6 +86,7 @@ class Registry {
             register_component<LoopMovement>();
             register_component<Collision>();
             register_component<Button>();
+            register_component<Size>();
         }
     private:
         std::size_t _next_entity_id = 0;
