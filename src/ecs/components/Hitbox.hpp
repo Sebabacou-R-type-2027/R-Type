@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2024
 ** R-Type
 ** File description:
-** Collision
+** Hitbox
 */
 
 #pragma once
@@ -10,12 +10,12 @@
 #include <SFML/Graphics.hpp>
 
 namespace ecs {
-    struct Collision {
+    struct Hitbox {
         float radius = 0;
         bool is_colliding = false;
-        sf::Rect<float> rect;
+        sf::RectangleShape rect;
 
-        Collision(float radius = 0, bool is_colliding = false, sf::Rect<float> rect = sf::Rect<float>())
+        Hitbox(float radius = 0, bool is_colliding = false, sf::RectangleShape rect = sf::RectangleShape())
             : radius(radius), is_colliding(is_colliding), rect(rect) {}
     };
 }
