@@ -12,6 +12,7 @@
 #include "position_system.hpp"
 #include "loop_movement_system.hpp"
 #include "button_system.hpp"
+#include "collision_system.hpp"
 
 namespace ecs {
 
@@ -41,12 +42,17 @@ public:
         buttonSystem.render(reg, window);
     }
 
+    void collision_system(Registry& reg, sf::RenderWindow& window) {
+        collisionSystem.update(reg, window);
+    }
+
 private:
     systems::ControlSystem controlSystem;
     systems::DrawSystem drawSystem;
     systems::PositionSystem positionSystem;
     systems::LoopMovementSystem loopMovementSystem;
     systems::ButtonSystem buttonSystem;
+    systems::CollisionSystem collisionSystem;
 };
 
 }
