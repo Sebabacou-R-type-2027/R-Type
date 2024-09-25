@@ -67,7 +67,7 @@ namespace rtype {
         system.position_system(registry);
         system.loop_movement_system(registry);
         system.button_system(registry, window);
-
+        system.bullet_system(registry);
 
         auto& positions = registry.get_components<ecs::Position>();
         auto& drawables = registry.get_components<ecs::Drawable>();

@@ -12,6 +12,7 @@
 #include "position_system.hpp"
 #include "loop_movement_system.hpp"
 #include "button_system.hpp"
+#include "bullet_system.hpp"
 
 namespace ecs {
 
@@ -41,12 +42,18 @@ public:
         buttonSystem.render(reg, window);
     }
 
+    void bullet_system(Registry& reg) {
+        bulletSystem.update(reg);
+    }
+
+
 private:
     systems::ControlSystem controlSystem;
     systems::DrawSystem drawSystem;
     systems::PositionSystem positionSystem;
     systems::LoopMovementSystem loopMovementSystem;
     systems::ButtonSystem buttonSystem;
+    systems::BulletSystem bulletSystem;
 };
 
 }

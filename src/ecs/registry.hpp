@@ -24,6 +24,7 @@
 #include "components/LoopMovement.hpp"
 #include "components/Collision.hpp"
 #include "components/Button.hpp"
+#include "components/Bullet.hpp"
 
 namespace ecs {
 
@@ -95,6 +96,7 @@ class Registry {
             register_component<LoopMovement>();
             register_component<Collision>();
             register_component<Button>();
+            register_component<Bullet>();
         }
     private:
         std::size_t _next_entity_id = 0;
