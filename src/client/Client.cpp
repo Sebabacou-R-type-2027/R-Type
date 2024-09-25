@@ -47,7 +47,7 @@ namespace client {
                 std::cout << "Received: ping" << std::endl;
                 socket_.send_to(asio::buffer("pong", 4), sender_endpoint);
             }
-            std::cout << "Received: " << std::string(buffer, len) << std::endl;
+            //std::cout << "Received: " << std::string(buffer, len) << std::endl;
         }
     }
 }

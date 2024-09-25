@@ -101,9 +101,9 @@ void UdpServer::leave_lobby(std::string message) {
 }
 
 void UdpServer::handle_receive(std::size_t bytes_transferred) {
-    std::unique_lock<std::mutex> lock(messages_mutex_);
-
     if (bytes_transferred > 0) {
+        std::lock_guard<std::mutex> lock(messages_mutex_);
+
         auto message = std::string(recv_buffer_.data(), bytes_transferred);
         std::cout << "Received message: " << message << std::endl;
 
@@ -115,7 +115,6 @@ void UdpServer::handle_receive(std::size_t bytes_transferred) {
         // Notifier le serveur loop qu'un message a été reçu
         messages_condition_.notify_one();
     }
-    lock.unlock();
     start_receive();
 }
 
@@ -158,23 +157,26 @@ void UdpServer::handle_client_message(const std::string& message, const asio::ip
 
 void UdpServer::server_loop() {
     while (true) {
-        std::unique_lock<std::mutex> lock(messages_mutex_);
-        std::cout << "Waiting for messages..." << std::endl;
-        // Attendre qu'il y ait des messages à traiter
-        messages_condition_.wait(lock, [this] { return !received_messages_.empty(); });
+        std::string message = "";
+        udp::endpoint client_endpoint;
+        {
+            std::unique_lock<std::mutex> lock(messages_mutex_);
+            //std::cout << "Waiting for messages..." << std::endl;
+            // Attendre qu'il y ait des messages à traiter
+            messages_condition_.wait(lock, [this] { return !received_messages_.empty(); });
 
-        // Traiter le message
-        int message_id = received_messages_.begin()->first;
-        std::pair<std::string, udp::endpoint> pair_data = received_messages_.begin()->second;
-        std::string message = pair_data.first;
-        udp::endpoint client_endpoint = pair_data.second;
+            // Traiter le message
+            int message_id = received_messages_.begin()->first;
+            std::pair<std::string, udp::endpoint> pair_data = received_messages_.begin()->second;
+            message = pair_data.first;
+            client_endpoint = pair_data.second;
 
-        std::cout << "Received: " << message << " from " << client_endpoint << std::endl;
-        received_messages_.erase(message_id);
+            std::cout << "Received: " << message << " from " << client_endpoint << std::endl;
+            received_messages_.erase(message_id);
+        }
 
         // Appeler la fonction pour gérer le message du client
         handle_client_message(message, client_endpoint);
-        lock.unlock();
     }
 }
 
@@ -212,10 +214,10 @@ void UdpServer::ping_to_choose_host(const udp::endpoint &client_endpoint) {
 
     for (auto& cli : clients) {
         send_ping(cli.get_endpoint());
-        auto start_time = std::chrono::steady_clock::now();
-        while (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time).count() < 5) {
-            // std::unique_lock<std::mutex> lock(messages_mutex_);
-            // messages_condition_.wait_for(lock, std::chrono::seconds(5));
+        auto start = std::chrono::high_resolution_clock::now();
+        {
+            std::unique_lock<std::mutex> lock(messages_mutex_);
+            messages_condition_.wait(lock, [this]() { return !received_messages_.empty(); });
             if (received_messages_.empty()) {
                 continue;
             } else {
@@ -223,8 +225,8 @@ void UdpServer::ping_to_choose_host(const udp::endpoint &client_endpoint) {
                     std::string message = pair_data.first;
                     udp::endpoint sender = pair_data.second;
                     if (message == "pong" && sender == cli.get_endpoint()) {
-                        auto end_time = std::chrono::steady_clock::now();
-                        elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
+                        auto end = std::chrono::high_resolution_clock::now();
+                        elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
                         received_messages_.erase(id);
                         break;
                     }
