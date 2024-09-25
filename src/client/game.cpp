@@ -80,9 +80,6 @@ namespace rtype {
         system.position_system(registry);
         system.button_system(registry, window);
         system.collision_system(registry, window);
-        auto currentTime = std::chrono::high_resolution_clock::now();
-        auto lastTime = currentTime;
-        float deltaTime = std::chrono::duration<float>(currentTime - lastTime).count();
 
         system.loop_movement_system(registry, deltaTime);
 
