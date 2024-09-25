@@ -24,7 +24,15 @@ namespace rtype {
         registry.emplace_component<ecs::Drawable>(movable_entity, "assets/Ship/Ship.png");
         registry.emplace_component<ecs::Controllable>(movable_entity, true, 5.0f);
         registry.emplace_component<ecs::Acceleration>(movable_entity, 0.0f, 0.0f);
-        // registry.emplace_component<ecs::Collision>(movable_entity, 0.0f, false, sf::Rect<float>(0.0f, 0.0f, 50.0f, 50.0f));
+        registry.emplace_component<ecs::Size>(movable_entity, 50.0f, 50.0f);
+        registry.emplace_component<ecs::Collision>(movable_entity, 0.0f, sf::RectangleShape(sf::Vector2f(50.0f, 50.0f)));
+
+        auto obstacle_entity = registry.spawn_entity();
+        registry.emplace_component<ecs::Position>(obstacle_entity, 1000.0f, 300.0f);
+        registry.emplace_component<ecs::Velocity>(obstacle_entity, 0.0f, 0.0f);
+        registry.emplace_component<ecs::Size>(obstacle_entity, 100.0f, 300.0f);
+        registry.emplace_component<ecs::Drawable>(obstacle_entity, "assets/Ship/Ship.png");
+        registry.emplace_component<ecs::Collision>(obstacle_entity, 0.0f, sf::RectangleShape(sf::Vector2f(100.0f, 300.0f)));
 
         sf::Font font;
         font.loadFromFile("assets/fonts/NimbusSanL-Bol.otf");
@@ -66,6 +74,7 @@ namespace rtype {
         system.position_system(registry);
         system.loop_movement_system(registry);
         system.button_system(registry, window);
+        system.collision_system(registry, window);
 
 
         auto& positions = registry.get_components<ecs::Position>();
