@@ -6,7 +6,7 @@
 class PacketPing : public Packet {
     public:
         /// \brief Constructor for PacketPing class
-        PacketPing(uint16_t id) : Packet(PacketFactory::PING, id) {}
+        PacketPing(asio::ip::udp::socket& socket_, uint16_t id) : Packet(PacketFactory::TypePacket::PING, id, socket_) {}
 
         /// \brief Destructor for PacketPing class
         ~PacketPing() override = default;

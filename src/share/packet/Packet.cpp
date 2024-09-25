@@ -3,8 +3,41 @@
 #include <iostream>
 #include <ostream>
 
-Packet::Packet(PacketFactory::TypePacket type, uint16_t id) : type_(type) {
+Packet::Packet(PacketFactory::TypePacket type, uint16_t id, asio::ip::udp::socket& socket) : type_(type), socket_(socket) {
     this->set_id(id);
+}
+
+void Packet::send_packet(const asio::ip::udp::endpoint& receiver) {
+    std::vector<uint8_t> buffer;
+
+    std::visit([&](auto&& arg) {
+        if constexpr (std::is_same_v<std::decay_t<decltype(arg)>, uint8_t>) {
+            buffer.push_back(arg);
+        } else if constexpr (std::is_same_v<std::decay_t<decltype(arg)>, uint16_t>) {
+            buffer.push_back(static_cast<uint8_t>(arg >> 8));
+            buffer.push_back(static_cast<uint8_t>(arg & 0xFF));
+        } else if constexpr (std::is_same_v<std::decay_t<decltype(arg)>, uint24_t>) {
+            buffer.push_back(arg.data[0]);
+            buffer.push_back(arg.data[1]);
+            buffer.push_back(arg.data[2]);
+        }
+    }, this->size_);
+
+    std::visit([&](auto&& arg) {
+        if constexpr (std::is_same_v<std::decay_t<decltype(arg)>, uint8_t>) {
+            buffer.push_back(arg);
+        } else if constexpr (std::is_same_v<std::decay_t<decltype(arg)>, uint16_t>) {
+            buffer.push_back(static_cast<uint8_t>(arg >> 8));
+            buffer.push_back(static_cast<uint8_t>(arg & 0xFF));
+        }
+    }, this->idp_);
+
+    buffer.push_back(this->type_);
+    buffer.insert(buffer.end(), this->data_.begin(), this->data_.end());
+    if (this->is_data_set_ == false) {
+        throw PacketFactory::PacketFactoryException("Data not set", this->get_idp());
+    }
+    this->socket_.send_to(asio::buffer(buffer), receiver);
 }
 
 uint32_t Packet::get_size() const {

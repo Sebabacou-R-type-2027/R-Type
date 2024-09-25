@@ -5,6 +5,8 @@
 #include <exception>
 #include <string>
 #include <variant>
+#include <asio/ip/udp.hpp>
+
 #include "PacketFactory.hpp"
 
 
@@ -44,16 +46,16 @@ class Packet {
         };
 
 
-        /// \brief Send the packet
-        void send_packet(); // TODO : check with ewen for how the send work;
-
         /// \brief Constructor for Packet class
         /// \param type the type of the packet
         /// \param id the id of the packet
-        Packet(PacketFactory::TypePacket type, uint16_t id);
+        Packet(PacketFactory::TypePacket type, uint16_t id, asio::ip::udp::socket& socket);
 
         /// \brief Destructor for Packet class
         virtual ~Packet() = default;
+
+        /// \brief Send the packet
+        void send_packet(const asio::ip::udp::endpoint& receiver);
 
         /// \brief Get the size of the packet
         /// \return the size of the packet
@@ -124,6 +126,7 @@ class Packet {
         std::variant<uint8_t, uint16_t, uint24_t> size_; ///< The size of the packet
         std::variant<uint8_t, uint16_t> idp_; ///< The id of the packet
         uint8_t type_; ///< The type of the packet
+        asio::ip::udp::socket& socket_; ///< The socket to send the packet
 };
 
 #endif //PACKET_HPP

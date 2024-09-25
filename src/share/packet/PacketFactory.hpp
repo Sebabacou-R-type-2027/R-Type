@@ -6,6 +6,8 @@
 #include <memory>
 #include <string>
 
+#include <asio/ip/udp.hpp>
+
 class Packet;
 
 class PacketFactory {
@@ -45,7 +47,7 @@ class PacketFactory {
         /// \brief Create a packet
         /// \param type the type of the packet
         /// \return the packet created as a unique_ptr
-        static std::unique_ptr<Packet> create_packet(TypePacket type);
+        static std::unique_ptr<Packet> create_packet(TypePacket type, asio::ip::udp::socket& socket_);
 
         static void up_id();
 
