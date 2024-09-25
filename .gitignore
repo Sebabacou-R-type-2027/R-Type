@@ -10,3 +10,6 @@ r-type_client
 r-type_server
 build.ninja
 .vscode
+Makefile
+r-type_client
+r-type_server

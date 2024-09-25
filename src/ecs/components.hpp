@@ -61,11 +61,10 @@ struct Controllable {
 };
 
 struct Collision {
-    float radius = 0;
     bool is_colliding = false;
-    sf::Rect<float> rect;
-    Collision(float radius = 0, bool is_colliding = false, sf::Rect<float> rect = sf::Rect<float>())
-        : radius(radius), is_colliding(is_colliding), rect(rect) {}
+    sf::RectangleShape rect;
+    Collision(bool is_colliding = false, sf::RectangleShape rect = sf::RectangleShape())
+        : is_colliding(is_colliding), rect(rect) {}
 };
 
 struct LoopMovement {
@@ -92,4 +91,9 @@ struct Button {
         : rect(shape), text(btnText), onClick(action) {}
 };
 
+struct Size {
+    float width;
+    float height;
+    Size(float width = 0, float height = 0) : width(width), height(height) {}
+};
 }

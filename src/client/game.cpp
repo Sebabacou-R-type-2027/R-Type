@@ -23,33 +23,41 @@ namespace rtype {
         registry.emplace_component<ecs::Drawable>(movable_entity, "assets/Ship/Ship.png");
         registry.emplace_component<ecs::Controllable>(movable_entity, true, 5.0f);
         registry.emplace_component<ecs::Acceleration>(movable_entity, 0.0f, 0.0f);
-        // registry.emplace_component<ecs::Collision>(movable_entity, 0.0f, false, sf::Rect<float>(0.0f, 0.0f, 50.0f, 50.0f));
+        registry.emplace_component<ecs::Size>(movable_entity, 50.0f, 50.0f);
+        registry.emplace_component<ecs::Collision>(movable_entity, 0.0f, sf::RectangleShape(sf::Vector2f(50.0f, 50.0f)));
 
-        auto button_entity = registry.spawn_entity();
-        sf::RectangleShape buttonShape;
-        buttonShape.setSize(sf::Vector2f(200.0f, 50.0f));
-        buttonShape.setPosition(300.0f, 200.0f);
-        buttonShape.setFillColor(sf::Color(0, 0, 255)); // Default color
+        auto obstacle_entity = registry.spawn_entity();
+        registry.emplace_component<ecs::Position>(obstacle_entity, 1000.0f, 300.0f);
+        registry.emplace_component<ecs::Velocity>(obstacle_entity, 0.0f, 0.0f);
+        registry.emplace_component<ecs::Size>(obstacle_entity, 100.0f, 300.0f);
+        registry.emplace_component<ecs::Drawable>(obstacle_entity, "assets/Ship/Ship.png");
+        registry.emplace_component<ecs::Collision>(obstacle_entity, 0.0f, sf::RectangleShape(sf::Vector2f(100.0f, 300.0f)));
 
-        sf::Font font;
-        if (!font.loadFromFile("assets/fonts/NimbusSanL-Bol.otf")) {
-            std::cerr << "Failed to load font!" << std::endl;
-            return;
-        }
+        // auto button_entity = registry.spawn_entity();
+        // sf::RectangleShape buttonShape;
+        // buttonShape.setSize(sf::Vector2f(200.0f, 50.0f));
+        // buttonShape.setPosition(300.0f, 200.0f);
+        // buttonShape.setFillColor(sf::Color(0, 0, 255)); // Default color
 
-        sf::Text buttonText;
-        buttonText.setFont(font);
-        buttonText.setString("Click Me");
-        buttonText.setCharacterSize(24);
-        buttonText.setFillColor(sf::Color::White);
-        buttonText.setPosition(320.0f, 210.0f); // Position text relative to the button
+        // sf::Font font;
+        // if (!font.loadFromFile("assets/fonts/NimbusSanL-Bol.otf")) {
+        //     std::cerr << "Failed to load font!" << std::endl;
+        //     return;
+        // }
 
-        registry.emplace_component<ecs::Button>(
-            button_entity,
-            buttonShape,
-            buttonText,
-            []() { std::cout << "Button Clicked!" << std::endl; }
-        );
+        // sf::Text buttonText;
+        // buttonText.setFont(font);
+        // buttonText.setString("Click Me");
+        // buttonText.setCharacterSize(24);
+        // buttonText.setFillColor(sf::Color::White);
+        // buttonText.setPosition(320.0f, 210.0f); // Position text relative to the button
+
+        // registry.emplace_component<ecs::Button>(
+        //     button_entity,
+        //     buttonShape,
+        //     buttonText,
+        //     []() { std::cout << "Button Clicked!" << std::endl; }
+        // );
 
 
         while (window.isOpen()) {
@@ -72,6 +80,7 @@ namespace rtype {
         system.position_system(registry);
         system.loop_movement_system(registry);
         system.button_system(registry, window);
+        system.collision_system(registry, window);
 
 
         auto& positions = registry.get_components<ecs::Position>();
