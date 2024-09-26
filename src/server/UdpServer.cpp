@@ -7,6 +7,10 @@
 #include <iostream>
 #include <asio.hpp>
 
+/**
+ * @class UdpServer
+ * @brief Implements a UDP server for handling client communication, lobby management, and host selection based on latency.
+ */
 UdpServer::UdpServer(asio::io_context& io_context, short port)
     : socket_(io_context, udp::endpoint(udp::v4(), port)), io_context_(io_context) {
     function_map_ = {
@@ -20,6 +24,9 @@ UdpServer::UdpServer(asio::io_context& io_context, short port)
     server_loop();
 }
 
+/**
+ * @brief Destructor for UdpServer. Joins the receive thread if it is still joinable.
+ */
 UdpServer::~UdpServer() {
     std::cout << "Server destructor" << std::endl;
     if (receive_thread_.joinable()) {
@@ -27,12 +34,15 @@ UdpServer::~UdpServer() {
     }
 }
 
+/**
+ * @brief Starts asynchronous receiving of messages from clients.
+ */
 void UdpServer::start_receive() {
     socket_.async_receive_from(
         asio::buffer(recv_buffer_), remote_endpoint_,
         [this](std::error_code ec, std::size_t bytes_recvd) {
             if (!ec && bytes_recvd > 0) {
-                std::cout << "je recois un message" << std::endl;
+                std::cout << "Received a message" << std::endl;
                 handle_receive(bytes_recvd);
             } else {
                 start_receive();
@@ -40,11 +50,21 @@ void UdpServer::start_receive() {
         });
 }
 
+/**
+ * @brief Main loop for receiving messages. Runs the io_context to handle asynchronous operations.
+ */
 void UdpServer::receive_loop() {
     start_receive();
     io_context_.run();
 }
 
+/**
+ * @brief Finds and returns a client based on the provided UDP endpoint.
+ *
+ * @param client_endpoint The endpoint of the client to retrieve.
+ * @return The client associated with the provided endpoint.
+ * @throws std::runtime_error if the client is not found.
+ */
 const server::client UdpServer::get_client(const udp::endpoint &client_endpoint) const{
     for (const auto& cli : connected_clients_) {
         if (cli.get_endpoint() == client_endpoint) {
@@ -54,6 +74,11 @@ const server::client UdpServer::get_client(const udp::endpoint &client_endpoint)
     throw std::runtime_error("Client not found");
 }
 
+/**
+ * @brief Creates a new lobby and assigns the client as the host.
+ *
+ * @param message The message from the client, containing the lobby creation request.
+ */
 void UdpServer::create_lobby(const std::string& message) {
     static std::random_device rd; // Seed for the random number engine
     static std::mt19937 gen(rd()); // Mersenne Twister engine
@@ -69,6 +94,12 @@ void UdpServer::create_lobby(const std::string& message) {
             << std::endl;
 }
 
+/**
+ * @brief Allows a client to join an existing lobby.
+ *
+ * @param message The message containing the lobby ID to join.
+ * @throws std::runtime_error if the lobby is not found.
+ */
 void UdpServer::join_lobby(const std::string& message) {
     const int lobby_id = std::stoi(message.substr(10));
 
@@ -81,6 +112,12 @@ void UdpServer::join_lobby(const std::string& message) {
     }
 }
 
+/**
+ * @brief Allows a client to leave a lobby. Deletes the lobby if the client is the host.
+ *
+ * @param message The message containing the lobby ID to leave.
+ * @throws std::runtime_error if the lobby is not found.
+ */
 void UdpServer::leave_lobby(std::string message) {
     const int lobby_id = std::stoi(message.substr(11));
 
@@ -100,6 +137,11 @@ void UdpServer::leave_lobby(std::string message) {
     }
 }
 
+/**
+ * @brief Handles receiving a message from the socket.
+ *
+ * @param bytes_transferred The number of bytes transferred in the received message.
+ */
 void UdpServer::handle_receive(std::size_t bytes_transferred) {
     if (bytes_transferred > 0) {
         std::lock_guard<std::mutex> lock(messages_mutex_);
@@ -109,20 +151,26 @@ void UdpServer::handle_receive(std::size_t bytes_transferred) {
 
         received_messages_[message_id_counter_] = std::make_pair(message, remote_endpoint_);
 
-        // Incrémenter l'ID du message
+        // Increment the message ID
         message_id_counter_ += 1;
         std::cout << "Message ID: " << message_id_counter_ << std::endl;
-        // Notifier le serveur loop qu'un message a été reçu
+        // Notify the server loop that a message has been received
         messages_condition_.notify_one();
     }
     start_receive();
 }
 
+/**
+ * @brief Handles a client message by processing commands or handling client connection state.
+ *
+ * @param message The message sent by the client.
+ * @param client_endpoint The client's endpoint.
+ */
 void UdpServer::handle_client_message(const std::string& message, const asio::ip::udp::endpoint& client_endpoint) {
 
     std::string client_str = client_endpoint.address().to_string() + ":" + std::to_string(client_endpoint.port());
     std::cout << "sender: " << client_str << std::endl;
-    std::cout << "Authorised clients:" << std::endl;
+    std::cout << "Authorized clients:" << std::endl;
     for (const auto& client : connected_clients_) {
         std::cout << "\t" << client << std::endl;
     }
@@ -150,22 +198,24 @@ void UdpServer::handle_client_message(const std::string& message, const asio::ip
                 std::cout << "Unknown command: " << message << std::endl;
             }
         } else {
-            std::cout << "Not login client: " << client_str << std::endl;
+            std::cout << "Client not logged in: " << client_str << std::endl;
         }
     }
 }
 
+/**
+ * @brief Main server loop. Waits for messages and processes them.
+ */
 void UdpServer::server_loop() {
     while (true) {
         std::string message = "";
         udp::endpoint client_endpoint;
         {
             std::unique_lock<std::mutex> lock(messages_mutex_);
-            //std::cout << "Waiting for messages..." << std::endl;
-            // Attendre qu'il y ait des messages à traiter
+            // Wait until there are messages to process
             messages_condition_.wait(lock, [this] { return !received_messages_.empty(); });
 
-            // Traiter le message
+            // Process the message
             int message_id = received_messages_.begin()->first;
             std::pair<std::string, udp::endpoint> pair_data = received_messages_.begin()->second;
             message = pair_data.first;
@@ -175,11 +225,16 @@ void UdpServer::server_loop() {
             received_messages_.erase(message_id);
         }
 
-        // Appeler la fonction pour gérer le message du client
+        // Call the function to handle the client message
         handle_client_message(message, client_endpoint);
     }
 }
 
+/**
+ * @brief Handles a new client connection by authorizing the client.
+ *
+ * @param client_endpoint The endpoint of the new client.
+ */
 void UdpServer::handle_new_connection(const udp::endpoint& client_endpoint) {
     std::string client_address = client_endpoint.address().to_string();
     std::string client_port = std::to_string(client_endpoint.port());
@@ -190,12 +245,18 @@ void UdpServer::handle_new_connection(const udp::endpoint& client_endpoint) {
 
     if (it == connected_clients_.end()) {
         connected_clients_.emplace_back(client_address, client_port, "default_nickname", "default_password");
-        std::cout << "New authorised client: " << client_address << ":" << client_port << std::endl;
+        std::cout << "New authorized client: " << client_address << ":" << client_port << std::endl;
     } else {
-        std::cout << "Client already authorised: " << client_address << ":" << client_port << std::endl;
+        std::cout << "Client already authorized: " << client_address << ":" << client_port << std::endl;
     }
 }
 
+/**
+ * @brief Pings clients in a lobby to measure latency and selects the client with the lowest latency as the game host.
+ *
+ * @param client_endpoint The endpoint of the client requesting to start the game.
+ * @throws std::runtime_error if the client is not the host.
+ */
 void UdpServer::ping_to_choose_host(const udp::endpoint &client_endpoint) {
     int lobby_id = -42;
     for (const auto &[id, lobby]: lobbies_) {
@@ -250,6 +311,11 @@ void UdpServer::ping_to_choose_host(const udp::endpoint &client_endpoint) {
     cli_tmp.start_game();
 }
 
+/**
+ * @brief Handles a client disconnect by removing the client from the list of authorized clients.
+ *
+ * @param client_endpoint The endpoint of the client to disconnect.
+ */
 void UdpServer::handle_disconnect(const udp::endpoint& client_endpoint) {
     std::string client_address = client_endpoint.address().to_string();
     std::string client_port = std::to_string(client_endpoint.port());
@@ -266,6 +332,11 @@ void UdpServer::handle_disconnect(const udp::endpoint& client_endpoint) {
     }
 }
 
+/**
+ * @brief Sends a ping message to a client to measure latency.
+ *
+ * @param client_endpoint The endpoint of the client to ping.
+ */
 void UdpServer::send_ping(const udp::endpoint& client_endpoint) {
     std::string ping_message = "ping";
     socket_.send_to(asio::buffer(ping_message), client_endpoint);
