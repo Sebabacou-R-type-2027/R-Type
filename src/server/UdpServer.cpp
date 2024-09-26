@@ -1,11 +1,9 @@
-//
-// Created by shooting_star_t33 on 9/18/24.
-//
-
 #include "UdpServer.hpp"
 #include <random>
 #include <iostream>
 #include <asio.hpp>
+#include "client/client.hpp"
+#include "client/ClientSaver.hpp"
 
 /**
  * @class UdpServer
@@ -17,6 +15,8 @@ UdpServer::UdpServer(asio::io_context& io_context, short port)
         {"create_lobby", [this](const std::string& message) { create_lobby(message); }},
         {"join_lobby", [this](const std::string& message) { join_lobby(message); }},
         {"leave_lobby", [this](const std::string& message) { leave_lobby(message); }},
+        {"start_game", [this](const std::string& message) { choose_host(remote_endpoint_); }},
+        {"logout", [this](const std::string& message) { logout(message); }},
         {"start_game", [this](const std::string& message) { ping_to_choose_host(remote_endpoint_); }}
     };
     message_id_counter_ = 0;
@@ -42,7 +42,6 @@ void UdpServer::start_receive() {
         asio::buffer(recv_buffer_), remote_endpoint_,
         [this](std::error_code ec, std::size_t bytes_recvd) {
             if (!ec && bytes_recvd > 0) {
-                std::cout << "Received a message" << std::endl;
                 handle_receive(bytes_recvd);
             } else {
                 start_receive();
@@ -137,6 +136,10 @@ void UdpServer::leave_lobby(std::string message) {
     }
 }
 
+void UdpServer::logout(const std::string& message) {
+    handle_disconnect(remote_endpoint_);
+}
+
 /**
  * @brief Handles receiving a message from the socket.
  *
@@ -170,14 +173,22 @@ void UdpServer::handle_client_message(const std::string& message, const asio::ip
 
     std::string client_str = client_endpoint.address().to_string() + ":" + std::to_string(client_endpoint.port());
     std::cout << "sender: " << client_str << std::endl;
-    std::cout << "Authorized clients:" << std::endl;
+    std::cout << "Authorised clients:" << std::endl;
     for (const auto& client : connected_clients_) {
         std::cout << "\t" << client << std::endl;
     }
-    if (message == "login") {
-        handle_new_connection(remote_endpoint_);
-    } else if (message == "logout") {
-        handle_disconnect(remote_endpoint_);
+    if (message.rfind("login ", 0) == 0) {
+        std::string username, password;
+        std::istringstream iss(message.substr(6));
+
+        std::getline(iss, username, ' ');
+        std::getline(iss, password);
+
+        if (!username.empty() && !password.empty() && password.find(' ') == std::string::npos) {
+            handle_new_connection(remote_endpoint_, username, password);
+        } else {
+            std::cout << "Invalid login format" << std::endl;
+        }
     } else if (message == "start") {
         ping_to_choose_host(remote_endpoint_);
     } else {
@@ -198,7 +209,7 @@ void UdpServer::handle_client_message(const std::string& message, const asio::ip
                 std::cout << "Unknown command: " << message << std::endl;
             }
         } else {
-            std::cout << "Client not logged in: " << client_str << std::endl;
+            std::cout << "Not login client: " << client_str << std::endl;
         }
     }
 }
@@ -224,30 +235,41 @@ void UdpServer::server_loop() {
             std::cout << "Received: " << message << " from " << client_endpoint << std::endl;
             received_messages_.erase(message_id);
         }
-
         // Call the function to handle the client message
         handle_client_message(message, client_endpoint);
     }
 }
 
-/**
- * @brief Handles a new client connection by authorizing the client.
- *
- * @param client_endpoint The endpoint of the new client.
- */
-void UdpServer::handle_new_connection(const udp::endpoint& client_endpoint) {
+void UdpServer::handle_new_connection(const udp::endpoint& client_endpoint, const std::string& username, const std::string& password) {
     std::string client_address = client_endpoint.address().to_string();
     std::string client_port = std::to_string(client_endpoint.port());
+    server::ClientSaver cs("clients.csv");
 
     auto it = std::find_if(connected_clients_.begin(), connected_clients_.end(), [&client_endpoint](const server::client& cli) {
         return cli.get_id() == std::hash<std::string>{}(client_endpoint.address().to_string() + std::to_string(client_endpoint.port()));
     });
 
-    if (it == connected_clients_.end()) {
-        connected_clients_.emplace_back(client_address, client_port, "default_nickname", "default_password");
-        std::cout << "New authorized client: " << client_address << ":" << client_port << std::endl;
-    } else {
-        std::cout << "Client already authorized: " << client_address << ":" << client_port << std::endl;
+    try {
+        uint32_t id = cs.check_if_user_already_exists_in_db(username, password);
+        if (id) {
+            try {
+                connected_clients_.emplace_back(client_address, client_port, username, password, id);
+                std::cout << "New authorised client from db: " << client_address << ":" << client_port << std::endl;
+            } catch (const server::client::ClientException& e) {
+                std::cout << e.what() << std::endl;
+            }
+        } else if (it == connected_clients_.end()) {
+            connected_clients_.emplace_back(client_address, client_port, username, password);
+            std::cout << "New authorised client: " << client_address << ":" << client_port << std::endl;
+            cs.save_client(connected_clients_.back());
+        } else {
+            std::cout << "Client already authorised: " << client_address << ":" << client_port << std::endl;
+        }
+    } catch (const server::ClientSaver::ClientSaverException& e) {
+        std::cerr << e.what() << std::endl;
+    } catch (const server::client::ClientException& e) {
+        std::cout << e.what() << std::endl;
+        std::cout << "Password or Username is not correct" << std::endl;
     }
 }
 

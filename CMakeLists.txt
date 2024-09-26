@@ -10,8 +10,15 @@ endif()
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 
-file(GLOB SERVER_SOURCES src/server/*.cpp src/server/*.hpp src/share/*.cpp src/share/*.hpp)
-file(GLOB CLIENT_SOURCES src/client/*.cpp src/client/*.hpp src/share/*.cpp src/share/*.hpp)
+file(GLOB SERVER_SOURCES
+        src/server/*.cpp src/server/*.hpp
+        src/share/*.cpp src/share/*.hpp
+)
+
+file(GLOB CLIENT_SOURCES
+        src/client/*.cpp src/client/*.hpp
+        src/share/*.cpp src/share/*.hpp
+)
 
 message(STATUS "SERVER_SOURCES: ${SERVER_SOURCES}")
 message(STATUS "CLIENT_SOURCES: ${CLIENT_SOURCES}")
@@ -36,6 +43,10 @@ add_executable(r-type_client ${CLIENT_SOURCES}
         src/client/package.hpp
         src/client/Client.cpp
         src/client/Client.hpp)
+
+target_include_directories(r-type_client PRIVATE
+        src/client
+)
 
 add_custom_target(clean-all
         COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_SOURCE_DIR}/CMakeCache.txt

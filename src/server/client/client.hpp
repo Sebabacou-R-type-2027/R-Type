@@ -29,15 +29,25 @@ namespace server {
                     explicit ClientException(std::string message, const client& cli)
                         : client_error_("ClientError[" + cli.ip_ + ":" + cli.port_ + "]: "), msg_(std::move(message)) {}
 
+                    /// \brief Constructor for ClientException
+                    /// \param message the message to be displayed
+                    /// \param username the username of the client that caused the exception
+                    /// \details This constructor is used when the client is not created yet
+                    explicit ClientException(std::string message, const std::string& username)
+                        : client_error_("ClientError[" + username + "]: "), msg_(std::move(message)) {}
+
                     /// \brief Returns the error message
                     /// \return the error message with the client information
                     [[nodiscard]] const char* what() const noexcept override {
-                        return (client_error_ + msg_).c_str();
+                        full_message_ = client_error_ + msg_;
+                        return full_message_.c_str();
                     }
 
                 private:
                     std::string client_error_; ///< Specific error message for the client
                     std::string msg_; ///< Error message
+                    mutable std::string full_message_; ///< Full error message
+
             };
 
             /// \brief Constructor for Client class
@@ -45,7 +55,7 @@ namespace server {
             /// \param port the port of the client
             /// \param username the username of the client
             /// \details The constructor will generate a unique id for the client
-            client(const std::string& ip, const std::string& port, const std::string& username, const std::string& password);
+            client(const std::string& ip, const std::string& port, const std::string& username, const std::string& password, uint32_t id = 0);
 
             /// \brief Destructor for Client class
             ~client() = default;
@@ -67,7 +77,7 @@ namespace server {
 
             /// \brief Set the username of the client
             /// \param username the username to be set
-            void set_nickname(const std::string& username); // TODO: check if the username is unique
+            void set_nickname(const std::string& username);
 
             /// \brief Get the id of the client
             /// \return the id of the client
@@ -81,7 +91,14 @@ namespace server {
 
             /// \brief Set the password of the client
             /// \param password the password to be set
-            void set_password(const std::string& password); // TODO hash the password
+            /// \details The password will be hashed before being set
+            void set_password(const std::string& password);
+
+            /// \brief Hash the password of the client
+            /// \param password the password to be hashed
+            /// \return the hashed password
+            [[nodiscard]]
+            static std::string hash_password(const std::string& password);
 
             /// \brief Get the endpoint of the client
             /// \return the endpoint of the client
@@ -155,6 +172,7 @@ namespace server {
             /// \return the unique id
             [[nodiscard]]
             uint32_t generate_id() const;
+
 
             std::string port_; ///< Port of the client
             std::string ip_; ///< IP of the client
