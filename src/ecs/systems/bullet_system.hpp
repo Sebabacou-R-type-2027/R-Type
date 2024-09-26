@@ -13,5 +13,13 @@ namespace ecs::systems {
     class BulletSystem {
         public:
             void update(Registry& registry);
+        private:
+            sf::Clock shootClock;           // Horloge pour mesurer le temps écoulé
+            sf::Time lastShootTime;         // Temps du dernier tir
+            const sf::Time shootCooldown = sf::seconds(0.5f);
+
+            sf::Clock clock;
+            sf::Time elapsed = sf::Time::Zero; // Temps écoulé total
+            int compteur = 0; // Compteur de secondes
     };
 }
