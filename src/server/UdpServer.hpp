@@ -12,6 +12,7 @@
 
 #include "Lobby.hpp"
 #include "client/client.hpp"
+#include "client/ClientSaver.hpp"
 
 using asio::ip::udp;
 

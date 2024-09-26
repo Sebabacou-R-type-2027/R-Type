@@ -15,7 +15,7 @@ UdpServer::UdpServer(asio::io_context& io_context, short port)
         {"create_lobby", [this](const std::string& message) { create_lobby(message); }},
         {"join_lobby", [this](const std::string& message) { join_lobby(message); }},
         {"leave_lobby", [this](const std::string& message) { leave_lobby(message); }},
-        {"start_game", [this](const std::string& message) { choose_host(remote_endpoint_); }},
+        {"start_game", [this](const std::string& message) { ping_to_choose_host(remote_endpoint_); }},
         {"logout", [this](const std::string& message) { logout(message); }},
         {"start_game", [this](const std::string& message) { ping_to_choose_host(remote_endpoint_); }}
     };

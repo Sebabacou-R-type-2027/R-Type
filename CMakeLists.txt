@@ -37,6 +37,9 @@ add_executable(r-type_server ${SERVER_SOURCES}
         src/server/Lobby.cpp
         src/server/Lobby.hpp
         src/server/client/client.cpp
+        src/server/client/client.hpp
+        src/server/client/ClientSaver.cpp
+        src/server/client/ClientSaver.hpp
 )
 add_executable(r-type_client ${CLIENT_SOURCES}
         src/client/package.cpp
