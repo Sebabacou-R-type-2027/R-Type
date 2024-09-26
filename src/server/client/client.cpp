@@ -109,6 +109,7 @@ namespace server {
 
     void client::start_game() {
         this->in_game_ = true;
+        std::cout << "Client " << this->username_ << " is in game" << std::endl;
     }
 
     std::ostream& operator<<(std::ostream& os, const client& cli) {
@@ -128,5 +129,21 @@ namespace server {
 
     bool operator!=(const client& cli1, const client& cli2) {
         return !(cli1 == cli2);
+    }
+
+    void client::set_last_ping_time(std::chrono::steady_clock::time_point time) {
+        last_ping_time_ = time;
+    }
+
+    std::chrono::steady_clock::time_point client::get_last_ping_time() const {
+        return last_ping_time_;
+    }
+
+    void client::set_latency(long latency) {
+        latency_ = latency;
+    }
+
+    long client::get_latency() const {
+        return latency_;
     }
 }

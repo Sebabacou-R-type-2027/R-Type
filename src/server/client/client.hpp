@@ -161,6 +161,11 @@ namespace server {
             /// \return the client assigned
             client& operator=(const client& cli) = default;
 
+            void set_last_ping_time(std::chrono::steady_clock::time_point time);
+            std::chrono::steady_clock::time_point get_last_ping_time() const;
+            void set_latency(long latency);
+            long get_latency() const;
+
         private:
             /// \brief Generate a unique id for the client
             /// \details The id is generated using the ip, port and the current timestamp
@@ -178,6 +183,8 @@ namespace server {
             bool host_; ///< True if the client is the host
             bool in_game_; ///< True if the client is in game
             bool is_ready_ = false; ///< True if the client is ready
+            std::chrono::steady_clock::time_point last_ping_time_;
+            long latency_;
 
         };
 }
