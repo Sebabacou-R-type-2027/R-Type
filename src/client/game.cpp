@@ -8,6 +8,7 @@
 #include "game.hpp"
 #include <iostream>
 #include "button_factory.hpp"
+#include "bullet_system.hpp"
 
 namespace rtype {
     Game::Game(const std::string& title, unsigned int width, unsigned int height, const std::string& playerTexturePath)
@@ -25,6 +26,8 @@ namespace rtype {
         registry.emplace_component<ecs::Controllable>(movable_entity, true, 5.0f);
         registry.emplace_component<ecs::Acceleration>(movable_entity, 0.0f, 0.0f);
         // registry.emplace_component<ecs::Collision>(movable_entity, 0.0f, false, sf::Rect<float>(0.0f, 0.0f, 50.0f, 50.0f));
+        ecs::systems::BulletSystem bulletSystem;
+        bulletSystem.charged_one(registry);
 
         sf::Font font;
         font.loadFromFile("assets/fonts/NimbusSanL-Bol.otf");

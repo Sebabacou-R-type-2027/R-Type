@@ -26,17 +26,21 @@ namespace ecs::systems {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
 
 
-        if (isSpacePressed == false) {
-                // Si on vient juste d'appuyer sur espace, redémarre l'horloge
-                isSpacePressed = true;
-                spacePressClock.restart();
-            }
-        if (currentTime > sf::seconds(1.5f) && check_charge == false) {
-            auto charged = registry.spawn_entity();
-            registry.emplace_component<ecs::Position>(charged, positions[0]->x + 10, positions[0]->y + 10);
-            registry.emplace_component<ecs::Drawable>(charged, "assets/Charged Bullet/charged1.gif");
+            if (isSpacePressed == false) {
+                    // Si on vient juste d'appuyer sur espace, redémarre l'horloge
+                    isSpacePressed = true;
+                    spacePressClock.restart();
+                }
+            if (clock.getElapsedTime().asSeconds() >= 1.0f) {
+                printf("COUCOU");
+                ChargedOneDraw = true;
+                if (ChargedOneDraw == true)
+                    registry.emplace_component<ecs::Drawable>(charged_attack, "assets/Charged Bullet/charged1.gif");
 
-        }
+            }
+                //auto charged = registry.spawn_entity();
+                //registry.emplace_component<ecs::Position>(charged, positions[0]->x + 10, positions[0]->y + 10);
+                //registry.emplace_component<ecs::Drawable>(charged, "assets/Charged Bullet/charged1.gif");
 
         } else {
             if (isSpacePressed) {
@@ -52,13 +56,27 @@ namespace ecs::systems {
                     registry.emplace_component<ecs::Position>(laser_entity, positions[0]->x, positions[0]->y);
                     registry.emplace_component<ecs::Drawable>(laser_entity, "assets/Bullets/01.png");
                     registry.emplace_component<ecs::Bullet>(laser_entity);
+                } else {
+                    ChargedOneDraw = true;
                 }
 
-                if (timePressed > 1.5) {
-                    registry.remove_component<ecs::Drawable>(charged);
-                    registry.kill_entity(charged);
+                if (timePressed > 1.0f) {
+                    ChargedOneDraw = true;
                 }
             }
         }
     }
+
+    void BulletSystem::charged_one(Registry& registry)
+    {
+        registry.emplace_component<ecs::Position>(charged_attack, 505.0f, 355.0f);
+        registry.emplace_component<ecs::Velocity>(charged_attack, 0.0f, 0.0f);
+        printf("CHARGE = %s", ChargedOneDraw);
+
+        registry.emplace_component<ecs::Controllable>(charged_attack, true, 5.0f);
+        registry.emplace_component<ecs::Acceleration>(charged_attack, 0.0f, 0.0f);
+    }
+
 }
+
+
