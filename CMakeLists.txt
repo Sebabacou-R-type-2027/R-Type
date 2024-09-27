@@ -37,18 +37,33 @@ add_executable(r-type_server ${SERVER_SOURCES}
         src/server/Lobby.cpp
         src/server/Lobby.hpp
         src/server/client/client.cpp
-        src/server/client/client.hpp
         src/server/client/ClientSaver.cpp
-        src/server/client/ClientSaver.hpp
+        src/share/packet/Packet.cpp
+        src/share/packet/PacketFactory.cpp
+        src/share/packet/PacketPing.cpp
 )
+
+target_include_directories(r-type_server PRIVATE
+        src/server
+        src/server/client
+        src/share
+        src/share/packet
+)
+
 add_executable(r-type_client ${CLIENT_SOURCES}
         src/client/package.cpp
         src/client/package.hpp
         src/client/Client.cpp
-        src/client/Client.hpp)
+        src/client/Client.hpp
+        src/share/packet/Packet.cpp
+        src/share/packet/PacketFactory.cpp
+        src/share/packet/PacketPing.cpp
+)
 
 target_include_directories(r-type_client PRIVATE
         src/client
+        src/share
+        src/share/packet
 )
 
 add_custom_target(clean-all
