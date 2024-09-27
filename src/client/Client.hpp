@@ -26,15 +26,24 @@ namespace client {
             // La boucle principale de logique du client
             void main_loop();
 
-        private:
-            void receive_loop();
+    protected:
+        asio::io_context& io_context_;
+        udp::socket socket_;
+        udp::endpoint server_endpoint_;
+        std::thread receive_thread_;
+        std::atomic<bool> is_running_;
+        // Méthode de réception des messages du serveur
+        void receive_loop();
+    };
 
-            asio::io_context& io_context_;
-            udp::socket socket_;
-            udp::endpoint server_endpoint_;
-            std::atomic<bool> is_running_;
-            std::thread receive_thread_;  // Thread dédié à la réception
-        };
+    class Host : public Client {
+        public:
+            Host(asio::io_context& io_context, const std::string& server_ip, short server_port)
+                : Client(io_context, server_ip, server_port) {}
+
+            // Méthode de gestion de la partie pour l'hôte
+            void game_loop();
+    };
 }
 
 #endif //CLIENT_HPP
