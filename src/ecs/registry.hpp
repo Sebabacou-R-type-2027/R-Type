@@ -22,8 +22,11 @@
 #include "components/Drawable.hpp"
 #include "components/Acceleration.hpp"
 #include "components/LoopMovement.hpp"
-#include "components/Collision.hpp"
+#include "components/Hitbox.hpp"
 #include "components/Button.hpp"
+#include "components/Animation.hpp"
+#include "components/Ennemy_state.hpp"
+#include "components/Entity_type.hpp"
 #include "components/Bullet.hpp"
 
 namespace ecs {
@@ -94,8 +97,11 @@ class Registry {
             register_component<Drawable>();
             register_component<Acceleration>();
             register_component<LoopMovement>();
-            register_component<Collision>();
+            register_component<Hitbox>();
             register_component<Button>();
+            register_component<Animation>();
+            register_component<EnemyState>();
+            register_component<EntityType>();
             register_component<Bullet>();
         }
     private:

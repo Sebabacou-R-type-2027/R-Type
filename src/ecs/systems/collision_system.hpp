@@ -2,16 +2,19 @@
 ** EPITECH PROJECT, 2024
 ** R-Type
 ** File description:
-** loop_movement_system
+** collision_system
 */
 
 #pragma once
 
 #include "registry.hpp"
+#include <SFML/Graphics.hpp>
 
 namespace ecs::systems {
-    class LoopMovementSystem {
+
+    class CollisionSystem {
         public:
-            void update(Registry& registry, float deltaTime);
+            void update(Registry& registry, sf::RenderWindow& window);
     };
+
 }

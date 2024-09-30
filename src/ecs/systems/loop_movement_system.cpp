@@ -6,34 +6,33 @@
 */
 
 #include "loop_movement_system.hpp"
+#include <chrono>
+#include <iostream>
+#include <math.h>
 
 namespace ecs::systems {
 
-void LoopMovementSystem::update(Registry& registry) {
-    auto &positions = registry.get_components<Position>();
-    auto &loop_movements = registry.get_components<LoopMovement>();
+    void LoopMovementSystem::update(Registry& registry, float deltaTime) {
+        auto &positions = registry.get_components<Position>();
+        auto &loop_movements = registry.get_components<LoopMovement>();
 
-    for (std::size_t i = 0; i < positions.size() && i < loop_movements.size(); ++i) {
-        if (positions[i] && loop_movements[i]) {
-            auto &position = *positions[i];
-            auto &loop = *loop_movements[i];
+        for (std::size_t i = 0; i < positions.size() && i < loop_movements.size(); ++i) {
+            if (positions[i] && loop_movements[i]) {
+                auto &position = *positions[i];
+                auto &loop = *loop_movements[i];
 
-            if (position.x > loop.max_x) {
-                position.x = loop.min_x;
-            } else if (position.x < loop.min_x) {
-                position.x = loop.max_x;
-            }
+                position.y += loop.speed * deltaTime;
 
-            position.y += loop.speed * 0.01f;
-            if (position.y > loop.max_y) {
-                position.y = loop.min_y;
-                position.x += 100;
-            } else if (position.y < loop.min_y) {
-                position.y = loop.max_y;
-                position.x += 100;
+                if (position.y < loop.min_y) {
+                    position.y = loop.min_y;
+                    loop.speed = -loop.speed;
+                }
+                else if (position.y > loop.max_y) {
+                    position.y = loop.max_y;
+                    loop.speed = -loop.speed;
+                }
+
             }
         }
     }
-}
-
 }
