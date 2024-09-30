@@ -17,6 +17,15 @@ namespace rtype {
         window.setFramerateLimit(60);
     }
 
+    void Game::initChargeBullet()
+    {
+        auto charge_animation = registry.spawn_entity();
+        registry.emplace_component<ecs::Position>(charge_animation, 500.0f, 354.0f);
+        registry.emplace_component<ecs::Velocity>(charge_animation, 0.0f, 0.0f);
+        registry.emplace_component<ecs::Controllable>(charge_animation, true, 5.0f);
+        registry.emplace_component<ecs::Acceleration>(charge_animation, 0.0f, 0.0f);
+    }
+
     void Game::run() {
         registry.register_all_components();
 
@@ -31,11 +40,13 @@ namespace rtype {
         hitbox->rect = sf::RectangleShape(sf::Vector2f(50.0f, 50.0f));
 
         createEnnemies.create_enemies(registry, window);
-        ecs::systems::BulletSystem bulletSystem;
-        bulletSystem.charged_one(registry);
+
+        initChargeBullet();
 
         sf::Font font;
         font.loadFromFile("assets/fonts/NimbusSanL-Bol.otf");
+
+
 
         auto button_entity = registry.spawn_entity();
         registry.emplace_component<ecs::Button>(
