@@ -38,6 +38,11 @@ namespace ecs::systems {
                 Hitbox& hitbox2 = *hitboxes[j];
                 EntityType& entity2 = *entities[j];
 
+                if (entity1.current_type == Type::Bullet && entity2.current_type == Type::Ennemy) {
+                    if (isColliding(pos1, hitbox1, pos2, hitbox2)) {
+                        registry.kill_entity(registry.entity_from_index(j));
+                    }
+                } else
                 if (isColliding(pos1, hitbox1, pos2, hitbox2)) {
                     // std::cout << "Collision detected between entity " << i << " and entity " << j << std::endl;
                 }
