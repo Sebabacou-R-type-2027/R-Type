@@ -37,7 +37,7 @@ void Packet::send_packet(const asio::ip::udp::endpoint& receiver) {
     if (this->is_data_set_ == false) {
         throw PacketFactory::PacketFactoryException("Data not set", this->get_idp());
     }
-    this->socket_.send_to(asio::buffer(buffer, 4), receiver);
+    this->socket_.send_to(asio::buffer(buffer, buffer.size()), receiver);
 }
 
 uint32_t Packet::get_size() const {
