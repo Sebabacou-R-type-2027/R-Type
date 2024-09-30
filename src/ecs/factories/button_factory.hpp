@@ -9,7 +9,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <functional>
-#include "ecs/components/Button.hpp"
+#include "components/Button.hpp"
 
 namespace ecs {
 
