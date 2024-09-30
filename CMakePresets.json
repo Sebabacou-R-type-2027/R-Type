@@ -11,7 +11,32 @@
             "displayName": "Default",
             "description": "Default CMake configure preset using Ninja",
             "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build"
+            "binaryDir": "${sourceDir}/build",
+            "cacheVariables": {
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "YES",
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "release",
+            "displayName": "Release",
+            "description": "Release CMake configure preset using Ninja",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build",
+            "cacheVariables": {
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "YES",
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "ci",
+            "displayName": "CI",
+            "description": "CI CMake configure preset",
+            "binaryDir": "${sourceDir}/build",
+            "cacheVariables": {
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "YES",
+                "CMAKE_BUILD_TYPE": "Release"
+            }
         }
     ],
     "buildPresets": [
@@ -19,7 +44,56 @@
             "name": "default",
             "displayName": "Default",
             "description": "Default CMake build preset using Ninja",
-            "configurePreset": "default"
+            "configurePreset": "default",
+            "configuration": "Debug"
+        },
+        {
+            "name": "release",
+            "displayName": "Release",
+            "description": "Release CMake build preset using Ninja",
+            "configurePreset": "release",
+            "configuration": "Release"
+        },
+        {
+            "name": "ci",
+            "inherits": "release"
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "default",
+            "displayName": "Default",
+            "description": "Default CMake test preset using CTest",
+            "configurePreset": "default",
+            "configuration": "Debug",
+            "output": {
+                "shortProgress": true,
+                "outputOnFailure": true,
+                "verbosity": "verbose"
+            }
+        },
+        {
+            "name": "release",
+            "displayName": "Release",
+            "description": "Release CMake test preset using CTest",
+            "configurePreset": "release",
+            "configuration": "Release",
+            "output": {
+                "outputOnFailure": false,
+                "quiet": true
+            }
+        },
+        {
+            "name": "ci",
+            "displayName": "CI",
+            "description": "CI CMake test preset using CTest",
+            "configurePreset": "ci",
+            "configuration": "Release",
+            "output": {
+                "shortProgress": false,
+                "outputOnFailure": true,
+                "verbosity": "verbose"
+            }
         }
     ]
 }
