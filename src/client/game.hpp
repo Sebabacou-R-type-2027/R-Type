@@ -17,6 +17,7 @@ namespace rtype {
             Game(const std::string& title, unsigned int width, unsigned int height, const std::string& playerTexturePath);
             void run();
         private:
+            void initChargeBullet();
             void processEvents();
             void update();
             void render();

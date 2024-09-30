@@ -16,6 +16,15 @@ namespace rtype {
         window.setFramerateLimit(60);
     }
 
+    void Game::initChargeBullet()
+    {
+        auto charge_animation = registry.spawn_entity();
+        registry.emplace_component<ecs::Position>(charge_animation, 500.0f, 354.0f);
+        registry.emplace_component<ecs::Velocity>(charge_animation, 0.0f, 0.0f);
+        registry.emplace_component<ecs::Controllable>(charge_animation, true, 5.0f);
+        registry.emplace_component<ecs::Acceleration>(charge_animation, 0.0f, 0.0f);
+    }
+
     void Game::run() {
         registry.register_all_components();
 
@@ -26,11 +35,13 @@ namespace rtype {
         registry.emplace_component<ecs::Controllable>(movable_entity, true, 5.0f);
         registry.emplace_component<ecs::Acceleration>(movable_entity, 0.0f, 0.0f);
         // registry.emplace_component<ecs::Collision>(movable_entity, 0.0f, false, sf::Rect<float>(0.0f, 0.0f, 50.0f, 50.0f));
-        ecs::systems::BulletSystem bulletSystem;
-        bulletSystem.charged_one(registry);
+
+        initChargeBullet();
 
         sf::Font font;
         font.loadFromFile("assets/fonts/NimbusSanL-Bol.otf");
+
+
 
         auto button_entity = registry.spawn_entity();
         registry.emplace_component<ecs::Button>(

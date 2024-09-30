@@ -13,7 +13,6 @@ namespace ecs::systems {
     class BulletSystem {
         public:
             void update(Registry& registry);
-            void charged_one(Registry& registry);
             bool ChargedOneDraw = false;
 
         private:
