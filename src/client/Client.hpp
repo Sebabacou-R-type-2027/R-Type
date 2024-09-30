@@ -1,7 +1,9 @@
-#include <iostream>
 #include <asio.hpp>
 #include <thread>
 #include <atomic>
+#include <iostream>
+#include "Packet.hpp"
+#include "PacketPing.hpp"
 
 #ifndef CLIENT_HPP
 #define CLIENT_HPP
@@ -20,13 +22,15 @@ namespace client {
             }
 
             ~Client();
-            // Méthode d'envoi d'un message au serveur
-            void send_message(const std::string& message);
 
             // La boucle principale de logique du client
             void main_loop();
 
+            void send_packet(Packet& packet) const;
+            void send_message(const std::string &message);
+
     protected:
+        PacketFactory packet_factory_;
         asio::io_context& io_context_;
         udp::socket socket_;
         udp::endpoint server_endpoint_;

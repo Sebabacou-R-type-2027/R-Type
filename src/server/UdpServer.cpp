@@ -17,7 +17,8 @@ UdpServer::UdpServer(asio::io_context& io_context, short port)
         {"leave_lobby", [this](const std::string& message) { leave_lobby(message); }},
         {"start_game", [this](const std::string& message) { ping_to_choose_host(remote_endpoint_); }},
         {"logout", [this](const std::string& message) { logout(message); }},
-        {"start_game", [this](const std::string& message) { ping_to_choose_host(remote_endpoint_); }}
+        {"start_game", [this](const std::string& message) { ping_to_choose_host(remote_endpoint_); }},
+        {"ping", [this](const std::string& message) { send_ping(remote_endpoint_); }}
     };
     message_id_counter_ = 0;
     receive_thread_ = std::thread(&UdpServer::receive_loop, this);
@@ -360,6 +361,8 @@ void UdpServer::handle_disconnect(const udp::endpoint& client_endpoint) {
  * @param client_endpoint The endpoint of the client to ping.
  */
 void UdpServer::send_ping(const udp::endpoint& client_endpoint) {
-    std::string ping_message = "ping";
-    socket_.send_to(asio::buffer(ping_message), client_endpoint);
+    std::cout << "Sending ping to: " << client_endpoint << std::endl;
+    auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::PING, socket_);
+    packet->format_data();
+    packet->send_packet(client_endpoint);
 }

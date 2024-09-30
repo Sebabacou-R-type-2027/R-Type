@@ -31,6 +31,11 @@ namespace client {
         }
     }
 
+    void Client::send_packet(Packet& packet) const {
+        packet.format_data();
+        packet.send_packet(server_endpoint_);
+    }
+
     void Client::receive_loop() {
         while (is_running_) {
             char buffer[1024];
@@ -43,9 +48,15 @@ namespace client {
                 std::cerr << "Error receiving data: " << error.message() << std::endl;
                 return;
             }
+            std::cout << "Received: " << std::endl;
+            for (auto &byte : buffer) {
+                std::cout << static_cast<int>(byte) << "|";
+            }
+            std::cout << "size of buffer: " << len << std::endl;
             if (std::string(buffer, len) == "ping") {
                 std::cout << "Received: ping" << std::endl;
-                socket_.send_to(asio::buffer("pong", 4), sender_endpoint);
+                auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::PING, socket_);
+                send_packet(*packet);
             }
             //std::cout << "Received: " << std::string(buffer, len) << std::endl;
         }
