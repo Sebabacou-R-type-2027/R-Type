@@ -32,7 +32,6 @@ namespace ecs::systems {
                     loop.speed = -loop.speed;
                 }
 
-                std::cout << "Position Y: " << position.y << ", Position X: " << position.x << ", Speed: " << loop.speed << std::endl;
             }
         }
     }

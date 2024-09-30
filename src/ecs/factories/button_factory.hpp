@@ -23,6 +23,7 @@ public:
         const sf::Color& defaultColor = sf::Color::Blue,   // Default button color
         const sf::Color& hoverColor = sf::Color::Cyan,     // Default hover color
         const sf::Color& clickColor = sf::Color::Green,     // Default click color
+        const sf::Color& textColor = sf::Color::White,      // Default text color
         const unsigned int text_size = 24,                  // Default text size
         std::function<void()> action = []() {});            // Default action (do nothing)
 };

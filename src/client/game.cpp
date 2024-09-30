@@ -9,11 +9,21 @@
 #include <iostream>
 #include "button_factory.hpp"
 #include <chrono>
+#include "bullet_system.hpp"
 
 namespace rtype {
     Game::Game(const std::string& title, unsigned int width, unsigned int height, const std::string& playerTexturePath)
         : window(sf::VideoMode(width, height), title) {
         window.setFramerateLimit(60);
+    }
+
+    void Game::initChargeBullet()
+    {
+        auto charge_animation = registry.spawn_entity();
+        registry.emplace_component<ecs::Position>(charge_animation, 500.0f, 354.0f);
+        registry.emplace_component<ecs::Velocity>(charge_animation, 0.0f, 0.0f);
+        registry.emplace_component<ecs::Controllable>(charge_animation, true, 5.0f);
+        registry.emplace_component<ecs::Acceleration>(charge_animation, 0.0f, 0.0f);
     }
 
     void Game::run() {
@@ -31,8 +41,12 @@ namespace rtype {
 
         createEnnemies.create_enemies(registry, window);
 
+        initChargeBullet();
+
         sf::Font font;
         font.loadFromFile("assets/fonts/NimbusSanL-Bol.otf");
+
+
 
         auto button_entity = registry.spawn_entity();
         registry.emplace_component<ecs::Button>(
@@ -45,6 +59,7 @@ namespace rtype {
                 sf::Color::Blue,      // Set default button color
                 sf::Color::Cyan,     // Set hover color
                 sf::Color::Green,     // Set click color
+                sf::Color::White,      // Set text color
                 24,                   // Set text size
                 []() { std::cout << "Button clicked!" << std::endl; } // Click action
             )
@@ -76,6 +91,7 @@ namespace rtype {
         static auto lastTime = std::chrono::high_resolution_clock::now();
         float deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - lastTime).count();
         lastTime = currentTime;
+        system.bullet_system(registry);
         system.loop_movement_system(registry, deltaTime);
 
         auto& positions = registry.get_components<ecs::Position>();
