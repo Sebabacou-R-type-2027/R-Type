@@ -8,6 +8,8 @@ elseif (UNIX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUNIX")
 endif()
 
+set(CMAKE_CXX_STANDARD 17)
+
 define_property(GLOBAL PROPERTY SERVER_SOURCES)
 define_property(GLOBAL PROPERTY CLIENT_SOURCES)
 
