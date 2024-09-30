@@ -38,8 +38,7 @@ namespace ecs::systems {
                 EntityType& entity2 = *entities[j];
                 if (entity1.current_type == Type::Bullet && entity2.current_type == Type::Ennemy) {
                     if (isColliding(pos1, hitbox1, pos2, hitbox2)) {
-                        printf("Collision detected between bullet and ennemy\n");
-                        registry.kill_entity(registry.entity_from_index(i));
+                        // registry.kill_entity(registry.entity_from_index(i));
                         registry.kill_entity(registry.entity_from_index(j));
                     }
                 } else
