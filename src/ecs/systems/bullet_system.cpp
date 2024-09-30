@@ -46,6 +46,9 @@ namespace ecs::systems {
                     lastShootTime = currentTime;
                     auto laser_entity = registry.spawn_entity();
                     registry.emplace_component<ecs::Velocity>(laser_entity, 35.0f, 0.0f);
+                    registry.emplace_component<ecs::EntityType>(laser_entity, ecs::Type::Bullet);
+                    auto &hit = registry.emplace_component<ecs::Hitbox>(laser_entity, ecs::ShapeType::Rectangle, false);
+                    hit->rect = sf::RectangleShape(sf::Vector2f(20.0f, 20.0f));
                     registry.emplace_component<ecs::Position>(laser_entity, positions[0]->x + 40, positions[0]->y + 5);
                     registry.emplace_component<ecs::Drawable>(laser_entity, "assets/Bullets/01.png");
                     registry.emplace_component<ecs::Bullet>(laser_entity);

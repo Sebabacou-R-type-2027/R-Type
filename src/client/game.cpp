@@ -91,7 +91,8 @@ namespace rtype {
         static auto lastTime = std::chrono::high_resolution_clock::now();
         float deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - lastTime).count();
         lastTime = currentTime;
-        system.loop_movement_system(registry, deltaTime);        system.bullet_system(registry);
+        system.bullet_system(registry);
+        system.loop_movement_system(registry, deltaTime);
 
         auto& positions = registry.get_components<ecs::Position>();
         auto& drawables = registry.get_components<ecs::Drawable>();
