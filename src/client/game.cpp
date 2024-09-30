@@ -9,6 +9,7 @@
 #include <iostream>
 #include "button_factory.hpp"
 #include <chrono>
+#include "bullet_system.hpp"
 
 namespace rtype {
     Game::Game(const std::string& title, unsigned int width, unsigned int height, const std::string& playerTexturePath)
@@ -30,6 +31,8 @@ namespace rtype {
         hitbox->rect = sf::RectangleShape(sf::Vector2f(50.0f, 50.0f));
 
         createEnnemies.create_enemies(registry, window);
+        ecs::systems::BulletSystem bulletSystem;
+        bulletSystem.charged_one(registry);
 
         sf::Font font;
         font.loadFromFile("assets/fonts/NimbusSanL-Bol.otf");
@@ -45,6 +48,7 @@ namespace rtype {
                 sf::Color::Blue,      // Set default button color
                 sf::Color::Cyan,     // Set hover color
                 sf::Color::Green,     // Set click color
+                sf::Color::White,      // Set text color
                 24,                   // Set text size
                 []() { std::cout << "Button clicked!" << std::endl; } // Click action
             )
@@ -76,7 +80,7 @@ namespace rtype {
         static auto lastTime = std::chrono::high_resolution_clock::now();
         float deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - lastTime).count();
         lastTime = currentTime;
-        system.loop_movement_system(registry, deltaTime);
+        system.loop_movement_system(registry, deltaTime);        system.bullet_system(registry);
 
         auto& positions = registry.get_components<ecs::Position>();
         auto& drawables = registry.get_components<ecs::Drawable>();

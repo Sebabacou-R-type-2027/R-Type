@@ -27,6 +27,7 @@
 #include "components/Animation.hpp"
 #include "components/Ennemy_state.hpp"
 #include "components/Entity_type.hpp"
+#include "components/Bullet.hpp"
 
 namespace ecs {
 
@@ -101,6 +102,7 @@ class Registry {
             register_component<Animation>();
             register_component<EnemyState>();
             register_component<EntityType>();
+            register_component<Bullet>();
         }
     private:
         std::size_t _next_entity_id = 0;
