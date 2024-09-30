@@ -19,6 +19,19 @@ get_property(client GLOBAL PROPERTY CLIENT_SOURCES)
 add_executable(r-type_server ${server})
 add_executable(r-type_client ${client})
 
+target_include_directories(r-type_server PRIVATE
+    src/server
+    src/server/client
+    src/share
+    src/share/packet
+)
+
+target_include_directories(r-type_client PRIVATE
+    src/client
+    src/share
+    src/share/packet
+)
+
 # Symlink the executables to the root directory (Unix only)
 if (UNIX)
     add_custom_target(symlink-executables ALL BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/r-type_server ${CMAKE_CURRENT_SOURCE_DIR}/r-type_client
