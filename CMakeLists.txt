@@ -8,73 +8,42 @@ elseif (UNIX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUNIX")
 endif()
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
+set(CMAKE_CXX_STANDARD 17)
 
-file(GLOB SERVER_SOURCES
-        src/server/*.cpp src/server/*.hpp
-        src/share/*.cpp src/share/*.hpp
-)
+define_property(GLOBAL PROPERTY SERVER_SOURCES)
+define_property(GLOBAL PROPERTY CLIENT_SOURCES)
 
-file(GLOB CLIENT_SOURCES
-        src/client/*.cpp src/client/*.hpp
-        src/share/*.cpp src/share/*.hpp
-)
+add_subdirectory(src)
 
-message(STATUS "SERVER_SOURCES: ${SERVER_SOURCES}")
-message(STATUS "CLIENT_SOURCES: ${CLIENT_SOURCES}")
+get_property(server GLOBAL PROPERTY SERVER_SOURCES)
+get_property(client GLOBAL PROPERTY CLIENT_SOURCES)
 
-if (NOT SERVER_SOURCES)
-    message(FATAL_ERROR "No source files found for r-type_server")
-endif()
+find_package(asio CONFIG REQUIRED)
 
-if (NOT CLIENT_SOURCES)
-    message(FATAL_ERROR "No source files found for r-type_client")
-endif()
+add_executable(r-type_server ${server})
+add_executable(r-type_client ${client})
 
-add_executable(r-type_server ${SERVER_SOURCES}
-        src/server/UdpServer.cpp
-        src/server/UdpServer.hpp
-        src/server/Lobby.cpp
-        src/server/Lobby.hpp
-        src/server/client/client.cpp
-        src/server/client/ClientSaver.cpp
-        src/share/packet/Packet.cpp
-        src/share/packet/PacketFactory.cpp
-        src/share/packet/PacketPing.cpp
-)
+target_link_libraries(r-type_server PRIVATE asio::asio)
+target_link_libraries(r-type_client PRIVATE asio::asio)
 
 target_include_directories(r-type_server PRIVATE
-        src/server
-        src/server/client
-        src/share
-        src/share/packet
-)
-
-add_executable(r-type_client ${CLIENT_SOURCES}
-        src/client/package.cpp
-        src/client/package.hpp
-        src/client/Client.cpp
-        src/client/Client.hpp
-        src/share/packet/Packet.cpp
-        src/share/packet/PacketFactory.cpp
-        src/share/packet/PacketPing.cpp
+    src/server
+    src/server/client
+    src/share
+    src/share/packet
 )
 
 target_include_directories(r-type_client PRIVATE
-        src/client
-        src/share
-        src/share/packet
+    src/client
+    src/share
+    src/share/packet
 )
 
-add_custom_target(clean-all
-        COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_SOURCE_DIR}/CMakeCache.txt
-        COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_SOURCE_DIR}/cmake_install.cmake
-        COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_SOURCE_DIR}/build.ninja
-        COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_SOURCE_DIR}/.ninja*
-        COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_SOURCE_DIR}/CMakeFiles
-        COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_SOURCE_DIR}/cmake-build-debug
-        COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_SOURCE_DIR}/Testing
-        COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_SOURCE_DIR}/r-type_client
-        COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_SOURCE_DIR}/r-type_server
-        COMMENT "Cleaning log and build files"
-)
+# Symlink the executables to the root directory (Unix only)
+if (UNIX)
+    add_custom_target(symlink-executables ALL BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/r-type_server ${CMAKE_CURRENT_SOURCE_DIR}/r-type_client
+        COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_BINARY_DIR}/r-type_server ${CMAKE_CURRENT_SOURCE_DIR}/r-type_server
+        COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_BINARY_DIR}/r-type_client ${CMAKE_CURRENT_SOURCE_DIR}/r-type_client
+    )
+    add_dependencies(symlink-executables r-type_server r-type_client)
+endif()
