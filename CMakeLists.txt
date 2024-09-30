@@ -16,8 +16,23 @@ add_subdirectory(src)
 get_property(server GLOBAL PROPERTY SERVER_SOURCES)
 get_property(client GLOBAL PROPERTY CLIENT_SOURCES)
 
+find_package(asio CONFIG REQUIRED)
+
 add_executable(r-type_server ${server})
 add_executable(r-type_client ${client})
+
+target_link_libraries(r-type_server PRIVATE asio::asio)
+target_link_libraries(r-type_client PRIVATE asio::asio)
+
+target_include_directories(r-type_server PRIVATE
+    src/server
+    src/share
+)
+
+target_include_directories(r-type_client PRIVATE
+    src/client
+    src/share
+)
 
 # Symlink the executables to the root directory (Unix only)
 if (UNIX)

@@ -1,5 +1,6 @@
-# CMake build directory
+# Build files
 /build
+/vcpkg_installed
 
 # User-specific files
 .idea
