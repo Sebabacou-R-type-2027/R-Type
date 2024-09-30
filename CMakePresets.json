@@ -7,34 +7,38 @@
     },
     "configurePresets": [
         {
+            "name": "base",
+            "binaryDir": "${sourceDir}/build",
+            "cacheVariables": {
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "YES"
+            }
+        },
+        {
             "name": "default",
+            "inherits": "base",
             "displayName": "Default",
             "description": "Default CMake configure preset using Ninja",
             "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build",
             "cacheVariables": {
-                "CMAKE_EXPORT_COMPILE_COMMANDS": "YES",
                 "CMAKE_BUILD_TYPE": "Debug"
             }
         },
         {
             "name": "release",
+            "inherits": "base",
             "displayName": "Release",
             "description": "Release CMake configure preset using Ninja",
             "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build",
             "cacheVariables": {
-                "CMAKE_EXPORT_COMPILE_COMMANDS": "YES",
                 "CMAKE_BUILD_TYPE": "Release"
             }
         },
         {
             "name": "ci",
+            "inherits": "base",
             "displayName": "CI",
             "description": "CI CMake configure preset",
-            "binaryDir": "${sourceDir}/build",
             "cacheVariables": {
-                "CMAKE_EXPORT_COMPILE_COMMANDS": "YES",
                 "CMAKE_BUILD_TYPE": "Release"
             }
         }
