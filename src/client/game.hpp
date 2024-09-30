@@ -9,6 +9,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "registry.hpp"
+#include "create_ennemies.hpp"
 #include "system.hpp"
 
 namespace rtype {
@@ -21,6 +22,7 @@ namespace rtype {
             void update();
             void render();
 
+            ecs::CreateEnnemies createEnnemies;
             sf::RenderWindow window;
             ecs::Registry registry;
             ecs::System system;

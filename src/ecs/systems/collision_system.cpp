@@ -21,22 +21,25 @@ namespace ecs::systems {
         auto& positions = registry.get_components<Position>();
         auto& hitboxes = registry.get_components<Hitbox>();
         auto& controllable = registry.get_components<Controllable>();
+        auto& entities = registry.get_components<EntityType>();
 
         for (std::size_t i = 0; i < positions.size(); ++i) {
-            if (!positions[i] || !hitboxes[i] || !controllable[i]) continue;
+            if (!positions[i] || !hitboxes[i] || !controllable[i] || !entities[i]) continue;
 
             Position& pos1 = *positions[i];
             Hitbox& hitbox1 = *hitboxes[i];
             Controllable& controllable1 = *controllable[i];
+            EntityType& entity1 = *entities[i];
 
             for (std::size_t j = 0; j < positions.size(); ++j) {
                 if (i == j || !positions[j] || !hitboxes[j]) continue;
 
                 Position& pos2 = *positions[j];
                 Hitbox& hitbox2 = *hitboxes[j];
+                EntityType& entity2 = *entities[j];
 
                 if (isColliding(pos1, hitbox1, pos2, hitbox2)) {
-                    std::cout << "Collision detected between entity " << i << " and entity " << j << std::endl;
+                    // std::cout << "Collision detected between entity " << i << " and entity " << j << std::endl;
                 }
             }
         }

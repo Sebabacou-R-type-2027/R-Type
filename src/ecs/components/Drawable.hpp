@@ -30,6 +30,8 @@ namespace ecs {
                 throw std::runtime_error("Failed to load texture from " + texturePath);
             }
             sprite.setTexture(texture);
+            if (texture_rect != sf::IntRect())
+                sprite.setTextureRect(texture_rect);
         }
     };
 }

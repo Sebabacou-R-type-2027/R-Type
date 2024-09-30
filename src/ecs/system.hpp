@@ -13,6 +13,7 @@
 #include "loop_movement_system.hpp"
 #include "button_system.hpp"
 #include "collision_system.hpp"
+#include "animation_system.hpp"
 
 namespace ecs {
 
@@ -46,6 +47,10 @@ public:
         collisionSystem.update(reg, window);
     }
 
+    void animation_system(Registry& reg, float deltaTime, sf::RenderWindow& window) {
+        animationSystem.update(reg, deltaTime, window);
+    }
+
 private:
     systems::ControlSystem controlSystem;
     systems::DrawSystem drawSystem;
@@ -53,6 +58,7 @@ private:
     systems::LoopMovementSystem loopMovementSystem;
     systems::ButtonSystem buttonSystem;
     systems::CollisionSystem collisionSystem;
+    systems::AnimationSystem animationSystem;
 };
 
 }

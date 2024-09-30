@@ -7,10 +7,12 @@
 
 #include "loop_movement_system.hpp"
 #include <chrono>
+#include <iostream>
+#include <math.h>
 
 namespace ecs::systems {
 
-    void LoopMovementSystem::update(Registry& registry) {
+    void LoopMovementSystem::update(Registry& registry, float deltaTime) {
         auto &positions = registry.get_components<Position>();
         auto &loop_movements = registry.get_components<LoopMovement>();
 
@@ -18,23 +20,19 @@ namespace ecs::systems {
             if (positions[i] && loop_movements[i]) {
                 auto &position = *positions[i];
                 auto &loop = *loop_movements[i];
-                position.x += loop.speed_x;
-                if (position.x > loop.max_x) {
-                    if (position.x > loop.max_x) {
-                        position.x = loop.min_x;
-                } else if (position.x < loop.min_x) {
-                    position.y += loop.speed_y;
+
+                position.y += loop.speed * deltaTime;
+
+                if (position.y < loop.min_y) {
+                    position.y = loop.min_y;
+                    loop.speed = -loop.speed;
+                }
+                else if (position.y > loop.max_y) {
+                    position.y = loop.max_y;
+                    loop.speed = -loop.speed;
                 }
 
-                position.y += loop.speed_y;
-                if (position.y > loop.max_y) {
-                    position.y = loop.min_y;
-                    position.x += 100;
-                } else if (position.y < loop.min_y) {
-                    position.y = loop.max_y;
-                    position.x += 100;
-                    }
-                }
+                std::cout << "Position Y: " << position.y << ", Position X: " << position.x << ", Speed: " << loop.speed << std::endl;
             }
         }
     }

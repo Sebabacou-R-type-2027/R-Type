@@ -2,15 +2,14 @@
 ** EPITECH PROJECT, 2024
 ** R-Type
 ** File description:
-** loop_movement_system
+** ennemy_state_system
 */
-
-#pragma once
 
 #include "registry.hpp"
 
 namespace ecs::systems {
-    class LoopMovementSystem {
+
+    class EnemyStateSystem {
         public:
             void update(Registry& registry, float deltaTime);
     };

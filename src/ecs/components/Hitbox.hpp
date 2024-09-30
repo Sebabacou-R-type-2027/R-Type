@@ -10,13 +10,19 @@
 #include <SFML/Graphics.hpp>
 
 namespace ecs {
+    enum class ShapeType {
+            Rectangle,
+            Circle
+        };
+
     struct Hitbox {
-        float radius = 0;
-        bool is_colliding = false;
+        ShapeType shape;
         sf::RectangleShape rect;
+        sf::CircleShape circle;
+        bool is_colliding;
 
-        Hitbox(float radius = 0, bool is_colliding = false, sf::RectangleShape rect = sf::RectangleShape())
-            : radius(radius), is_colliding(is_colliding), rect(rect) {}
+        Hitbox(ShapeType shape = ShapeType::Rectangle, bool is_colliding = false)
+            : shape(shape), is_colliding(is_colliding) {}
     };
-}
 
+}

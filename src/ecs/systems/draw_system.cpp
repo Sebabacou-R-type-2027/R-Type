@@ -6,6 +6,7 @@
 */
 
 #include "draw_system.hpp"
+#include <iostream>
 
 namespace ecs::systems {
 
@@ -39,6 +40,8 @@ void DrawSystem::update(Registry& registry, sf::RenderWindow& window) {
         if (drawables[i] && positions[i]) {
             sf::Sprite sprite;
             sprite.setTexture(drawables[i]->texture); // Use the existing texture
+            if (drawables[i]->texture_rect != sf::IntRect())
+                sprite.setTextureRect(drawables[i]->texture_rect); // Use the existing texture rect
             sprite.setPosition(positions[i]->x, positions[i]->y);
             window.draw(sprite); // Draw the sprite
         }
