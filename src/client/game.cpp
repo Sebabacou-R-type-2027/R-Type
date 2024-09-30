@@ -81,7 +81,7 @@ namespace rtype {
         system.button_system(registry, window);
         system.collision_system(registry, window);
 
-        system.loop_movement_system(registry, deltaTime);
+        system.loop_movement_system(registry/*, deltaTime*/);
 
         auto& positions = registry.get_components<ecs::Position>();
         auto& drawables = registry.get_components<ecs::Drawable>();

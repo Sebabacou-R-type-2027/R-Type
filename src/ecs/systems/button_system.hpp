@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include "ecs/registry.hpp"
-#include "ecs/components/Button.hpp"
+#include "registry.hpp"
+#include "components/Button.hpp"
 #include <SFML/Graphics.hpp>
 
 namespace ecs::systems {
