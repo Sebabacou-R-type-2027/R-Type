@@ -8,6 +8,7 @@
 #include "game.hpp"
 #include <iostream>
 #include "button_factory.hpp"
+#include "ecs/entity.hpp"
 
 namespace rtype {
     Game::Game(const std::string& title, unsigned int width, unsigned int height, const std::string& playerTexturePath)
@@ -45,7 +46,6 @@ namespace rtype {
                 []() { std::cout << "Button clicked!" << std::endl; } // Click action
             )
         );
-
 
         while (window.isOpen()) {
             processEvents();
