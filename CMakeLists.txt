@@ -41,6 +41,7 @@ add_executable(r-type_server ${SERVER_SOURCES}
         src/share/packet/Packet.cpp
         src/share/packet/PacketFactory.cpp
         src/share/packet/PacketPing.cpp
+        src/share/packet/PacketACK.cpp
 )
 
 target_include_directories(r-type_server PRIVATE
@@ -58,6 +59,7 @@ add_executable(r-type_client ${CLIENT_SOURCES}
         src/share/packet/Packet.cpp
         src/share/packet/PacketFactory.cpp
         src/share/packet/PacketPing.cpp
+        src/share/packet/PacketACK.cpp
 )
 
 target_include_directories(r-type_client PRIVATE

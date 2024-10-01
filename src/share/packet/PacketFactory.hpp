@@ -42,6 +42,7 @@ class PacketFactory {
         /// \brief Enum for the type of the packet
         enum TypePacket {
             PING = 0,
+            ACK = 1,
         };
 
         /// \brief Create a packet
