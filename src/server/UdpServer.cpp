@@ -17,7 +17,8 @@ UdpServer::UdpServer(asio::io_context& io_context, short port)
         {"leave_lobby", [this](const std::string& message) { leave_lobby(message); }},
         {"start_game", [this](const std::string& message) { ping_to_choose_host(remote_endpoint_); }},
         {"logout", [this](const std::string& message) { logout(message); }},
-        {"start_game", [this](const std::string& message) { ping_to_choose_host(remote_endpoint_); }}
+        {"start_game", [this](const std::string& message) { ping_to_choose_host(remote_endpoint_); }},
+        {"ping", [this](const std::string& message) { send_ping(remote_endpoint_); }}
     };
     message_id_counter_ = 0;
     receive_thread_ = std::thread(&UdpServer::receive_loop, this);
@@ -149,10 +150,10 @@ void UdpServer::handle_receive(std::size_t bytes_transferred) {
     if (bytes_transferred > 0) {
         std::lock_guard<std::mutex> lock(messages_mutex_);
 
-        auto message = std::string(recv_buffer_.data(), bytes_transferred);
-        std::cout << "Received message: " << message << std::endl;
+        std::fill(recv_buffer_.begin() + bytes_transferred, recv_buffer_.end(), 0);
+        std::cout << "Received message: " << recv_buffer_.data() << std::endl;
 
-        received_messages_[message_id_counter_] = std::make_pair(message, remote_endpoint_);
+        received_messages_[message_id_counter_] = std::make_pair(recv_buffer_, remote_endpoint_);
 
         // Increment the message ID
         message_id_counter_ += 1;
@@ -219,8 +220,8 @@ void UdpServer::handle_client_message(const std::string& message, const asio::ip
  */
 void UdpServer::server_loop() {
     while (true) {
-        std::string message = "";
         udp::endpoint client_endpoint;
+        std::string message = "";
         {
             std::unique_lock<std::mutex> lock(messages_mutex_);
             // Wait until there are messages to process
@@ -228,8 +229,8 @@ void UdpServer::server_loop() {
 
             // Process the message
             int message_id = received_messages_.begin()->first;
-            std::pair<std::string, udp::endpoint> pair_data = received_messages_.begin()->second;
-            message = pair_data.first;
+            std::pair<std::array<char, 65535>, udp::endpoint> pair_data = received_messages_.begin()->second;
+            message = pair_data.first.data();
             client_endpoint = pair_data.second;
 
             std::cout << "Received: " << message << " from " << client_endpoint << std::endl;
@@ -273,6 +274,11 @@ void UdpServer::handle_new_connection(const udp::endpoint& client_endpoint, cons
     }
 }
 
+void UdpServer::send_message(const std::string &message,
+                             const udp::endpoint &endpoint) {
+    socket_.send_to(asio::buffer(message), endpoint);
+}
+
 /**
  * @brief Pings clients in a lobby to measure latency and selects the client with the lowest latency as the game host.
  *
@@ -305,9 +311,8 @@ void UdpServer::ping_to_choose_host(const udp::endpoint &client_endpoint) {
                 continue;
             } else {
                 for (const auto& [id, pair_data] : received_messages_) {
-                    std::string message = pair_data.first;
                     udp::endpoint sender = pair_data.second;
-                    if (message == "pong" && sender == cli.get_endpoint()) {
+                    if (static_cast<int>(pair_data.first[2]) == 0 && sender == cli.get_endpoint()) {
                         auto end = std::chrono::high_resolution_clock::now();
                         elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
                         received_messages_.erase(id);
@@ -330,7 +335,16 @@ void UdpServer::ping_to_choose_host(const udp::endpoint &client_endpoint) {
             }
         }
     }
-    cli_tmp.start_game();
+
+    std::string host = "GAME_LAUNCH|" + cli_tmp.get_ip() + ":" + cli_tmp.get_port() + ":" + std::to_string(cli_tmp.get_id());
+
+    for (auto& cli : clients) {
+        if (cli_tmp != cli) {
+            send_message(host, cli.get_endpoint());
+        } else {
+            send_message("GAME_LAUNCH|HOST", cli.get_endpoint());
+        }
+    }
 }
 
 /**
@@ -360,6 +374,8 @@ void UdpServer::handle_disconnect(const udp::endpoint& client_endpoint) {
  * @param client_endpoint The endpoint of the client to ping.
  */
 void UdpServer::send_ping(const udp::endpoint& client_endpoint) {
-    std::string ping_message = "ping";
-    socket_.send_to(asio::buffer(ping_message), client_endpoint);
+    std::cout << "Sending ping to: " << client_endpoint << std::endl;
+    auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::PING, socket_);
+    packet->format_data();
+    packet->send_packet(client_endpoint);
 }
