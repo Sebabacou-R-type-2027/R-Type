@@ -47,26 +47,6 @@ namespace rtype {
         font.loadFromFile("assets/fonts/NimbusSanL-Bol.otf");
 
 
-
-        auto button_entity = registry.spawn_entity();
-        registry.emplace_component<ecs::Button>(
-            button_entity,
-            ecs::ButtonFactory::create_button(
-                "Click me!",
-                sf::Vector2f(400.0f, 400.0f),
-                sf::Vector2f(200.0f, 50.0f),
-                font,
-                sf::Color::Blue,      // Set default button color
-                sf::Color::Cyan,     // Set hover color
-                sf::Color::Green,     // Set click color
-                sf::Color::White,      // Set text color
-                24,                   // Set text size
-                []() { std::cout << "Button clicked!" << std::endl; } // Click action
-            )
-        );
-        registry.emplace_component<ecs::EntityType>(button_entity, ecs::Type::Button);
-
-
         while (window.isOpen()) {
             processEvents();
             update();

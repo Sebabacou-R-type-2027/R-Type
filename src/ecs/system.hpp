@@ -28,8 +28,8 @@ public:
         positionSystem.update(reg);
     }
 
-    void loop_movement_system(Registry& reg/*, float deltaTime*/) {
-        loopMovementSystem.update(reg/*, deltaTime*/);
+    void loop_movement_system(Registry& reg, float deltaTime) {
+        loopMovementSystem.update(reg, deltaTime);
     }
 
     void draw_system(Registry& reg, sf::RenderWindow& window) {
