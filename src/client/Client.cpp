@@ -5,60 +5,96 @@
 #include "Client.hpp"
 
 namespace client {
-    Client::~Client() {
-        is_running_ = false;  // Arrête la boucle de réception
-        if (receive_thread_.joinable()) {
-          receive_thread_.join();  // Attends que le thread termine
+        Client::Client(asio::io_context& io_context, const std::string& server_ip, short server_port)
+            :   io_context_(io_context),
+                socket_(io_context, udp::endpoint(udp::v4(), 0)),
+                remote_endpoint_(asio::ip::address::from_string(server_ip), server_port),
+                is_running_(false) {
+
+            receive_thread_ = std::thread(&Client::receive_loop, this);
+            main_loop();
         }
-    }
 
-    void Client::send_message(const std::string &message) {
-        socket_.send_to(asio::buffer(message), server_endpoint_);
-    }
-
-    void Client::main_loop() {
-        std::string input;
-        while (is_running_) {
-            std::cout << "Enter message to send (or type 'exit' to quit): ";
-            std::getline(std::cin, input);
-
-            if (input == "exit") {
-                is_running_ = false;
-                break;
+        Client::~Client() {
+            is_running_ = false;  // Arrête la boucle de réception
+            if (receive_thread_.joinable()) {
+                receive_thread_.join();  // Attends que le thread termine
             }
-
-            send_message(input);
         }
-    }
 
-    void Client::send_packet(Packet& packet) const {
-        packet.format_data();
-        packet.send_packet(server_endpoint_);
-    }
-
-    void Client::receive_loop() {
-        while (is_running_) {
-            char buffer[1024];
-            udp::endpoint sender_endpoint;
-            std::error_code error;
-
-            size_t len = socket_.receive_from(asio::buffer(buffer), sender_endpoint, 0, error);
-
-            if (error && error != asio::error::message_size) {
-                std::cerr << "Error receiving data: " << error.message() << std::endl;
-                return;
-            }
-            std::cout << "Received: " << std::endl;
-            for (auto &byte : buffer) {
-                std::cout << static_cast<int>(byte) << "|";
-            }
-            std::cout << "size of buffer: " << len << std::endl;
-            if (std::string(buffer, len) == "ping") {
-                std::cout << "Received: ping" << std::endl;
-                auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::PING, socket_);
-                send_packet(*packet);
-            }
-            //std::cout << "Received: " << std::string(buffer, len) << std::endl;
+        void Client::send_message(const std::string &message) {
+            socket_.send_to(asio::buffer(message), remote_endpoint_);
         }
-    }
+
+        void Client::main_loop() {
+            std::string input;
+            while (!is_running_) {
+                std::cout << "Enter message to send (or type 'exit' to quit): ";
+                std::getline(std::cin, input);
+
+                if (input == "exit") {
+                    is_running_ = false;
+                    break;
+                }
+
+                send_message(input);
+            }
+        }
+
+        void Client::send_packet(Packet& packet) const {
+            packet.format_data();
+            packet.send_packet(remote_endpoint_);
+        }
+
+        void Client::receive_loop() {
+            start_receive();
+            io_context_.run();
+        }
+
+        void Client::start_receive() {
+            socket_.async_receive_from(
+            asio::buffer(recv_buffer_), remote_endpoint_,
+            [this](std::error_code ec, std::size_t bytes_recvd) {
+                if (!ec && bytes_recvd > 0) {
+                    handle_receive(bytes_recvd);
+                } else {
+                    start_receive();
+                }
+            });
+        }
+
+        void Client::manage_message(std::size_t bytes_transferred) {
+            std::cout << "Manage message: " << std::endl;
+            for (size_t i = 0; i < bytes_transferred; ++i) {
+                std::cout << static_cast<int>(recv_buffer_[i]) << "|";
+            }
+            if (bytes_transferred == 3) {
+                if (recv_buffer_[2] == 0) {
+                    std::cout << "Received: PING" << std::endl;
+                    auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::PING, socket_);
+                    send_packet(*packet);
+                }
+            }
+            std::cout << std::endl;
+        }
+
+        void Client::handle_receive(std::size_t bytes_transferred) {
+            if (bytes_transferred > 0) {
+                std::lock_guard<std::mutex> lock(messages_mutex_);
+
+                manage_message(bytes_transferred);
+
+                auto message = std::string(recv_buffer_.data(), bytes_transferred);
+                std::cout << "Received message: " << message << std::endl;
+
+                received_messages_[message_id_counter_] = std::make_pair(message, remote_endpoint_);
+
+                // Increment the message ID
+                message_id_counter_ += 1;
+                std::cout << "Message ID: " << message_id_counter_ << std::endl;
+                // Notify the server loop that a message has been received
+                messages_condition_.notify_one();
+            }
+            start_receive();
+        }
 }

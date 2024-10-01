@@ -122,17 +122,18 @@ class UdpServer {
          * @param message Le message contenant les informations nécessaires pour démarrer la partie.
          */
         void start_game(const std::string& message);
+        void send_message(const std::string& message, const udp::endpoint& endpoint);
 
         asio::io_context& io_context_; ///< Contexte d'entrée/sortie d'Asio.
         udp::socket socket_; ///< Socket UDP pour gérer les connexions.
         udp::endpoint remote_endpoint_; ///< Endpoint du client distant.
-        std::array<char, 1024> recv_buffer_; ///< Buffer pour stocker les messages reçus.
+        std::array<char, 65535> recv_buffer_; ///< Buffer pour stocker les messages reçus.
         std::vector<server::client> connected_clients_; ///< Liste des clients connectés.
         std::map<int, Lobby> lobbies_; ///< Liste des lobbies disponibles.
         std::thread receive_thread_; ///< Thread pour la réception des messages.
         std::mutex messages_mutex_; ///< Mutex pour protéger l'accès aux messages.
         std::condition_variable messages_condition_; ///< Condition variable pour la gestion des messages reçus.
-        std::unordered_map<int, std::pair<std::string, udp::endpoint>> received_messages_; ///< Map des messages reçus avec leur ID et leur endpoint.
+        std::unordered_map<int, std::pair<std::array<char, 65535>, udp::endpoint>> received_messages_; ///< Map des messages reçus avec leur ID et leur endpoint.
         int message_id_counter_ = 0; ///< Compteur d'ID pour les messages.
         int lobby_id_ = 0; ///< Compteur d'ID pour les lobbies.
 
