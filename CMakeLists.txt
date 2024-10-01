@@ -31,7 +31,9 @@ target_link_libraries(r-type_client PRIVATE asio::asio sfml-graphics sfml-window
 
 target_include_directories(r-type_server PRIVATE
     src/server
+    src/server/client
     src/share
+    src/share/packet
 )
 
 target_include_directories(r-type_client PRIVATE

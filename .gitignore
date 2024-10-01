@@ -8,3 +8,6 @@
 # Executables
 r-type_client
 r-type_server
+
+# Miscellaneous
+clients.csv
