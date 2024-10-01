@@ -50,7 +50,11 @@ namespace client {
                 : Client(io_context, server_ip, server_port) {}
 
             // Méthode de gestion de la partie pour l'hôte
-            void game_loop();
+            void host_management();
+    private:
+            std::unordered_map<std::string, udp::endpoint> players_endpoints_;
+
+
     };
 }
 

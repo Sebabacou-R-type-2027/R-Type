@@ -65,15 +65,28 @@ namespace client {
 
         void Client::manage_message(std::size_t bytes_transferred) {
             std::cout << "Manage message: " << std::endl;
-            for (size_t i = 0; i < bytes_transferred; ++i) {
-                std::cout << static_cast<int>(recv_buffer_[i]) << "|";
-            }
+            std::string message = std::string(recv_buffer_.data(), bytes_transferred);
             if (bytes_transferred == 3) {
                 if (recv_buffer_[2] == 0) {
                     std::cout << "Received: PING" << std::endl;
+                    for (size_t i = 0; i < bytes_transferred; ++i) {
+                        std::cout << static_cast<int>(recv_buffer_[i]) << "|";
+                    }
                     auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::PING, socket_);
                     send_packet(*packet);
                 }
+            }
+            if (message.find("GAME_LAUNCH|HOST") == 0) {
+                std::cout << "Received: GAME_LAUNCH|HOST" << std::endl;
+                Host host(io_context_, "
+
+            }
+            if (message.find("GAME_LAUNCH|" == 0)) {
+                std::cout << "Received: GAME_LAUNCH" << std::endl;
+                std::string host_data = message.substr(message.find('|') + 1);
+                std::string host_ip = host_data.substr(0, host_data.find(':'));
+                std::string host_port = host_data.substr(host_data.find(':') + 1, host_data.rfind(':') - host_data.find(':') - 1);
+                std::string host_id = host_data.substr(host_data.rfind(':') + 1);
             }
             std::cout << std::endl;
         }
