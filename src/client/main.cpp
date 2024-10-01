@@ -1,17 +1,14 @@
-#include "Client.hpp"
+/*
+** EPITECH PROJECT, 2024
+** R-Type
+** File description:
+** main
+*/
 
-int main(int argc, char* argv[]) {
-    asio::io_context io_context;
+#include "game.hpp"
 
-    // Remplace "127.0.0.1" et 9000 avec l'adresse IP et le port du serveur
-    if (argc != 3) {
-        std::cerr << "Usage: ./r-type_client <host> <port>" << std::endl;
-        return 1;
-    }
-    client::Client client(io_context, argv[1], std::stoi(argv[2]));
-
-    // Lancement de la boucle principale du client
-    client.main_loop();
-
+int main() {
+    rtype::Game game("R-Type", 1920, 1080, "assets/Ship/Ship.png");
+    game.run();
     return 0;
 }

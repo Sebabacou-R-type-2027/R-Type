@@ -28,9 +28,11 @@ jobs:
           - os: ubuntu-latest
             c_compiler: gcc
             cpp_compiler: g++
+            additional_packages: [libx11-dev, libxrandr-dev, libxcursor-dev, libxi-dev, libudev-dev, libgl1-mesa-dev]
           - os: ubuntu-latest
             c_compiler: clang
             cpp_compiler: clang++
+            additional_packages: [libx11-dev, libxrandr-dev, libxcursor-dev, libxi-dev, libudev-dev, libgl1-mesa-dev]
         exclude:
           - os: windows-latest
             c_compiler: gcc
@@ -44,6 +46,10 @@ jobs:
 
       - name: Setup anew (or from cache) vcpkg (and does not build any package)
         uses: lukka/run-vcpkg@v11
+
+      - name: Install additional packages
+        if: matrix.additional_packages
+        run: sudo apt-get install -y ${{ join(matrix.additional_packages, ' ') }}
 
       - name: Configure
         # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
