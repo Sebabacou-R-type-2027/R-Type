@@ -19,54 +19,57 @@ namespace rtype {
     void Game::run() {
         registry.register_all_components();
 
-        auto movable_entity = registry.spawn_entity();
-        registry.emplace_component<ecs::Position>(movable_entity, 400.0f, 300.0f);
-        registry.emplace_component<ecs::Velocity>(movable_entity, 0.0f, 0.0f);
-        registry.emplace_component<ecs::Drawable>(movable_entity, "assets/Ship/Ship.png");
-        registry.emplace_component<ecs::Controllable>(movable_entity, true, 5.0f);
-        registry.emplace_component<ecs::Acceleration>(movable_entity, 0.0f, 0.0f);
-        // registry.emplace_component<ecs::Collision>(movable_entity, 0.0f, false, sf::Rect<float>(0.0f, 0.0f, 50.0f, 50.0f));
-
         sf::Font font;
-        font.loadFromFile("assets/fonts/NimbusSanL-Bol.otf");
+        if (!font.loadFromFile("assets/fonts/NimbusSanL-Bol.otf")) {
+            std::cerr << "Failed to load font!" << std::endl;
+            return;
+        }
 
-        auto button_entity = registry.spawn_entity();
-        registry.emplace_component<ecs::Button>(
-            button_entity,
-            ecs::ButtonFactory::create_button(
-                "Click me!",
-                sf::Vector2f(400.0f, 400.0f),
-                sf::Vector2f(200.0f, 50.0f),
-                font,
-                sf::Color::Blue,      // Set default button color
-                sf::Color::Cyan,     // Set hover color
-                sf::Color::Green,     // Set click color
-                sf::Color::White,      // Set text color
-                24,                   // Set text size
-                []() { std::cout << "Button clicked!" << std::endl; } // Click action
-            )
-        );
+        if (gameStateManager.getGameState() == GameState::MENU)
+            createMenuButtons(font);
+
+        if (GameState::GAME) { // add space ship
+
+        }
 
         while (window.isOpen()) {
-            processEvents();
-            update();
-            render();
+            processEvents(gameStateManager);
+
+            switch (gameStateManager.getGameState()) {
+                case GameState::MENU:
+                    update();
+                    renderMenu();
+                    break;
+                case GameState::GAME:
+                    update();
+                    render();
+                    break;
+                case GameState::PAUSE:
+                    renderPauseScreen();
+                    break;
+                case GameState::GAMEOVER:
+                    renderGameOverScreen();
+                    break;
+            }
         }
     }
 
-    void Game::processEvents() {
+    void Game::processEvents(GameStateManager& gameStateManager) {
         sf::Event event;
         while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+            if (event.type == sf::Event::Closed || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
                 window.close();
+            }
         }
     }
+
 
     void Game::update() {
         system.control_system(registry);
         system.position_system(registry);
         system.loop_movement_system(registry);
-        system.button_system(registry, window);
+        if (gameStateManager.getGameState() == GameState::MENU)
+            system.button_system(registry, window);
 
 
         auto& positions = registry.get_components<ecs::Position>();
@@ -88,8 +91,81 @@ namespace rtype {
 
     void Game::render() {
         window.clear();
-        system.draw_system(registry, window); // Update to just pass the registry and window
+        system.draw_system(registry, window);
+        window.display();
+    }
+
+    void Game::renderMenu() {
+        window.clear();
+        system.draw_system(registry, window);
         system.button_system_render(registry, window);
         window.display();
     }
+
+
+    void Game::renderPauseScreen() {
+        window.clear();
+        window.display();
+    }
+
+    void Game::renderGameOverScreen() {
+        window.clear();
+        window.display();
+    }
+
+    void Game::renderGame() {
+        window.clear();
+        window.display();
+    }
+
+    void Game::createMenuButtons(sf::Font& font) {
+        auto startButtonEntity = registry.spawn_entity();
+        registry.emplace_component<ecs::Button>(
+            startButtonEntity,
+            ecs::ButtonFactory::create_button(
+                "Start Game",
+                sf::Vector2f(400.0f, 300.0f),
+                sf::Vector2f(200.0f, 50.0f),
+                font,
+                sf::Color::Blue,
+                sf::Color::Cyan,
+                sf::Color::Green,
+                sf::Color::White,
+                24,
+                [this]() { startGame(); }
+            )
+        );
+
+        auto exitButtonEntity = registry.spawn_entity();
+        registry.emplace_component<ecs::Button>(
+            exitButtonEntity,
+            ecs::ButtonFactory::create_button(
+                "Exit",
+                sf::Vector2f(400.0f, 400.0f),
+                sf::Vector2f(200.0f, 50.0f),
+                font,
+                sf::Color::Blue,
+                sf::Color::Cyan,
+                sf::Color::Green,
+                sf::Color::White,
+                24,
+                [this]() { window.close(); }
+            )
+        );
+    }
+
+void Game::startGame() {
+    gameStateManager.setGameState(GameState::GAME);
+
+    auto movable_entity = registry.spawn_entity();
+    registry.emplace_component<ecs::Position>(movable_entity, 400.0f, 300.0f); // Starting position
+    registry.emplace_component<ecs::Velocity>(movable_entity, 0.0f, 0.0f);
+    registry.emplace_component<ecs::Drawable>(movable_entity, "assets/Ship/Ship.png");
+    registry.emplace_component<ecs::Controllable>(movable_entity, true, 5.0f); // Allow control
+    registry.emplace_component<ecs::Acceleration>(movable_entity, 0.0f, 0.0f);
+
+    std::cout << "Game started!" << std::endl;
 }
+}
+
+
