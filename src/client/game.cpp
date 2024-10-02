@@ -9,7 +9,7 @@
 #include <iostream>
 #include "button_factory.hpp"
 #include <chrono>
-#include "bullet_system.hpp"
+#include "bullet_event.hpp"
 
 namespace rtype {
     Game::Game(const std::string& title, unsigned int width, unsigned int height, const std::string& playerTexturePath)
@@ -49,7 +49,7 @@ namespace rtype {
 
         while (window.isOpen()) {
             processEvents();
-            update();
+            update(bulletSystem);
             render();
         }
     }
@@ -62,16 +62,16 @@ namespace rtype {
         }
     }
 
-    void Game::update() {
+    void Game::update(rtype::game::BulletSystem& bulletSystem) {
         system.control_system(registry);
         system.position_system(registry);
         system.button_system(registry, window);
         system.collision_system(registry, window);
+        bulletSystem.update(registry);
         auto currentTime = std::chrono::high_resolution_clock::now();
         static auto lastTime = std::chrono::high_resolution_clock::now();
         float deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - lastTime).count();
         lastTime = currentTime;
-        system.bullet_system(registry);
         system.loop_movement_system(registry, deltaTime);
 
         auto& positions = registry.get_components<ecs::Position>();
@@ -79,7 +79,7 @@ namespace rtype {
         auto& entities = registry.get_components<ecs::EntityType>();
 
         for (std::size_t i = 0; i < positions.size(); ++i) {
-            if (positions[i] && drawables[i] && entities[i]) { // Ensure both components exist  
+            if (positions[i] && drawables[i] && entities[i]) { // Ensure both components exist
                 if (positions[i]->x < 0) positions[i]->x = 0;
                 if (positions[i]->x > window.getSize().x - drawables[i]->size) // Use size from Drawable
                     positions[i]->x = window.getSize().x - drawables[i]->size;

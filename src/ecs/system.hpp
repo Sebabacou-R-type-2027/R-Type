@@ -14,7 +14,6 @@
 #include "button_system.hpp"
 #include "collision_system.hpp"
 #include "animation_system.hpp"
-#include "bullet_system.hpp"
 
 namespace ecs {
 
@@ -52,10 +51,6 @@ public:
         animationSystem.update(reg, deltaTime, window);
     }
 
-    void bullet_system(Registry& reg) {
-        bulletSystem.update(reg);
-    }
-
 
 private:
     systems::ControlSystem controlSystem;
@@ -65,7 +60,6 @@ private:
     systems::ButtonSystem buttonSystem;
     systems::CollisionSystem collisionSystem;
     systems::AnimationSystem animationSystem;
-    systems::BulletSystem bulletSystem;
 };
 
 }

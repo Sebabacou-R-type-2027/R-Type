@@ -9,10 +9,10 @@
 
 #include "registry.hpp"
 
-namespace ecs::systems {
+namespace rtype::game {
     class BulletSystem {
         public:
-            void update(Registry& registry);
+            void update(ecs::Registry& registry);
             bool ChargedOneDraw = false;
 
         private:

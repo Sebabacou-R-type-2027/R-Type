@@ -12,6 +12,8 @@
 #include "create_ennemies.hpp"
 #include "system.hpp"
 
+#include "bullet_event.hpp"
+
 namespace rtype {
     class Game {
         public:
@@ -20,13 +22,14 @@ namespace rtype {
         private:
             void initChargeBullet();
             void processEvents();
-            void update();
+            void update(rtype::game::BulletSystem& bulletSystem);
             void render();
 
             ecs::CreateEnnemies createEnnemies;
             sf::RenderWindow window;
             ecs::Registry registry;
             ecs::System system;
+            rtype::game::BulletSystem bulletSystem;
             sf::Texture playerTexture;
             sf::Sprite playerSprite;
     };

@@ -2,13 +2,13 @@
 ** EPITECH PROJECT, 2024
 ** R-Type
 ** File description:
-** Bullet
+** BulletCharge
 */
 
 #pragma once
 
 namespace ecs {
-    struct Bullet {
-        int dammage = 5;
+    struct BulletCharge {
+        int dammage = 10;
     };
 }
