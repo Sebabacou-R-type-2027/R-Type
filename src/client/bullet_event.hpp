@@ -23,6 +23,6 @@ namespace rtype::game {
             sf::Clock clock;
             sf::Time elapsed = sf::Time::Zero; // Temps écoulé total
             int compteur = 0; // Compteur de secondes
-
+            bool check = false;
     };
 }

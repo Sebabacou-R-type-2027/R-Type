@@ -23,6 +23,8 @@ namespace rtype::game {
         static sf::Clock spacePressClock; // Horloge pour mesurer le temps d'appui
         static bool isSpacePressed = false; // État précédent de la touche espace
 
+
+
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
 
 
@@ -33,9 +35,24 @@ namespace rtype::game {
             }
 
 
-            if (clock.getElapsedTime().asSeconds() >= 2.0f) {
+            if (clock.getElapsedTime().asSeconds() >= 1.0f) {
                 // Faire une boucle de deux segonde avec le component chargé image
                 //puis executer le reste apres
+                sf::Time waitCharge;
+
+                if (elapsed.asSeconds() <= 2.0f) {
+                    if (check == false) {
+                        auto charge_animation = registry.spawn_entity();
+                        registry.emplace_component<ecs::Position>(charge_animation, positions[0]->x + 40, positions[0]->y + 5);
+                        registry.emplace_component<ecs::Velocity>(charge_animation, 0.0f, 0.0f);
+                        registry.emplace_component<ecs::Controllable>(charge_animation, true, 5.0f);
+                        registry.emplace_component<ecs::Acceleration>(charge_animation, 0.0f, 0.0f);
+                        registry.emplace_component<ecs::Drawable>(charge_animation, "assets/Charged Bullet/charged1.gif");
+                        check = true;
+                    }
+                }
+
+                check = false;
                 clock.restart();
                 auto laser_charge = registry.spawn_entity();
                 registry.emplace_component<ecs::Velocity>(laser_charge, 45.0f, 0.0f);
