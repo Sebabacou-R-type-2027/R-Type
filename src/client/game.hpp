@@ -8,7 +8,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "registry.hpp"
+// #include "registry.hpp"
 #include "system.hpp"
 #include "game_state_manager.hpp"
 

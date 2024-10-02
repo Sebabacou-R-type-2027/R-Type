@@ -25,11 +25,8 @@ namespace rtype {
             return;
         }
 
-        if (gameStateManager.getGameState() == GameState::MENU)
+        if (gameStateManager.getGameState() == GameState::MENU) {
             createMenuButtons(font);
-
-        if (GameState::GAME) { // add space ship
-
         }
 
         while (window.isOpen()) {
@@ -119,13 +116,17 @@ namespace rtype {
     }
 
     void Game::createMenuButtons(sf::Font& font) {
-        auto startButtonEntity = registry.spawn_entity();
+        sf::Vector2u window_size = window.getSize(); // Get the current window size
+        float button_width = 200.0f;
+        float button_x = (window_size.x - button_width) / 2.0f;  // Dynamic centered X position
+
+        auto SoloCampaignButtonEntity = registry.spawn_entity();
         registry.emplace_component<ecs::Button>(
-            startButtonEntity,
+            SoloCampaignButtonEntity,
             ecs::ButtonFactory::create_button(
-                "Start Game",
-                sf::Vector2f(400.0f, 300.0f),
-                sf::Vector2f(200.0f, 50.0f),
+                "Solo Campaign",
+                sf::Vector2f(button_x, 300.0f),
+                sf::Vector2f(button_width, 50.0f),
                 font,
                 sf::Color::Blue,
                 sf::Color::Cyan,
@@ -136,13 +137,98 @@ namespace rtype {
             )
         );
 
-        auto exitButtonEntity = registry.spawn_entity();
+        auto MultiplayerButtonEntity = registry.spawn_entity();
         registry.emplace_component<ecs::Button>(
-            exitButtonEntity,
+            MultiplayerButtonEntity,
             ecs::ButtonFactory::create_button(
-                "Exit",
-                sf::Vector2f(400.0f, 400.0f),
-                sf::Vector2f(200.0f, 50.0f),
+                "Multiplayer",
+                sf::Vector2f(button_x, 400.0f),
+                sf::Vector2f(button_width, 50.0f),
+                font,
+                sf::Color::Blue,
+                sf::Color::Cyan,
+                sf::Color::Green,
+                sf::Color::White,
+                24,
+                [this]() { startGame(); }
+            )
+        );
+
+        auto CustomizeShipButtonEntity = registry.spawn_entity();
+        registry.emplace_component<ecs::Button>(
+            CustomizeShipButtonEntity,
+            ecs::ButtonFactory::create_button(
+                "Customize Ship",
+                sf::Vector2f(button_x, 500.0f),
+                sf::Vector2f(button_width, 50.0f),
+                font,
+                sf::Color::Blue,
+                sf::Color::Cyan,
+                sf::Color::Green,
+                sf::Color::White,
+                24,
+                [this]() { startGame(); }
+            )
+        );
+
+        auto SettingsButtonEntity = registry.spawn_entity();
+        registry.emplace_component<ecs::Button>(
+            SettingsButtonEntity,
+            ecs::ButtonFactory::create_button(
+                "Settings",
+                sf::Vector2f(button_x, 600.0f),
+                sf::Vector2f(button_width, 50.0f),
+                font,
+                sf::Color::Blue,
+                sf::Color::Cyan,
+                sf::Color::Green,
+                sf::Color::White,
+                24,
+                [this]() { startGame(); }
+            )
+        );
+
+        auto MapEditorButtonEntity = registry.spawn_entity();
+        registry.emplace_component<ecs::Button>(
+            MapEditorButtonEntity,
+            ecs::ButtonFactory::create_button(
+                "Map Editor",
+                sf::Vector2f(button_x, 700.0f),
+                sf::Vector2f(button_width, 50.0f),
+                font,
+                sf::Color::Blue,
+                sf::Color::Cyan,
+                sf::Color::Green,
+                sf::Color::White,
+                24,
+                [this]() { startGame(); }
+            )
+        );
+
+        auto GameOptionsButtonEntity = registry.spawn_entity();
+        registry.emplace_component<ecs::Button>(
+            GameOptionsButtonEntity,
+            ecs::ButtonFactory::create_button(
+                "Game Options",
+                sf::Vector2f(button_x, 800.0f),
+                sf::Vector2f(button_width, 50.0f),
+                font,
+                sf::Color::Blue,
+                sf::Color::Cyan,
+                sf::Color::Green,
+                sf::Color::White,
+                24,
+                [this]() { startGame(); }
+            )
+        );
+
+        auto GameQuitButtonEntity = registry.spawn_entity();
+        registry.emplace_component<ecs::Button>(
+            GameQuitButtonEntity,
+            ecs::ButtonFactory::create_button(
+                "Quit",
+                sf::Vector2f(button_x, 900.0f),
+                sf::Vector2f(button_width, 50.0f),
                 font,
                 sf::Color::Blue,
                 sf::Color::Cyan,
@@ -154,18 +240,18 @@ namespace rtype {
         );
     }
 
-void Game::startGame() {
-    gameStateManager.setGameState(GameState::GAME);
+    void Game::startGame() {
+        gameStateManager.setGameState(GameState::GAME);
 
-    auto movable_entity = registry.spawn_entity();
-    registry.emplace_component<ecs::Position>(movable_entity, 400.0f, 300.0f); // Starting position
-    registry.emplace_component<ecs::Velocity>(movable_entity, 0.0f, 0.0f);
-    registry.emplace_component<ecs::Drawable>(movable_entity, "assets/Ship/Ship.png");
-    registry.emplace_component<ecs::Controllable>(movable_entity, true, 5.0f); // Allow control
-    registry.emplace_component<ecs::Acceleration>(movable_entity, 0.0f, 0.0f);
+        auto movable_entity = registry.spawn_entity();
+        registry.emplace_component<ecs::Position>(movable_entity, 400.0f, 300.0f); // Starting position
+        registry.emplace_component<ecs::Velocity>(movable_entity, 0.0f, 0.0f);
+        registry.emplace_component<ecs::Drawable>(movable_entity, "assets/Ship/Ship.png");
+        registry.emplace_component<ecs::Controllable>(movable_entity, true, 5.0f); // Allow control
+        registry.emplace_component<ecs::Acceleration>(movable_entity, 0.0f, 0.0f);
 
-    std::cout << "Game started!" << std::endl;
-}
+        std::cout << "Game started!" << std::endl;
+    }
 }
 
 
