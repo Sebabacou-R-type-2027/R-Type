@@ -1,0 +1,20 @@
+name: 'Mirroring workflow'
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+  workflow_dispatch: {}
+env:
+  MIRROR_URL: 'git@github.com:EpitechPromo2027/B-CPP-500-REN-5-1-rtype-sebastien.bertil-souchet.git'
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pixta-dev/repository-mirroring-action@v1
+        with:
+          target_repo_url:
+            ${{ env.MIRROR_URL }}
+          ssh_private_key:
+            ${{ secrets.SSH_MIRROR_KEY }}
