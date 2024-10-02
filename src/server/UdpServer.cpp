@@ -2,6 +2,10 @@
 #include <random>
 #include <iostream>
 #include <asio.hpp>
+#include <Packet.hpp>
+#include <PacketACK.hpp>
+#include <PacketFactory.hpp>
+
 #include "client/client.hpp"
 #include "client/ClientSaver.hpp"
 
@@ -172,6 +176,17 @@ void UdpServer::handle_receive(std::size_t bytes_transferred) {
 void UdpServer::handle_client_message(const std::string& message, const asio::ip::udp::endpoint& client_endpoint) {
 
     std::string client_str = client_endpoint.address().to_string() + ":" + std::to_string(client_endpoint.port());
+    try {
+        auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::ACK, socket_);
+        if (typeid(*packet) == typeid(PacketACK)) {
+            dynamic_cast<PacketACK*>(packet.get())->format_data(true);
+        }
+        packet->send_packet(client_endpoint);
+        std::cout << *packet << std::endl;
+    } catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+    }
+
     std::cout << "sender: " << client_str << std::endl;
     std::cout << "Authorised clients:" << std::endl;
     for (const auto& client : connected_clients_) {

@@ -39,7 +39,7 @@ void Packet::send_packet(const asio::ip::udp::endpoint& receiver) {
     this->socket_.send_to(asio::buffer(buffer, buffer.size()), receiver);
 }
 
-std::tuple<unsigned, unsigned, unsigned, std::string> Packet::extract_packet(
+std::tuple<unsigned, unsigned, unsigned, std::vector<uint8_t>> Packet::extract_packet(
     char buffer[65535], size_t size) {
     uint32_t size_s = 0;
     uint32_t id = 0;
@@ -64,44 +64,58 @@ std::tuple<unsigned, unsigned, unsigned, std::string> Packet::extract_packet(
         size_s = (static_cast<uint32_t>(static_cast<uint8_t>(buffer[0]) << 16) | static_cast<uint32_t>(static_cast<uint8_t>(buffer[1]) << 8) | static_cast<uint8_t>(buffer[2]));
     }
     switch (size - size_s - nbr_bytes_size - 1) {
-        case 0:
-            throw PacketFactory::PacketFactoryException("No ID", 0);
-        case 1:
-            nbr_bytes_id = 1;
-            id = static_cast<uint8_t>(buffer[nbr_bytes_size]);
-            break;
-        case 2:
-            nbr_bytes_id = 2;
-            id = (static_cast<uint8_t>(buffer[nbr_bytes_size]) << 8 | static_cast<uint8_t>(buffer[nbr_bytes_size + 1]));
-            break;
-        default:
-            throw PacketFactory::PacketFactoryException("Unknown ID size", 0);
+    case 0:
+        throw PacketFactory::PacketFactoryException("No ID", 0);
+    case 1:
+        nbr_bytes_id = 1;
+        id = static_cast<uint8_t>(buffer[nbr_bytes_size]);
+        break;
+    case 2:
+        nbr_bytes_id = 2;
+        id = (static_cast<uint8_t>(buffer[nbr_bytes_size]) << 8 | static_cast<uint8_t>(buffer[nbr_bytes_size + 1]));
+        break;
+    default:
+        throw PacketFactory::PacketFactoryException("Unknown ID size", 0);
     }
     type = static_cast<uint8_t>(buffer[nbr_bytes_size + nbr_bytes_id]);
-    return std::make_tuple(size_s, id, type, std::string(buffer + nbr_bytes_size + nbr_bytes_id + 1, size - nbr_bytes_size - nbr_bytes_id - 1));
+
+    std::vector<uint8_t> remaining_data(buffer + nbr_bytes_size + nbr_bytes_id + 1, buffer + size);
+
+    return std::make_tuple(size_s, id, type, remaining_data);
 }
 
+std::string Packet::extract_data(char buffer[65535], size_t size, uint32_t type) {
+    std::tuple<unsigned, unsigned, unsigned, std::vector<uint8_t>> packet = extract_packet(buffer, size);
+    std::vector<uint8_t> data = std::get<3>(packet);
+    std::string result;
 
-std::string Packet::extract_data(char buffer[65535], size_t size) {
-    std::tuple<unsigned, unsigned, unsigned, std::string> packet = extract_packet(buffer, size);
-
-    return std::get<3>(packet);
+    switch (type) {
+        case PacketFactory::TypePacket::ACK:
+            result.reserve(data.size());
+            for (const auto& byte : data) {
+                result += std::to_string(byte);
+            }
+            return result;
+        default:
+            result = std::string(data.begin(), data.end());
+            return result;
+        }
 }
 
 uint32_t Packet::extract_type(char buffer[65535], size_t size) {
-    std::tuple<unsigned, unsigned, unsigned, std::string> packet = extract_packet(buffer, size);
+    std::tuple<unsigned, unsigned, unsigned, std::vector<uint8_t>> packet = extract_packet(buffer, size);
 
     return std::get<2>(packet);
 }
 
 uint32_t Packet::extract_id(char buffer[65535], size_t size) {
-    std::tuple<unsigned, unsigned, unsigned, std::string> packet = extract_packet(buffer, size);
+    std::tuple<unsigned, unsigned, unsigned, std::vector<uint8_t>> packet = extract_packet(buffer, size);
 
     return std::get<1>(packet);
 }
 
 uint32_t Packet::extract_size(char buffer[65535], size_t size) {
-    std::tuple<unsigned, unsigned, unsigned, std::string> packet = extract_packet(buffer, size);
+    std::tuple<unsigned, unsigned, unsigned, std::vector<uint8_t>> packet = extract_packet(buffer, size);
 
     return std::get<0>(packet);
 }
@@ -148,7 +162,7 @@ void Packet::set_size() {
             this->size_ = static_cast<uint16_t>(size);
             break;
         case 3:
-            this->size_ = Packet::convert_to_uint24(size);
+            this->size_ = convert_to_uint24(size);
             break;
         default:
             throw PacketFactory::PacketFactoryException("Unknown size type", size);

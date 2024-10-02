@@ -89,8 +89,7 @@ class Packet {
          * @param size The size of the buffer.
          * @return A string containing the data of the packet.
          */
-        static std::string extract_data(char buffer[65535], size_t size);
-
+        static std::string extract_data(char buffer[65535], size_t size, uint32_t type);
 
         /**
          * @brief Extract the ID from a buffer.
@@ -100,7 +99,6 @@ class Packet {
          */
         static uint32_t extract_id(char buffer[65535], size_t size);
 
-
         /**
          * @brief Extract the type from a buffer.
          * @param buffer The data buffer containing the packet.
@@ -108,7 +106,6 @@ class Packet {
          * @return The type of the packet.
          */
         static uint32_t extract_type(char buffer[65535], size_t size);
-
 
         /**
          * @brief Extract the size from a buffer.
@@ -192,14 +189,6 @@ class Packet {
         std::string data_; ///< The data content of the packet.
         bool is_data_set_ = false; ///< Boolean flag indicating if the data is set.
 
-    private:
-        /**
-         * @brief Get the size type of packet based on a number.
-         * @param number The number to evaluate.
-         * @return The size type (varint).
-         */
-        [[nodiscard]] int get_size_varint(uint32_t number);
-
         /**
          * @brief Extract packet information from a buffer.
          * @param buffer The data buffer containing the packet.
@@ -207,7 +196,16 @@ class Packet {
          * @return A tuple containing packet details (size, ID, type, and data).
          * @details This method is used to parse a raw packet from a buffer and extract the essential information.
          */
-        static std::tuple<unsigned, unsigned, unsigned, std::string> extract_packet(char buffer[65535], size_t size);
+        static std::tuple<unsigned, unsigned, unsigned, std::vector<uint8_t>> extract_packet(char buffer[65535], size_t size);
+
+       private:
+        /**
+         * @brief Get the size type of packet based on a number.
+         * @param number The number to evaluate.
+         * @return The size type (varint).
+         */
+        [[nodiscard]] int get_size_varint(uint32_t number);
+
 
         std::variant<uint8_t, uint16_t, uint24_t> size_; ///< Packet size, can be 8-bit, 16-bit, or 24-bit.
         std::variant<uint8_t, uint16_t> idp_; ///< Packet ID, can be 8-bit or 16-bit.

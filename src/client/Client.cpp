@@ -4,6 +4,10 @@
 
 #include "Client.hpp"
 
+#include <Packet.hpp>
+
+#include <iomanip>
+
 namespace client {
     Client::~Client() {
         is_running_ = false;  // Arrête la boucle de réception
@@ -33,11 +37,15 @@ namespace client {
 
     void Client::receive_loop() {
         while (is_running_) {
-            char buffer[1024];
+            char buffer[65535];
             udp::endpoint sender_endpoint;
             std::error_code error;
 
             size_t len = socket_.receive_from(asio::buffer(buffer), sender_endpoint, 0, error);
+            std::cout << std::endl <<"Data received: " << Packet::extract_data(buffer, len, Packet::extract_type(buffer, len)) << std::endl;
+            std::cout << "Type received: " << Packet::extract_type(buffer, len) << std::endl;
+            std::cout << "Id received: " << Packet::extract_id(buffer, len) << std::endl;
+            std::cout << "Size received: " << Packet::extract_size(buffer, len) << std::endl;
 
             if (error && error != asio::error::message_size) {
                 std::cerr << "Error receiving data: " << error.message() << std::endl;
