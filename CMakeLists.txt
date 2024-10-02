@@ -40,8 +40,10 @@ add_executable(r-type_server ${SERVER_SOURCES}
         src/server/client/ClientSaver.cpp
         src/share/packet/Packet.cpp
         src/share/packet/PacketFactory.cpp
-        src/share/packet/PacketPing.cpp
-        src/share/packet/PacketACK.cpp
+        src/share/packet/packet_type/PacketPing.cpp
+        src/share/packet/packet_type/PacketACK.cpp
+        src/share/packet/packet_type/PacketLogin.cpp
+        src/share/packet/packet_type/PacketLogout.cpp
 )
 
 target_include_directories(r-type_server PRIVATE
@@ -49,6 +51,7 @@ target_include_directories(r-type_server PRIVATE
         src/server/client
         src/share
         src/share/packet
+        src/share/packet/packet_type
 )
 
 add_executable(r-type_client ${CLIENT_SOURCES}
@@ -58,14 +61,17 @@ add_executable(r-type_client ${CLIENT_SOURCES}
         src/client/Client.hpp
         src/share/packet/Packet.cpp
         src/share/packet/PacketFactory.cpp
-        src/share/packet/PacketPing.cpp
-        src/share/packet/PacketACK.cpp
+        src/share/packet/packet_type/PacketPing.cpp
+        src/share/packet/packet_type/PacketACK.cpp
+        src/share/packet/packet_type/PacketLogin.cpp
+        src/share/packet/packet_type/PacketLogout.cpp
 )
 
 target_include_directories(r-type_client PRIVATE
         src/client
         src/share
         src/share/packet
+        src/share/packet/packet_type
 )
 
 add_custom_target(clean-all
