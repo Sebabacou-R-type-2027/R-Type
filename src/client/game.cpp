@@ -26,6 +26,12 @@ namespace rtype {
             return;
         }
 
+        fpsText.setFont(font);
+        fpsText.setCharacterSize(24);
+        fpsText.setFillColor(sf::Color::White);
+        fpsText.setPosition(10.0f, 10.0f);
+
+
         if (gameStateManager.getGameState() == GameState::MENU) {
             createMenuButtons(font);
         }
@@ -49,6 +55,8 @@ namespace rtype {
                     renderGameOverScreen();
                     break;
             }
+
+            fpsCounter.update();
         }
     }
 
@@ -96,6 +104,8 @@ namespace rtype {
     void Game::render() {
         window.clear();
         system.draw_system(registry, window);
+        fpsText.setString("FPS: " + std::to_string(fpsCounter.getFPS()));
+        window.draw(fpsText);
         window.display();
     }
 

@@ -12,6 +12,7 @@
 #include "create_ennemies.hpp"
 #include "system.hpp"
 #include "game_state_manager.hpp"
+#include "FPSCounter.hpp"
 
 namespace rtype {
     class Game {
@@ -37,5 +38,9 @@ namespace rtype {
             sf::Texture playerTexture;
             sf::Sprite playerSprite;
             GameStateManager gameStateManager;
+
+            // FPS Counter
+            sf::Text fpsText;
+            FPSCounter fpsCounter;
     };
 }
