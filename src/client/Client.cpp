@@ -23,7 +23,14 @@ namespace client {
         }
 
         void Client::send_message(const std::string &message) {
-            socket_.send_to(asio::buffer(message), remote_endpoint_);
+            if (message == "ping") {
+                auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::PING, this->socket_);
+                packet->format_data();
+                packet->send_packet(remote_endpoint_);
+                std::cout << *packet << std::endl;
+            } else {
+                std::cout << "Unknown command" << std::endl;
+            }
         }
 
         void Client::main_loop() {
@@ -36,7 +43,6 @@ namespace client {
                     is_running_ = false;
                     break;
                 }
-
                 send_message(input);
             }
         }

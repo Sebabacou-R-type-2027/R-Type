@@ -2,6 +2,12 @@ cmake_minimum_required(VERSION 3.10)
 
 project(R-Type)
 
+# Automatically add vcpkg if necessary
+if(NOT DEFINED CMAKE_TOOLCHAIN_FILE AND EXISTS "${CMAKE_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake")
+    message(STATUS "Using vcpkg from ${CMAKE_SOURCE_DIR}/vcpkg")
+    set(CMAKE_TOOLCHAIN_FILE "${CMAKE_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "")
+endif()
+
 if (WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DWIN32")
 elseif (UNIX)
@@ -36,6 +42,7 @@ target_include_directories(r-type_server PRIVATE
 
 target_include_directories(r-type_client PRIVATE
         src/client
+        src/client/networkClient
         src/share
         src/share/packet
         src/share/packet/packet_type
