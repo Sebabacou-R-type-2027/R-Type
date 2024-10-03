@@ -340,6 +340,7 @@ void UdpServer::ping_to_choose_host(const udp::endpoint &client_endpoint) {
 
     for (auto& cli : clients) {
         if (cli_tmp != cli) {
+            std::cout << "Sending " << host<<  " message to: " << cli.get_endpoint() << std::endl;
             send_message(host, cli.get_endpoint());
         } else {
             send_message("GAME_LAUNCH|HOST", cli.get_endpoint());
