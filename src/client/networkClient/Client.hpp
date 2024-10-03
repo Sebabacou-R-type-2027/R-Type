@@ -13,47 +13,123 @@
 using asio::ip::udp;
 
 namespace client {
+    /**
+     * @brief Classe représentant un client réseau.
+     *
+     * Cette classe gère la connexion d'un client à un serveur via UDP et la création d'un client host,
+     * l'envoi et la réception de paquets, ainsi que l'exécution de commandes.
+     */
     class Client {
         public:
+            /**
+             * @brief Constructeur de la classe Client.
+             *
+             * Initialise la connexion avec le serveur à partir de son IP et de son port.
+             *
+             * @param io_context Contexte d'E/S pour ASIO.
+             * @param server_ip Adresse IP du serveur.
+             * @param server_port Port du serveur.
+             */
             Client(asio::io_context& io_context, const std::string& server_ip, short server_port);
 
+            /**
+             * @brief Destructeur de la classe Client.
+             *
+             * Termine les threads et libère les ressources.
+             */
             ~Client();
 
-            // La boucle principale de logique du client
+            /**
+             * @brief Boucle principale de la logique du client.
+             *
+             * Cette méthode est utilisée pour gérer les opérations principales du client,
+             * comme la gestion des commandes et la réception de messages.
+             */
             void main_loop();
 
+            /**
+             * @brief Envoie un paquet au serveur.
+             *
+             * @param packet Référence vers le paquet à envoyer.
+             */
             void send_packet(Packet& packet) const;
+
+            /**
+             * @brief Envoie un message sous forme de chaîne de caractères.
+             *
+             * @param message Le message à envoyer.
+             */
             void send_message(const std::string &message);
+
+            /**
+             * @brief Gère la réception de messages du serveur.
+             *
+             * @param bytes_transferred Le nombre d'octets transférés.
+             */
             void handle_receive(std::size_t bytes_transferred);
+
+            /**
+             * @brief Insère des commandes dans la liste des commandes à exécuter.
+             *
+             * @param commands Map contenant les commandes à insérer.
+             */
             void insertCommands(const std::map<std::string, std::string>& commands);
+
+            /**
+             * @brief Remplit la liste des commandes à envoyer.
+             *
+             * @param command La commande à ajouter à la liste.
+             */
             void fillCommandsToSends(std::string command);
 
-    private:
-        bool im_host = false;
-        PacketFactory packet_factory_;
-        asio::io_context& io_context_;
-        udp::socket socket_;
-        udp::endpoint remote_endpoint_;
-        std::thread receive_thread_;
-        std::thread send_thread_;
-        std::atomic<bool> is_running_;
-        std::unordered_map<std::string, udp::endpoint> players_endpoints_;
-        std::mutex messages_mutex_; ///< Mutex pour protéger l'accès aux messages.
-        std::unordered_map<int, std::pair<std::string, udp::endpoint>> received_messages_; ///< Map des messages reçus avec leur ID et leur endpoint.
-        int message_id_counter_ = 0; ///< Compteur d'ID pour les messages.
-        std::condition_variable messages_condition_; ///< Condition variable pour la gestion des messages reçus.
-        std::array<char, 65535> recv_buffer_; ///< Buffer pour stocker les messages reçus.
-        int number_of_players_ = 0;
-        std::unique_ptr<CommandHandler> command_handler_;
-        std::map<std::string, std::string> _commandsToDo;
-        std::map<std::string, std::string> _commandsToSend;
-        // std::unique_ptr<Host> host_;
+        private:
+            bool im_host = false;  ///< Indique si le client est l'hôte du serveur.
+            PacketFactory packet_factory_;  ///< Fabrique permettant de créer différents types de paquets.
+            asio::io_context& io_context_;  ///< Contexte d'E/S ASIO.
+            udp::socket socket_;  ///< Socket UDP utilisée pour la communication avec le serveur.
+            udp::endpoint remote_endpoint_;  ///< Endpoint du serveur (adresse et port).
+            std::thread receive_thread_;  ///< Thread utilisé pour la réception des messages.
+            std::thread send_thread_;  ///< Thread utilisé pour l'envoi des messages.
+            std::atomic<bool> is_running_;  ///< Indique si le client est en cours d'exécution.
+            std::unordered_map<std::string, udp::endpoint> players_endpoints_;  ///< Map des endpoints des joueurs connectés.
+            std::mutex messages_mutex_;  ///< Mutex pour protéger l'accès aux messages reçus.
+            std::unordered_map<int, std::pair<std::string, udp::endpoint>> received_messages_; ///< Map des messages reçus (avec un ID et un endpoint).
+            int message_id_counter_ = 0;  ///< Compteur d'ID pour les messages.
+            std::condition_variable messages_condition_;  ///< Condition variable pour la synchronisation des messages reçus.
+            std::array<char, 65535> recv_buffer_;  ///< Buffer pour stocker les données reçues.
+            int number_of_players_ = 0;  ///< Nombre de joueurs actuellement connectés.
+            std::unique_ptr<CommandHandler> command_handler_;  ///< Gestionnaire de commandes du client.
+            std::map<std::string, std::string> _commandsToDo;  ///< Commandes à envoyer en tant qu'hôte.
+            std::map<std::string, std::string> _commandsToSend;  ///< Commandes à envoyer en tant que joueur.
 
-        // Méthode de réception des messages du serveur
-        void receive_loop();
-        void start_receive();
-        void manage_message(std::size_t bytes_transferred);
-        void send_message_to_player(const std::string& message, const udp::endpoint& player_endpoint);
+            /**
+             * @brief Boucle de réception des messages.
+             *
+             * Cette méthode tourne en boucle pour recevoir les messages provenant du serveur.
+             */
+            void receive_loop();
+
+            /**
+             * @brief Démarre la réception des messages du serveur.
+             *
+             * Cette méthode configure le socket pour commencer à recevoir les messages.
+             */
+            void start_receive();
+
+            /**
+             * @brief Gère les messages reçus du serveur.
+             *
+             * @param bytes_transferred Nombre d'octets reçus.
+             */
+            void manage_message(std::size_t bytes_transferred);
+
+            /**
+             * @brief Envoie un message à un joueur spécifique.
+             *
+             * @param message Message à envoyer.
+             * @param player_endpoint Endpoint du joueur destinataire.
+             */
+            void send_message_to_player(const std::string& message, const udp::endpoint& player_endpoint);
     };
 }
 
