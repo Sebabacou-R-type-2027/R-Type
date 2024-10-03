@@ -11,6 +11,7 @@
 #include "registry.hpp"
 #include "create_ennemies.hpp"
 #include "system.hpp"
+#include "game_state_manager.hpp"
 
 namespace rtype {
     class Game {
@@ -19,9 +20,15 @@ namespace rtype {
             void run();
         private:
             void initChargeBullet();
-            void processEvents();
+            void processEvents(GameStateManager& gameStateManager);
             void update();
             void render();
+            void renderMenu();
+            void renderPauseScreen();
+            void renderGameOverScreen();
+            void renderGame();
+            void startGame();
+            void createMenuButtons(sf::Font& font);
 
             ecs::CreateEnnemies createEnnemies;
             sf::RenderWindow window;
@@ -29,5 +36,6 @@ namespace rtype {
             ecs::System system;
             sf::Texture playerTexture;
             sf::Sprite playerSprite;
+            GameStateManager gameStateManager;
     };
 }
