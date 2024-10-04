@@ -12,5 +12,3 @@ r-type_server
 # Miscellaneous
 clients.csv
 
-# Ignore the .gitignore file
-.gitignore
