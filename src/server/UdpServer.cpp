@@ -154,7 +154,7 @@ void UdpServer::handle_receive(std::size_t bytes_transferred) {
         std::cout << "Received message: " << recv_buffer_.data() << std::endl;
 
         received_messages_[message_id_counter_] = std::make_pair(recv_buffer_, remote_endpoint_);
-
+        recv_buffer_size_ = bytes_transferred;
         // Increment the message ID
         message_id_counter_ += 1;
         std::cout << "Message ID: " << message_id_counter_ << std::endl;
@@ -170,7 +170,7 @@ void UdpServer::handle_receive(std::size_t bytes_transferred) {
  * @param message The message sent by the client.
  * @param client_endpoint The client's endpoint.
  */
-void UdpServer::handle_client_message(const std::string& message, const asio::ip::udp::endpoint& client_endpoint) {
+void UdpServer::handle_client_message(const std::string& message, const asio::ip::udp::endpoint& client_endpoint, std::size_t bytes_recv) {
 
     std::string client_str = client_endpoint.address().to_string() + ":" + std::to_string(client_endpoint.port());
     std::cout << "sender: " << client_str << std::endl;
@@ -178,6 +178,8 @@ void UdpServer::handle_client_message(const std::string& message, const asio::ip
     for (const auto& client : connected_clients_) {
         std::cout << "\t" << client << std::endl;
     }
+    std::cout << "Received message: " << message << std::endl;
+    std::cout << "Received bytes: " << bytes_recv << std::endl;
     if (message.rfind("login ", 0) == 0) {
         std::string username, password;
         std::istringstream iss(message.substr(6));
@@ -222,6 +224,7 @@ void UdpServer::server_loop() {
     while (true) {
         udp::endpoint client_endpoint;
         std::string message = "";
+        std::size_t bytes_receive= 0;
         {
             std::unique_lock<std::mutex> lock(messages_mutex_);
             // Wait until there are messages to process
@@ -232,12 +235,13 @@ void UdpServer::server_loop() {
             std::pair<std::array<char, 65535>, udp::endpoint> pair_data = received_messages_.begin()->second;
             message = pair_data.first.data();
             client_endpoint = pair_data.second;
+            bytes_receive = recv_buffer_size_;
 
             std::cout << "Received: " << message << " from " << client_endpoint << std::endl;
             received_messages_.erase(message_id);
         }
         // Call the function to handle the client message
-        handle_client_message(message, client_endpoint);
+        handle_client_message(message, client_endpoint, bytes_receive);
     }
 }
 
