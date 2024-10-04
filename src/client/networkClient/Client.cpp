@@ -125,6 +125,7 @@ namespace client {
             std::cout << "Handle receive: " << bytes_transferred << std::endl;
             if (bytes_transferred > 0) {
                 std::lock_guard<std::mutex> lock(messages_mutex_);
+                recv_buffer_size_ = bytes_transferred;
                 manage_message(bytes_transferred);
 
                 auto message = std::string(recv_buffer_.data(), bytes_transferred);

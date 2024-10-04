@@ -97,6 +97,7 @@ namespace client {
             int message_id_counter_ = 0;  ///< Compteur d'ID pour les messages.
             std::condition_variable messages_condition_;  ///< Condition variable pour la synchronisation des messages reçus.
             std::array<char, 65535> recv_buffer_;  ///< Buffer pour stocker les données reçues.
+            std::size_t recv_buffer_size_ = 0;  ///< Taille du buffer.
             int number_of_players_ = 0;  ///< Nombre de joueurs actuellement connectés.
             std::unique_ptr<CommandHandler> command_handler_;  ///< Gestionnaire de commandes du client.
             std::map<std::string, std::string> _commandsToDo;  ///< Commandes à envoyer en tant qu'hôte.
