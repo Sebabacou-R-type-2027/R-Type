@@ -2,6 +2,10 @@
 #include <random>
 #include <iostream>
 #include <asio.hpp>
+#include <Packet.hpp>
+#include <PacketACK.hpp>
+#include <PacketCMD.hpp>
+#include <PacketFactory.hpp>
 #include "client/client.hpp"
 #include "client/ClientSaver.hpp"
 
@@ -157,7 +161,7 @@ void UdpServer::handle_receive(std::size_t bytes_transferred) {
         recv_buffer_size_ = bytes_transferred;
         // Increment the message ID
         message_id_counter_ += 1;
-        std::cout << "Message ID: " << message_id_counter_ << std::endl;
+        // std::cout << "Message ID: " << message_id_counter_ << std::endl;
         // Notify the server loop that a message has been received
         messages_condition_.notify_one();
     }
@@ -170,7 +174,7 @@ void UdpServer::handle_receive(std::size_t bytes_transferred) {
  * @param message The message sent by the client.
  * @param client_endpoint The client's endpoint.
  */
-void UdpServer::handle_client_message(const std::string& message, const asio::ip::udp::endpoint& client_endpoint, std::size_t bytes_recv) {
+void UdpServer::handle_client_message(const std::string& msg, const asio::ip::udp::endpoint& client_endpoint, std::size_t bytes_recv) {
 
     std::string client_str = client_endpoint.address().to_string() + ":" + std::to_string(client_endpoint.port());
     std::cout << "sender: " << client_str << std::endl;
@@ -178,8 +182,13 @@ void UdpServer::handle_client_message(const std::string& message, const asio::ip
     for (const auto& client : connected_clients_) {
         std::cout << "\t" << client << std::endl;
     }
-    std::cout << "Received message: " << message << std::endl;
-    std::cout << "Received bytes: " << bytes_recv << std::endl;
+    std::string message = "null";
+    try {
+        uint32_t type = Packet::extract_type(msg.data(), bytes_recv);
+        message = Packet::extract_data(msg.data(), bytes_recv, type);
+    } catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+    }
     if (message.rfind("login ", 0) == 0) {
         std::string username, password;
         std::istringstream iss(message.substr(6));
@@ -280,7 +289,14 @@ void UdpServer::handle_new_connection(const udp::endpoint& client_endpoint, cons
 
 void UdpServer::send_message(const std::string &message,
                              const udp::endpoint &endpoint) {
-    socket_.send_to(asio::buffer(message), endpoint);
+    // socket_.send_to(asio::buffer(message), endpoint);
+    auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::CMD, socket_);
+    if (typeid(*packet) == typeid(PacketCMD)) {
+        dynamic_cast<PacketCMD*>(packet.get())->format_data(message);
+    }
+    packet->send_packet(endpoint);
+    std::cout << *packet << std::endl;
+
 }
 
 /**

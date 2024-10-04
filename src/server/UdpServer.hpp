@@ -13,8 +13,8 @@
 #include "Lobby.hpp"
 #include "client/client.hpp"
 #include "client/ClientSaver.hpp"
-#include "../share/packet/Packet.hpp"
-#include "../share/packet/PacketPing.hpp"
+#include "Packet.hpp"
+#include "PacketPing.hpp"
 
 using asio::ip::udp;
 
