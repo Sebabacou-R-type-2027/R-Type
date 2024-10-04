@@ -7,9 +7,7 @@
 
 #include "game.hpp"
 #include <iostream>
-#include "button_factory.hpp"
 #include <chrono>
-#include "bullet_system.hpp"
 
 namespace rtype {
     Game::Game(const std::string& title, unsigned int width, unsigned int height, const std::string& playerTexturePath)

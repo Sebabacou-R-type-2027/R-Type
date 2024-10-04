@@ -7,14 +7,14 @@
 
 #pragma once
 
-#include "control_system.hpp"
-#include "draw_system.hpp"
-#include "position_system.hpp"
-#include "loop_movement_system.hpp"
-#include "button_system.hpp"
-#include "collision_system.hpp"
-#include "animation_system.hpp"
-#include "bullet_system.hpp"
+#include "control/control_system.hpp"
+#include "draw/draw_system.hpp"
+#include "position/position_system.hpp"
+#include "animation/animation_system.hpp"
+#include "../client/systems/loop_movement/loop_movement_system.hpp"
+#include "../client/systems/button/button_system.hpp"
+#include "../client/systems/collision/collision_system.hpp"
+#include "../client/systems/bullet/bullet_system.hpp"
 
 namespace ecs {
 
@@ -28,12 +28,16 @@ public:
         positionSystem.update(reg);
     }
 
-    void loop_movement_system(Registry& reg, float deltaTime) {
-        loopMovementSystem.update(reg, deltaTime);
-    }
-
     void draw_system(Registry& reg, sf::RenderWindow& window) {
         drawSystem.update(reg, window);
+    }
+
+    void animation_system(Registry& reg, float deltaTime, sf::RenderWindow& window) {
+        animationSystem.update(reg, deltaTime, window);
+    }
+
+    void loop_movement_system(Registry& reg, float deltaTime) {
+        loopMovementSystem.update(reg, deltaTime);
     }
 
     void button_system(Registry& reg, sf::RenderWindow& window) {
@@ -48,10 +52,6 @@ public:
         collisionSystem.update(reg, window);
     }
 
-    void animation_system(Registry& reg, float deltaTime, sf::RenderWindow& window) {
-        animationSystem.update(reg, deltaTime, window);
-    }
-
     void bullet_system(Registry& reg) {
         bulletSystem.update(reg);
     }
@@ -61,10 +61,10 @@ private:
     systems::ControlSystem controlSystem;
     systems::DrawSystem drawSystem;
     systems::PositionSystem positionSystem;
+    systems::AnimationSystem animationSystem;
     systems::LoopMovementSystem loopMovementSystem;
     systems::ButtonSystem buttonSystem;
     systems::CollisionSystem collisionSystem;
-    systems::AnimationSystem animationSystem;
     systems::BulletSystem bulletSystem;
 };
 

@@ -13,6 +13,7 @@
 #include "system.hpp"
 #include "game_state_manager.hpp"
 #include "utils/FPSCounter.hpp"
+#include "factories/button_factory.hpp"
 
 namespace rtype {
     class Game {
