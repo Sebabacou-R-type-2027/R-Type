@@ -1,6 +1,7 @@
 #include "Packet.hpp"
 
 #include <ostream>
+#include <iostream>
 
 Packet::Packet(PacketFactory::TypePacket type, uint16_t id, asio::ip::udp::socket& socket) : type_(type), socket_(socket) {
     this->set_id(id);
@@ -90,7 +91,8 @@ std::string Packet::extract_data(const char buffer[65535], size_t size, uint32_t
     std::string result;
 
     switch (type) {
-        case PacketFactory::TypePacket::ACK:
+        case PacketFactory::TypePacket::ACK || PacketFactory::TypePacket::CMDP:
+            std::cout << "Data extract = " << type << std::endl;
             result.reserve(data.size());
             for (const auto& byte : data) {
                 result += std::to_string(byte);

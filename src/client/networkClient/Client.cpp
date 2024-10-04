@@ -4,6 +4,9 @@
 
 #include "Client.hpp"
 
+#include "PacketACK.hpp"
+#include "PacketCMDP.hpp"
+
 namespace client {
     Client::Client(asio::io_context& io_context, const std::string& server_ip, short server_port)
         :   io_context_(io_context),
@@ -35,7 +38,30 @@ namespace client {
                 packet->format_data();
                 packet->send_packet(remote_endpoint_);
                 std::cout << *packet << std::endl;
-            } else {
+            } if (message == "ACK|0" || message == "ACK|1") {
+                bool status = (message == "ACK|0") ? 0 : (message == "ACK|1") ? 1 : -1;
+                auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::ACK, socket_);
+                if (typeid(*packet) == typeid(PacketACK)) {
+                    dynamic_cast<PacketACK*>(packet.get())->format_data(status);
+                }
+                packet->send_packet(remote_endpoint_);
+                std::cout << *packet << std::endl;
+            } if (message.find("CMDP|") == 0) {
+                uint8_t cmd = 0;
+                try {
+                    std::string command = message.substr(message.find('|') + 1);
+                    cmd = stoi(command);
+                } catch (const std::exception& e) {
+                    std::cerr << e.what() << std::endl;
+                }
+                auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::CMDP, socket_);
+                if (typeid(*packet) == typeid(PacketCMDP)) {
+                    dynamic_cast<PacketCMDP*>(packet.get())->format_data(cmd);
+                }
+                packet->send_packet(remote_endpoint_);
+                std::cout << *packet << std::endl;
+            }
+            else {
                 auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::CMD, socket_);
                 if (typeid(*packet) == typeid(PacketCMD)) {
                     dynamic_cast<PacketCMD*>(packet.get())->format_data(message);
@@ -49,7 +75,13 @@ namespace client {
     }
 
     void Client::send_message_to_player(const std::string& message, const udp::endpoint& player_endpoint) {
-        socket_.send_to(asio::buffer(message), player_endpoint);
+//        socket_.send_to(asio::buffer(message), player_endpoint);
+          auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::CMD, socket_);
+          if (typeid(*packet) == typeid(PacketCMD)) {
+              dynamic_cast<PacketCMD*>(packet.get())->format_data(message);
+          }
+          packet->send_packet(player_endpoint);
+          std::cout << *packet << std::endl;
     }
 
     void Client::main_loop() {
@@ -94,49 +126,56 @@ namespace client {
     }
 
     void Client::manage_message(std::size_t bytes_transferred) {
-        std::cout << "Manage message: " << bytes_transferred << std::endl;
         std::string message = std::string(recv_buffer_.data(), bytes_transferred);
-        std::cout << "Message: " << recv_buffer_.data() << std::endl;
+        uint32_t type = PacketFactory::TypePacket::PING;
+        std::string data = "";
+        try {
+            type = Packet::extract_type(recv_buffer_.data(), bytes_transferred);
+            data = Packet::extract_data(recv_buffer_.data(), bytes_transferred, type);
+        } catch (const std::exception& e) {
+            std::cerr << e.what() << std::endl;
+        }
         if (!im_host) {
-            if (bytes_transferred == 3) {
-                if (recv_buffer_[2] == 0) {
-                    std::cout << "Received: PING" << std::endl;
-                    for (size_t i = 0; i < bytes_transferred; ++i) {
-                        std::cout << static_cast<int>(recv_buffer_[i]) << "|";
-                    }
-                    auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::PING, socket_);
-                    send_packet(*packet);
-                return ;
+            if (type == PacketFactory::TypePacket::PING) {
+              std::cout << "Received: PING" << std::endl;
+              auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::PING, socket_);
+              send_packet(*packet);
+              return ;
+            }
+            if (type == PacketFactory::TypePacket::CMD) {
+                std::cout << "Received: CMD" << std::endl;
+                std::cout << data << std::endl;
+                if (data.find("GAME_LAUNCH|HOST") == 0) {
+                    std::cout << "Received: GAME_LAUNCH|HOST" << std::endl;
+                    im_host = true;
+                    command_handler_ = std::make_unique<CommandHandler>(*this);
+                } else if (data.find("GAME_LAUNCH|") == 0) {
+                    std::cout << "Received: GAME_LAUNCH" << std::endl;
+                    std::cout << data << std::endl;
+                    std::string host_data = data.substr(data.find('|') + 1);
+                    std::string host_ip = host_data.substr(0, host_data.find(':'));
+                    std::string host_port = host_data.substr(host_data.find(':') + 1, host_data.rfind(':') - host_data.find(':') - 1);
+                    std::string host_id = host_data.substr(host_data.rfind(':') + 1);
+                    std::cout << "Host IP: " << host_ip << std::endl;
+                    std::cout << "Host Port: " << host_port << std::endl;
+                    remote_endpoint_ = udp::endpoint(asio::ip::address::from_string(host_ip), std::stoi(host_port));
+                    send_message("GAME_LAUNCH|ACK");
                 }
-            }
-            if (message.find("GAME_LAUNCH|HOST") == 0) {
-                std::cout << "Received: GAME_LAUNCH|HOST" << std::endl;
-                im_host = true;
-                command_handler_ = std::make_unique<CommandHandler>(*this);
-                return ;
-            }
-            std::cout << "The message is : " << message << std::endl;
-            if (message.find("GAME_LAUNCH|") == 0) {
-                std::cout << "Received: GAME_LAUNCH" << std::endl;
-                std::cout << message << std::endl;
-                std::string host_data = message.substr(message.find('|') + 1);
-                std::string host_ip = host_data.substr(0, host_data.find(':'));
-                std::string host_port = host_data.substr(host_data.find(':') + 1, host_data.rfind(':') - host_data.find(':') - 1);
-                std::string host_id = host_data.substr(host_data.rfind(':') + 1);
-                remote_endpoint_ = udp::endpoint(asio::ip::address::from_string(host_ip), std::stoi(host_port));
-                send_message("GAME_LAUNCH|ACK");
+                return;
             }
         } else {
-            std::cout << "Received As Host: " << message << std::endl;
-            if (message.find("GAME_LAUNCH|ACK") == 0) {
+            std::cout << "Received from Host: " << data << std::endl;
+            if (data.find("GAME_LAUNCH|ACK") == 0) {
                 players_endpoints_[std::to_string(number_of_players_)] = remote_endpoint_;
                 number_of_players_ += 1;
                 send_message_to_player("Start the game", remote_endpoint_);
                 return ;
+
             }
-            if (message.find("command|") == 0) {
-                std::string command = message.substr(message.find('|') + 1);
-                command_handler_.get()->addCommand(command);
+            if (type == PacketFactory::TypePacket::CMDP) {
+                std::cout << "Received: CMDP" << std::endl;
+                std::cout << data << std::endl;
+                command_handler_.get()->addCommand(data);
                 return ;
             }
         }
@@ -150,14 +189,12 @@ namespace client {
             manage_message(bytes_transferred);
 
             auto message = std::string(recv_buffer_.data(), bytes_transferred);
-            //std::cout << "Received message: " << message << std::endl;
 
             received_messages_[message_id_counter_] = std::make_pair(message, remote_endpoint_);
 
-            // Increment the message ID
             message_id_counter_ += 1;
-            std::cout << "Message ID: " << message_id_counter_ << std::endl;
-            // Notify the server loop that a message has been received
+//            std::cout << "Message ID: " << message_id_counter_ << std::endl;
+
             std::fill(recv_buffer_.begin() + bytes_transferred, recv_buffer_.end(), 0);
             messages_condition_.notify_one();
         }
