@@ -76,5 +76,3 @@ void BulletSystem::update(Registry& registry) {
 }
 
 }
-
-

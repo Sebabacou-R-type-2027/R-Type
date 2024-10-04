@@ -12,7 +12,8 @@
 #include "create_ennemies.hpp"
 #include "system.hpp"
 #include "game_state_manager.hpp"
-#include "FPSCounter.hpp"
+#include "utils/FPSCounter.hpp"
+#include "factories/button_factory.hpp"
 
 namespace rtype {
     class Game {
@@ -31,13 +32,18 @@ namespace rtype {
             void startGame();
             void createMenuButtons(sf::Font& font);
 
-            ecs::CreateEnnemies createEnnemies;
+            // SFML
             sf::RenderWindow window;
+            sf::Sprite playerSprite;
+            sf::Texture playerTexture;
+
+            // Game State
+            GameStateManager gameStateManager;
+
+            // ECS
+            ecs::CreateEnnemies createEnnemies;
             ecs::Registry registry;
             ecs::System system;
-            sf::Texture playerTexture;
-            sf::Sprite playerSprite;
-            GameStateManager gameStateManager;
 
             // FPS Counter
             sf::Text fpsText;

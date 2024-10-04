@@ -7,9 +7,7 @@
 
 #include "game.hpp"
 #include <iostream>
-#include "button_factory.hpp"
 #include <chrono>
-#include "bullet_system.hpp"
 
 namespace rtype {
     Game::Game(const std::string& title, unsigned int width, unsigned int height, const std::string& playerTexturePath)
@@ -264,7 +262,6 @@ namespace rtype {
         registry.emplace_component<ecs::Velocity>(movable_entity, 0.0f, 0.0f);
         registry.emplace_component<ecs::Drawable>(movable_entity, "assets/Ship/Ship.png");
         registry.emplace_component<ecs::Controllable>(movable_entity, true, 5.0f);
-        registry.emplace_component<ecs::Acceleration>(movable_entity, 0.0f, 0.0f);
         registry.emplace_component<ecs::EntityType>(movable_entity, ecs::Type::Player);
         auto& hitbox = registry.emplace_component<ecs::Hitbox>(movable_entity, ecs::ShapeType::Rectangle, false);
         hitbox->rect = sf::RectangleShape(sf::Vector2f(50.0f, 50.0f));
@@ -282,7 +279,6 @@ namespace rtype {
         registry.emplace_component<ecs::Position>(charge_animation, 500.0f, 354.0f);
         registry.emplace_component<ecs::Velocity>(charge_animation, 0.0f, 0.0f);
         registry.emplace_component<ecs::Controllable>(charge_animation, true, 5.0f);
-        registry.emplace_component<ecs::Acceleration>(charge_animation, 0.0f, 0.0f);
     }
 }
 

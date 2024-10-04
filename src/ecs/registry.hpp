@@ -20,7 +20,6 @@
 #include "components/Velocity.hpp"
 #include "components/Controllable.hpp"
 #include "components/Drawable.hpp"
-#include "components/Acceleration.hpp"
 #include "components/LoopMovement.hpp"
 #include "components/Hitbox.hpp"
 #include "components/Button.hpp"
@@ -95,7 +94,6 @@ class Registry {
             register_component<Velocity>();
             register_component<Controllable>();
             register_component<Drawable>();
-            register_component<Acceleration>();
             register_component<LoopMovement>();
             register_component<Hitbox>();
             register_component<Button>();
