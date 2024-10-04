@@ -43,8 +43,8 @@ class PacketFactory {
         enum TypePacket {
             PING = 0,
             ACK = 1,
-            LOGIN = 2,
-            LOGOUT = 3,
+            CMD = 2,
+            CMDP = 3,
         };
 
         /// \brief Create a packet

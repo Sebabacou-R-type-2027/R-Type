@@ -1,7 +1,7 @@
 #pragma once
 #include "CommandHandler.hpp"
 #include "Packet.hpp"
-#include "PacketPing.hpp"
+#include "PacketCMD.hpp"
 #include <asio.hpp>
 #include <atomic>
 #include <iostream>

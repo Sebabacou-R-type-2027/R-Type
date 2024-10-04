@@ -40,7 +40,7 @@ void Packet::send_packet(const asio::ip::udp::endpoint& receiver) {
 }
 
 std::tuple<unsigned, unsigned, unsigned, std::vector<uint8_t>> Packet::extract_packet(
-    char buffer[65535], size_t size) {
+    const char buffer[65535], size_t size) {
     uint32_t size_s = 0;
     uint32_t id = 0;
     uint32_t type = 0;
@@ -84,7 +84,7 @@ std::tuple<unsigned, unsigned, unsigned, std::vector<uint8_t>> Packet::extract_p
     return std::make_tuple(size_s, id, type, remaining_data);
 }
 
-std::string Packet::extract_data(char buffer[65535], size_t size, uint32_t type) {
+std::string Packet::extract_data(const char buffer[65535], size_t size, uint32_t type) {
     std::tuple<unsigned, unsigned, unsigned, std::vector<uint8_t>> packet = extract_packet(buffer, size);
     std::vector<uint8_t> data = std::get<3>(packet);
     std::string result;
@@ -102,19 +102,19 @@ std::string Packet::extract_data(char buffer[65535], size_t size, uint32_t type)
         }
 }
 
-uint32_t Packet::extract_type(char buffer[65535], size_t size) {
+uint32_t Packet::extract_type(const char buffer[65535], size_t size) {
     std::tuple<unsigned, unsigned, unsigned, std::vector<uint8_t>> packet = extract_packet(buffer, size);
 
     return std::get<2>(packet);
 }
 
-uint32_t Packet::extract_id(char buffer[65535], size_t size) {
+uint32_t Packet::extract_id(const char buffer[65535], size_t size) {
     std::tuple<unsigned, unsigned, unsigned, std::vector<uint8_t>> packet = extract_packet(buffer, size);
 
     return std::get<1>(packet);
 }
 
-uint32_t Packet::extract_size(char buffer[65535], size_t size) {
+uint32_t Packet::extract_size(const char buffer[65535], size_t size) {
     std::tuple<unsigned, unsigned, unsigned, std::vector<uint8_t>> packet = extract_packet(buffer, size);
 
     return std::get<0>(packet);
@@ -211,10 +211,9 @@ int Packet::get_size_varint(uint32_t number) {
 }
 
 std::ostream& operator<<(std::ostream& os, const Packet& packet) {
-    os << "Packet: " << std::endl;
-    os << "Size: " << packet.get_size() << std::endl;
-    os << "Id: " << packet.get_idp() << std::endl;
-    os << "Type: " << static_cast<int>(packet.get_type()) << std::endl;
-    os << "Data: " << packet.get_data();
+    os << "Packet[" << packet.get_idp() << "]:" << std::endl;
+    os << "   Size: " << packet.get_size() << std::endl;
+    os << "   Type: " << static_cast<int>(packet.get_type()) << std::endl;
+    os << "   Data: " << packet.get_data();
     return os;
 }

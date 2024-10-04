@@ -89,7 +89,7 @@ class Packet {
          * @param size The size of the buffer.
          * @return A string containing the data of the packet.
          */
-        static std::string extract_data(char buffer[65535], size_t size, uint32_t type);
+        static std::string extract_data(const char buffer[65535], size_t size, uint32_t type);
 
         /**
          * @brief Extract the ID from a buffer.
@@ -97,7 +97,7 @@ class Packet {
          * @param size The size of the buffer.
          * @return The ID of the packet.
          */
-        static uint32_t extract_id(char buffer[65535], size_t size);
+        static uint32_t extract_id(const char buffer[65535], size_t size);
 
         /**
          * @brief Extract the type from a buffer.
@@ -105,7 +105,7 @@ class Packet {
          * @param size The size of the buffer.
          * @return The type of the packet.
          */
-        static uint32_t extract_type(char buffer[65535], size_t size);
+        static uint32_t extract_type(const char buffer[65535], size_t size);
 
         /**
          * @brief Extract the size from a buffer.
@@ -113,7 +113,7 @@ class Packet {
          * @param size The size of the buffer.
          * @return The size of the packet.
          */
-        static uint32_t extract_size(char buffer[65535], size_t size);
+        static uint32_t extract_size(const char buffer[65535], size_t size);
 
         /**
          * @brief Get the packet size.
@@ -196,7 +196,7 @@ class Packet {
          * @return A tuple containing packet details (size, ID, type, and data).
          * @details This method is used to parse a raw packet from a buffer and extract the essential information.
          */
-        static std::tuple<unsigned, unsigned, unsigned, std::vector<uint8_t>> extract_packet(char buffer[65535], size_t size);
+        static std::tuple<unsigned, unsigned, unsigned, std::vector<uint8_t>> extract_packet(const char buffer[65535], size_t size);
 
        private:
         /**

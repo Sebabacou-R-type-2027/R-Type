@@ -174,24 +174,20 @@ void UdpServer::handle_receive(std::size_t bytes_transferred) {
  * @param message The message sent by the client.
  * @param client_endpoint The client's endpoint.
  */
-void UdpServer::handle_client_message(const std::string& message, const asio::ip::udp::endpoint& client_endpoint) {
-
+void UdpServer::handle_client_message(const std::string& msg, const udp::endpoint& client_endpoint) {
     std::string client_str = client_endpoint.address().to_string() + ":" + std::to_string(client_endpoint.port());
-    try {
-        auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::ACK, socket_);
-        if (typeid(*packet) == typeid(PacketACK)) {
-            dynamic_cast<PacketACK*>(packet.get())->format_data(true);
-        }
-        packet->send_packet(client_endpoint);
-        std::cout << *packet << std::endl;
-    } catch (const std::exception& e) {
-        std::cerr << e.what() << std::endl;
-    }
-
     std::cout << "sender: " << client_str << std::endl;
     std::cout << "Authorised clients:" << std::endl;
     for (const auto& client : connected_clients_) {
         std::cout << "\t" << client << std::endl;
+    }
+    std::string message = "null";
+    try {
+        std::cout << "Capacity of msg: " << msg.capacity() << std::endl;
+        uint32_t type = Packet::extract_type(msg.data(), msg.capacity());
+        message = Packet::extract_data(msg.data(), msg.capacity(), type);
+    } catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
     }
     if (message.rfind("login ", 0) == 0) {
         std::string username, password;
