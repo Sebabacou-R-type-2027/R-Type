@@ -12,10 +12,5 @@ r-type_server
 # Miscellaneous
 clients.csv
 
-# Ignore the CMakeLists.txt only for me
-CMakeLists.txt
-
 # Ignore the .gitignore file
-.gitignore
-CMakeLists.txt
 .gitignore
