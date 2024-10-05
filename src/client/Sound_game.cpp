@@ -16,16 +16,14 @@ Sound_game::~Sound_game()
 
 void Sound_game::playSound(const std::string& filename)
 {
-    sf::SoundBuffer buffer;
-    if (!buffer.loadFromFile(filename)) {
+    buffers.emplace_back();
+    if (!buffers.back().loadFromFile(filename)) {
         std::cerr << "Erreur: Impossible de charger le fichier audio " << filename << std::endl;
+        buffers.pop_back();
         return;
     }
-    printf("JULLLL");
     sounds.emplace_back();
-    sounds.back().setBuffer(buffer);
-    test.setBuffer(buffer);
-    test.play();
+    sounds.back().setBuffer(buffers.back());
     sounds.back().play();
 }
 
