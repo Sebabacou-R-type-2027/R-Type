@@ -52,9 +52,6 @@ namespace rtype {
 
         while (window.isOpen()) {
             processEvents();
-            rtype::game::Sound_game Sound_game;
-            Sound_game.playSound("assets/Son/laser_gun1.wav");
-
             update(bulletSystem);
             render();
         }
