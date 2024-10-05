@@ -8,12 +8,12 @@
 #include "bullet_event.hpp"
 #include <iostream>
 #include "Sound_game.hpp"
+#include <SFML/Audio.hpp>
 
 namespace rtype::game {
 
 
     void BulletSystem::update(ecs::Registry& registry) {
-        Sound_game Sound_game;
         auto& positions = registry.get_components<ecs::Position>();
         auto& velocities = registry.get_components<ecs::Velocity>();
         auto& bullet = registry.get_components<ecs::Bullet>();

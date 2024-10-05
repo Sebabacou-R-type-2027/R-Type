@@ -10,6 +10,9 @@
 #include "button_factory.hpp"
 #include <chrono>
 #include "bullet_event.hpp"
+#include <SFML/Audio.hpp>
+
+
 
 namespace rtype {
     Game::Game(const std::string& title, unsigned int width, unsigned int height, const std::string& playerTexturePath)
@@ -49,6 +52,9 @@ namespace rtype {
 
         while (window.isOpen()) {
             processEvents();
+            rtype::game::Sound_game Sound_game;
+            Sound_game.playSound("assets/Son/laser_gun1.wav");
+
             update(bulletSystem);
             render();
         }

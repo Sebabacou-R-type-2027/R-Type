@@ -8,6 +8,9 @@
 #pragma once
 
 #include "registry.hpp"
+#include "Sound_game.hpp"
+#include <SFML/Audio.hpp>
+
 
 namespace rtype::game {
     class BulletSystem {
@@ -24,5 +27,7 @@ namespace rtype::game {
             sf::Time elapsed = sf::Time::Zero; // Temps écoulé total
             int compteur = 0; // Compteur de secondes
             bool check = false;
+            rtype::game::Sound_game Sound_game;
+
     };
 }

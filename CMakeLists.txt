@@ -27,7 +27,7 @@ add_executable(r-type_server ${server})
 add_executable(r-type_client ${client})
 
 target_link_libraries(r-type_server PRIVATE asio::asio)
-target_link_libraries(r-type_client PRIVATE asio::asio sfml-graphics sfml-window sfml-system)
+target_link_libraries(r-type_client PRIVATE asio::asio sfml-graphics sfml-window sfml-system sfml-audio)
 
 target_include_directories(r-type_server PRIVATE
     src/server
