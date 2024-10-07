@@ -13,6 +13,9 @@
 #include "system.hpp"
 
 #include "bullet_event.hpp"
+#include "game_state_manager.hpp"
+#include "utils/FPSCounter.hpp"
+#include "factories/button_factory.hpp"
 
 namespace rtype {
     class Game {
@@ -21,16 +24,32 @@ namespace rtype {
             void run();
         private:
             void initChargeBullet();
-            void processEvents();
+            void processEvents(GameStateManager& gameStateManager);
             void update(rtype::game::BulletSystem& bulletSystem);
             void render();
+            void renderMenu();
+            void renderPauseScreen();
+            void renderGameOverScreen();
+            void renderGame();
+            void startGame();
+            void createMenuButtons(sf::Font& font);
 
-            ecs::CreateEnnemies createEnnemies;
+            // SFML
             sf::RenderWindow window;
+            sf::Sprite playerSprite;
+            sf::Texture playerTexture;
+
+            // Game State
+            GameStateManager gameStateManager;
+            rtype::game::BulletSystem bulletSystem;
+
+            // ECS
+            ecs::CreateEnnemies createEnnemies;
             ecs::Registry registry;
             ecs::System system;
-            rtype::game::BulletSystem bulletSystem;
-            sf::Texture playerTexture;
-            sf::Sprite playerSprite;
+
+            // FPS Counter
+            sf::Text fpsText;
+            FPSCounter fpsCounter;
     };
 }
