@@ -12,6 +12,9 @@
 #include "Create_ennemies.hpp"
 #include "Handle_collision.hpp"
 #include "system.hpp"
+#include "game_state_manager.hpp"
+#include "utils/FPSCounter.hpp"
+#include "factories/button_factory.hpp"
 
 namespace rtype {
     class Game {
@@ -20,16 +23,32 @@ namespace rtype {
             void run();
         private:
             void initChargeBullet();
-            void processEvents();
-            void update(sf::Clock& clock);
+            void processEvents(GameStateManager& gameStateManager);
+            void update();
             void render();
+            void renderMenu();
+            void renderPauseScreen();
+            void renderGameOverScreen();
+            void renderGame();
+            void startGame();
+            void createMenuButtons(sf::Font& font);
 
+            // SFML
+            sf::RenderWindow window;
+            sf::Sprite playerSprite;
+            sf::Texture playerTexture;
+
+            // Game State
+            GameStateManager gameStateManager;
+
+            // ECS
             ecs::CreateEnnemies createEnnemies;
             ecs::HandleCollision handleCollision;
-            sf::RenderWindow window;
             ecs::Registry registry;
             ecs::System system;
-            sf::Texture playerTexture;
-            sf::Sprite playerSprite;
+
+            // FPS Counter
+            sf::Text fpsText;
+            FPSCounter fpsCounter;
     };
 }
