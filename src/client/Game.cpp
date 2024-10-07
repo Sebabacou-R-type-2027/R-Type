@@ -5,7 +5,7 @@
 ** game
 */
 
-#include "game.hpp"
+#include "Game.hpp"
 #include <iostream>
 #include "button_factory.hpp"
 #include <chrono>
@@ -36,6 +36,7 @@ namespace rtype {
         registry.emplace_component<ecs::Controllable>(movable_entity, true, 5.0f);
         registry.emplace_component<ecs::Acceleration>(movable_entity, 0.0f, 0.0f);
         registry.emplace_component<ecs::EntityType>(movable_entity, ecs::Type::Player);
+        registry.emplace_component<ecs::CollisionState>(movable_entity, false);
         auto& hitbox = registry.emplace_component<ecs::Hitbox>(movable_entity, ecs::ShapeType::Rectangle, false);
         hitbox->rect = sf::RectangleShape(sf::Vector2f(50.0f, 50.0f));
 
@@ -45,11 +46,11 @@ namespace rtype {
 
         sf::Font font;
         font.loadFromFile("assets/fonts/NimbusSanL-Bol.otf");
-
+        sf::Clock clock;
 
         while (window.isOpen()) {
             processEvents();
-            update();
+            update(clock);
             render();
         }
     }
@@ -62,24 +63,24 @@ namespace rtype {
         }
     }
 
-    void Game::update() {
+    void Game::update(sf::Clock& clock) {
+        float deltaTime = clock.restart().asSeconds();
         system.control_system(registry);
         system.position_system(registry);
         system.button_system(registry, window);
         system.collision_system(registry, window);
-        auto currentTime = std::chrono::high_resolution_clock::now();
-        static auto lastTime = std::chrono::high_resolution_clock::now();
-        float deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - lastTime).count();
-        lastTime = currentTime;
         system.bullet_system(registry);
         system.loop_movement_system(registry, deltaTime);
 
+        system.animation_system(registry, deltaTime, window);
+        handleCollision.handle_collision(registry);
         auto& positions = registry.get_components<ecs::Position>();
         auto& drawables = registry.get_components<ecs::Drawable>();
         auto& entities = registry.get_components<ecs::EntityType>();
 
+
         for (std::size_t i = 0; i < positions.size(); ++i) {
-            if (positions[i] && drawables[i] && entities[i]) { // Ensure both components exist  
+            if (positions[i] && drawables[i] && entities[i]) { // Ensure both components exist
                 if (positions[i]->x < 0) positions[i]->x = 0;
                 if (positions[i]->x > window.getSize().x - drawables[i]->size) // Use size from Drawable
                     positions[i]->x = window.getSize().x - drawables[i]->size;

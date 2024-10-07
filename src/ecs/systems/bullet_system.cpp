@@ -51,6 +51,7 @@ namespace ecs::systems {
                     hit->rect = sf::RectangleShape(sf::Vector2f(20.0f, 20.0f));
                     registry.emplace_component<ecs::Position>(laser_entity, positions[0]->x + 40, positions[0]->y + 5);
                     registry.emplace_component<ecs::Drawable>(laser_entity, "assets/Bullets/01.png");
+                    registry.emplace_component<ecs::CollisionState>(laser_entity, false);
                     registry.emplace_component<ecs::Bullet>(laser_entity);
                 } else {
                     ChargedOneDraw = true;

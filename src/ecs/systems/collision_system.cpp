@@ -20,30 +20,22 @@ namespace ecs::systems {
     void CollisionSystem::update(Registry& registry, sf::RenderWindow& window) {
         auto& positions = registry.get_components<Position>();
         auto& hitboxes = registry.get_components<Hitbox>();
-        auto& controllable = registry.get_components<Controllable>();
-        auto& entities = registry.get_components<EntityType>();
+        auto& collision_states = registry.get_components<CollisionState>();
 
         for (std::size_t i = 0; i < positions.size(); ++i) {
-            if (!positions[i] || !hitboxes[i] || !entities[i]) continue;
+            if (!positions[i] || !hitboxes[i] || !collision_states[i]) continue;
 
             Position& pos1 = *positions[i];
             Hitbox& hitbox1 = *hitboxes[i];
-            Controllable& controllable1 = *controllable[i];
-            EntityType& entity1 = *entities[i];
             for (std::size_t j = 0; j < positions.size(); ++j) {
                 if (i == j || !positions[j] || !hitboxes[j]) continue;
 
                 Position& pos2 = *positions[j];
                 Hitbox& hitbox2 = *hitboxes[j];
-                EntityType& entity2 = *entities[j];
-                if (entity1.current_type == Type::Bullet && entity2.current_type == Type::Ennemy) {
-                    if (isColliding(pos1, hitbox1, pos2, hitbox2)) {
-                        // registry.kill_entity(registry.entity_from_index(i));
-                        registry.kill_entity(registry.entity_from_index(j));
-                    }
-                } else
                 if (isColliding(pos1, hitbox1, pos2, hitbox2)) {
-                    std::cout << "Collision detected between entity " << i << " and entity " << j << std::endl;
+                    collision_states[i]->active = true;
+                    collision_states[j]->active = true;
+                    // std::cout << "Collision detected between entity " << i << " and entity " << j << std::endl;
                 }
             }
         }

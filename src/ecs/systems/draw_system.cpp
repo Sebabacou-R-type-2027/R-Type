@@ -35,15 +35,21 @@ void DrawSystem::update(Registry& registry, sf::RenderWindow& window, sf::Sprite
 void DrawSystem::update(Registry& registry, sf::RenderWindow& window) {
     auto& drawables = registry.get_components<Drawable>();
     auto& positions = registry.get_components<Position>();
+    auto& animations = registry.get_components<Animation>();
 
     for (std::size_t i = 0; i < drawables.size(); ++i) {
         if (drawables[i] && positions[i]) {
             sf::Sprite sprite;
-            sprite.setTexture(drawables[i]->texture); // Use the existing texture
+            sprite.setTexture(drawables[i]->texture);
             if (drawables[i]->texture_rect != sf::IntRect())
-                sprite.setTextureRect(drawables[i]->texture_rect); // Use the existing texture rect
+                sprite.setTextureRect(drawables[i]->texture_rect);
             sprite.setPosition(positions[i]->x, positions[i]->y);
-            window.draw(sprite); // Draw the sprite
+            window.draw(sprite);
+        }
+    }
+    for (std::size_t i = 0; i < animations.size(); ++i) {
+        if (animations[i] && positions[i]) {
+            window.draw(animations[i]->sprite);
         }
     }
 }

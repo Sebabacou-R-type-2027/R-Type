@@ -5,7 +5,7 @@
 ** create_ennemies
 */
 
-#include "create_ennemies.hpp"
+#include "Create_ennemies.hpp"
 
 namespace ecs {
     void CreateEnnemies::create_enemy(Registry& registry,
@@ -19,15 +19,16 @@ namespace ecs {
                                     State state)
     {
         auto enemy = registry.spawn_entity();
-        auto &drawable = registry.emplace_component<ecs::Drawable>(enemy, texturePath, true, sf::IntRect(70, 10, 130, 124));
+        auto &animation = registry.emplace_component<ecs::Animation>(enemy, texturePath, 8, 1, 0.5f);
 
-        float enemyWidth = drawable->sprite.getGlobalBounds().width;
-        registry.emplace_component<ecs::Position>(enemy, x - enemyWidth, y);
+        float enemyWidth = animation->imageSize.x;
+        registry.emplace_component<ecs::Position>(enemy, x - enemyWidth * 2 , y);
         auto& hitbox = registry.emplace_component<ecs::Hitbox>(enemy, ecs::ShapeType::Rectangle, false);
         hitbox->rect = sf::RectangleShape(sf::Vector2f(hitboxSize, hitboxSize));
         registry.emplace_component<ecs::EnemyState>(enemy, state);
         registry.emplace_component<ecs::LoopMovement>(enemy, minX, maxX, minY, maxY, speed, angle, radius, angular_speed);
         registry.emplace_component<ecs::EntityType>(enemy, Type::Ennemy);
+        registry.emplace_component<ecs::CollisionState>(enemy, false);
     }
 
     void CreateEnnemies::create_enemies(Registry& registry, sf::RenderWindow& window)
@@ -41,7 +42,7 @@ namespace ecs {
             create_enemy(registry,
                         max_x, yPosition,
                         100.0f,
-                        "assets/Ennemy.png",
+                       "assets/sprites/ennemy.png",
                         50.0f,
                         0.0f, max_x,
                         0.0f, max_y,

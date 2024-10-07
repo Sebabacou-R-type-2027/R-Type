@@ -9,7 +9,8 @@
 
 #include <SFML/Graphics.hpp>
 #include "registry.hpp"
-#include "create_ennemies.hpp"
+#include "Create_ennemies.hpp"
+#include "Handle_collision.hpp"
 #include "system.hpp"
 
 namespace rtype {
@@ -20,10 +21,11 @@ namespace rtype {
         private:
             void initChargeBullet();
             void processEvents();
-            void update();
+            void update(sf::Clock& clock);
             void render();
 
             ecs::CreateEnnemies createEnnemies;
+            ecs::HandleCollision handleCollision;
             sf::RenderWindow window;
             ecs::Registry registry;
             ecs::System system;
