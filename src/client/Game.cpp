@@ -16,6 +16,7 @@ namespace rtype {
     }
 
     void Game::run() {
+        sf::Clock clock;
         registry.register_all_components();
 
         sf::Font font;
@@ -39,11 +40,11 @@ namespace rtype {
 
             switch (gameStateManager.getGameState()) {
                 case GameState::MENU:
-                    update();
+                    update(clock);
                     renderMenu();
                     break;
                 case GameState::GAME:
-                    update();
+                    update(clock);
                     render();
                     break;
                 case GameState::PAUSE:
@@ -68,37 +69,33 @@ namespace rtype {
     }
 
 
+    void Game::update(sf::Clock& clock) {
+            float deltaTime = clock.restart().asSeconds();
+            system.control_system(registry);
+            system.position_system(registry);
+            if (gameStateManager.getGameState() == GameState::MENU)
+                system.button_system(registry, window);
+            if (gameStateManager.getGameState() == GameState::GAME) {
+                system.collision_system(registry, window);
+                handlingBullet.update(registry);
+                system.loop_movement_system(registry, deltaTime);
+                system.animation_system(registry, deltaTime, window);
+                handleCollision.handle_collision(registry);
+            }
 
-    void Game::update() {
-        system.control_system(registry);
-        system.position_system(registry);
-        if (gameStateManager.getGameState() == GameState::MENU)
-            system.button_system(registry, window);
-        if (gameStateManager.getGameState() == GameState::GAME) {
-            system.collision_system(registry, window);
-            auto currentTime = std::chrono::high_resolution_clock::now();
-            static auto lastTime = std::chrono::high_resolution_clock::now();
-            float deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - lastTime).count();
-            lastTime = currentTime;
-            system.bullet_system(registry);
-            system.loop_movement_system(registry, deltaTime);
-        }
-
-        system.animation_system(registry, deltaTime, window);
-        handleCollision.handle_collision(registry);
-        auto& positions = registry.get_components<ecs::Position>();
-        auto& drawables = registry.get_components<ecs::Drawable>();
-        auto& entities = registry.get_components<ecs::EntityType>();
+        auto positions = registry.get_components<ecs::Position>();
+        auto drawables = registry.get_components<ecs::Drawable>();
+        auto entities = registry.get_components<ecs::EntityType>();
 
 
-        for (std::size_t i = 0; i < positions.size(); ++i) {
+        for (std::size_t i = 0; i < positions.size() && i < drawables.size() && i < entities.size(); ++i) {
             if (positions[i] && drawables[i] && entities[i]) { // Ensure both components exist
-                if (positions[i]->x < 0) positions[i]->x = 0;
-                if (positions[i]->x > window.getSize().x - drawables[i]->size) // Use size from Drawable
-                    positions[i]->x = window.getSize().x - drawables[i]->size;
-                if (positions[i]->y < 0) positions[i]->y = 0;
-                if (positions[i]->y > window.getSize().y - drawables[i]->size)
-                    positions[i]->y = window.getSize().y - drawables[i]->size;
+                if (positions[i]->get().x < 0) positions[i]->get().x = 0;
+                if (positions[i]->get().x > window.getSize().x - drawables[i]->get().size) // Use size from Drawable
+                    positions[i]->get().x = window.getSize().x - drawables[i]->get().size;
+                if (positions[i]->get().y < 0) positions[i]->get().y = 0;
+                if (positions[i]->get().y > window.getSize().y - drawables[i]->get().size)
+                    positions[i]->get().y = window.getSize().y - drawables[i]->get().size;
             }
         }
     }
@@ -114,7 +111,6 @@ namespace rtype {
     void Game::renderMenu() {
         window.clear();
         system.draw_system(registry, window);
-        system.button_system_render(registry, window);
         window.display();
     }
 
@@ -262,14 +258,17 @@ namespace rtype {
         gameStateManager.setGameState(GameState::GAME);
 
         auto movable_entity = registry.spawn_entity();
+        std::cout << "Creating player entity #" << static_cast<std::size_t>(movable_entity) << std::endl;
         registry.emplace_component<ecs::Position>(movable_entity, 400.0f, 300.0f);
         registry.emplace_component<ecs::Velocity>(movable_entity, 0.0f, 0.0f);
         registry.emplace_component<ecs::Drawable>(movable_entity, "assets/Ship/Ship.png");
         registry.emplace_component<ecs::Controllable>(movable_entity, true, 5.0f);
         registry.emplace_component<ecs::EntityType>(movable_entity, ecs::Type::Player);
         registry.emplace_component<ecs::CollisionState>(movable_entity, false);
-        auto& hitbox = registry.emplace_component<ecs::Hitbox>(movable_entity, ecs::ShapeType::Rectangle, false);
-        hitbox->rect = sf::RectangleShape(sf::Vector2f(50.0f, 50.0f));
+        auto& hitbox = registry.emplace_component<ecs::Hitbox>(movable_entity, ecs::ShapeType::Rectangle, false, true);
+        hitbox.rect = sf::RectangleShape(sf::Vector2f(50.0f, 50.0f));
+        hitbox.rect.setOutlineColor(sf::Color::Green);
+        hitbox.rect.setOutlineThickness(1.0f);
 
         createEnnemies.create_enemies(registry, window);
 

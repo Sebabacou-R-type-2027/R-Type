@@ -13,6 +13,7 @@
 #include "Handle_collision.hpp"
 #include "system.hpp"
 #include "game_state_manager.hpp"
+#include "HandlingBullet.hpp"
 #include "utils/FPSCounter.hpp"
 #include "factories/button_factory.hpp"
 
@@ -24,7 +25,7 @@ namespace rtype {
         private:
             void initChargeBullet();
             void processEvents(GameStateManager& gameStateManager);
-            void update();
+            void update(sf::Clock& clock);
             void render();
             void renderMenu();
             void renderPauseScreen();
@@ -43,6 +44,7 @@ namespace rtype {
 
             // ECS
             ecs::CreateEnnemies createEnnemies;
+            ecs::HandlingBullet handlingBullet;
             ecs::HandleCollision handleCollision;
             ecs::Registry registry;
             ecs::System system;

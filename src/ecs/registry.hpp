@@ -25,6 +25,7 @@
 #include "components/Hitbox.hpp"
 #include "components/Animation.hpp"
 
+#include "components/GameState.hpp"
 #include "components/Ennemy_state.hpp"
 #include "components/Entity_type.hpp"
 #include "components/Bullet.hpp"
@@ -35,60 +36,86 @@ namespace ecs {
 class Registry {
     public:
         template <typename Component>
-        sparse_array<Component>& register_component() {
-            auto type = std::type_index(typeid(Component));
-            _components[type] = sparse_array<Component>();
-            return std::any_cast<sparse_array<Component>&>(_components[type]);
+        void register_component() {
+            _components.emplace(std::type_index(typeid(Component)), sparse_array<std::any>());
         }
 
         template <typename Component>
-        sparse_array<Component>& get_components() {
-            auto type = std::type_index(typeid(Component));
-            return std::any_cast<sparse_array<Component>&>(_components.at(type));
+        auto get_components() {
+            auto &components = _components.at(typeid(Component));
+            std::vector<std::optional<std::reference_wrapper<Component>>> references(components.size());
+            std::for_each(components.begin(), components.end(), [&references](auto& component) {
+                if (component.has_value())
+                    references.emplace_back(std::ref(std::any_cast<Component &>(*component)));
+                else
+                    references.push_back(std::nullopt);
+            });
+            return std::move(references);
         }
 
         template <typename Component>
-        const sparse_array<Component>& get_components() const {
-            auto type = std::type_index(typeid(Component));
-            return std::any_cast<const sparse_array<Component>&>(_components.at(type));
+        auto get_components() const {
+            auto &components = _components.at(typeid(Component));
+            std::vector<std::optional<std::reference_wrapper<const Component>>> references(components.size());
+            std::for_each(components.begin(), components.end(), [&references](auto& component) {
+                if (component.has_value())
+                    references.push_back(std::cref(std::any_cast<const Component &>(*component)));
+                else
+                    references.push_back(std::nullopt);
+            });
+            return std::move(references);
+        }
+
+        bool entity_exists(Entity entity) const {
+            return std::find(_entities.begin(), _entities.end(), entity) != _entities.end();
         }
 
         Entity spawn_entity() {
+            auto next = std::find(_entities.begin(), _entities.end(), false);
+            if (next != _entities.end()) {
+                *next = true;
+                return static_cast<Entity>(std::distance(_entities.begin(), next));
+            }
             Entity new_entity(_next_entity_id++);
-            _entities.push_back(new_entity);
+            _entities.push_back(true);
             return new_entity;
         }
 
-        Entity entity_from_index(std::size_t idx) const {
-            return _entities.at(idx);
+        std::optional<Entity> entity_from_index(std::size_t idx) const {
+            if (idx >= _entities.size())
+                return std::nullopt;
+            return _entities.at(idx) ? std::optional<Entity>(idx) : std::nullopt;
         }
 
-        void kill_entity(Entity const& e) {
-            for (auto& [type, component_array] : _components) {
-                try {
-                    auto& sparse_array_ref = std::any_cast<sparse_array<std::optional<std::remove_reference_t<decltype(component_array)>>> &>(component_array);
-                    sparse_array_ref.erase(static_cast<std::size_t>(e));
-                } catch (const std::bad_any_cast&) {
+        std::size_t size() const {
+            return _entities.size();
+        }
 
-                }
-            }
-            _entities.erase(std::remove(_entities.begin(), _entities.end(), e), _entities.end());
+        void kill_entity(Entity entity) {
+            std::cout << "Killing entity #" << static_cast<std::size_t>(entity) << std::endl;
+            std::for_each(_components.begin(), _components.end(), [entity](auto& pair) {
+                if (pair.second.size() > static_cast<std::size_t>(entity))
+                    pair.second.erase(entity);
+            });
+            _entities.at(static_cast<std::size_t>(entity)) = false;
         }
 
         template <typename Component>
         typename sparse_array<Component>::reference_type add_component(Entity const& to, Component&& component) {
-            return get_components<Component>().insert_at(static_cast<std::size_t>(to), std::forward<Component>(component));
+            std::cout << "Adding '" << typeid(Component).name() << "' component to entity #" << static_cast<std::size_t>(to) << std::endl;
+            return _components.at(typeid(Component)).insert_at(to, std::forward<Component>(component));
         }
 
         template <typename Component, typename... Params>
-        typename sparse_array<Component>::reference_type emplace_component(Entity const& to, Params&&... params) {
-            return get_components<Component>().emplace_at(static_cast<std::size_t>(to), std::forward<Params>(params)...);
+        Component &emplace_component(Entity to, Params&&... params) {
+            std::cout << "Emplacing '" << typeid(Component).name() << "' component on entity #" << static_cast<std::size_t>(to) << std::endl;
+            return std::any_cast<Component &>(_components.at(typeid(Component)).emplace_at(to, Component(std::forward<Params>(params)...)).value());
         }
 
 
         template <typename Component>
         void remove_component(Entity const& from) {
-            get_components<Component>().erase(static_cast<std::size_t>(from));
+            _components.at(typeid(Component)).erase(static_cast<std::size_t>(from));
         }
 
         void register_all_components() {
@@ -104,12 +131,14 @@ class Registry {
             register_component<EntityType>();
             register_component<Bullet>();
             register_component<CollisionState>();
+            register_component<GameState>();
         }
+
     private:
         std::size_t _next_entity_id = 0;
-        std::vector<Entity> _entities;
+        std::vector<bool> _entities;
 
-        std::unordered_map<std::type_index, std::any> _components;
+        std::unordered_map<std::type_index, sparse_array<std::any>> _components;
 };
 
 }

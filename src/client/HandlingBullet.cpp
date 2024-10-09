@@ -5,17 +5,17 @@
 ** position_system
 */
 
-#include "bullet_system.hpp"
+#include "HandlingBullet.hpp"
 #include <iostream>
 
-namespace ecs::systems {
+namespace ecs {
 
 
-void BulletSystem::update(Registry& registry) {
-    auto& positions = registry.get_components<Position>();
-    auto& velocities = registry.get_components<Velocity>();
-    auto& bullet = registry.get_components<Bullet>();
-    auto& entityTypes = registry.get_components<EntityType>(); // To identify the player
+void HandlingBullet::update(Registry& registry) {
+    auto positions = registry.get_components<Position>();
+    auto velocities = registry.get_components<Velocity>();
+    auto bullet = registry.get_components<Bullet>();
+    auto entityTypes = registry.get_components<EntityType>(); // To identify the player
 
     sf::Time currentTime = shootClock.getElapsedTime();
 
@@ -26,7 +26,7 @@ void BulletSystem::update(Registry& registry) {
     // Find the player entity
     std::size_t playerIndex = -1;
     for (std::size_t i = 0; i < entityTypes.size(); ++i) {
-        if (entityTypes[i] && entityTypes[i]->current_type == ecs::Type::Player) {
+        if (entityTypes[i] && entityTypes[i]->get().current_type == ecs::Type::Player) {
             playerIndex = i;
             break;
         }
@@ -60,10 +60,19 @@ void BulletSystem::update(Registry& registry) {
                 registry.emplace_component<ecs::Velocity>(laser_entity, 35.0f, 0.0f);
                 registry.emplace_component<ecs::EntityType>(laser_entity, ecs::Type::Bullet);
                 auto& hit = registry.emplace_component<ecs::Hitbox>(laser_entity, ecs::ShapeType::Rectangle, false);
-                hit->rect = sf::RectangleShape(sf::Vector2f(20.0f, 20.0f));
-                registry.emplace_component<ecs::Position>(laser_entity, positions[playerIndex]->x + 40, positions[playerIndex]->y + 5); // Use player position
+                hit.rect = sf::RectangleShape(sf::Vector2f(20.0f, 20.0f));
+                registry.emplace_component<ecs::Position>(laser_entity,
+                positions
+                .at(playerIndex)
+                ->get()
+                .x + 40.0f,
+                positions
+                .at(playerIndex)
+                ->get()
+                .y + 5.0f);
                 registry.emplace_component<ecs::Drawable>(laser_entity, "assets/Bullets/01.png");
                 registry.emplace_component<ecs::Bullet>(laser_entity);
+                registry.emplace_component<ecs::CollisionState>(laser_entity, false);
             } else {
                 ChargedOneDraw = true;
             }
