@@ -11,20 +11,13 @@ endif()
 
 set(CMAKE_CXX_STANDARD 17)
 
-define_property(GLOBAL PROPERTY SERVER_SOURCES)
-define_property(GLOBAL PROPERTY CLIENT_SOURCES)
+add_executable(r-type_server)
+add_executable(r-type_client)
 
 add_subdirectory(src)
 
-get_property(server GLOBAL PROPERTY SERVER_SOURCES)
-get_property(client GLOBAL PROPERTY CLIENT_SOURCES)
-
 find_package(asio CONFIG REQUIRED)
 find_package(SFML 2.5 COMPONENTS graphics window system CONFIG REQUIRED)
-
-
-add_executable(r-type_server ${server})
-add_executable(r-type_client ${client})
 
 target_link_libraries(r-type_server PRIVATE asio::asio)
 target_link_libraries(r-type_client PRIVATE asio::asio sfml-graphics sfml-window sfml-system)

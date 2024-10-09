@@ -1,6 +1,6 @@
-file(GLOB client *.cpp *.hpp)
+file(GLOB sources *.cpp *.hpp)
 
-set_property(GLOBAL APPEND PROPERTY CLIENT_SOURCES ${client})
+target_sources(r-type_client PRIVATE ${sources})
 
 add_subdirectory(animation)
 add_subdirectory(control)
