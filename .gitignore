@@ -4,6 +4,7 @@
 
 # User-specific files
 .idea
+/.cache
 
 # Executables
 r-type_client
@@ -11,4 +12,3 @@ r-type_server
 
 # Miscellaneous
 clients.csv
-
