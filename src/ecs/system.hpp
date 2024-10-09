@@ -11,10 +11,9 @@
 #include "draw/draw_system.hpp"
 #include "position/position_system.hpp"
 #include "animation/animation_system.hpp"
+#include "collision/collision_system.hpp"
 #include "../client/systems/loop_movement/loop_movement_system.hpp"
 #include "../client/systems/button/button_system.hpp"
-#include "../client/systems/collision/collision_system.hpp"
-#include "../client/systems/bullet/bullet_system.hpp"
 
 namespace ecs {
 
@@ -30,6 +29,7 @@ public:
 
     void draw_system(Registry& reg, sf::RenderWindow& window) {
         drawSystem.update(reg, window);
+        buttonSystem.render(reg, window);
     }
 
     void animation_system(Registry& reg, float deltaTime, sf::RenderWindow& window) {
@@ -44,18 +44,9 @@ public:
         buttonSystem.update(reg, window);
     }
 
-    void button_system_render(Registry& reg, sf::RenderWindow& window) {
-        buttonSystem.render(reg, window);
-    }
-
     void collision_system(Registry& reg, sf::RenderWindow& window) {
         collisionSystem.update(reg, window);
     }
-
-    void bullet_system(Registry& reg) {
-        bulletSystem.update(reg);
-    }
-
 
 private:
     systems::ControlSystem controlSystem;
@@ -65,7 +56,6 @@ private:
     systems::LoopMovementSystem loopMovementSystem;
     systems::ButtonSystem buttonSystem;
     systems::CollisionSystem collisionSystem;
-    systems::BulletSystem bulletSystem;
 };
 
 }

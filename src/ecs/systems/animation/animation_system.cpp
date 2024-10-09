@@ -12,15 +12,15 @@
 namespace ecs::systems {
 
     void AnimationSystem::update(Registry& registry, float deltaTime, sf::RenderWindow& window) {
-        auto &animations = registry.get_components<ecs::Animation>();
-        auto &positions = registry.get_components<ecs::Position>();
+        auto animations = registry.get_components<ecs::Animation>();
+        auto positions = registry.get_components<ecs::Position>();
 
         for (std::size_t i = 0; i < animations.size(); i++) {
             if (animations[i] && positions[i]) {
-                auto &animation = animations[i];
-                auto &position = positions[i];
-                animation->sprite.setPosition(position->x, position->y);
-                animation->update(deltaTime);
+                Animation &animation = *animations[i];
+                Position &position = *positions[i];
+                animation.sprite.setPosition(position.x, position.y);
+                animation.update(deltaTime);
             }
         }
     }
