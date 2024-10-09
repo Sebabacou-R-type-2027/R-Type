@@ -91,11 +91,11 @@ namespace rtype {
         for (std::size_t i = 0; i < positions.size() && i < drawables.size() && i < entities.size(); ++i) {
             if (positions[i] && drawables[i] && entities[i]) { // Ensure both components exist
                 if (positions[i]->get().x < 0) positions[i]->get().x = 0;
-                if (positions[i]->get().x > window.getSize().x - drawables[i]->get().size) // Use size from Drawable
-                    positions[i]->get().x = window.getSize().x - drawables[i]->get().size;
+                if (positions[i]->get().x > window.getSize().x - drawables[i]->get().size.x) // Use size from Drawable
+                    positions[i]->get().x = window.getSize().x - drawables[i]->get().size.x;
                 if (positions[i]->get().y < 0) positions[i]->get().y = 0;
-                if (positions[i]->get().y > window.getSize().y - drawables[i]->get().size)
-                    positions[i]->get().y = window.getSize().y - drawables[i]->get().size;
+                if (positions[i]->get().y > window.getSize().y - drawables[i]->get().size.y)
+                    positions[i]->get().y = window.getSize().y - drawables[i]->get().size.y;
             }
         }
     }
@@ -265,18 +265,13 @@ namespace rtype {
         registry.emplace_component<ecs::Controllable>(movable_entity, true, 5.0f);
         registry.emplace_component<ecs::EntityType>(movable_entity, ecs::Type::Player);
         registry.emplace_component<ecs::CollisionState>(movable_entity, false);
-
-        auto &animation = registry.emplace_component<ecs::Animation>(movable_entity,
-                                                                    "assets/sprites/Player.gif",
-                                                                    5,
-                                                                    1,
-                                                                    0.2f);
-
+        auto draw = registry.emplace_component<ecs::Drawable>(movable_entity, "assets/sprites/Spaceship.gif");
+        draw.sprite.setScale(2.0f, 2.0f);
         auto& hitbox = registry.emplace_component<ecs::Hitbox>(movable_entity,
                                                             ecs::ShapeType::Rectangle,
                                                             false,
                                                             true);
-        hitbox.rect = sf::RectangleShape(sf::Vector2f(animation.imageSize.x, animation.imageSize.y));
+        hitbox.rect = sf::RectangleShape(sf::Vector2f(20, 20));
         hitbox.rect.setOutlineColor(sf::Color::Green);
         hitbox.rect.setOutlineThickness(1.0f);
 

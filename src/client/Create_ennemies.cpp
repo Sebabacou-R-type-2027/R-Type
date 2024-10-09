@@ -20,13 +20,11 @@ namespace ecs {
         auto enemy = registry.spawn_entity();
         std::cout << "Creating enemy entity #" << static_cast<std::size_t>(enemy) << std::endl;
         auto &animation = registry.emplace_component<ecs::Animation>(enemy, texturePath, 8, 1, 0.2f);
-        std::cout << "Creating enemy entity #" << static_cast<std::size_t>(enemy) << std::endl;
-        auto &animation = registry.emplace_component<ecs::Animation>(enemy, texturePath, 8, 1, 0.2f);
 
         float enemyWidth = animation.imageSize.x;
         registry.emplace_component<ecs::Position>(enemy, x - enemyWidth, y);
 
-        auto& hitbox = registry.emplace_component<ecs::Hitbox>(enemy, ecs::ShapeType::Rectangle, false, false);
+        auto& hitbox = registry.emplace_component<ecs::Hitbox>(enemy, ecs::ShapeType::Rectangle, false, true);
         hitbox.rect = sf::RectangleShape(sf::Vector2f(animation.imageSize.x, animation.imageSize.y));
         hitbox.rect.setOutlineColor(sf::Color::Red);
         hitbox.rect.setOutlineThickness(1.0f);
@@ -39,17 +37,15 @@ namespace ecs {
 
     void CreateEnnemies::create_enemies(Registry& registry, sf::RenderWindow& window)
     {
-        int max_y = window.getSize().y - 124;
+        int max_y = window.getSize().y - 25;
         int max_x = window.getSize().x;
 
-        for (int i = 0; i < 4; ++i) {
-        for (int i = 0; i < 4; ++i) {
+        for (int i = 0; i < 5; ++i) {
             std::cout << "Creating enemy " << i << std::endl;
-            float yPosition = i * 100.0f;
             float yPosition = i * 100.0f;
             create_enemy(registry,
                         max_x, yPosition,
-                        100.0f,
+                        25.0f,
                        "assets/sprites/r-type-enemy.gif",
                         0.0f, max_x,
                         0.0f, max_y,
@@ -57,4 +53,5 @@ namespace ecs {
                         State::Patrolling);
         }
     }
+
 }

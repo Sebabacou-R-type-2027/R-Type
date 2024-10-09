@@ -17,6 +17,7 @@
 #include "utils/FPSCounter.hpp"
 #include "HandlingBullet.hpp"
 #include "factories/button_factory.hpp"
+#include "Handle_enemies_wave.hpp"
 
 namespace rtype {
     class Game {
@@ -42,6 +43,9 @@ namespace rtype {
 
             // Game State
             GameStateManager gameStateManager;
+
+            // ENNEMIES
+            ecs::HandleEnemiesWave handleEnemiesWave;
 
             // ECS
             ecs::CreateEnnemies createEnnemies;

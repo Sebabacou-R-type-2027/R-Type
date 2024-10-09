@@ -110,7 +110,6 @@ class Registry {
             return std::any_cast<Component &>(_components.at(typeid(Component)).emplace_at(to, Component(std::forward<Params>(params)...)).value());
         }
 
-
         template <typename Component>
         void remove_component(Entity const& from) {
             _components.at(typeid(Component)).erase(static_cast<std::size_t>(from));

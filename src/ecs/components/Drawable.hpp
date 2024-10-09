@@ -18,12 +18,12 @@ namespace ecs {
         sf::Texture texture;
         sf::IntRect texture_rect;
         sf::Color color;
-        float size;
+        sf::Vector2f size;
         std::string shape;
 
         Drawable(const std::string& texturePath, bool visible = true,
                  sf::IntRect texture_rect = sf::IntRect(), sf::Color color = sf::Color::White,
-                 float size = 50.0f, std::string shape = "square")
+                 sf::Vector2f size = sf::Vector2f(0.0f, 0.0f), const std::string& shape = "")
             : visible(visible), texture(), texture_rect(texture_rect),
               color(color), size(size), shape(shape) {
             if (!texture.loadFromFile(texturePath)) {

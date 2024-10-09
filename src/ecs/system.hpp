@@ -14,6 +14,7 @@
 #include "collision/collision_system.hpp"
 #include "../client/systems/loop_movement/loop_movement_system.hpp"
 #include "../client/systems/button/button_system.hpp"
+#include "../client/systems/ennemy_state/ennemy_state_system.hpp"
 
 namespace ecs {
 
@@ -48,6 +49,10 @@ public:
         collisionSystem.update(reg, window);
     }
 
+    void enemy_state_system(Registry& reg, float deltaTime) {
+        enemyStateSystem.update(reg, deltaTime);
+    }
+
 private:
     systems::ControlSystem controlSystem;
     systems::DrawSystem drawSystem;
@@ -56,6 +61,7 @@ private:
     systems::LoopMovementSystem loopMovementSystem;
     systems::ButtonSystem buttonSystem;
     systems::CollisionSystem collisionSystem;
+    systems::EnemyStateSystem enemyStateSystem;
 };
 
 }
