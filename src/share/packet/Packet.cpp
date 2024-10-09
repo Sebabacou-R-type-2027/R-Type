@@ -90,18 +90,15 @@ std::string Packet::extract_data(const char buffer[65535], size_t size, uint32_t
     std::vector<uint8_t> data = std::get<3>(packet);
     std::string result;
 
-    switch (type) {
-        case PacketFactory::TypePacket::ACK || PacketFactory::TypePacket::CMDP:
-            std::cout << "Data extract = " << type << std::endl;
-            result.reserve(data.size());
-            for (const auto& byte : data) {
-                result += std::to_string(byte);
-            }
-            return result;
-        default:
-            result = std::string(data.begin(), data.end());
-            return result;
+    if (type == PacketFactory::TypePacket::ACK || type == PacketFactory::TypePacket::CMDP) {
+        result.reserve(data.size());
+        for (const auto& byte : data) {
+            result += std::to_string(byte);
         }
+        return result;
+    }
+    result = std::string(data.begin(), data.end());
+    return result;
 }
 
 uint32_t Packet::extract_type(const char buffer[65535], size_t size) {

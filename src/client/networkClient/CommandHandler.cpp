@@ -1,7 +1,3 @@
-//
-// Created by shooting_star_t33 on 10/2/24.
-//
-
 #include "CommandHandler.hpp"
 #include "Client.hpp"
 
@@ -16,6 +12,7 @@ std::string CommandHandler::get_current_timestamp() {
     std::cout << "timestamp is: " <<ss.str() << std::endl;
     return ss.str();
 }
+
 void CommandHandler::addCommand(const std::string &command) {
 
         _commands[get_current_timestamp()] = command;
@@ -32,4 +29,8 @@ void CommandHandler::removeCommand(const std::string &command) {
 
 void CommandHandler::fillCommands() {
     _client.insertCommands(_commands);
+}
+
+std::map<std::string, std::string> CommandHandler::getCommands() const {
+    return _commands;
 }
