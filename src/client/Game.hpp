@@ -12,9 +12,9 @@
 #include "Create_ennemies.hpp"
 #include "Handle_collision.hpp"
 #include "system.hpp"
-#include "game_state_manager.hpp"
-#include "HandlingBullet.hpp"
+#include "gameStateManager.hpp"
 #include "utils/FPSCounter.hpp"
+#include "HandlingBullet.hpp"
 #include "factories/button_factory.hpp"
 
 namespace rtype {

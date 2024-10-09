@@ -111,6 +111,7 @@ namespace rtype {
     void Game::renderMenu() {
         window.clear();
         system.draw_system(registry, window);
+        system.button_system(registry, window);
         window.display();
     }
 
@@ -261,12 +262,21 @@ namespace rtype {
         std::cout << "Creating player entity #" << static_cast<std::size_t>(movable_entity) << std::endl;
         registry.emplace_component<ecs::Position>(movable_entity, 400.0f, 300.0f);
         registry.emplace_component<ecs::Velocity>(movable_entity, 0.0f, 0.0f);
-        registry.emplace_component<ecs::Drawable>(movable_entity, "assets/Ship/Ship.png");
         registry.emplace_component<ecs::Controllable>(movable_entity, true, 5.0f);
         registry.emplace_component<ecs::EntityType>(movable_entity, ecs::Type::Player);
         registry.emplace_component<ecs::CollisionState>(movable_entity, false);
-        auto& hitbox = registry.emplace_component<ecs::Hitbox>(movable_entity, ecs::ShapeType::Rectangle, false, true);
-        hitbox.rect = sf::RectangleShape(sf::Vector2f(50.0f, 50.0f));
+
+        auto &animation = registry.emplace_component<ecs::Animation>(movable_entity,
+                                                                    "assets/sprites/Player.gif",
+                                                                    5,
+                                                                    1,
+                                                                    0.2f);
+
+        auto& hitbox = registry.emplace_component<ecs::Hitbox>(movable_entity,
+                                                            ecs::ShapeType::Rectangle,
+                                                            false,
+                                                            true);
+        hitbox.rect = sf::RectangleShape(sf::Vector2f(animation.imageSize.x, animation.imageSize.y));
         hitbox.rect.setOutlineColor(sf::Color::Green);
         hitbox.rect.setOutlineThickness(1.0f);
 

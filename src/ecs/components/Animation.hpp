@@ -26,10 +26,10 @@ namespace ecs {
                 std::cout << "Loaded sprite sheet" << std::endl;
             }
 
-            imageSize = sf::Vector2i(sharedTexture.getSize().x / imageCount.x, sharedTexture  .getSize().y / imageCount.y);
+            imageSize = sf::Vector2i(sharedTexture.getSize().x / imageCount.x, sharedTexture.getSize().y / imageCount.y);
 
             sprite.setTexture(sharedTexture);
-            sprite.setScale(2.0f, 2.0f);
+            // sprite.setScale(2.0f, 2.0f);
         }
 
         void update(float deltaTime) {
@@ -47,17 +47,10 @@ namespace ecs {
                         currentImage.y = 0;
                     }
                 }
-                if (imageCount.y == 1) {
-                    sprite.setTextureRect(sf::IntRect(currentImage.x * imageSize.x,
-                                                      currentImage.y * imageSize.y,
-                                                      imageSize.x,
-                                                      imageSize.y / 2));
-                } else {
-                    sprite.setTextureRect(sf::IntRect(currentImage.x * imageSize.x,
-                                                    currentImage.y * imageSize.y,
-                                                    imageSize.x,
-                                                    imageSize.y));
-                }
+                sprite.setTextureRect(sf::IntRect(currentImage.x * imageSize.x,
+                                                currentImage.y * imageSize.y,
+                                                imageSize.x,
+                                                imageSize.y));
             }
         }
     };

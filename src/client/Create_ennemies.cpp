@@ -22,9 +22,9 @@ namespace ecs {
         auto &animation = registry.emplace_component<ecs::Animation>(enemy, texturePath, 8, 1, 0.2f);
 
         float enemyWidth = animation.imageSize.x;
-        registry.emplace_component<ecs::Position>(enemy, x - enemyWidth * 2 , y);
+        registry.emplace_component<ecs::Position>(enemy, x - enemyWidth, y);
 
-        auto& hitbox = registry.emplace_component<ecs::Hitbox>(enemy, ecs::ShapeType::Rectangle, false, true);
+        auto& hitbox = registry.emplace_component<ecs::Hitbox>(enemy, ecs::ShapeType::Rectangle, false, false);
         hitbox.rect = sf::RectangleShape(sf::Vector2f(animation.imageSize.x, animation.imageSize.y));
         hitbox.rect.setOutlineColor(sf::Color::Red);
         hitbox.rect.setOutlineThickness(1.0f);
@@ -46,7 +46,7 @@ namespace ecs {
             create_enemy(registry,
                         max_x, yPosition,
                         100.0f,
-                       "assets/sprites/ennemy.png",
+                       "assets/sprites/r-type-enemy.gif",
                         0.0f, max_x,
                         0.0f, max_y,
                         0.0f, 0.0f, 0.0f,

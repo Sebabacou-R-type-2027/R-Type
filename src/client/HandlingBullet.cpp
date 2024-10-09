@@ -62,14 +62,7 @@ void HandlingBullet::update(Registry& registry) {
                 auto& hit = registry.emplace_component<ecs::Hitbox>(laser_entity, ecs::ShapeType::Rectangle, false);
                 hit.rect = sf::RectangleShape(sf::Vector2f(20.0f, 20.0f));
                 registry.emplace_component<ecs::Position>(laser_entity,
-                positions
-                .at(playerIndex)
-                ->get()
-                .x + 40.0f,
-                positions
-                .at(playerIndex)
-                ->get()
-                .y + 5.0f);
+                positions.at(playerIndex)->get().x + 40.0f,positions.at(playerIndex)->get().y + 5.0f);
                 registry.emplace_component<ecs::Drawable>(laser_entity, "assets/Bullets/01.png");
                 registry.emplace_component<ecs::Bullet>(laser_entity);
                 registry.emplace_component<ecs::CollisionState>(laser_entity, false);

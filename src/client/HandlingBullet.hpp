@@ -18,7 +18,7 @@ namespace ecs {
         private:
             sf::Clock shootClock;           // Horloge pour mesurer le temps écoulé
             sf::Time lastShootTime;         // Temps du dernier tir
-            const sf::Time shootCooldown = sf::seconds(0.5f);
+            const sf::Time shootCooldown = sf::seconds(0.05f);
 
             sf::Clock clock;
             sf::Time elapsed = sf::Time::Zero; // Temps écoulé total

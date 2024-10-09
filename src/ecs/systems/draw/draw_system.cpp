@@ -48,7 +48,7 @@ void DrawSystem::update(Registry& registry, sf::RenderWindow& window) {
             window.draw(sprite);
         }
     }
-    for (std::size_t i = 0; i < animations.size(); ++i) {
+    for (std::size_t i = 0; i < animations.size() && i < positions.size(); ++i) {
         if (animations[i] && positions[i]) {
             window.draw(animations[i]->get().sprite);
         }

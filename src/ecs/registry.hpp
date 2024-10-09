@@ -25,7 +25,6 @@
 #include "components/Hitbox.hpp"
 #include "components/Animation.hpp"
 
-#include "components/GameState.hpp"
 #include "components/Ennemy_state.hpp"
 #include "components/Entity_type.hpp"
 #include "components/Bullet.hpp"
@@ -102,13 +101,11 @@ class Registry {
 
         template <typename Component>
         typename sparse_array<Component>::reference_type add_component(Entity const& to, Component&& component) {
-            std::cout << "Adding '" << typeid(Component).name() << "' component to entity #" << static_cast<std::size_t>(to) << std::endl;
             return _components.at(typeid(Component)).insert_at(to, std::forward<Component>(component));
         }
 
         template <typename Component, typename... Params>
         Component &emplace_component(Entity to, Params&&... params) {
-            std::cout << "Emplacing '" << typeid(Component).name() << "' component on entity #" << static_cast<std::size_t>(to) << std::endl;
             return std::any_cast<Component &>(_components.at(typeid(Component)).emplace_at(to, Component(std::forward<Params>(params)...)).value());
         }
 
@@ -131,7 +128,6 @@ class Registry {
             register_component<EntityType>();
             register_component<Bullet>();
             register_component<CollisionState>();
-            register_component<GameState>();
         }
 
     private:
