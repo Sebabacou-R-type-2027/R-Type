@@ -13,6 +13,7 @@
 #include "Handle_collision.hpp"
 #include "system.hpp"
 #include "gameStateManager.hpp"
+#include "HandlingBullet.hpp"
 #include "utils/FPSCounter.hpp"
 #include "HandlingBullet.hpp"
 #include "factories/button_factory.hpp"

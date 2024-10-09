@@ -25,6 +25,7 @@
 #include "components/Hitbox.hpp"
 #include "components/Animation.hpp"
 
+#include "components/GameState.hpp"
 #include "components/Ennemy_state.hpp"
 #include "components/Entity_type.hpp"
 #include "components/Bullet.hpp"
@@ -128,6 +129,7 @@ class Registry {
             register_component<EntityType>();
             register_component<Bullet>();
             register_component<CollisionState>();
+            register_component<GameState>();
         }
 
     private:
