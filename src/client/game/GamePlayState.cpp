@@ -14,18 +14,16 @@ namespace rtype {
         : window(window) {
         registry.register_all_components();
 
-        auto player_entity = registry.spawn_entity();
-        registry.emplace_component<ecs::Position>(player_entity, 100.0f, 100.0f);
-        registry.emplace_component<ecs::Velocity>(player_entity, 0.0f, 0.0f);
-        registry.emplace_component<ecs::Controllable>(player_entity);
-        registry.emplace_component<ecs::EntityType>(player_entity, ecs::Type::Player);
-        registry.emplace_component<ecs::Drawable>(player_entity, "assets/Ship/Ship.png");
+        initPlayer("assets/Ship/Ship.png");
+        createEnnemies.create_enemies(registry, window);
+
+        // initChargeBullet();
     }
 
     void GamePlayState::handleInput() {
         sf::Event event;
         while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) {
+            if (event.type == sf::Event::Closed || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
                 window.close();
             }
 
@@ -50,5 +48,26 @@ namespace rtype {
         window.clear();
         system.draw_system(registry, window);
         window.display();
+    }
+
+    void GamePlayState::initPlayer(std::string path)
+    {
+        auto player = registry.spawn_entity();
+        registry.emplace_component<ecs::Position>(player, 400.0f, 300.0f);
+        registry.emplace_component<ecs::Velocity>(player, 0.0f, 0.0f);
+        registry.emplace_component<ecs::Drawable>(player, path);
+        registry.emplace_component<ecs::Controllable>(player, true, 5.0f);
+        registry.emplace_component<ecs::EntityType>(player, ecs::Type::Player);
+
+        auto& hitbox = registry.emplace_component<ecs::Hitbox>(player, ecs::ShapeType::Rectangle, false);
+        hitbox->rect = sf::RectangleShape(sf::Vector2f(50.0f, 50.0f));
+    }
+
+    void GamePlayState::initChargeBullet()
+    {
+        auto charge_animation = registry.spawn_entity();
+        registry.emplace_component<ecs::Position>(charge_animation, 500.0f, 354.0f);
+        registry.emplace_component<ecs::Velocity>(charge_animation, 0.0f, 0.0f);
+        registry.emplace_component<ecs::Controllable>(charge_animation, true, 5.0f);
     }
 }

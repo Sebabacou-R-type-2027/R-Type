@@ -11,7 +11,7 @@
 
 namespace rtype {
 
-    Game::Game(const std::string& title, unsigned int width, unsigned int height, const std::string& playerTexturePath)
+    Game::Game(const std::string& title, unsigned int width, unsigned int height)
         : window(sf::VideoMode(width, height), title) {
         window.setFramerateLimit(60);
         currentState = std::make_unique<MainMenuState>(window, *this);

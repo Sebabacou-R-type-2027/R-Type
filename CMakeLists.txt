@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.10)
 
 project(R-Type)
 
-# Check if we are on Windows or Unix
 if (WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DWIN32")
 elseif (UNIX)
@@ -31,20 +30,26 @@ target_link_libraries(r-type_server PRIVATE asio::asio)
 target_link_libraries(r-type_client PRIVATE asio::asio sfml-graphics sfml-window sfml-system)
 
 target_include_directories(r-type_server PRIVATE
-    src/server
-    src/server/client
-    src/share
-    src/share/packet
+        src/server
+        src/server/client
+        src/share
+        src/share/packet
+        src/share/packet/packet_type
 )
 
 target_include_directories(r-type_client PRIVATE
-    src/client
-    src/share
-    src/ecs
-    src/ecs/systems
-    src/ecs/factories
-    src/ecs/components
-)
+        src/client
+        src/client/networkClient
+        src/share
+        src/share/packet
+        src/share/packet/packet_type
+        src/share
+        src/ecs
+        src/ecs/systems
+        src/ecs/factories
+        src/ecs/components
+
+  )
 
 # Symlink the executables to the root directory (Unix only)
 if (UNIX)
