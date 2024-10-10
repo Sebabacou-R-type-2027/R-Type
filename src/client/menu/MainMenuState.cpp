@@ -45,129 +45,62 @@ namespace rtype {
     }
 
     void MainMenuState::createMenuButtons() {
-                sf::Vector2u window_size = window.getSize(); // Get the current window size
-        float button_width = 200.0f;
-        float button_x = (window_size.x - button_width) / 2.0f;  // Dynamic centered X position
+        sf::Vector2u window_size = window.getSize();
+        float button_height = 50.0f;
+        float spacing = 20.0f;
+        float total_height = (button_height + spacing) * 7;
+        float start_y = (window_size.y - total_height) / 2.0f;
 
-        auto SoloCampaignButtonEntity = registry.spawn_entity();
-        registry.emplace_component<ecs::Button>(
-            SoloCampaignButtonEntity,
-            ecs::ButtonFactory::create_button(
-                "Solo Campaign",
-                sf::Vector2f(button_x, 300.0f),
-                sf::Vector2f(button_width, 50.0f),
-                font,
-                sf::Color::Blue,
-                sf::Color::Cyan,
-                sf::Color::Green,
-                sf::Color::White,
-                24,
-                [this]() { startGame(); }
-            )
-        );
+        auto createButton = [this, button_height](const std::string& label, float yPos, std::function<void()> callback) -> ecs::Entity {
+            sf::Text text(label, font, 24);
+            float button_width = text.getLocalBounds().width + 40.0f; // Add padding to the text width
+            float button_x = (window.getSize().x - button_width) / 2.0f; // Center the button
 
-        auto MultiplayerButtonEntity = registry.spawn_entity();
-        registry.emplace_component<ecs::Button>(
-            MultiplayerButtonEntity,
-            ecs::ButtonFactory::create_button(
-                "Multiplayer",
-                sf::Vector2f(button_x, 400.0f),
-                sf::Vector2f(button_width, 50.0f),
-                font,
-                sf::Color::Blue,
-                sf::Color::Cyan,
-                sf::Color::Green,
-                sf::Color::White,
-                24,
-                [this]() { startGame(); }
-            )
-        );
+            button_x += button_width / 2.0f;
 
-        auto CustomizeShipButtonEntity = registry.spawn_entity();
-        registry.emplace_component<ecs::Button>(
-            CustomizeShipButtonEntity,
-            ecs::ButtonFactory::create_button(
-                "Customize Ship",
-                sf::Vector2f(button_x, 500.0f),
-                sf::Vector2f(button_width, 50.0f),
-                font,
-                sf::Color::Blue,
-                sf::Color::Cyan,
-                sf::Color::Green,
-                sf::Color::White,
-                24,
-                [this]() { startGame(); }
-            )
-        );
+            auto entity = registry.spawn_entity();
+            registry.emplace_component<ecs::Button>(
+                entity,
+                ecs::ButtonFactory::create_button(
+                    label,
+                    sf::Vector2f(button_x, yPos),
+                    sf::Vector2f(button_width, button_height),
+                    font,
+                    sf::Color::Blue,
+                    sf::Color::Cyan,
+                    sf::Color::Green,
+                    sf::Color::White,
+                    24,
+                    callback
+                )
+            );
+            return entity;
+        };
 
-        auto SettingsButtonEntity = registry.spawn_entity();
-        registry.emplace_component<ecs::Button>(
-            SettingsButtonEntity,
-            ecs::ButtonFactory::create_button(
-                "Settings",
-                sf::Vector2f(button_x, 600.0f),
-                sf::Vector2f(button_width, 50.0f),
-                font,
-                sf::Color::Blue,
-                sf::Color::Cyan,
-                sf::Color::Green,
-                sf::Color::White,
-                24,
-                [this]() { startGame(); }
-            )
-        );
+        float yPos = start_y;
+        createButton("Solo Campaign", yPos, [this]() { startGame(); });
+        yPos += button_height + spacing;
 
-        auto MapEditorButtonEntity = registry.spawn_entity();
-        registry.emplace_component<ecs::Button>(
-            MapEditorButtonEntity,
-            ecs::ButtonFactory::create_button(
-                "Map Editor",
-                sf::Vector2f(button_x, 700.0f),
-                sf::Vector2f(button_width, 50.0f),
-                font,
-                sf::Color::Blue,
-                sf::Color::Cyan,
-                sf::Color::Green,
-                sf::Color::White,
-                24,
-                [this]() { startGame(); }
-            )
-        );
+        createButton("Multiplayer", yPos, [this]() { startGame(); });
+        yPos += button_height + spacing;
 
-        auto GameOptionsButtonEntity = registry.spawn_entity();
-        registry.emplace_component<ecs::Button>(
-            GameOptionsButtonEntity,
-            ecs::ButtonFactory::create_button(
-                "Game Options",
-                sf::Vector2f(button_x, 800.0f),
-                sf::Vector2f(button_width, 50.0f),
-                font,
-                sf::Color::Blue,
-                sf::Color::Cyan,
-                sf::Color::Green,
-                sf::Color::White,
-                24,
-                [this]() { startGame(); }
-            )
-        );
+        createButton("Customize Ship", yPos, [this]() { startGame(); });
+        yPos += button_height + spacing;
 
-        auto GameQuitButtonEntity = registry.spawn_entity();
-        registry.emplace_component<ecs::Button>(
-            GameQuitButtonEntity,
-            ecs::ButtonFactory::create_button(
-                "Quit",
-                sf::Vector2f(button_x, 900.0f),
-                sf::Vector2f(button_width, 50.0f),
-                font,
-                sf::Color::Blue,
-                sf::Color::Cyan,
-                sf::Color::Green,
-                sf::Color::White,
-                24,
-                [this]() { window.close(); }
-            )
-        );
+        createButton("Settings", yPos, [this]() { startGame(); });
+        yPos += button_height + spacing;
 
+        createButton("Map Editor", yPos, [this]() { startGame(); });
+        yPos += button_height + spacing;
+
+        createButton("Game Options", yPos, [this]() { startGame(); });
+        yPos += button_height + spacing;
+
+        createButton("Quit", yPos, [this]() { window.close(); });
     }
+
+
+
+
 
 }
