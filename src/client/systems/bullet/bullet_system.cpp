@@ -5,13 +5,13 @@
 ** position_system
 */
 
-#include "HandlingBullet.hpp"
+#include "bullet_system.hpp"
 #include <iostream>
 
-namespace ecs {
+namespace ecs::systems {
 
 
-    void HandlingBullet::update(Registry& registry) {
+    void BulletSystem::update(Registry& registry) {
         auto positions = registry.get_components<Position>();
         auto velocities = registry.get_components<Velocity>();
         auto bullet = registry.get_components<Bullet>();

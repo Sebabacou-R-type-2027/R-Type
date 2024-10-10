@@ -9,8 +9,9 @@
 
 #include "registry.hpp"
 
-namespace ecs {
-    class HandlingBullet {
+namespace ecs::systems {
+
+    class BulletSystem {
         public:
             void update(Registry& registry);
             bool ChargedOneDraw = false;
