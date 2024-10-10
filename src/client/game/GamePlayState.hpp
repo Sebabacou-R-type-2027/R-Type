@@ -10,6 +10,7 @@
 #include "game_state.hpp"
 #include "registry.hpp"
 #include "system.hpp"
+#include "../create_ennemies.hpp"
 
 namespace rtype {
     class GamePlayState : public GameState {
@@ -24,5 +25,10 @@ namespace rtype {
         sf::RenderWindow& window;
         ecs::Registry registry;
         ecs::System system;
+
+        ecs::CreateEnnemies createEnnemies; // TODO: create a system for this
+
+        void initPlayer(std::string path);
+        void initChargeBullet();
     };
 }

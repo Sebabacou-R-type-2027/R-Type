@@ -10,6 +10,7 @@
 
 #include "../game_state.hpp"
 #include <SFML/Graphics.hpp>
+#include "../game/Game.hpp"
 
 namespace rtype {
     class Game;
@@ -24,6 +25,13 @@ namespace rtype {
     private:
         sf::RenderWindow& window;
         Game& game;
+
+        void createMenuButtons();
+        void startGame();
+        sf::Font font;
+
+        ecs::Registry& registry;
+        ecs::System& system;
     };
 }
 
