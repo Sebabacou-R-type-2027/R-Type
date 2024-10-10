@@ -2,12 +2,6 @@ cmake_minimum_required(VERSION 3.10)
 
 project(R-Type)
 
-# Automatically add vcpkg if necessary
-if(NOT DEFINED CMAKE_TOOLCHAIN_FILE AND EXISTS "${CMAKE_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake")
-    message(STATUS "Using vcpkg from ${CMAKE_SOURCE_DIR}/vcpkg")
-    set(CMAKE_TOOLCHAIN_FILE "${CMAKE_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "")
-endif()
-
 if (WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DWIN32")
 elseif (UNIX)
@@ -25,12 +19,14 @@ get_property(server GLOBAL PROPERTY SERVER_SOURCES)
 get_property(client GLOBAL PROPERTY CLIENT_SOURCES)
 
 find_package(asio CONFIG REQUIRED)
+find_package(SFML 2.5 COMPONENTS graphics window system CONFIG REQUIRED)
+
 
 add_executable(r-type_server ${server})
 add_executable(r-type_client ${client})
 
 target_link_libraries(r-type_server PRIVATE asio::asio)
-target_link_libraries(r-type_client PRIVATE asio::asio)
+target_link_libraries(r-type_client PRIVATE asio::asio sfml-graphics sfml-window sfml-system)
 
 target_include_directories(r-type_server PRIVATE
         src/server
@@ -46,7 +42,13 @@ target_include_directories(r-type_client PRIVATE
         src/share
         src/share/packet
         src/share/packet/packet_type
-)
+        src/share
+        src/ecs
+        src/ecs/systems
+        src/ecs/factories
+        src/ecs/components
+
+  )
 
 # Symlink the executables to the root directory (Unix only)
 if (UNIX)
