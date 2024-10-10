@@ -17,6 +17,7 @@ namespace ecs {
         sf::Text text;
         std::function<void()> onClick;
         bool isPressed = false;
+        bool isTextbox = false;
 
         sf::Color defaultColor = sf::Color::Blue;
         sf::Color hoverColor = sf::Color::Cyan;

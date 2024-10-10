@@ -7,9 +7,14 @@
 
 #pragma once
 
-enum GameState {
-    MENU,
-    GAME,
-    PAUSE,
-    GAMEOVER
-};
+namespace rtype {
+
+    class GameState {
+    public:
+        virtual ~GameState() = default;
+
+        virtual void handleInput() = 0;
+        virtual void update() = 0;
+        virtual void render() = 0;
+    };
+}

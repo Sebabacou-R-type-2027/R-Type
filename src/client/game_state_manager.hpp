@@ -1,28 +1,26 @@
-/*
-** EPITECH PROJECT, 2024
-** R-Type
-** File description:
-** game_state_manager
-*/
-
 #pragma once
 
-#include "game_state.hpp"
-
 namespace rtype {
+    enum class GameStateType {
+        MENU,
+        GAME,
+        PAUSE,
+        GAMEOVER
+    };
 
     class GameStateManager {
-    private:
-        GameState currentState;
-
     public:
-        GameStateManager() : currentState(GameState::MENU) {}
+        GameStateManager() : currentState(GameStateType::MENU) {}
 
-        void setGameState(GameState newState) {
+        GameStateType getGameState() const {
+            return currentState;
+        }
+
+        void setGameState(GameStateType newState) {
             currentState = newState;
         }
 
-        GameState getGameState() const { return currentState; }
+    private:
+        GameStateType currentState;
     };
-
 }

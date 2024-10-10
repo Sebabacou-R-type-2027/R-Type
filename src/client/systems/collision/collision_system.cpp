@@ -7,7 +7,6 @@
 
 #include "collision_system.hpp"
 #include <iostream>
-#include "utils/CheckEntity.cpp"
 
 namespace ecs::systems {
 
@@ -44,8 +43,8 @@ namespace ecs::systems {
                     }
                 } else
                 if (isColliding(pos1, hitbox1, pos2, hitbox2)) {
-                    std::cout << "Collision detected between entity " << i << " and entity " << j << std::endl;
-                    registry.remove_component<ecs::Drawable>()
+                    //std::cout << "Collision detected between entity " << i << " and entity " << j << std::endl;
+                    //registry.remove_component<ecs::Drawable>()
                 }
             }
         }

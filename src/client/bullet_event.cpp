@@ -10,7 +10,7 @@
 #include "Sound_game.hpp"
 #include <SFML/Audio.hpp>
 #include "components/Entity_type.hpp"
-#include "utils/CheckEntity.cpp"
+#include "utils/CheckEntity.hpp"
 
 namespace rtype::game {
 

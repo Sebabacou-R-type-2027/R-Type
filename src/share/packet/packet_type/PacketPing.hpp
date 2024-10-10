@@ -9,7 +9,7 @@ class PacketPing : public Packet {
         PacketPing(asio::ip::udp::socket& socket_, uint16_t id) : Packet(PacketFactory::TypePacket::PING, id, socket_) {}
 
         /// \brief Destructor for PacketPing class
-        ~PacketPing() override = default;
+        ~PacketPing() = default;
 
         /// \brief Set the data of the packet
         /// \details Set the data of the packetPing to the current id;
