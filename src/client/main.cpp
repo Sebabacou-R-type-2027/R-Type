@@ -1,10 +1,3 @@
-/*
-** EPITECH PROJECT, 2024
-** R-Type
-** File description:
-** main
-*/
-
 #include "game.hpp"
 
 int main() {

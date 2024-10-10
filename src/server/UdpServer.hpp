@@ -13,8 +13,8 @@
 #include "Lobby.hpp"
 #include "client/client.hpp"
 #include "client/ClientSaver.hpp"
-#include "../share/packet/Packet.hpp"
-#include "../share/packet/PacketPing.hpp"
+#include "Packet.hpp"
+#include "PacketPing.hpp"
 
 using asio::ip::udp;
 
@@ -46,7 +46,7 @@ class UdpServer {
          * @param message Le message reçu.
          * @param client_endpoint L'adresse du client qui a envoyé le message.
          */
-        void handle_client_message(const std::string& message, const asio::ip::udp::endpoint& client_endpoint);
+        void handle_client_message(const std::string& message, const asio::ip::udp::endpoint& client_endpoint, std::size_t bytes_recv);
 
         /**
          * @brief Récupère un client basé sur son endpoint.
@@ -128,6 +128,7 @@ class UdpServer {
         udp::socket socket_; ///< Socket UDP pour gérer les connexions.
         udp::endpoint remote_endpoint_; ///< Endpoint du client distant.
         std::array<char, 65535> recv_buffer_; ///< Buffer pour stocker les messages reçus.
+        std::size_t recv_buffer_size_ = 0; ///< Taille du buffer.
         std::vector<server::client> connected_clients_; ///< Liste des clients connectés.
         std::map<int, Lobby> lobbies_; ///< Liste des lobbies disponibles.
         std::thread receive_thread_; ///< Thread pour la réception des messages.

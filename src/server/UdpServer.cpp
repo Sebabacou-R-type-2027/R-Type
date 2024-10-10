@@ -2,6 +2,10 @@
 #include <random>
 #include <iostream>
 #include <asio.hpp>
+#include <Packet.hpp>
+#include <PacketACK.hpp>
+#include <PacketCMD.hpp>
+#include <PacketFactory.hpp>
 #include "client/client.hpp"
 #include "client/ClientSaver.hpp"
 
@@ -92,6 +96,12 @@ void UdpServer::create_lobby(const std::string& message) {
     std::cout << "Lobby created: " << new_lobby.get_id() << std::endl;
     std::cout << "Client added to lobby: " << remote_endpoint_.address().to_string() << ":" << remote_endpoint_.port()
             << std::endl;
+    auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::CMD, socket_);
+    if (typeid(*packet) == typeid(PacketCMD))
+    {
+        dynamic_cast<PacketCMD*>(packet.get())->format_data(std::to_string(new_lobby.get_id()));
+    }
+    packet->send_packet(remote_endpoint_);
 }
 
 /**
@@ -151,13 +161,12 @@ void UdpServer::handle_receive(std::size_t bytes_transferred) {
         std::lock_guard<std::mutex> lock(messages_mutex_);
 
         std::fill(recv_buffer_.begin() + bytes_transferred, recv_buffer_.end(), 0);
-        std::cout << "Received message: " << recv_buffer_.data() << std::endl;
 
         received_messages_[message_id_counter_] = std::make_pair(recv_buffer_, remote_endpoint_);
-
+        recv_buffer_size_ = bytes_transferred;
         // Increment the message ID
         message_id_counter_ += 1;
-        std::cout << "Message ID: " << message_id_counter_ << std::endl;
+        // std::cout << "Message ID: " << message_id_counter_ << std::endl;
         // Notify the server loop that a message has been received
         messages_condition_.notify_one();
     }
@@ -170,13 +179,20 @@ void UdpServer::handle_receive(std::size_t bytes_transferred) {
  * @param message The message sent by the client.
  * @param client_endpoint The client's endpoint.
  */
-void UdpServer::handle_client_message(const std::string& message, const asio::ip::udp::endpoint& client_endpoint) {
+void UdpServer::handle_client_message(const std::string& msg, const asio::ip::udp::endpoint& client_endpoint, std::size_t bytes_recv) {
 
     std::string client_str = client_endpoint.address().to_string() + ":" + std::to_string(client_endpoint.port());
     std::cout << "sender: " << client_str << std::endl;
     std::cout << "Authorised clients:" << std::endl;
     for (const auto& client : connected_clients_) {
         std::cout << "\t" << client << std::endl;
+    }
+    std::string message = "null";
+    try {
+        uint32_t type = Packet::extract_type(msg.data(), bytes_recv);
+        message = Packet::extract_data(msg.data(), bytes_recv, type);
+    } catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
     }
     if (message.rfind("login ", 0) == 0) {
         std::string username, password;
@@ -189,6 +205,11 @@ void UdpServer::handle_client_message(const std::string& message, const asio::ip
             handle_new_connection(remote_endpoint_, username, password);
         } else {
             std::cout << "Invalid login format" << std::endl;
+            auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::ACK, socket_);
+            if (typeid(*packet) == typeid(PacketACK)) {
+                dynamic_cast<PacketACK*>(packet.get())->format_data(false);
+            }
+            packet->send_packet(remote_endpoint_);
         }
     } else if (message == "start") {
         ping_to_choose_host(remote_endpoint_);
@@ -201,13 +222,32 @@ void UdpServer::handle_client_message(const std::string& message, const asio::ip
             bool command_found = false;
             for (const auto& [command, func] : function_map_) {
                 if (message.find(command) == 0) { // Check if the message starts with the command
-                    func(message);
+                    try {
+                        func(message);
+                        auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::ACK, socket_);
+                        if (typeid(*packet) == typeid(PacketACK)) {
+                            dynamic_cast<PacketACK*>(packet.get())->format_data(true);
+                        }
+                        packet->send_packet(remote_endpoint_);
+                    } catch (std::exception& e) {
+                        std::cerr << e.what() << std::endl;
+                        auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::ACK, socket_);
+                        if (typeid(*packet) == typeid(PacketACK)) {
+                            dynamic_cast<PacketACK*>(packet.get())->format_data(false);
+                        }
+                        packet->send_packet(remote_endpoint_);
+                    }
                     command_found = true;
                     break;
                 }
             }
             if (!command_found) {
                 std::cout << "Unknown command: " << message << std::endl;
+                auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::ACK, socket_);
+                if (typeid(*packet) == typeid(PacketACK)) {
+                    dynamic_cast<PacketACK*>(packet.get())->format_data(false);
+                }
+                packet->send_packet(remote_endpoint_);
             }
         } else {
             std::cout << "Not login client: " << client_str << std::endl;
@@ -222,6 +262,7 @@ void UdpServer::server_loop() {
     while (true) {
         udp::endpoint client_endpoint;
         std::string message = "";
+        std::size_t bytes_receive= 0;
         {
             std::unique_lock<std::mutex> lock(messages_mutex_);
             // Wait until there are messages to process
@@ -232,12 +273,13 @@ void UdpServer::server_loop() {
             std::pair<std::array<char, 65535>, udp::endpoint> pair_data = received_messages_.begin()->second;
             message = pair_data.first.data();
             client_endpoint = pair_data.second;
+            bytes_receive = recv_buffer_size_;
 
             std::cout << "Received: " << message << " from " << client_endpoint << std::endl;
             received_messages_.erase(message_id);
         }
         // Call the function to handle the client message
-        handle_client_message(message, client_endpoint);
+        handle_client_message(message, client_endpoint, bytes_receive);
     }
 }
 
@@ -245,6 +287,7 @@ void UdpServer::handle_new_connection(const udp::endpoint& client_endpoint, cons
     std::string client_address = client_endpoint.address().to_string();
     std::string client_port = std::to_string(client_endpoint.port());
     server::ClientSaver cs("clients.csv");
+    bool status = true;
 
     auto it = std::find_if(connected_clients_.begin(), connected_clients_.end(), [&client_endpoint](const server::client& cli) {
         return cli.get_id() == std::hash<std::string>{}(client_endpoint.address().to_string() + std::to_string(client_endpoint.port()));
@@ -254,6 +297,11 @@ void UdpServer::handle_new_connection(const udp::endpoint& client_endpoint, cons
         uint32_t id = cs.check_if_user_already_exists_in_db(username, password);
         if (id) {
             try {
+                auto existing_client = std::remove_if(connected_clients_.begin(), connected_clients_.end(), [&username](const server::client& cli) {
+                    return cli.get_nickname() == username;
+                });
+                connected_clients_.erase(existing_client, connected_clients_.end());
+
                 connected_clients_.emplace_back(client_address, client_port, username, password, id);
                 std::cout << "New authorised client from db: " << client_address << ":" << client_port << std::endl;
             } catch (const server::client::ClientException& e) {
@@ -268,15 +316,29 @@ void UdpServer::handle_new_connection(const udp::endpoint& client_endpoint, cons
         }
     } catch (const server::ClientSaver::ClientSaverException& e) {
         std::cerr << e.what() << std::endl;
+        status = false;
     } catch (const server::client::ClientException& e) {
         std::cout << e.what() << std::endl;
         std::cout << "Password or Username is not correct" << std::endl;
+        status = false;
     }
+    auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::ACK, socket_);
+    if (typeid(*packet) == typeid(PacketACK)) {
+        dynamic_cast<PacketACK*>(packet.get())->format_data(status);
+    }
+    packet->send_packet(remote_endpoint_);
 }
 
 void UdpServer::send_message(const std::string &message,
                              const udp::endpoint &endpoint) {
-    socket_.send_to(asio::buffer(message), endpoint);
+    // socket_.send_to(asio::buffer(message), endpoint);
+    auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::CMD, socket_);
+    if (typeid(*packet) == typeid(PacketCMD)) {
+        dynamic_cast<PacketCMD*>(packet.get())->format_data(message);
+    }
+    packet->send_packet(endpoint);
+    std::cout << *packet << std::endl;
+
 }
 
 /**
@@ -340,6 +402,7 @@ void UdpServer::ping_to_choose_host(const udp::endpoint &client_endpoint) {
 
     for (auto& cli : clients) {
         if (cli_tmp != cli) {
+            std::cout << "Sending " << host<<  " message to: " << cli.get_endpoint() << std::endl;
             send_message(host, cli.get_endpoint());
         } else {
             send_message("GAME_LAUNCH|HOST", cli.get_endpoint());
