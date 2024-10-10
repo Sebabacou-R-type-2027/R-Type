@@ -30,6 +30,4 @@ class CommandHandler {
           client::Client& _client;
 };
 
-
-
 #endif //COMMANDHANDLER_HPP
