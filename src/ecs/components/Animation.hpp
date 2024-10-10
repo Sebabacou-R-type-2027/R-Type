@@ -29,7 +29,6 @@ namespace ecs {
             imageSize = sf::Vector2i(sharedTexture.getSize().x / imageCount.x, sharedTexture.getSize().y / imageCount.y);
 
             sprite.setTexture(sharedTexture);
-            // sprite.setScale(2.0f, 2.0f);
         }
 
         void update(float deltaTime) {
