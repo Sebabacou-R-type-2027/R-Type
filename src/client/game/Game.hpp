@@ -9,13 +9,15 @@
 #include <SFML/Graphics.hpp>
 #include "game_state.hpp"
 #include <memory>
+#include <networkClient/Client.hpp>
+
 #include "../ecs/registry.hpp"
 #include "../ecs/system.hpp"
 
 namespace rtype {
     class Game {
     public:
-        Game(const std::string& title, unsigned int width, unsigned int height);
+        Game(const std::string& title, unsigned int width, unsigned int height, client::Client& network);
         void run();
         void changeState(std::unique_ptr<GameState> newState);
 
@@ -27,5 +29,7 @@ namespace rtype {
 
         ecs::Registry registry;
         ecs::System system;
+
+        client::Client& network_;
     };
 }

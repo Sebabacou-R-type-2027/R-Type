@@ -9,11 +9,12 @@
 
 #include "registry.hpp"
 #include <SFML/Window/Keyboard.hpp>
+#include <networkClient/Client.hpp>
 
 namespace ecs::systems {
     class ControlSystem {
         public:
-            void update(Registry& registry);
+            void update(Registry& registry, client::Client& network);
 
         private:
             float acceleration = 0.1f;

@@ -5,8 +5,8 @@
 #include "../game/GamePlayState.hpp"
 
 namespace rtype {
-    MainMenuState::MainMenuState(sf::RenderWindow& window, Game& game)
-        : window(window), game(game), registry(game.getRegistry()), system(game.getSystem())  // Initialize registry and system here
+    MainMenuState::MainMenuState(sf::RenderWindow& window, Game& game, client::Client& network)
+        : window(window), game(game), registry(game.getRegistry()), system(game.getSystem()), network_(network)  // Initialize registry and system here
     {
         if (!font.loadFromFile("assets/fonts/arial.ttf")) {
             throw std::runtime_error("Could not load font");
@@ -41,7 +41,7 @@ namespace rtype {
 
     void MainMenuState::startGame() {
         std::cout << "Starting the game..." << std::endl;
-        game.changeState(std::make_unique<GamePlayState>(window));
+        game.changeState(std::make_unique<GamePlayState>(window, network_));
     }
 
     void MainMenuState::createMenuButtons() {

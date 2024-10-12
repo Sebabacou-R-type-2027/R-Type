@@ -41,10 +41,11 @@ namespace ecs::systems {
                         // registry.kill_entity(registry.entity_from_index(i));
                         registry.kill_entity(registry.entity_from_index(j));
                     }
-                } else
-                if (isColliding(pos1, hitbox1, pos2, hitbox2)) {
-                    std::cout << "Collision detected between entity " << i << " and entity " << j << std::endl;
                 }
+//                else
+//                if (isColliding(pos1, hitbox1, pos2, hitbox2)) {
+//                    std::cout << "Collision detected between entity " << i << " and entity " << j << std::endl;
+//                }
             }
         }
     }

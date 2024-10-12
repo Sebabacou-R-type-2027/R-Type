@@ -17,7 +17,8 @@ namespace rtype {
 
     class MainMenuState : public GameState {
     public:
-        MainMenuState(sf::RenderWindow& window, Game& game);
+        MainMenuState(sf::RenderWindow& window, Game& game, client::Client& network);
+
         void handleInput() override;
         void update() override;
         void render() override;
@@ -32,6 +33,8 @@ namespace rtype {
 
         ecs::Registry& registry;
         ecs::System& system;
+
+        client::Client& network_;
     };
 }
 

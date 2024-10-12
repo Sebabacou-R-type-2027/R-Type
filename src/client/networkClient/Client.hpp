@@ -82,6 +82,7 @@ namespace client {
              */
             void fillCommandsToSends(std::string command);
 
+            int number_of_players_ = 0;  ///< Nombre de joueurs actuellement connectés.
         private:
             bool im_host = false;  ///< Indique si le client est l'hôte du serveur.
             asio::io_context& io_context_;  ///< Contexte d'E/S ASIO.
@@ -97,7 +98,6 @@ namespace client {
             std::condition_variable messages_condition_;  ///< Condition variable pour la synchronisation des messages reçus.
             std::array<char, 65535> recv_buffer_;  ///< Buffer pour stocker les données reçues.
             std::size_t recv_buffer_size_ = 0;  ///< Taille du buffer.
-            int number_of_players_ = 0;  ///< Nombre de joueurs actuellement connectés.
             std::unique_ptr<CommandHandler> command_handler_;  ///< Gestionnaire de commandes du client.
             std::map<std::string, std::string> _commandsToDo;  ///< Commandes à effectuer.
             std::map<std::string, std::string> _commandsSend;  ///< Commandes à envoyer en tant que joueur.

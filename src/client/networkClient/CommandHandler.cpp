@@ -9,7 +9,7 @@ std::string CommandHandler::get_current_timestamp() {
 
     std::stringstream ss;
     ss << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X");
-    std::cout << "timestamp is: " <<ss.str() << std::endl;
+//    std::cout << "timestamp is: " <<ss.str() << std::endl;
     return ss.str();
 }
 

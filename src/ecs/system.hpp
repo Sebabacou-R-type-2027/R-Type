@@ -15,13 +15,14 @@
 #include "../client/systems/button/button_system.hpp"
 #include "../client/systems/collision/collision_system.hpp"
 #include "../client/systems/bullet/bullet_system.hpp"
+#include <networkClient/Client.hpp>
 
 namespace ecs {
 
 class System {
 public:
-    void control_system(Registry& reg) {
-        controlSystem.update(reg);
+    void control_system(Registry& reg, client::Client& network) {
+        controlSystem.update(reg, network);
     }
 
     void position_system(Registry& reg) {

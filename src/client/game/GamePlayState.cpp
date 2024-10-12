@@ -10,11 +10,15 @@
 #include <chrono>
 
 namespace rtype {
-    GamePlayState::GamePlayState(sf::RenderWindow& window)
-        : window(window) {
-        registry.register_all_components();
+    GamePlayState::GamePlayState(sf::RenderWindow& window, client::Client& network)
+        : window(window), network_(network) {
+        int posx = 200;
 
-        initPlayer("assets/Ship/Ship.png");
+        registry.register_all_components();
+        std::cout << "nbr player to load " << network.number_of_players_ << std::endl;
+        for (int i = 0; i - 1 != network.number_of_players_; i++) {
+            initPlayer("assets/Ship/Ship.png", posx * i + 1);
+        }
         createEnnemies.create_enemies(registry, window);
 
         // initChargeBullet();
@@ -31,7 +35,7 @@ namespace rtype {
     }
 
     void GamePlayState::update() {
-        system.control_system(registry);
+        system.control_system(registry, network_);
         system.position_system(registry);
 
         auto currentTime = std::chrono::high_resolution_clock::now();
@@ -51,10 +55,10 @@ namespace rtype {
         window.display();
     }
 
-    void GamePlayState::initPlayer(std::string path)
+    void GamePlayState::initPlayer(std::string path, float posx)
     {
         auto player = registry.spawn_entity();
-        registry.emplace_component<ecs::Position>(player, 400.0f, 300.0f);
+        registry.emplace_component<ecs::Position>(player, 400.0f, posx);
         registry.emplace_component<ecs::Velocity>(player, 0.0f, 0.0f);
         registry.emplace_component<ecs::Drawable>(player, path);
         registry.emplace_component<ecs::Controllable>(player, true, 5.0f);
