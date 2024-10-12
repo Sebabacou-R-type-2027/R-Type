@@ -9,6 +9,7 @@
 
 #include <vector>
 #include <optional>
+#include <iostream>
 #include <algorithm> // For std::find
 
 namespace ecs {
