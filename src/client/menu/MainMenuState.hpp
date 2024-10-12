@@ -27,6 +27,7 @@ namespace rtype {
         Game& game;
 
         void createMenuButtons();
+        void createMenuTitle();
         void startGame();
         sf::Font font;
 

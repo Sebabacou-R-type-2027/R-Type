@@ -15,6 +15,7 @@ namespace rtype {
         registry.register_all_components();
 
         createMenuButtons();
+        createMenuTitle();
     }
 
     void MainMenuState::handleInput() {
@@ -33,8 +34,8 @@ namespace rtype {
     void MainMenuState::render() {
         window.clear();
 
-        system.draw_system(registry, window);
         system.button_system_render(registry, window);
+        system.draw_system(registry, window);
 
         window.display();
     }
@@ -42,6 +43,14 @@ namespace rtype {
     void MainMenuState::startGame() {
         std::cout << "Starting the game..." << std::endl;
         game.changeState(std::make_unique<GamePlayState>(window));
+    }
+
+    void MainMenuState::createMenuTitle() {
+        auto title = registry.spawn_entity();
+        auto& drawable = registry.emplace_component<ecs::Drawable>(title, "assets/fonts/arial.ttf", "R-Type", 96, sf::Color::Blue);
+        sf::FloatRect textBounds = drawable->text.getGlobalBounds();
+        float centerX = (window.getSize().x - textBounds.width) / 2.0f;
+        registry.emplace_component<ecs::Position>(title, centerX, 50.0f);
     }
 
     void MainMenuState::createMenuButtons() {
@@ -98,9 +107,4 @@ namespace rtype {
 
         createButton("Quit", yPos, [this]() { window.close(); });
     }
-
-
-
-
-
 }
