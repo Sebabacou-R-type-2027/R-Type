@@ -53,7 +53,7 @@ namespace rtype {
         system.bullet_system(registry);
         system.loop_movement_system(registry, deltaTime);
         system.collision_system(registry, window);
-        fpsCounter.update();
+        // fpsCounter.update();
     }
 
     void GamePlayState::render() {
@@ -66,10 +66,11 @@ namespace rtype {
         system.draw_system(registry, window);
 
         // Draw FPS counter
-        sf::Text fpsText("FPS: " + std::to_string(fpsCounter.getFPS()), font, 24);
-        window.draw(fpsText);
+        // sf::Text fpsText("FPS: " + std::to_string(fpsCounter.getFPS()), font, 24);
+        // window.draw(fpsText);
 
         window.display();
+        // registry.process_entity_deaths();
     }
 
     void GamePlayState::initPlayer(std::string path)

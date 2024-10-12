@@ -30,7 +30,7 @@ namespace rtype {
         }
 
         system.button_system(registry, window);
-        fpsCounter.update();
+        // fpsCounter.update();
     }
 
     void MainMenuState::render() {
@@ -45,8 +45,8 @@ namespace rtype {
         system.draw_system(registry, window);
 
         // Draw FPS counter
-        sf::Text fpsText("FPS: " + std::to_string(fpsCounter.getFPS()), font, 24);
-        window.draw(fpsText);
+        // sf::Text fpsText("FPS: " + std::to_string(fpsCounter.getFPS()), font, 24);
+        // window.draw(fpsText);
 
         window.display();
     }
@@ -54,7 +54,8 @@ namespace rtype {
     void MainMenuState::startGame() {
         std::cout << "Starting the game..." << std::endl;
         sf::Shader::bind(nullptr);
-        game.changeState(std::make_unique<GamePlayState>(window));
+        // delete the FPS counter
+        game.changeState(std::make_shared<GamePlayState>(window));
     }
 
     void MainMenuState::disableShader() {

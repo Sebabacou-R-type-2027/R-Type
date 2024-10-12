@@ -13,18 +13,21 @@
 #include "../ecs/system.hpp"
 
 namespace rtype {
+    class GameState;
+
     class Game {
     public:
         Game(const std::string& title, unsigned int width, unsigned int height);
         void run();
-        void changeState(std::unique_ptr<GameState> newState);
+        void changeState(std::shared_ptr<GameState> newState);
 
         ecs::Registry& getRegistry() { return registry; }
         ecs::System& getSystem() { return system; }
         sf::Shader& getBackgroundShader() { return backgroundShader; }
+
     private:
         sf::RenderWindow window;
-        std::unique_ptr<GameState> currentState;
+        std::shared_ptr<GameState> currentState;
         sf::Shader backgroundShader;
 
         ecs::Registry registry;

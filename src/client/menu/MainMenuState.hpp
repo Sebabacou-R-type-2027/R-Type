@@ -44,9 +44,6 @@ namespace rtype {
         ecs::System& system;
 
         bool isShaderEnabled = true;
-
-        // fps counter
-        FPSCounter fpsCounter;
     };
 }
 
