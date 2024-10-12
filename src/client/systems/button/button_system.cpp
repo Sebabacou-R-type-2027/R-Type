@@ -24,6 +24,7 @@ void ButtonSystem::update(Registry& registry, sf::RenderWindow& window) {
                 buttons[i]->rect.setFillColor(buttons[i]->hoverColor); // Use hover color
                 if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
                     buttons[i]->rect.setScale(0.9f, 0.9f); // Scale down on click
+                    buttons[i]->text.setScale(0.9f, 0.9f); // Scale down on click
                     buttons[i]->rect.setFillColor(buttons[i]->clickColor); // Use click color
                     if (!buttons[i]->isPressed) {
                         buttons[i]->isPressed = true; // Set pressed state

@@ -11,6 +11,8 @@
 #include "registry.hpp"
 #include "system.hpp"
 #include "../create_ennemies.hpp"
+#include "../utils/FPSCounter.hpp"
+#include "../utils/Settings.hpp"
 #include "bullet_event.hpp"
 
 namespace rtype {
@@ -26,11 +28,15 @@ namespace rtype {
         sf::RenderWindow& window;
         ecs::Registry registry;
         ecs::System system;
+        sf::Shader backgroundShader;
+        sf::Font font;
         rtype::game::BulletSystem bulletSystem;
 
         ecs::CreateEnnemies createEnnemies; // TODO: create a system for this
 
         void initPlayer(std::string path);
         void initChargeBullet();
+        // fps counter
+        FPSCounter fpsCounter;
     };
 }

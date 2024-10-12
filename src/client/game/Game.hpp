@@ -21,9 +21,11 @@ namespace rtype {
 
         ecs::Registry& getRegistry() { return registry; }
         ecs::System& getSystem() { return system; }
+        sf::Shader& getBackgroundShader() { return backgroundShader; }
     private:
         sf::RenderWindow window;
         std::unique_ptr<GameState> currentState;
+        sf::Shader backgroundShader;
 
         ecs::Registry registry;
         ecs::System system;
