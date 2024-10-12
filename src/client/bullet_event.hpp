@@ -12,7 +12,7 @@
 #include <SFML/Audio.hpp>
 
 
-namespace rtype::Game {
+namespace rtype::game {
     class BulletSystem {
         public:
             void update(ecs::Registry& registry);

@@ -19,8 +19,10 @@ get_property(server GLOBAL PROPERTY SERVER_SOURCES)
 get_property(client GLOBAL PROPERTY CLIENT_SOURCES)
 
 find_package(asio CONFIG REQUIRED)
-find_package(SFML 2.5 COMPONENTS graphics window system CONFIG REQUIRED)
-
+find_package(SFML 2.5 COMPONENTS graphics window system audio CONFIG REQUIRED)
+find_package(OpenAL REQUIRED)
+find_package(FLAC REQUIRED)
+find_package(Vorbis REQUIRED)
 
 add_executable(r-type_server ${server})
 add_executable(r-type_client ${client})

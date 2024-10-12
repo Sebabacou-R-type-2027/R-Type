@@ -26,7 +26,7 @@ namespace rtype {
         sf::RenderWindow& window;
         ecs::Registry registry;
         ecs::System system;
-        rtype::Game::BulletSystem bulletSystem;
+        rtype::game::BulletSystem bulletSystem;
 
         ecs::CreateEnnemies createEnnemies; // TODO: create a system for this
 
