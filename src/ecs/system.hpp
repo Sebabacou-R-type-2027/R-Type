@@ -16,7 +16,6 @@
 #include "../client/systems/button/button_system.hpp"
 #include "../client/systems/ennemy_state/ennemy_state_system.hpp"
 #include "../client/systems/shader/shader_system.hpp"
-#include "../client/systems/bullet/bullet_system.hpp"
 
 namespace ecs {
 
@@ -43,7 +42,7 @@ namespace ecs {
             loopMovementSystem.update(reg, deltaTime);
         }
 
-        void button_system(Registry& reg, sf::RenderWindow& window) {
+        void button_system_render(Registry& reg, sf::RenderWindow& window) {
             buttonSystem.update(reg, window);
         }
 
@@ -56,11 +55,9 @@ namespace ecs {
             enemyStateSystem.update(reg, deltaTime);
         }
 
-
-        void bullet_system(Registry& reg) {
-            bulletSystem.update(reg);
+        void shader_system_render(Registry& reg, sf::RenderWindow& window, sf::Shader& shader) {
+            shaderSystem.update(reg, window, shader);
         }
-
 
 
 private:
@@ -72,7 +69,7 @@ private:
     systems::ButtonSystem buttonSystem;
     systems::CollisionSystem collisionSystem;
     systems::EnemyStateSystem enemyStateSystem;
-    systems::BulletSystem bulletSystem;
+    systems::ShaderSystem shaderSystem;
 };
 
 }

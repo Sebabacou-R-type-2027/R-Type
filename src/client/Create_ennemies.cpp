@@ -20,7 +20,6 @@ namespace ecs {
         auto enemy = registry.spawn_entity();
         std::cout << "Creating enemy entity #" << static_cast<std::size_t>(enemy) << std::endl;
         auto &animation = registry.emplace_component<ecs::Animation>(enemy, texturePath, 8, 1, 0.2f);
-
         float enemyWidth = animation->imageSize.x;
         registry.emplace_component<ecs::Position>(enemy, x - enemyWidth, y);
 

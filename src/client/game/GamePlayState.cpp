@@ -37,29 +37,32 @@ void GamePlayState::handleInput() {
 }
 
 void GamePlayState::update() {
-        if (Settings::getInstance().isShaderEnabled) {
-            system.shader_system(registry, window, backgroundShader);
-        }
+    // if (Settings::getInstance().isShaderEnabled) {
+    //     system.shader_system_render(registry, window, backgroundShader);
+    // }
     system.control_system(registry);
     system.position_system(registry);
+
     auto currentTime = std::chrono::high_resolution_clock::now();
     static auto lastTime = std::chrono::high_resolution_clock::now();
     float deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - lastTime).count();
     lastTime = currentTime;
+
     bulletSystem.update(registry);
     system.animation_system(registry, deltaTime, window);
     system.loop_movement_system(registry, deltaTime);
     system.collision_system(registry, window);
-    handleCollision.handle_collision(registry);        fpsCounter.update();
+    handleCollision.handle_collision(registry);
+    fpsCounter.update();
 }
 
     void GamePlayState::render() {
         window.clear();
-        if (Settings::getInstance().isShaderEnabled) {
-            system.shader_system_render(registry, window, backgroundShader);
-        } else {
-            sf::Shader::bind(nullptr);
-        }
+        // if (Settings::getInstance().isShaderEnabled) {
+        //     system.shader_system_render(registry, window, backgroundShader);
+        // } else {
+        //     sf::Shader::bind(nullptr);
+        // }
         system.draw_system(registry, window);
 
         // Draw FPS counter

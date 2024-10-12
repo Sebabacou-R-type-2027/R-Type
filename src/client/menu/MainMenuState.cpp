@@ -26,10 +26,10 @@ namespace rtype {
 
     void MainMenuState::update() {
         if (Settings::getInstance().isShaderEnabled) {
-            system.shader_system(registry, window, backgroundShader);
+            system.shader_system_render(registry, window, backgroundShader);
         }
 
-        system.button_system(registry, window);
+        system.button_system_render(registry, window);
         fpsCounter.update();
     }
 
