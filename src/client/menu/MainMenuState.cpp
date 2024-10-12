@@ -124,7 +124,7 @@ namespace rtype {
         createButton("Map Editor", yPos, [this]() { startGame(); });
         yPos += button_height + spacing;
 
-        createButton("Game Options", yPos, [this]() { Settings::getInstance().isShaderEnabled ? disableShader() : enableShader(); });
+        createButton("Game Options (ON/OFF Shader)", yPos, [this]() { Settings::getInstance().isShaderEnabled ? disableShader() : enableShader(); });
         yPos += button_height + spacing;
 
         createButton("Quit", yPos, [this]() { window.close(); });
