@@ -12,31 +12,14 @@ namespace ecs::systems {
 
 
     void BulletSystem::update(Registry& registry) {
-        auto positions = registry.get_components<Position>();
-        auto velocities = registry.get_components<Velocity>();
-        auto bullet = registry.get_components<Bullet>();
-        auto entityTypes = registry.get_components<EntityType>(); // To identify the player
+        auto &positions = registry.get_components<Position>();
+        auto &entityTypes = registry.get_components<EntityType>(); // To identify the player
+        auto &draws = registry.get_components<Drawable>();
 
         sf::Time currentTime = shootClock.getElapsedTime();
 
-        bool check_charge = false;
         static sf::Clock spacePressClock; // Clock to measure space key press duration
         static bool isSpacePressed = false; // Previous state of the space key
-
-        // Find the player entity
-        std::size_t playerIndex = -1;
-        for (std::size_t i = 0; i < entityTypes.size(); ++i) {
-            if (entityTypes[i] && entityTypes[i]->get().current_type == ecs::Type::Player) {
-                playerIndex = i;
-                break;
-            }
-        }
-
-        // If no player is found, return early
-        if (playerIndex == -1) {
-            std::cerr << "Player entity not found!\n";
-            return;
-        }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
             if (isSpacePressed == false) {
@@ -50,28 +33,38 @@ namespace ecs::systems {
             }
         } else {
             if (isSpacePressed) {
-                // If space was just released
-                isSpacePressed = false;
-                float timePressed = spacePressClock.getElapsedTime().asSeconds();
+                for (size_t i = 0; i < entityTypes.size() && i < positions.size() && i < draws.size(); i++) {
+                    if (entityTypes[i].has_value() && positions[i].has_value() && draws[i].has_value()) {
+                        if (entityTypes[i]->current_type == Type::Player) {
+                            if (draws[i]->sprite.getGlobalBounds().width > 0) {
+                                // If space was just released
+                                isSpacePressed = false;
+                                float timePressed = spacePressClock.getElapsedTime().asSeconds();
 
-                if (timePressed < 1 && currentTime - lastShootTime > shootCooldown) {
-                    lastShootTime = currentTime;
-                    auto laser_entity = registry.spawn_entity();
-                    registry.emplace_component<ecs::Velocity>(laser_entity, 35.0f, 0.0f);
-                    registry.emplace_component<ecs::EntityType>(laser_entity, ecs::Type::Bullet);
-                    auto& hit = registry.emplace_component<ecs::Hitbox>(laser_entity, ecs::ShapeType::Rectangle, false);
-                    hit.rect = sf::RectangleShape(sf::Vector2f(20.0f, 20.0f));
-                    registry.emplace_component<ecs::Position>(laser_entity,
-                    positions.at(playerIndex)->get().x + 40.0f,positions.at(playerIndex)->get().y + 5.0f);
-                    registry.emplace_component<ecs::Drawable>(laser_entity, "assets/Bullets/01.png");
-                    registry.emplace_component<ecs::Bullet>(laser_entity);
-                    registry.emplace_component<ecs::CollisionState>(laser_entity, false);
-                } else {
-                    ChargedOneDraw = true;
-                }
-
-                if (timePressed > 1.0f) {
-                    ChargedOneDraw = true;
+                                if (timePressed < 1 && currentTime - lastShootTime > shootCooldown) {
+                                    lastShootTime = currentTime;
+                                    auto laser_entity = registry.spawn_entity();
+                                    registry.emplace_component<ecs::Velocity>(laser_entity, 10.0f, 0.0f);
+                                    registry.emplace_component<ecs::EntityType>(laser_entity, ecs::Type::Bullet);
+                                    auto &draw = registry.emplace_component<ecs::Drawable>(laser_entity, "assets/Bullets/01.png");
+                                    auto& hit = registry.emplace_component<ecs::Hitbox>(laser_entity, ecs::ShapeType::Rectangle, false, true);
+                                    hit->rect.setPosition(sf::Vector2f(draws[i]->sprite.getGlobalBounds().width / 2, draws[i]->sprite.getGlobalBounds().height / 2));
+                                    hit->rect = sf::RectangleShape(sf::Vector2f(draw->sprite.getGlobalBounds().width / 2, draw->sprite.getGlobalBounds().height / 2));
+                                    hit->rect.setOutlineColor(sf::Color::Red);
+                                    hit->rect.setOutlineThickness(1.0f);
+                                    registry.emplace_component<ecs::Position>(laser_entity,
+                                                                                positions[i]->x,
+                                                                                positions[i]->y);
+                                    registry.emplace_component<ecs::Bullet>(laser_entity);
+                                    registry.emplace_component<ecs::CollisionState>(laser_entity, false);
+                                    registry.emplace_component<ecs::LifeState>(laser_entity, true);
+                                } else if (timePressed > 1.0f) {
+                                    ChargedOneDraw = true;
+                                }
+                                break;
+                            }
+                        }
+                    }
                 }
             }
         }
