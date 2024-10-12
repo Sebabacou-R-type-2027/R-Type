@@ -25,6 +25,7 @@ namespace rtype {
         sf::RenderWindow& window;
         ecs::Registry registry;
         ecs::System system;
+        sf::Shader backgroundShader;
 
         ecs::CreateEnnemies createEnnemies; // TODO: create a system for this
 

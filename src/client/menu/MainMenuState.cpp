@@ -6,7 +6,7 @@
 
 namespace rtype {
     MainMenuState::MainMenuState(sf::RenderWindow& window, Game& game)
-        : window(window), game(game), registry(game.getRegistry()), system(game.getSystem())  // Initialize registry and system here
+        : window(window), game(game), registry(game.getRegistry()), system(game.getSystem()), backgroundShader(game.getBackgroundShader())
     {
         if (!font.loadFromFile("assets/fonts/arial.ttf")) {
             throw std::runtime_error("Could not load font");
@@ -28,12 +28,18 @@ namespace rtype {
     }
 
     void MainMenuState::update() {
+        if (isShaderEnabled) {
+            system.shader_system(registry, window, backgroundShader);
+        }
+
         system.button_system(registry, window);
     }
 
     void MainMenuState::render() {
         window.clear();
-
+        if (isShaderEnabled) {
+            system.shader_system_render(registry, window, backgroundShader);
+        }
         system.button_system_render(registry, window);
         system.draw_system(registry, window);
 
@@ -42,7 +48,13 @@ namespace rtype {
 
     void MainMenuState::startGame() {
         std::cout << "Starting the game..." << std::endl;
+        disableShader();
         game.changeState(std::make_unique<GamePlayState>(window));
+    }
+
+    void MainMenuState::disableShader() {
+        isShaderEnabled = false;
+        sf::Shader::bind(nullptr);
     }
 
     void MainMenuState::createMenuTitle() {
@@ -102,7 +114,7 @@ namespace rtype {
         createButton("Map Editor", yPos, [this]() { startGame(); });
         yPos += button_height + spacing;
 
-        createButton("Game Options", yPos, [this]() { startGame(); });
+        createButton("Game Options", yPos, [this]() { disableShader(); });
         yPos += button_height + spacing;
 
         createButton("Quit", yPos, [this]() { window.close(); });

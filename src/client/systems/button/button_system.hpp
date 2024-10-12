@@ -18,5 +18,4 @@ namespace ecs::systems {
             void update(Registry& registry, sf::RenderWindow& window);
             void render(Registry& registry, sf::RenderWindow& window);
     };
-
 }

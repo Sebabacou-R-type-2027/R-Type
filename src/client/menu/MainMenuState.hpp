@@ -29,10 +29,14 @@ namespace rtype {
         void createMenuButtons();
         void createMenuTitle();
         void startGame();
+        void disableShader();
         sf::Font font;
+        sf::Shader& backgroundShader;
 
         ecs::Registry& registry;
         ecs::System& system;
+
+        bool isShaderEnabled = true;
     };
 }
 

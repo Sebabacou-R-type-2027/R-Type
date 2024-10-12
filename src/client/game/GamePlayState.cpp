@@ -14,6 +14,10 @@ namespace rtype {
         : window(window) {
         registry.register_all_components();
 
+        if (!backgroundShader.loadFromFile("assets/shaders/background.frag", sf::Shader::Fragment)) {
+            throw std::runtime_error("Could not load shader");
+        }
+
         initPlayer("assets/Ship/Ship.png");
         createEnnemies.create_enemies(registry, window);
 
@@ -31,6 +35,7 @@ namespace rtype {
     }
 
     void GamePlayState::update() {
+        system.shader_system(registry, window, backgroundShader);
         system.control_system(registry);
         system.position_system(registry);
 
@@ -47,6 +52,7 @@ namespace rtype {
 
     void GamePlayState::render() {
         window.clear();
+        system.shader_system_render(registry, window, backgroundShader);
         system.draw_system(registry, window);
         window.display();
     }
