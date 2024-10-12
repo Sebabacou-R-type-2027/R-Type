@@ -14,5 +14,6 @@ namespace ecs {
             HandleCollision() = default;
             ~HandleCollision() = default;
             void handle_collision(Registry& registry);
+            void create_explosion(Registry& registry, float x, float y);
     };
 }

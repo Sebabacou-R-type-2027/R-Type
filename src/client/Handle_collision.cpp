@@ -9,26 +9,32 @@
 
 namespace ecs {
 
+    void HandleCollision::create_explosion(Registry& registry, float x, float y) {
+        auto explosion = registry.spawn_entity();
+        auto &animation = registry.emplace_component<Animation>(explosion, "assets/sprites/r-typesheet3.gif", 12, 1, 0.1f);
+        registry.emplace_component<Position>(explosion, x, y);
+        registry.emplace_component<LifeState>(explosion, true);
+    }
     void HandleCollision::handle_collision(Registry& registry) {
-        auto CollisionStates = registry.get_components<CollisionState>();
-        auto EntityTypes = registry.get_components<EntityType>();
+        auto &collisionstates = registry.get_components<CollisionState>();
+        auto &entitytypes = registry.get_components<EntityType>();
+        auto &positions = registry.get_components<Position>();
+        auto &lifestates = registry.get_components<LifeState>();
 
-        std::vector<Entity> entities_to_kill;
-
-        for (std::size_t i = 0; i < CollisionStates.size(); ++i)
-            if (CollisionStates[i] && CollisionStates[i]->get().active)
-                for (std::size_t j = 0; j < CollisionStates.size(); ++j)
-                    if (CollisionStates[j] && CollisionStates[j]->get().active
-                        && i < EntityTypes.size() && j < EntityTypes.size()
-                        && EntityTypes[i] && EntityTypes[j]
-                        && EntityTypes[i]->get().current_type != EntityTypes[j]->get().current_type) {
-                            auto entity1 = registry.entity_from_index(i), entity2 = registry.entity_from_index(j);
-                            if (!(entity1 || entity2))
-                                continue;
-                            entities_to_kill.push_back(*entity1);
-                            entities_to_kill.push_back(*entity2);
+        for (std::size_t i = 0; i < collisionstates.size() && i < entitytypes.size() && i < positions.size() && i < lifestates.size(); ++i)
+            if (collisionstates[i] && collisionstates[i]->active)
+                for (std::size_t j = 0; j < collisionstates.size() && j < entitytypes.size() && j < positions.size() && j < lifestates.size(); ++j)
+                    if (collisionstates[j] && collisionstates[j]->active
+                        && i < entitytypes.size() && j < entitytypes.size()
+                        && entitytypes[i]->current_type != entitytypes[j]->current_type
+                        && lifestates[i]->isAlive && lifestates[j]->isAlive) {
+                            // create_explosion(registry, positions[i]->x, positions[i]->y);
+                            lifestates[i]->isAlive = false;
+                            lifestates[j]->isAlive = false;
+                            positions[i]->x = -1000;
+                            positions[j]->x = -1000;
+                            positions[i]->y = -1000;
+                            positions[j]->y = -1000;
                         }
-        for (auto entity : entities_to_kill)
-            registry.kill_entity(entity);
     }
 }
