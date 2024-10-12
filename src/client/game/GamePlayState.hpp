@@ -13,7 +13,7 @@
 #include "../create_ennemies.hpp"
 #include "../utils/FPSCounter.hpp"
 #include "../utils/Settings.hpp"
-#include "bullet_event.hpp"
+#include "../systems/bullet/bullet_system.hpp"
 
 namespace rtype {
     class GamePlayState : public GameState {
