@@ -8,11 +8,14 @@
 #pragma once
 
 #include "registry.hpp"
+#include "Sound_game.hpp"
+#include <SFML/Audio.hpp>
 
-namespace ecs::systems {
+
+namespace rtype::game {
     class BulletSystem {
         public:
-            void update(Registry& registry);
+            void update(ecs::Registry& registry);
             bool ChargedOneDraw = false;
 
         private:
@@ -23,6 +26,8 @@ namespace ecs::systems {
             sf::Clock clock;
             sf::Time elapsed = sf::Time::Zero; // Temps écoulé total
             int compteur = 0; // Compteur de secondes
+            bool check = false;
+            rtype::game::Sound_game Sound_game;
 
     };
 }

@@ -25,7 +25,7 @@ namespace rtype {
         initPlayer("assets/Ship/Ship.png");
         createEnnemies.create_enemies(registry, window);
 
-        // initChargeBullet();
+        initChargeBullet();
     }
 
     void GamePlayState::handleInput() {
@@ -50,7 +50,7 @@ namespace rtype {
         float deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - lastTime).count();
         lastTime = currentTime;
 
-        system.bullet_system(registry);
+        bulletSystem.update(registry);
         system.loop_movement_system(registry, deltaTime);
         system.collision_system(registry, window);
         fpsCounter.update();

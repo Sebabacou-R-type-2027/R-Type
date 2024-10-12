@@ -15,6 +15,8 @@ namespace ecs {
 
 class ButtonFactory {
 public:
+    std::string currentText;
+
     static Button create_button(
         const std::string& text,
         const sf::Vector2f& position,
@@ -26,5 +28,8 @@ public:
         const sf::Color& textColor = sf::Color::White,      // Default text color
         const unsigned int text_size = 24,                  // Default text size
         std::function<void()> action = []() {});            // Default action (do nothing)
+
+    void handleTextEntered(sf::Uint32 unicode, const Button button);
+
 };
 }

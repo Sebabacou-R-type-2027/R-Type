@@ -26,8 +26,16 @@ Button ButtonFactory::create_button(
     shape.setPosition(position);
 
     sf::Text buttonText;
+
     buttonText.setFont(font);
-    buttonText.setString(text);
+
+    if (!text.empty()) {
+        buttonText.setString(text);
+    } else {
+        buttonText.setString("_");
+    }
+
+
     buttonText.setCharacterSize(text_size);
     buttonText.setFillColor(textColor);
     buttonText.setOrigin(buttonText.getGlobalBounds().width / 2, buttonText.getGlobalBounds().height / 2 + buttonText.getGlobalBounds().top);
@@ -42,4 +50,27 @@ Button ButtonFactory::create_button(
     return button;
 }
 
+
+void ButtonFactory::handleTextEntered(sf::Uint32 unicode, const Button button) {
+        sf::Text buttonText;
+
+        if (button.isTextbox) {
+            // On ne prend en charge que les caractères imprimables
+            if (unicode >= 32 && unicode <= 126) {
+                currentText += static_cast<char>(unicode);
+            } else if (unicode == 8 && !currentText.empty()) { // Backspace
+                currentText.pop_back();
+            }
+
+            // Mettre à jour le texte affiché
+            if (currentText.empty()) {
+                buttonText.setString("_");  // Curseur vide
+            } else {
+                buttonText.setString(currentText + "_");  // Affiche le texte avec un curseur
+            }
+
+            // Repositionner l'origine pour centrer le texte
+            buttonText.setOrigin(buttonText.getGlobalBounds().width / 2, buttonText.getGlobalBounds().height / 2 + buttonText.getGlobalBounds().top);
+        }
+    }
 }
