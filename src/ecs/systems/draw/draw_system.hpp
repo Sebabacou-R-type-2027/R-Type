@@ -14,9 +14,12 @@ namespace ecs::systems {
 
     class DrawSystem {
         public:
-            void update(Registry& registry, sf::RenderWindow& window, sf::CircleShape& playerShape);
-            void update(Registry& registry, sf::RenderWindow& window, sf::Sprite& playerSprite);
             void update(Registry& registry, sf::RenderWindow& window);
+        private:
+            void drawSprite(Drawable& drawable, Position& position, sf::RenderWindow& window);
+            void drawText(Drawable& drawable, Position& position, sf::RenderWindow& window);
+
+            void updateDrawable(Drawable& drawable, Position& position, sf::RenderWindow& window);
     };
 
 }

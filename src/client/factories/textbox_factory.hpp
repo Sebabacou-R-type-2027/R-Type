@@ -9,15 +9,15 @@
 
 #include <SFML/Graphics.hpp>
 #include <functional>
-#include "components/Button.hpp"
+#include "components/TextBox.hpp"
 
 namespace ecs {
 
-class ButtonFactory {
+class TextBoxFactory {
 public:
     std::string currentText;
 
-    static Button create_button(
+    static TextBox create_textbox(
         const std::string& text,
         const sf::Vector2f& position,
         const sf::Vector2f& size,
@@ -26,10 +26,10 @@ public:
         const sf::Color& hoverColor = sf::Color::Cyan,     // Default hover color
         const sf::Color& clickColor = sf::Color::Green,     // Default click color
         const sf::Color& textColor = sf::Color::White,      // Default text color
-        const unsigned int text_size = 24,                  // Default text size
+        const unsigned int text_size = 24,
         std::function<void()> action = []() {});            // Default action (do nothing)
 
-    void handleTextEntered(sf::Uint32 unicode, const Button button);
 
+    void handleTextEntered(sf::Uint32 unicode, TextBox &textBox);
 };
 }

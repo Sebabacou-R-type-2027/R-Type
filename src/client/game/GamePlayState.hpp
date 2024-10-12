@@ -12,6 +12,9 @@
 #include "system.hpp"
 #include "../create_ennemies.hpp"
 #include <networkClient/Client.hpp>
+#include "../utils/FPSCounter.hpp"
+#include "../utils/Settings.hpp"
+#include "../systems/bullet/bullet_system.hpp"
 
 namespace rtype {
     class GamePlayState : public GameState {
@@ -26,11 +29,16 @@ namespace rtype {
         sf::RenderWindow& window;
         ecs::Registry registry;
         ecs::System system;
+        sf::Shader backgroundShader;
+        sf::Font font;
+        rtype::game::BulletSystem bulletSystem;
 
         client::Client& network_;
         ecs::CreateEnnemies createEnnemies; // TODO: create a system for this
 
         void initPlayer(std::string path, float posx);
         void initChargeBullet();
+        // fps counter
+        // FPSCounter fpsCounter;
     };
 }

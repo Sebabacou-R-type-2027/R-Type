@@ -10,42 +10,37 @@
 
 namespace ecs::systems {
 
-void DrawSystem::update(Registry& registry, sf::RenderWindow& window, sf::CircleShape& playerShape) {
-    auto& positions = registry.get_components<Position>();
-
-    for (std::size_t i = 0; i < positions.size(); ++i) {
-        if (positions[i]) {
-            playerShape.setPosition(positions[i]->x, positions[i]->y);
-            window.draw(playerShape);
+    void DrawSystem::drawSprite(Drawable& drawable, Position& position, sf::RenderWindow& window) {
+        if (drawable.sprite.getTexture()) {
+            drawable.sprite.setPosition(position.x, position.y);
+            if (drawable.texture_rect != sf::IntRect())
+                drawable.sprite.setTextureRect(drawable.texture_rect);
+            window.draw(drawable.sprite);
         }
     }
-}
 
-void DrawSystem::update(Registry& registry, sf::RenderWindow& window, sf::Sprite& playerSprite) {
-    auto& positions = registry.get_components<Position>();
-
-    for (std::size_t i = 0; i < positions.size(); ++i) {
-        if (positions[i]) {
-            playerSprite.setPosition(positions[i]->x, positions[i]->y);
-            window.draw(playerSprite);
+    void DrawSystem::drawText(Drawable& drawable, Position& position, sf::RenderWindow& window) {
+        if (!drawable.text.getString().isEmpty()) {
+            drawable.text.setPosition(position.x, position.y);
+            window.draw(drawable.text);
         }
     }
-}
 
-void DrawSystem::update(Registry& registry, sf::RenderWindow& window) {
-    auto& drawables = registry.get_components<Drawable>();
-    auto& positions = registry.get_components<Position>();
+    void DrawSystem::updateDrawable(Drawable& drawable, Position& position, sf::RenderWindow& window) {
+        drawable.sprite.setTexture(drawable.texture);
+        drawSprite(drawable, position, window);
+        drawText(drawable, position, window);
+    }
 
-    for (std::size_t i = 0; i < drawables.size(); ++i) {
-        if (drawables[i] && positions[i]) {
-            sf::Sprite sprite;
-            sprite.setTexture(drawables[i]->texture); // Use the existing texture
-            if (drawables[i]->texture_rect != sf::IntRect())
-                sprite.setTextureRect(drawables[i]->texture_rect); // Use the existing texture rect
-            sprite.setPosition(positions[i]->x, positions[i]->y);
-            window.draw(sprite); // Draw the sprite
+    void DrawSystem::update(Registry& registry, sf::RenderWindow& window) {
+        auto& drawables = registry.get_components<Drawable>();
+        auto& positions = registry.get_components<Position>();
+
+        for (std::size_t i = 0; i < drawables.size(); ++i) {
+            if (drawables[i] && positions[i]) {
+                updateDrawable(*drawables[i], *positions[i], window);
+            }
         }
     }
-}
 
 }
