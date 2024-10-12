@@ -39,7 +39,9 @@ namespace rtype {
     }
 
     void GamePlayState::update() {
-        system.shader_system(registry, window, backgroundShader);
+        if (Settings::getInstance().isShaderEnabled) {
+            system.shader_system(registry, window, backgroundShader);
+        }
         system.control_system(registry);
         system.position_system(registry);
 
@@ -56,7 +58,11 @@ namespace rtype {
 
     void GamePlayState::render() {
         window.clear();
-        system.shader_system_render(registry, window, backgroundShader);
+        if (Settings::getInstance().isShaderEnabled) {
+            system.shader_system_render(registry, window, backgroundShader);
+        } else {
+            sf::Shader::bind(nullptr);
+        }
         system.draw_system(registry, window);
 
         // Draw FPS counter

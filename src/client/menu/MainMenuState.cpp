@@ -1,8 +1,4 @@
 #include "MainMenuState.hpp"
-#include "../game/Game.hpp"
-#include "../factories/button_factory.hpp"
-#include <iostream>
-#include "../game/GamePlayState.hpp"
 
 namespace rtype {
     MainMenuState::MainMenuState(sf::RenderWindow& window, Game& game)
@@ -13,6 +9,7 @@ namespace rtype {
         }
 
         registry.register_all_components();
+
 
         createMenuButtons();
         createMenuTitle();
@@ -28,7 +25,7 @@ namespace rtype {
     }
 
     void MainMenuState::update() {
-        if (isShaderEnabled) {
+        if (Settings::getInstance().isShaderEnabled) {
             system.shader_system(registry, window, backgroundShader);
         }
 
@@ -38,9 +35,12 @@ namespace rtype {
 
     void MainMenuState::render() {
         window.clear();
-        if (isShaderEnabled) {
+        if (Settings::getInstance().isShaderEnabled) {
             system.shader_system_render(registry, window, backgroundShader);
+        } else {
+            sf::Shader::bind(nullptr);
         }
+
         system.button_system_render(registry, window);
         system.draw_system(registry, window);
 
@@ -53,13 +53,18 @@ namespace rtype {
 
     void MainMenuState::startGame() {
         std::cout << "Starting the game..." << std::endl;
-        disableShader();
+        sf::Shader::bind(nullptr);
         game.changeState(std::make_unique<GamePlayState>(window));
     }
 
     void MainMenuState::disableShader() {
-        isShaderEnabled = false;
+        Settings::getInstance().isShaderEnabled = false;
         sf::Shader::bind(nullptr);
+    }
+
+    void MainMenuState::enableShader() {
+        sf::Shader::bind(&backgroundShader);
+        Settings::getInstance().isShaderEnabled = true;
     }
 
     void MainMenuState::createMenuTitle() {
@@ -119,7 +124,7 @@ namespace rtype {
         createButton("Map Editor", yPos, [this]() { startGame(); });
         yPos += button_height + spacing;
 
-        createButton("Game Options", yPos, [this]() { disableShader(); });
+        createButton("Game Options", yPos, [this]() { Settings::getInstance().isShaderEnabled ? disableShader() : enableShader(); });
         yPos += button_height + spacing;
 
         createButton("Quit", yPos, [this]() { window.close(); });

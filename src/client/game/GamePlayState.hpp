@@ -12,6 +12,7 @@
 #include "system.hpp"
 #include "../create_ennemies.hpp"
 #include "../utils/FPSCounter.hpp"
+#include "../utils/Settings.hpp"
 
 namespace rtype {
     class GamePlayState : public GameState {
