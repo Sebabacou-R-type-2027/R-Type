@@ -68,6 +68,8 @@ private:
     systems::LoopMovementSystem loopMovementSystem;
     systems::ButtonSystem buttonSystem;
     systems::CollisionSystem collisionSystem;
+    systems::AnimationSystem animationSystem;
+
     systems::ShaderSystem shaderSystem;
 };
 
