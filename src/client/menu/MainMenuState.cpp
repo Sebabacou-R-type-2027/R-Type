@@ -34,8 +34,6 @@ namespace rtype {
         window.clear();
 
         system.draw_system(registry, window);
-        system.button_system_render(registry, window);
-
         window.display();
     }
 

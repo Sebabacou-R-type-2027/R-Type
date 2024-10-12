@@ -10,7 +10,8 @@
 #include "game_state.hpp"
 #include "registry.hpp"
 #include "system.hpp"
-#include "../create_ennemies.hpp"
+#include "../Create_ennemies.hpp"
+#include "../Handle_collision.hpp"
 
 namespace rtype {
     class GamePlayState : public GameState {
@@ -27,6 +28,7 @@ namespace rtype {
         ecs::System system;
 
         ecs::CreateEnnemies createEnnemies; // TODO: create a system for this
+        ecs::HandleCollision handleCollision; // TODO: create a system for this
 
         void initPlayer(std::string path);
         void initChargeBullet();
