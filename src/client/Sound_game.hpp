@@ -10,8 +10,8 @@ class Sound_game {
 public:
     Sound_game();
     ~Sound_game();
-    void playSound(const std::string& filename);
-    void playMusic(const std::string& filename);
+    void playSound(const std::string& filename, float volume);
+    void playMusic(const std::string& filename, float volume);
 
 private:
     std::vector<sf::Sound> sounds;
