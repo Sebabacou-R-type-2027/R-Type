@@ -12,7 +12,7 @@
 #include "components/Entity_type.hpp"
 #include "utils/CheckEntity.hpp"
 
-namespace rtype::game {
+namespace rtype::Game {
 
 
     void BulletSystem::update(ecs::Registry& registry) {

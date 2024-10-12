@@ -11,6 +11,7 @@
 #include "registry.hpp"
 #include "system.hpp"
 #include "../create_ennemies.hpp"
+#include "bullet_event.hpp"
 
 namespace rtype {
     class GamePlayState : public GameState {
@@ -25,6 +26,7 @@ namespace rtype {
         sf::RenderWindow& window;
         ecs::Registry registry;
         ecs::System system;
+        rtype::Game::BulletSystem bulletSystem;
 
         ecs::CreateEnnemies createEnnemies; // TODO: create a system for this
 
