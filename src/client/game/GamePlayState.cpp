@@ -14,6 +14,14 @@ namespace rtype {
         : window(window) {
         registry.register_all_components();
 
+        if (!backgroundShader.loadFromFile("assets/shaders/background.frag", sf::Shader::Fragment)) {
+            throw std::runtime_error("Could not load shader");
+        }
+
+        if (!font.loadFromFile("assets/fonts/arial.ttf")) {
+            throw std::runtime_error("Could not load font");
+        }
+
         initPlayer("assets/Ship/Ship.png");
         createEnnemies.create_enemies(registry, window);
 
@@ -31,6 +39,9 @@ namespace rtype {
     }
 
     void GamePlayState::update() {
+        if (Settings::getInstance().isShaderEnabled) {
+            system.shader_system(registry, window, backgroundShader);
+        }
         system.control_system(registry);
         system.position_system(registry);
 
@@ -42,12 +53,22 @@ namespace rtype {
         system.bullet_system(registry);
         system.loop_movement_system(registry, deltaTime);
         system.collision_system(registry, window);
-
+        fpsCounter.update();
     }
 
     void GamePlayState::render() {
         window.clear();
+        if (Settings::getInstance().isShaderEnabled) {
+            system.shader_system_render(registry, window, backgroundShader);
+        } else {
+            sf::Shader::bind(nullptr);
+        }
         system.draw_system(registry, window);
+
+        // Draw FPS counter
+        sf::Text fpsText("FPS: " + std::to_string(fpsCounter.getFPS()), font, 24);
+        window.draw(fpsText);
+
         window.display();
     }
 

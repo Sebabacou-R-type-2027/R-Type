@@ -11,6 +11,8 @@
 #include "registry.hpp"
 #include "system.hpp"
 #include "../create_ennemies.hpp"
+#include "../utils/FPSCounter.hpp"
+#include "../utils/Settings.hpp"
 
 namespace rtype {
     class GamePlayState : public GameState {
@@ -25,10 +27,14 @@ namespace rtype {
         sf::RenderWindow& window;
         ecs::Registry registry;
         ecs::System system;
+        sf::Shader backgroundShader;
+        sf::Font font;
 
         ecs::CreateEnnemies createEnnemies; // TODO: create a system for this
 
         void initPlayer(std::string path);
         void initChargeBullet();
+        // fps counter
+        FPSCounter fpsCounter;
     };
 }
