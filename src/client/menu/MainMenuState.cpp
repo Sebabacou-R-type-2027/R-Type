@@ -33,6 +33,7 @@ namespace rtype {
         }
 
         system.button_system(registry, window);
+        fpsCounter.update();
     }
 
     void MainMenuState::render() {
@@ -42,6 +43,10 @@ namespace rtype {
         }
         system.button_system_render(registry, window);
         system.draw_system(registry, window);
+
+        // Draw FPS counter
+        sf::Text fpsText("FPS: " + std::to_string(fpsCounter.getFPS()), font, 24);
+        window.draw(fpsText);
 
         window.display();
     }

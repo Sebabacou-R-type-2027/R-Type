@@ -24,8 +24,6 @@ void ShaderSystem::update(Registry& registry, sf::RenderWindow& window, sf::Shad
         std::cout << "Error setting shader uniforms: " << e.what() << std::endl;
         std::cerr << "Error setting shader uniforms: " << e.what() << std::endl;
     }
-    // shader.setUniform("iTime", static_cast<float>(clock.getElapsedTime().asSeconds())); // Pass time
-    // shader.setUniform("iResolution", sf::Glsl::Vec3(window.getSize().x, window.getSize().y, 1.0f)); // Pass resolution
 }
 
 

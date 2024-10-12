@@ -11,6 +11,7 @@
 #include "../game_state.hpp"
 #include <SFML/Graphics.hpp>
 #include "../game/Game.hpp"
+#include "../utils/FPSCounter.hpp"
 
 namespace rtype {
     class Game;
@@ -37,6 +38,9 @@ namespace rtype {
         ecs::System& system;
 
         bool isShaderEnabled = true;
+
+        // fps counter
+        FPSCounter fpsCounter;
     };
 }
 
