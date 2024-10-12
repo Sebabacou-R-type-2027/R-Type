@@ -30,6 +30,7 @@
             #include "components/Collision_state.hpp"
             #include "components/GameState.hpp"
             #include "components/LifeState.hpp"
+            #include "components/BulletCharge.hpp"
 
 namespace ecs {
 
@@ -108,6 +109,7 @@ class Registry {
             register_component<CollisionState>();
             register_component<GameStateComponent>();
             register_component<LifeState>();
+            register_component<BulletCharge>();
         }
     private:
         std::size_t _next_entity_id = 0;

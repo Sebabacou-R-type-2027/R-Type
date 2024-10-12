@@ -15,6 +15,7 @@
 #include "../client/systems/loop_movement/loop_movement_system.hpp"
 #include "../client/systems/button/button_system.hpp"
 #include "../client/systems/ennemy_state/ennemy_state_system.hpp"
+#include "../client/systems/shader/shader_system.hpp"
 #include "../client/systems/bullet/bullet_system.hpp"
 
 namespace ecs {
@@ -50,24 +51,28 @@ namespace ecs {
             collisionSystem.update(reg, window);
         }
 
+
         void enemy_state_system(Registry& reg, float deltaTime) {
             enemyStateSystem.update(reg, deltaTime);
         }
 
+
         void bullet_system(Registry& reg) {
-            Bullet_system.update(reg);
+            bulletSystem.update(reg);
         }
 
-    private:
-        systems::ControlSystem controlSystem;
-        systems::DrawSystem drawSystem;
-        systems::PositionSystem positionSystem;
-        systems::AnimationSystem animationSystem;
-        systems::LoopMovementSystem loopMovementSystem;
-        systems::ButtonSystem buttonSystem;
-        systems::CollisionSystem collisionSystem;
-        systems::EnemyStateSystem enemyStateSystem;
-        systems::BulletSystem Bullet_system;
-    };
+
+
+private:
+    systems::ControlSystem controlSystem;
+    systems::DrawSystem drawSystem;
+    systems::PositionSystem positionSystem;
+    systems::AnimationSystem animationSystem;
+    systems::LoopMovementSystem loopMovementSystem;
+    systems::ButtonSystem buttonSystem;
+    systems::CollisionSystem collisionSystem;
+    systems::EnemyStateSystem enemyStateSystem;
+    systems::BulletSystem bulletSystem;
+};
 
 }

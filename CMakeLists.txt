@@ -4,6 +4,7 @@ project(R-Type)
 
 if (WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DWIN32")
+    add_definitions(-D_WIN32_WINNT=0x0A00)  # for Windows 10
 elseif (UNIX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUNIX")
 endif()
@@ -19,15 +20,17 @@ get_property(server GLOBAL PROPERTY SERVER_SOURCES)
 get_property(client GLOBAL PROPERTY CLIENT_SOURCES)
 
 find_package(asio CONFIG REQUIRED)
-find_package(SFML 2.5 COMPONENTS graphics window system CONFIG REQUIRED)
-
+find_package(SFML 2.5 COMPONENTS graphics window system audio CONFIG REQUIRED)
+find_package(OpenAL REQUIRED)
+find_package(FLAC REQUIRED)
+find_package(Vorbis REQUIRED)
 add_compile_options($<$<CONFIG:Debug>:-g>)
 
 add_executable(r-type_server ${server})
 add_executable(r-type_client ${client})
 
 target_link_libraries(r-type_server PRIVATE asio::asio)
-target_link_libraries(r-type_client PRIVATE asio::asio sfml-graphics sfml-window sfml-system)
+target_link_libraries(r-type_client PRIVATE asio::asio sfml-graphics sfml-window sfml-system sfml-audio)
 
 target_include_directories(r-type_server PRIVATE
         src/server
@@ -52,6 +55,7 @@ target_include_directories(r-type_client PRIVATE
   )
 
 # Symlink the executables to the root directory (Unix only)
+
 if (UNIX)
     add_custom_target(symlink-executables ALL BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/r-type_server ${CMAKE_CURRENT_SOURCE_DIR}/r-type_client
         COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_BINARY_DIR}/r-type_server ${CMAKE_CURRENT_SOURCE_DIR}/r-type_server

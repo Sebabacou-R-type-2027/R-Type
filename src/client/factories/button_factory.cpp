@@ -26,14 +26,21 @@ Button ButtonFactory::create_button(
     shape.setPosition(position);
 
     sf::Text buttonText;
+
     buttonText.setFont(font);
-    buttonText.setString(text);
+
+    if (!text.empty()) {
+        buttonText.setString(text);
+    } else {
+        buttonText.setString("_");
+    }
+
+
     buttonText.setCharacterSize(text_size);
     buttonText.setFillColor(textColor);
     buttonText.setOrigin(buttonText.getGlobalBounds().width / 2, buttonText.getGlobalBounds().height / 2 + buttonText.getGlobalBounds().top);
     buttonText.setPosition(position);
 
-    // Create the Button object with colors
     Button button(shape, buttonText, action);
     button.defaultColor = defaultColor;
     button.hoverColor = hoverColor;
@@ -41,5 +48,4 @@ Button ButtonFactory::create_button(
 
     return button;
 }
-
 }

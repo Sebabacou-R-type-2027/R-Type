@@ -14,9 +14,17 @@ namespace rtype {
 GamePlayState::GamePlayState(sf::RenderWindow& window)
     : window(window) {
     registry.register_all_components();
+
+        if (!backgroundShader.loadFromFile("assets/shaders/background.frag", sf::Shader::Fragment)) {
+            throw std::runtime_error("Could not load shader");
+        }
+
+        if (!font.loadFromFile("assets/fonts/arial.ttf")) {
+            throw std::runtime_error("Could not load font");
+        }
     initPlayer("assets/Ship/Ship.png");
     createEnnemies.create_enemies(registry, window);
-    // initChargeBullet();
+    initChargeBullet();
 }
 
 void GamePlayState::handleInput() {
@@ -29,24 +37,37 @@ void GamePlayState::handleInput() {
 }
 
 void GamePlayState::update() {
+        if (Settings::getInstance().isShaderEnabled) {
+            system.shader_system(registry, window, backgroundShader);
+        }
     system.control_system(registry);
     system.position_system(registry);
     auto currentTime = std::chrono::high_resolution_clock::now();
     static auto lastTime = std::chrono::high_resolution_clock::now();
     float deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - lastTime).count();
     lastTime = currentTime;
-    system.bullet_system(registry);
+    bulletSystem.update(registry);
     system.animation_system(registry, deltaTime, window);
     system.loop_movement_system(registry, deltaTime);
     system.collision_system(registry, window);
-    handleCollision.handle_collision(registry);
+    handleCollision.handle_collision(registry);        fpsCounter.update();
 }
 
-void GamePlayState::render() {
-    window.clear();
-    system.draw_system(registry, window);
-    window.display();
-}
+    void GamePlayState::render() {
+        window.clear();
+        if (Settings::getInstance().isShaderEnabled) {
+            system.shader_system_render(registry, window, backgroundShader);
+        } else {
+            sf::Shader::bind(nullptr);
+        }
+        system.draw_system(registry, window);
+
+        // Draw FPS counter
+        sf::Text fpsText("FPS: " + std::to_string(fpsCounter.getFPS()), font, 24);
+        window.draw(fpsText);
+
+        window.display();
+    }
 
 void GamePlayState::initPlayer(std::string path) {
     auto player = registry.spawn_entity();

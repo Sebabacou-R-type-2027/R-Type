@@ -7,67 +7,88 @@
 
 #include "bullet_system.hpp"
 #include <iostream>
+#include "Sound_game.hpp"
+#include <SFML/Audio.hpp>
+#include "components/Entity_type.hpp"
+#include "utils/CheckEntity.hpp"
 
-namespace ecs::systems {
+namespace rtype::game {
 
 
-    void BulletSystem::update(Registry& registry) {
-        auto &positions = registry.get_components<Position>();
-        auto &entityTypes = registry.get_components<EntityType>(); // To identify the player
-        auto &draws = registry.get_components<Drawable>();
+    void BulletSystem::update(ecs::Registry& registry) {
+        auto& positions = registry.get_components<ecs::Position>();
+        auto& velocities = registry.get_components<ecs::Velocity>();
+        auto& bullet = registry.get_components<ecs::Bullet>();
 
         sf::Time currentTime = shootClock.getElapsedTime();
 
-        static sf::Clock spacePressClock; // Clock to measure space key press duration
-        static bool isSpacePressed = false; // Previous state of the space key
+        bool check_charge = false;
+        static sf::Clock spacePressClock; // Horloge pour mesurer le temps d'appui
+        static bool isSpacePressed = false; // État précédent de la touche espace
+
+
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+
+
             if (isSpacePressed == false) {
-                // If space was just pressed, restart the clock
-                isSpacePressed = true;
-                spacePressClock.restart();
+                    // Si on vient juste d'appuyer sur espace, redémarre l'horloge
+                    isSpacePressed = true;
+                    spacePressClock.restart();
             }
 
+
             if (clock.getElapsedTime().asSeconds() >= 1.0f) {
-                // If space has been held for more than one second
+                // Faire une boucle de deux segonde avec le component chargé image
+                //puis executer le reste apres
+                sf::Time waitCharge;
+                if (elapsed.asSeconds() <= 2.0f) {
+                    if (check == false) {
+                        clock.restart();
+                        auto laser_charge = registry.spawn_entity();
+                        Sound_game.playSound("assets/Son/laser_gun1.wav");
+                        registry.emplace_component<ecs::Velocity>(laser_charge, 45.0f, 0.0f);
+                        registry.emplace_component<ecs::EntityType>(laser_charge, ecs::Type::Bullet);
+                        auto &hit = registry.emplace_component<ecs::Hitbox>(laser_charge, ecs::ShapeType::Rectangle, false);
+                        hit->rect = sf::RectangleShape(sf::Vector2f(20.0f, 20.0f));
+
+                        registry.emplace_component<ecs::Position>(laser_charge, positions[CheckEntity(registry, ecs::Type::Player)]->x + 40, positions[CheckEntity(registry, ecs::Type::Player)]->y + 5); // Use player position
+
+                        registry.emplace_component<ecs::Drawable>(laser_charge, "assets/Bullets/11.png");
+                        registry.emplace_component<ecs::BulletCharge>(laser_charge);
+                    }
+                }
+
+
             }
         } else {
             if (isSpacePressed) {
-                for (size_t i = 0; i < entityTypes.size() && i < positions.size() && i < draws.size(); i++) {
-                    if (entityTypes[i].has_value() && positions[i].has_value() && draws[i].has_value()) {
-                        if (entityTypes[i]->current_type == Type::Player) {
-                            if (draws[i]->sprite.getGlobalBounds().width > 0) {
-                                // If space was just released
-                                isSpacePressed = false;
-                                float timePressed = spacePressClock.getElapsedTime().asSeconds();
 
-                                if (timePressed < 1 && currentTime - lastShootTime > shootCooldown) {
-                                    lastShootTime = currentTime;
-                                    auto laser_entity = registry.spawn_entity();
-                                    registry.emplace_component<ecs::Velocity>(laser_entity, 25.0f, 0.0f);
-                                    registry.emplace_component<ecs::EntityType>(laser_entity, ecs::Type::Bullet);
-                                    auto &draw = registry.emplace_component<ecs::Drawable>(laser_entity, "assets/Bullets/01.png");
-                                    auto& hit = registry.emplace_component<ecs::Hitbox>(laser_entity, ecs::ShapeType::Rectangle, false, true);
-                                    hit->rect.setPosition(sf::Vector2f(draws[i]->sprite.getGlobalBounds().width / 2, draws[i]->sprite.getGlobalBounds().height / 2));
-                                    hit->rect = sf::RectangleShape(sf::Vector2f(draw->sprite.getGlobalBounds().width / 2, draw->sprite.getGlobalBounds().height / 2));
-                                    hit->rect.setOutlineColor(sf::Color::Red);
-                                    hit->rect.setOutlineThickness(1.0f);
-                                    registry.emplace_component<ecs::Position>(laser_entity,
-                                                                                positions[i]->x,
-                                                                                positions[i]->y);
-                                    registry.emplace_component<ecs::Bullet>(laser_entity);
-                                    registry.emplace_component<ecs::CollisionState>(laser_entity, false);
-                                    registry.emplace_component<ecs::LifeState>(laser_entity, true);
-                                } else if (timePressed > 1.0f) {
-                                    ChargedOneDraw = true;
-                                }
-                                break;
-                            }
-                        }
+                // Si on vient de relâcher la touche espace
+                isSpacePressed = false;
+                clock.restart();
+
+                float timePressed = spacePressClock.getElapsedTime().asSeconds();
+
+                if (timePressed < 1 && currentTime - lastShootTime > shootCooldown) {
+                    Sound_game.playSound("assets/Son/laser_gun2.wav");
+                    lastShootTime = currentTime;
+                    auto laser_entity = registry.spawn_entity();
+                    registry.emplace_component<ecs::Velocity>(laser_entity, 35.0f, 0.0f);
+                    registry.emplace_component<ecs::EntityType>(laser_entity, ecs::Type::Bullet);
+                    auto &hit = registry.emplace_component<ecs::Hitbox>(laser_entity, ecs::ShapeType::Rectangle, false);
+                    hit->rect = sf::RectangleShape(sf::Vector2f(20.0f, 20.0f));
+                    registry.emplace_component<ecs::Position>(laser_entity, positions[CheckEntity(registry, ecs::Type::Player)]->x + 40, positions[CheckEntity(registry, ecs::Type::Player)]->y + 5);
+                    registry.emplace_component<ecs::Drawable>(laser_entity, "assets/Bullets/01.png");
+                    registry.emplace_component<ecs::Bullet>(laser_entity);
+                } else {
+                    ChargedOneDraw = true;
+                }
+
+                if (timePressed > 1.0f) {
+                    ChargedOneDraw = true;
                     }
                 }
             }
         }
     }
-
-}
