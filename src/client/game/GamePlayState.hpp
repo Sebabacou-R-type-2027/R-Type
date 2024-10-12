@@ -13,6 +13,7 @@
 #include "../create_ennemies.hpp"
 #include "../utils/FPSCounter.hpp"
 #include "../utils/Settings.hpp"
+#include "../systems/bullet/bullet_system.hpp"
 
 namespace rtype {
     class GamePlayState : public GameState {
@@ -29,6 +30,7 @@ namespace rtype {
         ecs::System system;
         sf::Shader backgroundShader;
         sf::Font font;
+        rtype::game::BulletSystem bulletSystem;
 
         ecs::CreateEnnemies createEnnemies; // TODO: create a system for this
 

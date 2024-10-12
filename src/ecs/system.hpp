@@ -14,7 +14,6 @@
 #include "../client/systems/loop_movement/loop_movement_system.hpp"
 #include "../client/systems/button/button_system.hpp"
 #include "../client/systems/collision/collision_system.hpp"
-#include "../client/systems/bullet/bullet_system.hpp"
 #include "../client/systems/shader/shader_system.hpp"
 
 namespace ecs {
@@ -53,10 +52,6 @@ public:
         collisionSystem.update(reg, window);
     }
 
-    void bullet_system(Registry& reg) {
-        bulletSystem.update(reg);
-    }
-
     void shader_system(Registry& reg, sf::RenderWindow& window, sf::Shader& shader) {
         shaderSystem.update(reg, window, shader);
     }
@@ -70,11 +65,11 @@ private:
     systems::ControlSystem controlSystem;
     systems::DrawSystem drawSystem;
     systems::PositionSystem positionSystem;
-    systems::AnimationSystem animationSystem;
     systems::LoopMovementSystem loopMovementSystem;
     systems::ButtonSystem buttonSystem;
     systems::CollisionSystem collisionSystem;
-    systems::BulletSystem bulletSystem;
+    systems::AnimationSystem animationSystem;
+
     systems::ShaderSystem shaderSystem;
 };
 
