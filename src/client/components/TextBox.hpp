@@ -4,7 +4,6 @@
 ** File description:
 ** Button
 */
-
 #pragma once
 
 #include <SFML/Graphics.hpp>
@@ -12,7 +11,7 @@
 #include <functional>
 
 namespace ecs {
-    struct Button {
+    struct TextBox {
         sf::RectangleShape rect;
         sf::Text text;
         std::function<void()> onClick;
@@ -22,7 +21,7 @@ namespace ecs {
         sf::Color hoverColor = sf::Color::Cyan;
         sf::Color clickColor = sf::Color::Green;
 
-        Button(const sf::RectangleShape& shape, const sf::Text& btnText, std::function<void()> action)
+        TextBox(const sf::RectangleShape& shape, const sf::Text& btnText, std::function<void()> action)
             : rect(shape), text(btnText), onClick(action) {
             rect.setOrigin(rect.getSize().x / 2, rect.getSize().y / 2);
         }
