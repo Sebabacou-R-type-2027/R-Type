@@ -15,7 +15,6 @@ std::size_t CheckEntity(ecs::Registry& registry, ecs::Type type)
     }
 
     if (playerIndex == -1) {
-        std::cerr << "Player entity not found!\n";
         return -1;
     }
     return playerIndex;
