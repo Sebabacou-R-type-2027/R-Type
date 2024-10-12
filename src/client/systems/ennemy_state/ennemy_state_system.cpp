@@ -10,9 +10,9 @@
 namespace ecs::systems {
 
     void EnemyStateSystem::update(Registry& registry, float deltaTime) {
-        auto states = registry.get_components<EnemyState>();
-        auto positions = registry.get_components<Position>();
-        auto velocities = registry.get_components<Velocity>();
+        auto &states = registry.get_components<EnemyState>();
+        auto &positions = registry.get_components<Position>();
+        auto &velocities = registry.get_components<Velocity>();
 
         for (std::size_t i = 0; i < states.size(); ++i) {
             if (states[i]) {
@@ -20,18 +20,18 @@ namespace ecs::systems {
 
                 switch (state.current_state) {
                     case State::Idle:
-                        velocities[i]->get().vx = 0;
-                        velocities[i]->get().vy = 0;
+                        velocities[i]->vx = 0;
+                        velocities[i]->vy = 0;
                         break;
 
                     case State::Attacking:
-                        velocities[i]->get().vx = 100.0f;
-                        velocities[i]->get().vy = 100.0f;
+                        velocities[i]->vx = 100.0f;
+                        velocities[i]->vy = 100.0f;
                         break;
 
                     case State::Patrolling:
-                        velocities[i]->get().vx = 50.0f;
-                        velocities[i]->get().vy = 0.0f;
+                        velocities[i]->vx = 50.0f;
+                        velocities[i]->vy = 0.0f;
                         break;
                 }
             }

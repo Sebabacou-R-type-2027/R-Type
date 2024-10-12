@@ -10,33 +10,27 @@
 namespace ecs::systems {
 
 void ControlSystem::update(Registry& registry) {
-    auto velocities = registry.get_components<Velocity>();
-    auto controllables = registry.get_components<Controllable>();
+    auto &velocities = registry.get_components<Velocity>();
+    auto &controllables = registry.get_components<Controllable>();
 
-    for (std::size_t i = 0; i < controllables.size(); ++i) {
-        if (controllables[i] && velocities[i]) {
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-                velocities[i]->get().vx += acceleration;
-            }
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-                velocities[i]->get().vx -= acceleration;
-            }
+    for (std::size_t i = 0; i < controllables.size() && i < velocities.size(); ++i) {
+        if (controllables[i] && controllables[i]->active && velocities[i]) {
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-                velocities[i]->get().vy -= acceleration;
-            }
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-                velocities[i]->get().vy += acceleration;
-            }
-
-            if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-                velocities[i]->get().vx *= 0.9f;
-            }
-            if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-                velocities[i]->get().vy *= 0.9f;
+                velocities[i]->vy = -controllables[i]->speed;
+            } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+                velocities[i]->vy = controllables[i]->speed;
+            } else {
+                velocities[i]->vy = 0;
             }
 
-            velocities[i]->get().vx = std::clamp(velocities[i]->get().vx, -maxSpeed, maxSpeed);
-            velocities[i]->get().vy = std::clamp(velocities[i]->get().vy, -maxSpeed, maxSpeed);
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+                velocities[i]->vx = -controllables[i]->speed;
+            } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+                velocities[i]->vx = controllables[i]->speed;
+            } else {
+                velocities[i]->vx = 0;
+            }
+
         }
     }
 }

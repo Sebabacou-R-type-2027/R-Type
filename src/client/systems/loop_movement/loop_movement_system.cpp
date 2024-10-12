@@ -13,8 +13,8 @@
 namespace ecs::systems {
 
     void LoopMovementSystem::update(Registry& registry, float deltaTime) {
-        auto positions = registry.get_components<Position>();
-        auto loop_movements = registry.get_components<LoopMovement>();
+        auto &positions = registry.get_components<Position>();
+        auto &loop_movements = registry.get_components<LoopMovement>();
 
         for (std::size_t i = 0; i < positions.size() && i < loop_movements.size(); ++i) {
             if (positions[i] && loop_movements[i]) {

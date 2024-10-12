@@ -18,23 +18,25 @@ namespace ecs::systems {
     }
 
     void CollisionSystem::update(Registry& registry, sf::RenderWindow& window) {
-        auto positions = registry.get_components<Position>();
-        auto hitboxes = registry.get_components<Hitbox>();
-        auto collision_states = registry.get_components<CollisionState>();
+        auto &positions = registry.get_components<Position>();
+        auto &hitboxes = registry.get_components<Hitbox>();
+        auto &collision_states = registry.get_components<CollisionState>();
 
-        for (std::size_t i = 0; i < positions.size() && i < hitboxes.size(); ++i) {
-            if (!positions[i] || !hitboxes[i] || !collision_states[i]) continue;
+        for (std::size_t i = 0; i < positions.size() && i < hitboxes.size() && i < collision_states.size(); ++i) {
+            if (!positions[i] ||
+            !hitboxes[i] ||
+            !collision_states[i]) continue;
 
             Position& pos1 = *positions[i];
             Hitbox& hitbox1 = *hitboxes[i];
-            for (std::size_t j = 0; j < positions.size() && j < hitboxes.size(); ++j) {
-                if (i == j || !positions[j] || !hitboxes[j]) continue;
+            for (std::size_t j = 0; j < positions.size() && j < hitboxes.size() && j < collision_states.size(); ++j) {
+                if (i == j || !positions[j] || !hitboxes[j] || !collision_states[j]) continue;
 
-                Position& pos2 = *positions[j];
+                Position& pos2 = positions[j].value();
                 Hitbox& hitbox2 = *hitboxes[j];
                 if (isColliding(pos1, hitbox1, pos2, hitbox2)) {
-                    collision_states[i]->get().active = true;
-                    collision_states[j]->get().active = true;
+                    collision_states[i]->active = true;
+                    collision_states[j]->active = true;
                 }
             }
         }
