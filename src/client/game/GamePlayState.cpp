@@ -53,6 +53,7 @@ namespace rtype {
         bulletSystem.update(registry);
         system.loop_movement_system(registry, deltaTime);
         system.animation_system(registry, deltaTime, window);
+        system.shooting_enemy_system(registry, window);
         system.collision_system(registry, window);
         handleCollision.handle_collision(registry);
         // // fpsCounter.update();
