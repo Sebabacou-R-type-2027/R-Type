@@ -14,6 +14,7 @@
 #include "../utils/FPSCounter.hpp"
 #include "../utils/Settings.hpp"
 #include "../systems/bullet/bullet_system.hpp"
+#include "../systems/power-up/powerup_system.hpp"
 
 namespace rtype {
     class GamePlayState : public GameState {
@@ -31,6 +32,7 @@ namespace rtype {
         sf::Shader backgroundShader;
         sf::Font font;
         rtype::game::BulletSystem bulletSystem;
+        rtype::game::PowerUp powerUpSystem;
 
         ecs::CreateEnnemies createEnnemies; // TODO: create a system for this
 

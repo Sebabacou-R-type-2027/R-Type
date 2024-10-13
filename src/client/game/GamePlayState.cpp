@@ -51,6 +51,7 @@ namespace rtype {
         lastTime = currentTime;
 
         bulletSystem.update(registry);
+        powerUpSystem.update(registry);
         system.loop_movement_system(registry, deltaTime);
         system.collision_system(registry, window);
         // fpsCounter.update();
