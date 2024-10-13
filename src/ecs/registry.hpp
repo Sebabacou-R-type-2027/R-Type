@@ -35,7 +35,19 @@
 namespace ecs {
 
 class Registry {
+    /**
+     * @brief Class that contains all the components
+     * 
+     * @tparam Component
+     */
     public:
+
+        /**
+         * @brief Register a component in the registry
+         * 
+         * @tparam Component
+         * @return sparse_array<Component>& Reference to the component array
+         */
         template <typename Component>
         sparse_array<Component>& register_component() {
             auto type = std::type_index(typeid(Component));
@@ -43,28 +55,54 @@ class Registry {
             return std::any_cast<sparse_array<Component>&>(_components[type]);
         }
 
+        /**
+         * @brief Get the components of a specific type
+         * 
+         * @tparam Component
+         * @return sparse_array<Component>& Reference to the component array
+         */
         template <typename Component>
         sparse_array<Component>& get_components() {
             auto type = std::type_index(typeid(Component));
             return std::any_cast<sparse_array<Component>&>(_components.at(type));
         }
 
+
+        /**
+         * @brief Get the components of a specific type
+         * 
+         * @tparam Component
+         * @return const sparse_array<Component>& Reference to the component array
+         */
         template <typename Component>
         const sparse_array<Component>& get_components() const {
             auto type = std::type_index(typeid(Component));
             return std::any_cast<const sparse_array<Component>&>(_components.at(type));
         }
 
+        /**
+         * @brief Get the number of entities
+         * 
+         * @return std::size_t Number of entities
+         */
         Entity spawn_entity() {
             Entity new_entity(_next_entity_id++);
             _entities.push_back(new_entity);
             return new_entity;
         }
 
+        std::size_t entity_count() const {
+            return _entities.size();
+        }
         Entity entity_from_index(std::size_t idx) const {
             return _entities.at(idx);
         }
 
+        /**
+         * @brief Kill an entity
+         * 
+         * @param e Entity to kill
+         */
         void kill_entity(Entity const& e) {
             for (auto& [type, component_array] : _components) {
                 try {
@@ -77,11 +115,27 @@ class Registry {
             _entities.erase(std::remove(_entities.begin(), _entities.end(), e), _entities.end());
         }
 
+        /**
+         * @brief Add a component to an entity
+         * 
+         * @tparam Component
+         * @param to Entity to add the component to
+         * @param component Component to add
+         * @return typename sparse_array<Component>::reference_type Reference to the added component
+         */
         template <typename Component>
         typename sparse_array<Component>::reference_type add_component(Entity const& to, Component&& component) {
             return get_components<Component>().insert_at(static_cast<std::size_t>(to), std::forward<Component>(component));
         }
 
+        /**
+         * @brief Add a component to an entity
+         * 
+         * @tparam Component
+         * @param to Entity to add the component to
+         * @param component Component to add
+         * @return typename sparse_array<Component>::reference_type Reference to the added component
+         */
         template <typename Component, typename... Params>
         typename sparse_array<Component>::reference_type emplace_component(Entity const& to, Params&&... params) {
             auto& component = get_components<Component>().emplace_at(static_cast<std::size_t>(to), std::forward<Params>(params)...);

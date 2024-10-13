@@ -10,10 +10,18 @@
 
 namespace ecs {
 
+    /**
+     * @brief Class that contains the state of an entity
+     */
     struct LifeState
     {
-        bool isAlive;
+        bool isAlive; ///< State of the entity
 
+        /**
+         * @brief Construct a new Life State object
+         * 
+         * @param isAlive contains the state of the entity
+         */
         LifeState(bool isAlive = true) : isAlive(isAlive) {};
     };
 };
