@@ -60,13 +60,20 @@ title: General-purpose components
 ---
 classDiagram
     position <|-- velocity : affects
+    position <|-- controllable : affects
+    position <|-- drawable_old : uses
+    position <|-- hitbox : uses
+    class controllable {
+        +bool active
+        +float speed
+    }
     class position {
-        -float x
-        -float y
+        +float x
+        +float y
     }
     class velocity {
-        -float dx
-        -float dy
+        +float dx
+        +float dy
     }
     class drawable["drawable (TODO)"] {
         +bool visible
@@ -84,15 +91,53 @@ classDiagram
         RECTANGLE
     }
     <<enum>> hitbox_type
-    hitbox --> hitbox_type
+    hitbox --> hitbox_type : has
     class hitbox {
         +hitbox_type type
         +sf::RectangleShape rect
         +sf::CircleShape circle
         +bool debug_display
     }
-    class controllable {
-        +bool active
+```
+
+```mermaid
+---
+title: Game-specific components
+---
+classDiagram
+    position <|-- movement_loop : affects
+    class position {
+        +float x
+        +float y
+    }
+    class movement_loop {
+        +float min_x, max_x
+        +float min_y, max_y
         +float speed
+        +float angle
+        +float radius
+        +float angular_speed
+    }
+    class bullet {
+        +int damage
+    }
+```
+
+```mermaid
+---
+title: UI-specific components
+---
+classDiagram
+    class button {
+        +sf::RectangleShape rect
+        +sf::Text text
+        +std::function~void~ callback
+        +sf::Color color
+        +sf::Color hover_color
+        +sf::Color click_color
+    }
+    class text_box {
+        +sf::RectangleShape rect
+        +sf::Text text
     }
 ```
