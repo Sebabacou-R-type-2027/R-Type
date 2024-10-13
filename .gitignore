@@ -10,6 +10,9 @@
 r-type_client
 r-type_server
 
+# Generated documentation
+/docs/doxygen/html
+
 # Miscellaneous
 clients.csv
 
