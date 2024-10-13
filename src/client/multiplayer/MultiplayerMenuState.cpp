@@ -3,7 +3,7 @@
 
 namespace rtype {
     MultiplayerMenuState::MultiplayerMenuState(sf::RenderWindow& window)
-        : window(window), port(std::nullopt), activeField(NONE) {
+        : window(window), port(std::nullopt), activeField(ADDRESS) {
         registry.register_all_components();
 
         if (!font.loadFromFile("assets/fonts/arial.ttf")) {
@@ -75,55 +75,73 @@ namespace rtype {
                 sf::Color::White,
                 24,
                 [this]() {
-                    std::string hostAddress = "";
-                    std::string port = "";
-                    std::cout << "Connecting to server at " << hostAddress << ":" << port << std::endl;
-
+                    // Print the server address and port when the button is pressed
+                    std::cout << "Connecting to server at " << hostAddress << ":" << portInput << std::endl;
                 }
             )
         );
+
+        addressText.setFont(font);
+        addressText.setCharacterSize(24);
+        addressText.setFillColor(sf::Color::White);
+        addressText.setPosition(window.getSize().x / 2.0f - 200.0f, window.getSize().y / 2.0f - height / 2.0f + 140.0f + 5.0f);
+
+        portText.setFont(font);
+        portText.setCharacterSize(24);
+        portText.setFillColor(sf::Color::White);
+        portText.setPosition(window.getSize().x / 2.0f - 200.0f, window.getSize().y / 2.0f - height / 2.0f + 250.0f + 5.0f);
     }
 
-void MultiplayerMenuState::handleInput() {
-    sf::Event event;
 
-    while (window.pollEvent(event)) {
-        if (event.type == sf::Event::Closed || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-            window.close();
-        }
+    void MultiplayerMenuState::handleInput() {
+        sf::Event event;
 
-        if (event.type == sf::Event::TextEntered) {
-            if (activeField == ADDRESS) {
-                if (event.text.unicode < 128) {
-                    hostAddress += static_cast<char>(event.text.unicode);
-                    addressText.setString(hostAddress);
-                } else if (event.text.unicode == '\b' && !hostAddress.empty()) {
-                    hostAddress.pop_back();
-                    addressText.setString(hostAddress);
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+                window.close();
+            }
+
+            if (event.type == sf::Event::TextEntered) {
+                if (activeField == ADDRESS) {
+                    char enteredChar = static_cast<char>(event.text.unicode);
+                    if ((isdigit(enteredChar) || enteredChar == '.') && hostAddress.size() < 15) {
+                        hostAddress += enteredChar;
+                        addressText.setString(hostAddress);
+                    } else if (event.text.unicode == '\b' && !hostAddress.empty()) {
+                        hostAddress.pop_back();
+                        addressText.setString(hostAddress);
+                    }
+                } else if (activeField == PORT) {
+                    char enteredChar = static_cast<char>(event.text.unicode);
+                    if (isdigit(enteredChar) && portInput.size() < 5) {
+                        portInput += enteredChar;
+                        portText.setString(portInput);
+                    } else if (event.text.unicode == '\b' && !portInput.empty()) {
+                        portInput.pop_back();
+                        portText.setString(portInput);
+                    }
                 }
-            } else if (activeField == PORT) {
-                if (isdigit(event.text.unicode)) {
-                    portInput += static_cast<char>(event.text.unicode);
-                    portText.setString(portInput);
-                } else if (event.text.unicode == '\b' && !portInput.empty()) {
-                    portInput.pop_back();
-                    portText.setString(portInput);
+            }
+
+            if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::Tab) {
+                    activeField = (activeField == ADDRESS) ? PORT : ADDRESS; // Switch between ADDRESS and PORT
+                }
+                // Handle delete key
+                if (event.key.code == sf::Keyboard::Delete) {
+                    if (activeField == ADDRESS && !hostAddress.empty()) {
+                        hostAddress.pop_back();
+                        addressText.setString(hostAddress);
+                    } else if (activeField == PORT && !portInput.empty()) {
+                        portInput.pop_back();
+                        portText.setString(portInput);
+                    }
                 }
             }
         }
-
-        if (event.type == sf::Event::MouseButtonPressed) {
-            sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-            if (inputRectAddressPos.x <= mousePos.x && mousePos.x <= inputRectAddressPos.x + 400.0f &&
-                inputRectAddressPos.y <= mousePos.y && mousePos.y <= inputRectAddressPos.y + 40.0f) {
-                activeField = ADDRESS;
-            } else if (inputRectPortPos.x <= mousePos.x && mousePos.x <= inputRectPortPos.x + 400.0f &&
-                       inputRectPortPos.y <= mousePos.y && mousePos.y <= inputRectPortPos.y + 40.0f) {
-                activeField = PORT;
-            }
-        }
     }
-}
+
+
 
 
 
@@ -131,19 +149,6 @@ void MultiplayerMenuState::handleInput() {
         if (Settings::getInstance().isShaderEnabled) {
             system.shader_system(registry, window, backgroundShader);
         }
-
-        inputRectAddressPos = { window.getSize().x / 2.0f - 200.0f, window.getSize().y / 2.0f - 400.0f + 140.0f };
-        inputRectPortPos = { window.getSize().x / 2.0f - 200.0f, window.getSize().y / 2.0f - 400.0f + 250.0f };
-        HitboxAddress.setSize(sf::Vector2f(400.0f, 40.0f));
-        HitboxAddress.setPosition(inputRectAddressPos);
-        HitboxPort.setSize(sf::Vector2f(400.0f, 40.0f));
-        HitboxPort.setPosition(inputRectPortPos);
-        HitboxAddress.setFillColor(sf::Color::Transparent);
-        HitboxPort.setFillColor(sf::Color::Transparent);
-        HitboxAddress.setOutlineThickness(1);
-        HitboxPort.setOutlineThickness(1);
-        HitboxAddress.setOutlineColor(sf::Color::White);
-        HitboxPort.setOutlineColor(sf::Color::White);
 
         system.button_system(registry, window);
     }
@@ -163,8 +168,6 @@ void MultiplayerMenuState::handleInput() {
         // Render the text for input fields
         window.draw(addressText);
         window.draw(portText);
-        window.draw(HitboxAddress);
-        window.draw(HitboxPort);
 
         window.display();
     }
