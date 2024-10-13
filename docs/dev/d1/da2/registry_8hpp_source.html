@@ -195,32 +195,42 @@ $(function() {
 <div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;            <span class="keywordflow">return</span> playerEntities;</div>
 <div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;        }</div>
 <div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160; </div>
-<div class="line"><a name="l00173"></a><span class="lineno"><a class="line" href="../../df/dcd/classecs_1_1Registry.html#a992308514d0c76fed25552d4f0f1d5bc">  173</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="../../df/dcd/classecs_1_1Registry.html#a992308514d0c76fed25552d4f0f1d5bc">register_all_components</a>() {</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;            register_component&lt;Position&gt;();</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;            register_component&lt;Velocity&gt;();</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;            register_component&lt;Controllable&gt;();</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;            register_component&lt;Drawable&gt;();</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;            register_component&lt;LoopMovement&gt;();</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;            register_component&lt;Hitbox&gt;();</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;            register_component&lt;Button&gt;();</div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;            register_component&lt;Animation&gt;();</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;            register_component&lt;EnemyState&gt;();</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;            register_component&lt;EntityType&gt;();</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;            register_component&lt;Bullet&gt;();</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;            register_component&lt;CollisionState&gt;();</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;            register_component&lt;GameStateComponent&gt;();</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;            register_component&lt;LifeState&gt;();</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;            register_component&lt;BulletCharge&gt;();</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;            register_component&lt;Shooting&gt;();</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;        }</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;        <a class="codeRef" href="https://en.cppreference.com/w/cpp/types/size_t.html">std::size_t</a> _next_entity_id = 0;</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;        <a class="codeRef" href="https://en.cppreference.com/w/cpp/container/vector.html">std::vector&lt;Entity&gt;</a> _entities;</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160; </div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;        <a class="codeRef" href="https://en.cppreference.com/w/cpp/container/unordered_map.html">std::unordered_map&lt;std::type_index, std::any&gt;</a> _components;</div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;};</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160; </div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;}</div>
+<div class="line"><a name="l00173"></a><span class="lineno"><a class="line" href="../../df/dcd/classecs_1_1Registry.html#acf37864ff441327786a956e84d18c301">  173</a></span>&#160;        <a class="codeRef" href="https://en.cppreference.com/w/cpp/container/vector.html">std::vector&lt;Entity&gt;</a> <a class="code" href="../../df/dcd/classecs_1_1Registry.html#acf37864ff441327786a956e84d18c301">get_all_enemy_entity</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;            <a class="codeRef" href="https://en.cppreference.com/w/cpp/container/vector.html">std::vector&lt;Entity&gt;</a> enemyEntities;</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;            <span class="keyword">const</span> <span class="keyword">auto</span>&amp; types = get_components&lt;EntityType&gt;();</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;            <span class="keywordflow">for</span> (<a class="codeRef" href="https://en.cppreference.com/w/cpp/types/size_t.html">std::size_t</a> i = 0; i &lt; types.size(); ++i) {</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;                <span class="keywordflow">if</span> (types[i] &amp;&amp; types[i]-&gt;current_type == <a class="code" href="../../da/dc8/namespaceecs.html#a09fbe0c9be6388aaf88b676d6490af83acdda31e24a26108101b07c67ea545f9f">Type::Ennemy</a>) {</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;                    enemyEntities.<a class="codeRef" href="https://en.cppreference.com/w/cpp/container/vector/push_back.html">push_back</a>(<a class="code" href="../../df/dcd/classecs_1_1Registry.html#a72ee7000776de10305c64440ed3af306">entity_from_index</a>(i));</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;                }</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;            }</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;            <span class="keywordflow">return</span> enemyEntities;</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;        }</div>
+<div class="line"><a name="l00183"></a><span class="lineno"><a class="line" href="../../df/dcd/classecs_1_1Registry.html#a992308514d0c76fed25552d4f0f1d5bc">  183</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="../../df/dcd/classecs_1_1Registry.html#a992308514d0c76fed25552d4f0f1d5bc">register_all_components</a>() {</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;            register_component&lt;Position&gt;();</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;            register_component&lt;Velocity&gt;();</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;            register_component&lt;Controllable&gt;();</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;            register_component&lt;Drawable&gt;();</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;            register_component&lt;LoopMovement&gt;();</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;            register_component&lt;Hitbox&gt;();</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;            register_component&lt;Button&gt;();</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;            register_component&lt;Animation&gt;();</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;            register_component&lt;EnemyState&gt;();</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;            register_component&lt;EntityType&gt;();</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;            register_component&lt;Bullet&gt;();</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;            register_component&lt;CollisionState&gt;();</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;            register_component&lt;GameStateComponent&gt;();</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;            register_component&lt;LifeState&gt;();</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;            register_component&lt;BulletCharge&gt;();</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;            register_component&lt;Shooting&gt;();</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;        }</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;        <a class="codeRef" href="https://en.cppreference.com/w/cpp/types/size_t.html">std::size_t</a> _next_entity_id = 0;</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;        <a class="codeRef" href="https://en.cppreference.com/w/cpp/container/vector.html">std::vector&lt;Entity&gt;</a> _entities;</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160; </div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;        <a class="codeRef" href="https://en.cppreference.com/w/cpp/container/unordered_map.html">std::unordered_map&lt;std::type_index, std::any&gt;</a> _components;</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;};</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160; </div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;}</div>
 <div class="ttc" id="aAnimation_8hpp_html"><div class="ttname"><a href="../../d0/d36/Animation_8hpp.html">Animation.hpp</a></div></div>
 <div class="ttc" id="aBulletCharge_8hpp_html"><div class="ttname"><a href="../../d1/df8/BulletCharge_8hpp.html">BulletCharge.hpp</a></div></div>
 <div class="ttc" id="aBullet_8hpp_html"><div class="ttname"><a href="../../de/dc3/Bullet_8hpp.html">Bullet.hpp</a></div></div>
@@ -252,15 +262,17 @@ $(function() {
 <div class="ttc" id="aclassecs_1_1Registry_html_a6c97eaaa8949afca04543b03913d3d76"><div class="ttname"><a href="../../df/dcd/classecs_1_1Registry.html#a6c97eaaa8949afca04543b03913d3d76">ecs::Registry::emplace_component</a></div><div class="ttdeci">sparse_array&lt; Component &gt;::reference_type emplace_component(Entity const &amp;to, Params &amp;&amp;... params)</div><div class="ttdoc">Add a component to an entity.</div><div class="ttdef"><b>Definition:</b> registry.hpp:141</div></div>
 <div class="ttc" id="aclassecs_1_1Registry_html_a72ee7000776de10305c64440ed3af306"><div class="ttname"><a href="../../df/dcd/classecs_1_1Registry.html#a72ee7000776de10305c64440ed3af306">ecs::Registry::entity_from_index</a></div><div class="ttdeci">Entity entity_from_index(std::size_t idx) const</div><div class="ttdef"><b>Definition:</b> registry.hpp:98</div></div>
 <div class="ttc" id="aclassecs_1_1Registry_html_a960bf8fcdaa237dc3a8594cf53290085"><div class="ttname"><a href="../../df/dcd/classecs_1_1Registry.html#a960bf8fcdaa237dc3a8594cf53290085">ecs::Registry::spawn_entity</a></div><div class="ttdeci">Entity spawn_entity()</div><div class="ttdoc">Get the number of entities.</div><div class="ttdef"><b>Definition:</b> registry.hpp:89</div></div>
-<div class="ttc" id="aclassecs_1_1Registry_html_a992308514d0c76fed25552d4f0f1d5bc"><div class="ttname"><a href="../../df/dcd/classecs_1_1Registry.html#a992308514d0c76fed25552d4f0f1d5bc">ecs::Registry::register_all_components</a></div><div class="ttdeci">void register_all_components()</div><div class="ttdef"><b>Definition:</b> registry.hpp:173</div></div>
+<div class="ttc" id="aclassecs_1_1Registry_html_a992308514d0c76fed25552d4f0f1d5bc"><div class="ttname"><a href="../../df/dcd/classecs_1_1Registry.html#a992308514d0c76fed25552d4f0f1d5bc">ecs::Registry::register_all_components</a></div><div class="ttdeci">void register_all_components()</div><div class="ttdef"><b>Definition:</b> registry.hpp:183</div></div>
 <div class="ttc" id="aclassecs_1_1Registry_html_ac62657dd443b3bc767d57c826435ec18"><div class="ttname"><a href="../../df/dcd/classecs_1_1Registry.html#ac62657dd443b3bc767d57c826435ec18">ecs::Registry::kill_entity</a></div><div class="ttdeci">void kill_entity(Entity const &amp;e)</div><div class="ttdoc">Kill an entity.</div><div class="ttdef"><b>Definition:</b> registry.hpp:107</div></div>
 <div class="ttc" id="aclassecs_1_1Registry_html_acd96cd0375e4347d18ecff452f9532e4"><div class="ttname"><a href="../../df/dcd/classecs_1_1Registry.html#acd96cd0375e4347d18ecff452f9532e4">ecs::Registry::register_component</a></div><div class="ttdeci">sparse_array&lt; Component &gt; &amp; register_component()</div><div class="ttdoc">Class that contains all the components.</div><div class="ttdef"><b>Definition:</b> registry.hpp:53</div></div>
 <div class="ttc" id="aclassecs_1_1Registry_html_ace9c108199945ad3cbe3f9201c4d84db"><div class="ttname"><a href="../../df/dcd/classecs_1_1Registry.html#ace9c108199945ad3cbe3f9201c4d84db">ecs::Registry::remove_component</a></div><div class="ttdeci">void remove_component(Entity const &amp;from)</div><div class="ttdef"><b>Definition:</b> registry.hpp:148</div></div>
+<div class="ttc" id="aclassecs_1_1Registry_html_acf37864ff441327786a956e84d18c301"><div class="ttname"><a href="../../df/dcd/classecs_1_1Registry.html#acf37864ff441327786a956e84d18c301">ecs::Registry::get_all_enemy_entity</a></div><div class="ttdeci">std::vector&lt; Entity &gt; get_all_enemy_entity() const</div><div class="ttdef"><b>Definition:</b> registry.hpp:173</div></div>
 <div class="ttc" id="aclassecs_1_1Registry_html_affaf0f88dfb468c2f6f2d2c2c35d5ad4"><div class="ttname"><a href="../../df/dcd/classecs_1_1Registry.html#affaf0f88dfb468c2f6f2d2c2c35d5ad4">ecs::Registry::add_component</a></div><div class="ttdeci">sparse_array&lt; Component &gt;::reference_type add_component(Entity const &amp;to, Component &amp;&amp;component)</div><div class="ttdoc">Add a component to an entity.</div><div class="ttdef"><b>Definition:</b> registry.hpp:128</div></div>
 <div class="ttc" id="aclassecs_1_1sparse__array_html"><div class="ttname"><a href="../../df/d83/classecs_1_1sparse__array.html">ecs::sparse_array</a></div><div class="ttdoc">Sparse array class to store optional components.</div><div class="ttdef"><b>Definition:</b> sparse_array.hpp:23</div></div>
 <div class="ttc" id="aentity_8hpp_html"><div class="ttname"><a href="../../db/de2/entity_8hpp.html">entity.hpp</a></div></div>
 <div class="ttc" id="anamespaceecs_html"><div class="ttname"><a href="../../da/dc8/namespaceecs.html">ecs</a></div><div class="ttdef"><b>Definition:</b> Bullet.hpp:10</div></div>
 <div class="ttc" id="anamespaceecs_html_a09fbe0c9be6388aaf88b676d6490af83a636da1d35e805b00eae0fcd8333f9234"><div class="ttname"><a href="../../da/dc8/namespaceecs.html#a09fbe0c9be6388aaf88b676d6490af83a636da1d35e805b00eae0fcd8333f9234">ecs::Type::Player</a></div><div class="ttdeci">@ Player</div></div>
+<div class="ttc" id="anamespaceecs_html_a09fbe0c9be6388aaf88b676d6490af83acdda31e24a26108101b07c67ea545f9f"><div class="ttname"><a href="../../da/dc8/namespaceecs.html#a09fbe0c9be6388aaf88b676d6490af83acdda31e24a26108101b07c67ea545f9f">ecs::Type::Ennemy</a></div><div class="ttdeci">@ Ennemy</div></div>
 <div class="ttc" id="aoptional_html"><div class="ttname"><a href="https://en.cppreference.com/w/cpp/utility/optional.html">std::optional</a></div></div>
 <div class="ttc" id="apush_back_html"><div class="ttname"><a href="https://en.cppreference.com/w/cpp/container/vector/push_back.html">std::vector::push_back</a></div><div class="ttdeci">T push_back(T... args)</div></div>
 <div class="ttc" id="aremove_reference_html"><div class="ttname"><a href="https://en.cppreference.com/w/cpp/types/remove_reference.html">std::remove_reference_t</a></div></div>
