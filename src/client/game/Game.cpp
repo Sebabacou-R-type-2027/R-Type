@@ -22,14 +22,18 @@ namespace rtype {
 
     void Game::run() {
         while (window.isOpen()) {
+            if (currentState == nullptr) {
+                window.close();
+                return;
+            }
             currentState->handleInput();
             currentState->update();
             currentState->render();
         }
     }
 
-    void Game::changeState(std::unique_ptr<GameState> newState) {
-        currentState = std::move(newState);
+    void Game::changeState(std::shared_ptr<GameState> newState) {
+        currentState = newState;
     }
 
 }

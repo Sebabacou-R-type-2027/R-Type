@@ -23,14 +23,20 @@ namespace ecs::systems {
         auto& controllable = registry.get_components<Controllable>();
         auto& entities = registry.get_components<EntityType>();
 
-        for (std::size_t i = 0; i < positions.size(); ++i) {
+
+        auto size = std::min(positions.size(), hitboxes.size());
+
+        for (std::size_t i = 0; i < size; ++i) {
             if (!positions[i] || !hitboxes[i] || !entities[i]) continue;
 
             Position& pos1 = *positions[i];
             Hitbox& hitbox1 = *hitboxes[i];
             Controllable& controllable1 = *controllable[i];
             EntityType& entity1 = *entities[i];
-            for (std::size_t j = 0; j < positions.size(); ++j) {
+
+            auto size2 = std::min(positions.size(), hitboxes.size());
+
+            for (std::size_t j = 0; j < size2; ++j) {
                 if (i == j || !positions[j] || !hitboxes[j]) continue;
 
                 Position& pos2 = *positions[j];
@@ -39,7 +45,7 @@ namespace ecs::systems {
                 if (entity1.current_type == Type::Bullet && entity2.current_type == Type::Ennemy) {
                     if (isColliding(pos1, hitbox1, pos2, hitbox2)) {
                         // registry.kill_entity(registry.entity_from_index(i));
-                        registry.kill_entity(registry.entity_from_index(j));
+                        // registry.kill_entity(registry.entity_from_index(j));
                     }
                 } else
                 if (isColliding(pos1, hitbox1, pos2, hitbox2)) {

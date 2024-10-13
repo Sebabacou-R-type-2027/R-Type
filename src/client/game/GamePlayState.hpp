@@ -37,6 +37,6 @@ namespace rtype {
         void initPlayer(std::string path);
         void initChargeBullet();
         // fps counter
-        FPSCounter fpsCounter;
+        // FPSCounter fpsCounter;
     };
 }
