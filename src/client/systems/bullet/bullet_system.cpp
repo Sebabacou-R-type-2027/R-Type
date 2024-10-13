@@ -43,11 +43,11 @@ namespace rtype::game {
                         clock.restart();
                         auto laser_charge = registry.spawn_entity();
                         Sound_game.playSound("assets/Son/laser_gun1.wav", 40);
-                        registry.emplace_component<ecs::Velocity>(laser_charge, 45.0f, 0.0f);
+                        registry.emplace_component<ecs::Velocity>(laser_charge, 25.0f, 0.0f);
                         registry.emplace_component<ecs::EntityType>(laser_charge, ecs::Type::Bullet);
 
                         auto& draw = registry.emplace_component<ecs::Drawable>(laser_charge, "assets/Bullets/11.png");
-                        auto &hit = registry.emplace_component<ecs::Hitbox>(laser_charge, ecs::ShapeType::Rectangle, false);
+                        auto &hit = registry.emplace_component<ecs::Hitbox>(laser_charge, ecs::ShapeType::Rectangle, false, true);
                         hit->rect = sf::RectangleShape(sf::Vector2f(draw->sprite.getGlobalBounds().width, draw->sprite.getGlobalBounds().height));
                         hit->rect.setOutlineColor(sf::Color::Red);
                         hit->rect.setOutlineThickness(1.0f);
@@ -74,14 +74,15 @@ namespace rtype::game {
                     Sound_game.playSound("assets/Son/laser_gun2.wav", 40);
                     lastShootTime = currentTime;
                     auto laser_entity = registry.spawn_entity();
-                    registry.emplace_component<ecs::Velocity>(laser_entity, 10.0f, 0.0f);
+                    registry.emplace_component<ecs::Velocity>(laser_entity, 20.0f, 0.0f);
                     registry.emplace_component<ecs::EntityType>(laser_entity, ecs::Type::Bullet);
 
 
 
                     auto& draw = registry.emplace_component<ecs::Drawable>(laser_entity, "assets/Bullets/01.png");
                     auto &hit = registry.emplace_component<ecs::Hitbox>(laser_entity, ecs::ShapeType::Rectangle, false, true);
-                    hit->rect.setPosition(100, positions[CheckEntity(registry, ecs::Type::Player)]->y + 5);
+                    // hit->rect.setPosition(100, positions[CheckEntity(registry, ecs::Type::Player)]->y + 5);
+                    hit->rect.setPosition(positions[CheckEntity(registry, ecs::Type::Player)]->x + 85, positions[CheckEntity(registry, ecs::Type::Player)]->y + 15);
                     hit->rect = sf::RectangleShape(sf::Vector2f(draw->sprite.getGlobalBounds().width, draw->sprite.getGlobalBounds().height));
                     hit->rect.setOutlineColor(sf::Color::Red);
                     hit->rect.setOutlineThickness(1.0f);

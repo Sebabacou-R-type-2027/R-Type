@@ -144,9 +144,6 @@ namespace rtype {
         window.display();
     }
 
-
-
-
     void GamePlayState::initPlayer(std::string path)
     {
         auto player = registry.spawn_entity();
@@ -156,8 +153,10 @@ namespace rtype {
         registry.emplace_component<ecs::Controllable>(player, true, 5.0f);
         registry.emplace_component<ecs::EntityType>(player, ecs::Type::Player);
 
-        auto& hitbox = registry.emplace_component<ecs::Hitbox>(player, ecs::ShapeType::Rectangle, false);
+        auto& hitbox = registry.emplace_component<ecs::Hitbox>(player, ecs::ShapeType::Rectangle, false, true);
         hitbox->rect = sf::RectangleShape(sf::Vector2f(50.0f, 50.0f));
+        hitbox->rect.setOutlineColor(sf::Color::Red);
+        hitbox->rect.setOutlineThickness(1.0f);
     }
 
     void GamePlayState::initChargeBullet()
