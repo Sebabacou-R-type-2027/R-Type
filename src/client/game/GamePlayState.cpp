@@ -60,14 +60,19 @@ namespace rtype {
 void GamePlayState::handlePlayerMovement(float deltaTime) {
     auto playerEntities = registry.get_all_player_entity();
     auto& playerPositions = registry.get_components<ecs::Position>();
+    auto& lifeStates = registry.get_components<ecs::LifeState>();
 
     for (auto playerEntity : playerEntities) {
         auto& playerPos = playerPositions[static_cast<std::size_t>(playerEntity)];
+        auto& lifeState = lifeStates[static_cast<std::size_t>(playerEntity)];
 
-        if (!playerPos.has_value()) {
+        if (!playerPos.has_value() || !lifeState.has_value()) {
             throw std::runtime_error("Player position component not found");
         }
 
+        if (!lifeState->isAlive) {
+            continue;
+        }
         float viewScrollSpeed = 50.0f * deltaTime;
         playerPos->x += viewScrollSpeed;
 
