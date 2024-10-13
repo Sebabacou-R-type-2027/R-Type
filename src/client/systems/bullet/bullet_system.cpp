@@ -18,6 +18,7 @@ namespace rtype::game {
         auto& positions = registry.get_components<ecs::Position>();
         auto& velocities = registry.get_components<ecs::Velocity>();
         auto& bullet = registry.get_components<ecs::Bullet>();
+        auto& lifestate = registry.get_components<ecs::LifeState>();
 
         sf::Time currentTime = shootClock.getElapsedTime();
 
@@ -50,7 +51,10 @@ namespace rtype::game {
                     sf::Time waitCharge;
                         if (check == false) {
                             clock.restart();
-                            auto laser_charge = registry.spawn_entity();
+                            if (lifestate[CheckEntity(registry, ecs::Type::Player)]->isAlive == false) {
+                            return;
+                        }
+                        auto laser_charge = registry.spawn_entity();
                             Sound_game.playSound("assets/Son/laser_gun1.wav", 40);
                             registry.emplace_component<ecs::Velocity>(laser_charge, 45.0f, 0.0f);
                             registry.emplace_component<ecs::EntityType>(laser_charge, ecs::Type::Bullet);
@@ -127,6 +131,9 @@ namespace rtype::game {
 
                 // TIR CLASSIQUE
                 if (timePressed < 1 && currentTime - lastShootTime > shootCooldown && bonus1_activate == false) {
+                    if (lifestate[CheckEntity(registry, ecs::Type::Player)]->isAlive == false) {
+                        return;
+                    }
                     Sound_game.playSound("assets/Son/laser_gun2.wav", 40);
                     lastShootTime = currentTime;
                     auto laser_entity = registry.spawn_entity();

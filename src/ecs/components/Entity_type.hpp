@@ -16,7 +16,8 @@ namespace ecs {
         Player,
         Ennemy,
         Bullet,
-        Button
+        Button,
+        EnnemyBullet
     };
 
     /**
