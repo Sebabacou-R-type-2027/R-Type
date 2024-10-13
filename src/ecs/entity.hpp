@@ -12,6 +12,11 @@
 namespace ecs {
 
 class Entity {
+    /**
+     * @brief Class that represents an entity
+     *
+     * @tparam Component
+     */
     public:
         explicit Entity(std::size_t id) : _id(id) {}
         operator std::size_t() const { return _id; }
