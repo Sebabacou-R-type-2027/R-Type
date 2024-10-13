@@ -8,6 +8,8 @@
 #include "GamePlayState.hpp"
 #include <iostream>
 #include <chrono>
+#include "utils/CheckEntity.hpp"
+#include "../utils/Getimagesize.hpp"
 
 namespace rtype {
 
@@ -74,14 +76,16 @@ void GamePlayState::update() {
 
 void GamePlayState::initPlayer(std::string path) {
     auto player = registry.spawn_entity();
+
     registry.emplace_component<ecs::Position>(player, 400.0f, 300.0f);
     registry.emplace_component<ecs::Velocity>(player, 0.0f, 0.0f);
     registry.emplace_component<ecs::Drawable>(player, path);
     registry.emplace_component<ecs::Controllable>(player, true, 5.0f);
     registry.emplace_component<ecs::EntityType>(player, ecs::Type::Player);
+    sf::Vector2i imageSize = get_image_size("assets/Ship/Ship.png");
 
     auto& hitbox = registry.emplace_component<ecs::Hitbox>(player, ecs::ShapeType::Rectangle, false, true);
-    hitbox->rect = sf::RectangleShape(sf::Vector2f(50.0f, 50.0f));
+    hitbox->rect = sf::RectangleShape(sf::Vector2f(imageSize.x, imageSize.y));
     hitbox->rect.setOutlineColor(sf::Color::Red);
     hitbox->rect.setOutlineThickness(1.0f);
 

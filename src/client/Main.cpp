@@ -8,7 +8,7 @@
 #include "game/Game.hpp"
 
 int main() {
-    rtype::Game game("R-Type", 1920, 1080);
+    rtype::Game game("R-Type", 2560, 1080);
     game.run();
     return 0;
 }

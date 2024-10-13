@@ -11,6 +11,7 @@
 #include <SFML/Audio.hpp>
 #include "components/Entity_type.hpp"
 #include "utils/CheckEntity.hpp"
+#include "utils/Getimagesize.hpp"
 
 namespace rtype::game {
 
@@ -46,15 +47,18 @@ namespace rtype::game {
                         clock.restart();
                         auto laser_charge = registry.spawn_entity();
                         Sound_game.playSound("assets/Son/laser_gun1.wav");
-                        registry.emplace_component<ecs::Velocity>(laser_charge, 45.0f, 0.0f);
+                        registry.emplace_component<ecs::Velocity>(laser_charge, 3.0f, 0.0f);
                         registry.emplace_component<ecs::EntityType>(laser_charge, ecs::Type::Bullet);
+
+                        sf::Vector2i imageSize = get_image_size("assets/Bullets/11.png");
                         auto &hit = registry.emplace_component<ecs::Hitbox>(laser_charge, ecs::ShapeType::Rectangle, false);
-                        hit->rect = sf::RectangleShape(sf::Vector2f(40.0f, 40.0f));
+                        hit->rect = sf::RectangleShape(sf::Vector2f(imageSize.x, imageSize.y));
                         hit->rect.setOutlineColor(sf::Color::Red);
                         hit->rect.setOutlineThickness(1.0f);
-                        registry.emplace_component<ecs::Position>(laser_charge, positions[CheckEntity(registry, ecs::Type::Player)]->x + 40, positions[CheckEntity(registry, ecs::Type::Player)]->y + 5); // Use player position
+                        registry.emplace_component<ecs::Position>(laser_charge, positions[CheckEntity(registry, ecs::Type::Player)]->x + 40, positions[CheckEntity(registry, ecs::Type::Player)]->y - 40); // Use player position
 
                         registry.emplace_component<ecs::Drawable>(laser_charge, "assets/Bullets/11.png");
+
                         registry.emplace_component<ecs::BulletCharge>(laser_charge);
                         registry.emplace_component<ecs::LifeState>(laser_charge, true);
                         registry.emplace_component<ecs::CollisionState>(laser_charge, false);
@@ -76,12 +80,18 @@ namespace rtype::game {
                     Sound_game.playSound("assets/Son/laser_gun2.wav");
                     lastShootTime = currentTime;
                     auto laser_entity = registry.spawn_entity();
-                    registry.emplace_component<ecs::Velocity>(laser_entity, 35.0f, 0.0f);
+                    registry.emplace_component<ecs::Velocity>(laser_entity, 10.0f, 0.0f);
                     registry.emplace_component<ecs::EntityType>(laser_entity, ecs::Type::Bullet);
+
+
+                    sf::Vector2i imageSize = get_image_size("assets/Bullets/01.png");
+
                     auto &hit = registry.emplace_component<ecs::Hitbox>(laser_entity, ecs::ShapeType::Rectangle, false, true);
-                    hit->rect = sf::RectangleShape(sf::Vector2f(40.0f, 40.0f));
+                    hit->rect.setPosition(100, positions[CheckEntity(registry, ecs::Type::Player)]->y + 5);
+                    hit->rect = sf::RectangleShape(sf::Vector2f(imageSize.x, imageSize.y));
                     hit->rect.setOutlineColor(sf::Color::Red);
                     hit->rect.setOutlineThickness(1.0f);
+
                     registry.emplace_component<ecs::Position>(laser_entity, positions[CheckEntity(registry, ecs::Type::Player)]->x + 40, positions[CheckEntity(registry, ecs::Type::Player)]->y + 5);
                     registry.emplace_component<ecs::Drawable>(laser_entity, "assets/Bullets/01.png");
                     registry.emplace_component<ecs::Bullet>(laser_entity);
