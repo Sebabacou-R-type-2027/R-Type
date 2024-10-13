@@ -8,6 +8,7 @@
 #include "shader_system.hpp"
 #include <time.h>
 #include <iostream>
+
 namespace ecs::systems {
 
 void ShaderSystem::update(Registry& registry, sf::RenderWindow& window, sf::Shader& shader) {
