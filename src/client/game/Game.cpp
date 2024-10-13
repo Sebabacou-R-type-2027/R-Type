@@ -8,6 +8,7 @@
 #include "Game.hpp"
 #include "../menu/MainMenuState.hpp"
 #include "GamePlayState.hpp"
+#include "Sound_game.hpp"
 
 namespace rtype {
 
@@ -21,6 +22,8 @@ namespace rtype {
     }
 
     void Game::run() {
+        Sound_game.playMusic("assets/Son/music.wav", 50, true);
+
         while (window.isOpen()) {
             if (currentState == nullptr) {
                 window.close();
