@@ -31,7 +31,6 @@ namespace rtype {
         initChargeBullet();
     }
 
-
     void GamePlayState::handleInput() {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -70,28 +69,29 @@ namespace rtype {
         constrainPlayerPosition(playerPos);
     }
 
-    void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& playerPos) {
-        float viewLeft = gameView.getCenter().x - gameView.getSize().x / 2;
-        float viewRight = gameView.getCenter().x + gameView.getSize().x / 2;
-        float viewTop = gameView.getCenter().y - gameView.getSize().y / 2;
-        float viewBottom = gameView.getCenter().y + gameView.getSize().y / 2;
+void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& playerPos) {
+    float viewLeft = gameView.getCenter().x - gameView.getSize().x / 2;
+    float viewRight = gameView.getCenter().x + gameView.getSize().x / 2;
+    float viewTop = gameView.getCenter().y - gameView.getSize().y / 2 - 30.0f;
+    float viewBottom = gameView.getCenter().y + gameView.getSize().y / 2 - 20.0f;
+    float marginX = 10.0f;
+    float marginY = 50.0f;
 
-        float marginX = 50.0f;
-        float marginY = 50.0f;
-
-        if (playerPos->x < viewLeft + marginX) {
-            playerPos->x = viewLeft + marginX;
-        }
-        if (playerPos->x > viewRight - marginX) {
-            playerPos->x = viewRight - marginX;
-        }
-        if (playerPos->y < viewTop + marginY) {
-            playerPos->y = viewTop + marginY;
-        }
-        if (playerPos->y > viewBottom - marginY) {
-            playerPos->y = viewBottom - marginY;
-        }
+    if (playerPos->x < viewLeft + marginX) {
+        playerPos->x = viewLeft + marginX;
     }
+    if (playerPos->x > viewRight - marginX - 110.0f) {
+        playerPos->x = viewRight - marginX - 110.0f;
+    }
+    if (playerPos->y < viewTop + marginY - 10) {
+        playerPos->y = viewTop + marginY - 10;
+    }
+    if (playerPos->y > viewBottom - marginY) {
+        playerPos->y = viewBottom - marginY;
+    }
+}
+
+
 
     void GamePlayState::update() {
         if (Settings::getInstance().isShaderEnabled) {
@@ -115,8 +115,6 @@ namespace rtype {
         window.setView(gameView);
     }
 
-
-
     void GamePlayState::render() {
         window.clear();
 
@@ -129,17 +127,6 @@ namespace rtype {
         window.setView(gameView);
 
         system.draw_system(registry, window);
-
-        sf::RectangleShape topBorder(sf::Vector2f(window.getSize().x, 5.0f));
-        topBorder.setPosition(0, 50);
-        topBorder.setFillColor(sf::Color::White);
-
-        sf::RectangleShape bottomBorder(sf::Vector2f(window.getSize().x, 5.0f));
-        bottomBorder.setPosition(0, window.getSize().y - 55);
-        bottomBorder.setFillColor(sf::Color::White);
-
-        window.draw(topBorder);
-        window.draw(bottomBorder);
 
         window.display();
     }
