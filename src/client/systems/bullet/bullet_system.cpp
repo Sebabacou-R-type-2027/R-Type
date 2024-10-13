@@ -14,7 +14,6 @@
 
 namespace rtype::game {
 
-
     void BulletSystem::update(ecs::Registry& registry) {
         auto& positions = registry.get_components<ecs::Position>();
         auto& velocities = registry.get_components<ecs::Velocity>();
@@ -46,30 +45,24 @@ namespace rtype::game {
                     if (check == false) {
                         clock.restart();
                         auto laser_charge = registry.spawn_entity();
-                        Sound_game.playSound("assets/Son/laser_gun1.wav");
+                        Sound_game.playSound("assets/Son/laser_gun1.wav", 40);
                         registry.emplace_component<ecs::Velocity>(laser_charge, 45.0f, 0.0f);
                         registry.emplace_component<ecs::EntityType>(laser_charge, ecs::Type::Bullet);
+
+                        auto& draw = registry.emplace_component<ecs::Drawable>(laser_charge, "assets/Bullets/11.png");
                         auto &hit = registry.emplace_component<ecs::Hitbox>(laser_charge, ecs::ShapeType::Rectangle, false);
-                        hit->rect = sf::RectangleShape(sf::Vector2f(20.0f, 20.0f));
+                        hit->rect = sf::RectangleShape(sf::Vector2f(draw->sprite.getGlobalBounds().width, draw->sprite.getGlobalBounds().height));
+                        hit->rect.setOutlineColor(sf::Color::Red);
+                        hit->rect.setOutlineThickness(1.0f);
+                        registry.emplace_component<ecs::Position>(laser_charge, positions[CheckEntity(registry, ecs::Type::Player)]->x + 40, positions[CheckEntity(registry, ecs::Type::Player)]->y - 40); // Use player position
 
-                        registry.emplace_component<ecs::Position>(laser_charge, positions[CheckEntity(registry, ecs::Type::Player)]->x + 40, positions[CheckEntity(registry, ecs::Type::Player)]->y + 5); // Use player position
 
-                        registry.emplace_component<ecs::Drawable>(laser_charge, "assets/Bullets/11.png");
                         registry.emplace_component<ecs::BulletCharge>(laser_charge);
+                        registry.emplace_component<ecs::LifeState>(laser_charge, true);
+                        registry.emplace_component<ecs::CollisionState>(laser_charge, false);
                     }
                 }
 
-
-
-
-
-
-            //auto charge_animation = registry.spawn_entity();
-            //registry.emplace_component<ecs::Position>(charge_animation, positions[CheckEntity(registry, ecs::Type::Player)]->x + 40, positions[CheckEntity(registry, ecs::Type::Player)]->y + 5); // Use player position
-            //registry.emplace_component<ecs::Velocity>(charge_animation, 0.0f, 0.0f);
-            //registry.emplace_component<ecs::Controllable>(charge_animation, true, 5.0f);
-            //registry.emplace_component<ecs::Drawable>(charge_animation, "assets/Charged Bullet/charged1.gif");
-            //check = true;
 
             }
         } else {
@@ -82,16 +75,25 @@ namespace rtype::game {
                 float timePressed = spacePressClock.getElapsedTime().asSeconds();
 
                 if (timePressed < 1 && currentTime - lastShootTime > shootCooldown) {
-                    Sound_game.playSound("assets/Son/laser_gun2.wav");
+                    Sound_game.playSound("assets/Son/laser_gun2.wav", 40);
                     lastShootTime = currentTime;
                     auto laser_entity = registry.spawn_entity();
-                    registry.emplace_component<ecs::Velocity>(laser_entity, 35.0f, 0.0f);
+                    registry.emplace_component<ecs::Velocity>(laser_entity, 10.0f, 0.0f);
                     registry.emplace_component<ecs::EntityType>(laser_entity, ecs::Type::Bullet);
-                    auto &hit = registry.emplace_component<ecs::Hitbox>(laser_entity, ecs::ShapeType::Rectangle, false);
-                    hit->rect = sf::RectangleShape(sf::Vector2f(20.0f, 20.0f));
+
+
+
+                    auto& draw = registry.emplace_component<ecs::Drawable>(laser_entity, "assets/Bullets/01.png");
+                    auto &hit = registry.emplace_component<ecs::Hitbox>(laser_entity, ecs::ShapeType::Rectangle, false, true);
+                    hit->rect.setPosition(100, positions[CheckEntity(registry, ecs::Type::Player)]->y + 5);
+                    hit->rect = sf::RectangleShape(sf::Vector2f(draw->sprite.getGlobalBounds().width, draw->sprite.getGlobalBounds().height));
+                    hit->rect.setOutlineColor(sf::Color::Red);
+                    hit->rect.setOutlineThickness(1.0f);
+
                     registry.emplace_component<ecs::Position>(laser_entity, positions[CheckEntity(registry, ecs::Type::Player)]->x + 40, positions[CheckEntity(registry, ecs::Type::Player)]->y + 5);
-                    registry.emplace_component<ecs::Drawable>(laser_entity, "assets/Bullets/01.png");
                     registry.emplace_component<ecs::Bullet>(laser_entity);
+                    registry.emplace_component<ecs::LifeState>(laser_entity, true);
+                    registry.emplace_component<ecs::CollisionState>(laser_entity, false);
                 } else {
                     ChargedOneDraw = true;
                 }

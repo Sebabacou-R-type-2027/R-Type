@@ -85,6 +85,7 @@ namespace client {
             int number_of_players_ = 0;  ///< Nombre de joueurs actuellement connectés.
             int my_id_in_lobby_;
             std::map<std::string, std::string> _commandsToDo;  ///< Commandes à effectuer.
+            std::atomic<bool> is_running_;  ///< Indique si le client est en cours d'exécution.
         private:
             bool im_host = false;  ///< Indique si le client est l'hôte du serveur.
             asio::io_context& io_context_;  ///< Contexte d'E/S ASIO.
@@ -92,7 +93,6 @@ namespace client {
             udp::endpoint remote_endpoint_;  ///< Endpoint du serveur (adresse et port).
             std::thread receive_thread_;  ///< Thread utilisé pour la réception des messages.
             std::thread send_thread_;  ///< Thread utilisé pour l'envoi des messages.
-            std::atomic<bool> is_running_;  ///< Indique si le client est en cours d'exécution.
             std::unordered_map<std::string, udp::endpoint> players_endpoints_;  ///< Map des endpoints des joueurs connectés.
             std::mutex messages_mutex_;  ///< Mutex pour protéger l'accès aux messages reçus.
             std::unordered_map<int, std::pair<std::string, udp::endpoint>> received_messages_; ///< Map des messages reçus (avec un ID et un endpoint).

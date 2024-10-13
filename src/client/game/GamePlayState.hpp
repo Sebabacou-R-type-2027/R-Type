@@ -10,8 +10,9 @@
 #include "game_state.hpp"
 #include "registry.hpp"
 #include "system.hpp"
-#include "../create_ennemies.hpp"
+#include "../Create_ennemies.hpp"
 #include <networkClient/Client.hpp>
+#include "../Handle_collision.hpp"
 #include "../utils/FPSCounter.hpp"
 #include "../utils/Settings.hpp"
 #include "../systems/bullet/bullet_system.hpp"
@@ -35,6 +36,7 @@ namespace rtype {
 
         client::Client& network_;
         ecs::CreateEnnemies createEnnemies; // TODO: create a system for this
+        ecs::HandleCollision handleCollision; // TODO: create a system for this
 
         void initPlayer(std::string path, float posx, bool me);
         void initChargeBullet();

@@ -13,11 +13,19 @@
 
 namespace ecs::systems {
     class ControlSystem {
+        /**
+         * @brief Class that contains all the logic of the control system
+         */
         public:
+            /**
+             * @brief Update the control system
+             *
+             * @param registry contains all the logic of the components
+             */
             void update(Registry& registry, client::Client& network);
 
         private:
-            float acceleration = 0.1f;
+            float acceleration = 0.2f;
             float maxSpeed = 4.0f;
     };
 }

@@ -11,6 +11,8 @@
 class Settings {
 public:
     bool isShaderEnabled = true;
+    std::string serverAddress = "";
+    int serverPort = 0;
 
     static Settings& getInstance() {
         static Settings instance;

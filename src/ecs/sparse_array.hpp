@@ -9,11 +9,17 @@
 
 #include <vector>
 #include <optional>
+#include <iostream>
 #include <algorithm> // For std::find
 
 namespace ecs {
 
 template <typename Component>
+/**
+ * @brief Sparse array class to store optional components
+ *
+ * @tparam Component
+ */
 class sparse_array {
     public:
         using value_type = std::optional<Component>;        // Each element is optional
@@ -35,6 +41,13 @@ class sparse_array {
 
         size_type size() const { return _data.size(); }
 
+        /**
+         * @brief Insert a component at a specific position
+         *
+         * @param pos Position to insert the component
+         * @param component Component to insert
+         * @return reference_type Reference to the inserted component
+         */
         reference_type insert_at(size_type pos, const Component& component) {
             if (pos >= _data.size()) {
                 _data.resize(pos + 1);
@@ -43,14 +56,29 @@ class sparse_array {
             return _data[pos];
         }
 
+        /**
+         * @brief Insert a component at a specific position
+         *
+         * @param pos Position to insert the component
+         * @param component Component to insert
+         * @return reference_type Reference to the inserted component
+         */
         reference_type insert_at(size_type pos, Component&& component) {
             if (pos >= _data.size()) {
                 _data.resize(pos + 1);
             }
-            _data[pos] = std::move(component);
+            _data[pos] = std::forward<Component>(component);
             return _data[pos];
         }
 
+        /**
+         * @brief Emplace a component at a specific position
+         *
+         * @tparam Params
+         * @param pos Position to emplace the component
+         * @param params Parameters to forward to the component constructor
+         * @return reference_type Reference to the emplaced component
+         */
         template <class... Params>
         reference_type emplace_at(size_type pos, Params&&... params) {
             if (pos >= _data.size()) {
@@ -66,10 +94,23 @@ class sparse_array {
             }
         }
 
+        /**
+         * @brief Get the index of a component
+         * 
+         * @param component Component to find
+         * @return size_type Index of the component
+         * @return -1 If the component is not found
+         */
         size_type get_index(const value_type& component) const {
             auto it = std::find(_data.begin(), _data.end(), component);
             return (it != _data.end()) ? std::distance(_data.begin(), it) : -1;
         }
+
+        auto begin() { return _data.begin(); }
+        auto end() { return _data.end(); }
+
+        auto begin() const { return _data.begin(); }
+        auto end() const { return _data.end(); }
 
     private:
         container_t _data;

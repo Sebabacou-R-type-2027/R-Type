@@ -38,6 +38,11 @@ namespace client {
             	auto commands = command_handler_->getCommands();
 	            for (const auto& [time, command] : commands) {
     	            if (_commandsSend.find(time) == _commandsSend.end()) {
+                        if (players_endpoints_.empty()) {
+                            std::string formatted_data = (command.size() == 1) ? "0 " + command : command.substr(0, 1) + " " + command.substr(1, 1);
+//                            std::cout << "CMDP to handle : " << formatted_data << std::endl;
+                            _commandsToDo[formatted_data.substr(0, formatted_data.find(' '))] = formatted_data.substr(formatted_data.find(' ') + 1);
+                        }
         	            for (const auto& [_, endpoint] : players_endpoints_) {
             	            auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::CMDP, socket_);
                 	        if (typeid(*packet) == typeid(PacketCMDP)) {
@@ -45,11 +50,11 @@ namespace client {
                         	}
 	                        packet->send_packet(endpoint);
                             std::string formatted_data = (command.size() == 1) ? "0 " + command : command.substr(0, 1) + " " + command.substr(1, 1);
-            				std::cout << "CMDP to handle : " << formatted_data << std::endl;
+//            				std::cout << "CMDP to handle : " << formatted_data << std::endl;
                 			_commandsToDo[formatted_data.substr(0, formatted_data.find(' '))] = formatted_data.substr(formatted_data.find(' ') + 1);
-							for (const auto& cmd : _commandsToDo) {
-    							std::cout << "Player: " << cmd.first << " -> " << cmd.second << std::endl;
-							}
+//							for (const auto& cmd : _commandsToDo) {
+//    							std::cout << "Player: " << cmd.first << " -> " << cmd.second << std::endl;
+//							}
                     	}
                     	_commandsSend[time] = command;
 	                }
@@ -84,10 +89,10 @@ namespace client {
                     	}
                 		command = std::to_string(my_id_in_lobby_) + command;
                 		this->command_handler_->addCommand(command);
-                		auto cmd = command_handler_->getCommands();
-                		for (const auto& cmdd : cmd) {
-                    		std::cout << cmdd.first << " : " << cmdd.second << std::endl;
-                		}
+//                		auto cmd = command_handler_->getCommands(); // TODO : uncomment this line for debug purpose
+//                		for (const auto& cmdd : cmd) {
+//                    		std::cout << cmdd.first << " : " << cmdd.second << std::endl;
+//                		}
                     } catch (const std::exception& e) {
                     	std::cerr << "Error parsing command: " << e.what() << std::endl;
                     }
@@ -240,7 +245,7 @@ namespace client {
         			break;
     			}
 			}
-			std::cout << "Received from Player[" << player_key << "]: " << data << std::endl;
+//			std::cout << "Received from Player[" << player_key << "]: " << data << std::endl;
             if (data.find("GAME_LAUNCH|ACK") == 0) {
                 players_endpoints_[std::to_string(number_of_players_)] = remote_endpoint;
                 my_id_in_lobby_ = number_of_players_;
@@ -264,7 +269,7 @@ namespace client {
                 return;
             }
             if (type == PacketFactory::TypePacket::CMDP) {
-                std::cout << "Received CMDP : " << data << std::endl;
+//                std::cout << "Received CMDP : " << data << std::endl;
                 data = player_key + data;
                 this->command_handler_->addCommand(data);
                 auto cmd = command_handler_->getCommands();

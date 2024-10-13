@@ -26,11 +26,7 @@ namespace rtype {
 
         std::cout << "nbr player to load " << network.number_of_players_ << std::endl;
         for (int i = 0; i - 1 != network.number_of_players_; i++) {
-          	if (i == network.my_id_in_lobby_) {
-            	initPlayer("assets/Ship/Ship.png", posx * i + 1, true);
-            } else {
-            	initPlayer("assets/Ship/Ship.png", posx * i + 1, true);
-            }
+            initPlayer("assets/Ship/Ship.png", posx * i + 1, true);
         }
         createEnnemies.create_enemies(registry, window);
 
@@ -60,8 +56,10 @@ namespace rtype {
 
         bulletSystem.update(registry);
         system.loop_movement_system(registry, deltaTime);
+        system.animation_system(registry, deltaTime, window);
         system.collision_system(registry, window);
-        // fpsCounter.update();
+        handleCollision.handle_collision(registry);
+        // // fpsCounter.update();
     }
 
     void GamePlayState::render() {

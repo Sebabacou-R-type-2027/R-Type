@@ -9,17 +9,6 @@
 #include "networkClient/Client.hpp"
 #include "thread"
 
-// void run_network(cshar* argv[]){
-    // asio::io_context io_context;
-    // client::Client client(io_context, argv[1], std::stoi(argv[2]));
-
-    // client.main_loop();
-// }
-
-// void run_network(client::Client& client) {
-    // client.main_loop();
-// }
-
 int main(int argc, char* argv[]) {
     if (argc != 3) {
         std::cerr << "Usage: ./r-type_client <host> <port>" << std::endl;

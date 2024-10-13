@@ -30,8 +30,7 @@ void ControlSystem::update(Registry& registry, client::Client& network) {
     	        }
             }
             for (auto it = network._commandsToDo.begin(); it != network._commandsToDo.end(); ) {
-//                if (it->first == std::to_string(network.my_id_in_lobby_)) {
-//    				std::cout << "Command: " << it->first << " - " << it->second << "i:" << i <<std::endl;
+//                  std::cout << "command to do: " << it->first << " " << it->second << " my id: " << network.my_id_in_lobby_ << std::endl;
                   if (it->second == "0") {
                       velocities[std::stoi(it->first)]->vx += acceleration;
                   } else if (it->second == "1") {
@@ -42,9 +41,6 @@ void ControlSystem::update(Registry& registry, client::Client& network) {
                       velocities[std::stoi(it->first)]->vy += acceleration;
                   }
                   it = network._commandsToDo.erase(it);
-//                } else {
-//                    ++it;
-//                }
 			}
             if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
                 velocities[i]->vx *= 0.9f;

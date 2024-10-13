@@ -24,12 +24,14 @@ namespace rtype {
         while (window.isOpen()) {
             if (currentState == nullptr) {
                 window.close();
+                network_.is_running_ = true;
                 return;
             }
             currentState->handleInput();
             currentState->update();
             currentState->render();
         }
+        network_.is_running_ = true;
     }
 
     void Game::changeState(std::shared_ptr<GameState> newState) {
