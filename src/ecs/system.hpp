@@ -42,8 +42,12 @@ namespace ecs {
             loopMovementSystem.update(reg, deltaTime);
         }
 
-        void button_system_render(Registry& reg, sf::RenderWindow& window) {
+        void button_system(Registry& reg, sf::RenderWindow& window) {
             buttonSystem.update(reg, window);
+        }
+
+        void button_system_render(Registry& reg, sf::RenderWindow& window) {
+            buttonSystem.render(reg, window);
         }
 
         void collision_system(Registry& reg, sf::RenderWindow& window) {
