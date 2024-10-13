@@ -25,7 +25,7 @@ namespace ecs::systems {
             void update(Registry& registry, client::Client& network);
 
         private:
-            float acceleration = 0.2f;
+            float acceleration = 0.5f;
             float maxSpeed = 4.0f;
     };
 }
