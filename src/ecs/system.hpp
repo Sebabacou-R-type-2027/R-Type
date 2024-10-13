@@ -15,6 +15,8 @@
 #include "../client/systems/loop_movement/loop_movement_system.hpp"
 #include "../client/systems/button/button_system.hpp"
 #include "../client/systems/ennemy_state/ennemy_state_system.hpp"
+#include "../client/systems/bullet/bullet_system.hpp"
+#include <networkClient/Client.hpp>
 #include "../client/systems/shader/shader_system.hpp"
 #include "../client/systems/shooting_enemy/shooting_enemy_system.hpp"
 
@@ -26,17 +28,17 @@ namespace ecs {
     public:
         /**
          * @brief control_system
-         * 
+         *
          * @param registry contains all the logic of the components
          * @return void
          */
-        void control_system(Registry& reg) {
-            controlSystem.update(reg);
+        void control_system(Registry& reg, client::Client& network) {
+            controlSystem.update(reg, network);
         }
 
         /**
          * @brief position_system
-         * 
+         *
          * @param registry contains all the logic of the components
          * @return void
          */
@@ -46,7 +48,7 @@ namespace ecs {
 
         /**
          * @brief draw_system
-         * 
+         *
          * @param registry contains all the logic of the components
          * @param window contains the window of the game
          * @return void
@@ -58,7 +60,7 @@ namespace ecs {
 
         /**
          * @brief animation_system
-         * 
+         *
          * @param registry contains all the logic of the components
          * @param deltaTime contains the time between two frames
          * @param window contains the window of the game
@@ -70,7 +72,7 @@ namespace ecs {
 
         /**
          * @brief loop_movement_system
-         * 
+         *
          * @param registry contains all the logic of the components
          * @param deltaTime contains the time between two frames
          * @return void
@@ -81,7 +83,7 @@ namespace ecs {
 
         /**
          * @brief button_system
-         * 
+         *
          * @param registry contains all the logic of the components
          * @param window contains the window of the game
          * @return void
@@ -92,7 +94,7 @@ namespace ecs {
 
         /**
          * @brief collision_system
-         * 
+         *
          * @param registry contains all the logic of the components
          * @param window contains the window of the game
          * @return void
@@ -103,7 +105,7 @@ namespace ecs {
 
         /**
          * @brief collision_system
-         * 
+         *
          * @param registry contains all the logic of the components
          * @param window contains the window of the game
          * @return void
@@ -114,7 +116,7 @@ namespace ecs {
 
         /**
          * @brief enemy_state_system
-         * 
+         *
          * @param registry contains all the logic of the components
          * @param deltaTime contains the time between two frames
          * @return void
@@ -125,7 +127,7 @@ namespace ecs {
 
         /**
          * @brief shader_system
-         * 
+         *
          * @param registry contains all the logic of the components
          * @param window contains the window of the game
          * @param shader contains the shader of the game
@@ -137,7 +139,7 @@ namespace ecs {
 
         /**
          * @brief shader_system_render
-         * 
+         *
          * @param registry contains all the logic of the components
          * @param window contains the window of the game
          * @param shader contains the shader of the game

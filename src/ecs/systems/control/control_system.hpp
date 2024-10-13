@@ -9,6 +9,7 @@
 
 #include "registry.hpp"
 #include <SFML/Window/Keyboard.hpp>
+#include <networkClient/Client.hpp>
 
 namespace ecs::systems {
     class ControlSystem {
@@ -21,10 +22,10 @@ namespace ecs::systems {
              *
              * @param registry contains all the logic of the components
              */
-            void update(Registry& registry);
+            void update(Registry& registry, client::Client& network);
 
         private:
-            float acceleration = 0.1f;
+            float acceleration = 0.2f;
             float maxSpeed = 4.0f;
     };
 }

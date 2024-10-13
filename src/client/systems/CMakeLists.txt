@@ -9,3 +9,5 @@ add_subdirectory(ennemy_state)
 add_subdirectory(loop_movement)
 add_subdirectory(shader)
 add_subdirectory(shooting_enemy)
+add_subdirectory(power-up)
+

@@ -149,6 +149,27 @@ class Registry {
             get_components<Component>().erase(static_cast<std::size_t>(from));
         }
 
+        Entity get_player_entity() const {
+            const auto& types = get_components<EntityType>();
+            for (std::size_t i = 0; i < types.size(); ++i) {
+                if (types[i] && types[i]->current_type == Type::Player) {
+                    return entity_from_index(i);
+                }
+            }
+            throw std::runtime_error("Player entity not found");
+        }
+
+        std::vector<Entity> get_all_player_entity() const {
+            std::vector<Entity> playerEntities;
+            const auto& types = get_components<EntityType>();
+            for (std::size_t i = 0; i < types.size(); ++i) {
+                if (types[i] && types[i]->current_type == Type::Player) {
+                    playerEntities.push_back(entity_from_index(i));
+                }
+            }
+            return playerEntities;
+        }
+
         void register_all_components() {
             register_component<Position>();
             register_component<Velocity>();

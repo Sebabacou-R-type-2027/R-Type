@@ -16,11 +16,10 @@ namespace client {
 
         receive_thread_ = std::thread(&Client::receive_loop, this);
         send_commands_thread_ = std::thread(&Client::send_commands_to_all_clients, this);
-        main_loop();
     }
 
     Client::~Client() {
-        is_running_ = false;  // Arrête la boucle de réception
+        is_running_ = false;
         if (receive_thread_.joinable()) {
             receive_thread_.join();  // Attends que le thread termine
             if (socket_.is_open()) {
@@ -39,6 +38,11 @@ namespace client {
             	auto commands = command_handler_->getCommands();
 	            for (const auto& [time, command] : commands) {
     	            if (_commandsSend.find(time) == _commandsSend.end()) {
+                        if (players_endpoints_.empty()) {
+                            std::string formatted_data = (command.size() == 1) ? "0 " + command : command.substr(0, 1) + " " + command.substr(1, 1);
+//                            std::cout << "CMDP to handle : " << formatted_data << std::endl;
+                            _commandsToDo[formatted_data.substr(0, formatted_data.find(' '))] = formatted_data.substr(formatted_data.find(' ') + 1);
+                        }
         	            for (const auto& [_, endpoint] : players_endpoints_) {
             	            auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::CMDP, socket_);
                 	        if (typeid(*packet) == typeid(PacketCMDP)) {
@@ -46,11 +50,11 @@ namespace client {
                         	}
 	                        packet->send_packet(endpoint);
                             std::string formatted_data = (command.size() == 1) ? "0 " + command : command.substr(0, 1) + " " + command.substr(1, 1);
-            				std::cout << "CMDP to handle : " << formatted_data << std::endl;
+//            				std::cout << "CMDP to handle : " << formatted_data << std::endl;
                 			_commandsToDo[formatted_data.substr(0, formatted_data.find(' '))] = formatted_data.substr(formatted_data.find(' ') + 1);
-							for (const auto& cmd : _commandsToDo) {
-    							std::cout << "Player: " << cmd.first << " -> " << cmd.second << std::endl;
-							}
+//							for (const auto& cmd : _commandsToDo) {
+//    							std::cout << "Player: " << cmd.first << " -> " << cmd.second << std::endl;
+//							}
                     	}
                     	_commandsSend[time] = command;
 	                }
@@ -83,12 +87,12 @@ namespace client {
                     	if (temp_cmd < 0 || temp_cmd > 255) {
                         	throw std::out_of_range("Command value out of range for uint8_t");
                     	}
-                		command = "0" + command;
+                		command = std::to_string(my_id_in_lobby_) + command;
                 		this->command_handler_->addCommand(command);
-                		auto cmd = command_handler_->getCommands();
-                		for (const auto& cmdd : cmd) {
-                    		std::cout << cmdd.first << " : " << cmdd.second << std::endl;
-                		}
+//                		auto cmd = command_handler_->getCommands(); // TODO : uncomment this line for debug purpose
+//                		for (const auto& cmdd : cmd) {
+//                    		std::cout << cmdd.first << " : " << cmdd.second << std::endl;
+//                		}
                     } catch (const std::exception& e) {
                     	std::cerr << "Error parsing command: " << e.what() << std::endl;
                     }
@@ -208,10 +212,15 @@ namespace client {
             }
             if (type == PacketFactory::TypePacket::CMD) {
                 std::cout << "CMD received -> " << data << std::endl;
-              	if ((data.find("START|")) && (std::isdigit(data[sizeof("START|") + 1]))) {
+              	if (data.find("START|") == 0) {
 					std::string host_data = data.substr(data.find('|') + 1);
 					my_id_in_lobby_ = std::stoi(host_data);
+                    number_of_players_ += 1;
 				}
+                if (data.find("PJ|") == 0) {
+                    std::string player_join = data.substr(data.find('|') + 1);
+                    number_of_players_ += 1;
+                }
                 if (data.find("GAME_LAUNCH|HOST") == 0) {
                     std::cout << "You are the HOST" << std::endl;
                     im_host = true;
@@ -236,25 +245,34 @@ namespace client {
         			break;
     			}
 			}
-			std::cout << "Received from Player[" << player_key << "]: " << data << std::endl;
+//			std::cout << "Received from Player[" << player_key << "]: " << data << std::endl;
             if (data.find("GAME_LAUNCH|ACK") == 0) {
                 players_endpoints_[std::to_string(number_of_players_)] = remote_endpoint;
+                my_id_in_lobby_ = number_of_players_;
                 number_of_players_ += 1;
                 message = "START|" + std::to_string(number_of_players_);
                 send_message_to_player(message, remote_endpoint);
-                return ;
+
+                std::string join_message = "PJ|" + std::to_string(number_of_players_);
+                for (const auto& [_, endpoint] : players_endpoints_) {
+                    if (endpoint != remote_endpoint) {
+                        send_message_to_player(join_message, endpoint);
+                    }
+                }
+
+                for (int i = 1; i < number_of_players_; ++i) {
+                    std::string existing_player_message = "PJ|" + std::to_string(i);
+                    send_message_to_player(existing_player_message, remote_endpoint);
+                }
             }
             if (type == PacketFactory::TypePacket::ACK) {
                 return;
             }
             if (type == PacketFactory::TypePacket::CMDP) {
-                std::cout << "Received CMDP : " << data << std::endl;
+//                std::cout << "Received CMDP : " << data << std::endl;
                 data = player_key + data;
                 this->command_handler_->addCommand(data);
                 auto cmd = command_handler_->getCommands();
-                for (const auto& command : cmd) {
-                    std::cout << command.first << " : " << command.second << std::endl;
-                }
                 return;
             }
         }

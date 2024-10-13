@@ -41,40 +41,6 @@ The project consists of several key components:
     - ASIO (or Boost ASIO if you're using Boost)
     - CMake
 
-### Build Instructions
-
-1. Clone the repository:
-
-    ```bash
-    git clone <repository-url>
-    cd <repository-directory>
-    ```
-
-2. Create a build directory and navigate to it:
-
-    ```bash
-    mkdir build
-    cd build
-    ```
-
-3. Run CMake to configure the project:
-
-    ```bash
-    cmake ..
-    ```
-
-4. Compile the project:
-
-    ```bash
-    make
-    ```
-
-5. Run the server executable:
-
-    ```bash
-    ./UdpServer
-    ```
-
 ## Usage
 
 ### Starting the Server
@@ -88,11 +54,3 @@ Clients can:
 - **Join a lobby**: Clients can join existing lobbies by providing the correct lobby ID.
 - **Leave a lobby**: Clients can leave a lobby, and if they are the host, the lobby will be deleted.
 - **Start a game**: The server will select the client with the lowest latency as the game host by pinging all clients in the lobby.
-
-## License
-
-This project is licensed under the MIT License. See the `LICENSE` file for details.
-
-## Contributing
-
-Contributions are welcome! Feel free to submit a pull request or open an issue for any bug reports, feature requests, or general improvements.
