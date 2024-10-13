@@ -16,7 +16,7 @@ void ShaderSystem::update(Registry& registry, sf::RenderWindow& window, sf::Shad
         return; // Early exit if shader is not valid
     }
 
-    sf::Shader::bind(&shader); // Ensure the shader is bound
+    sf::Shader::bind(&shader); // Bind the shader first
     try {
         shader.setUniform("iTime", static_cast<float>(clock.getElapsedTime().asSeconds())); // Pass time
         shader.setUniform("iResolution", sf::Glsl::Vec3(window.getSize().x, window.getSize().y, 1.0f)); // Pass resolution
