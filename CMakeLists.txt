@@ -4,25 +4,62 @@ project(R-Type)
 
 if (WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DWIN32")
+    add_definitions(-D_WIN32_WINNT=0x0A00)  # for Windows 10
 elseif (UNIX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUNIX")
 endif()
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
+set(CMAKE_CXX_STANDARD 17)
 
-file(GLOB SERVER_SOURCES src/server/*.cpp src/server/*.hpp src/share/*.cpp src/share/*.hpp)
-file(GLOB CLIENT_SOURCES src/client/*.cpp src/client/*.hpp src/share/*.cpp src/share/*.hpp)
+define_property(GLOBAL PROPERTY SERVER_SOURCES)
+define_property(GLOBAL PROPERTY CLIENT_SOURCES)
 
-message(STATUS "SERVER_SOURCES: ${SERVER_SOURCES}")
-message(STATUS "CLIENT_SOURCES: ${CLIENT_SOURCES}")
+add_subdirectory(src)
 
-if (NOT SERVER_SOURCES)
-    message(FATAL_ERROR "No source files found for r-type_server")
+get_property(server GLOBAL PROPERTY SERVER_SOURCES)
+get_property(client GLOBAL PROPERTY CLIENT_SOURCES)
+
+find_package(asio CONFIG REQUIRED)
+find_package(SFML 2.5 COMPONENTS graphics window system audio CONFIG REQUIRED)
+find_package(OpenAL REQUIRED)
+find_package(FLAC REQUIRED)
+find_package(Vorbis REQUIRED)
+add_compile_options($<$<CONFIG:Debug>:-g>)
+
+add_executable(r-type_server ${server})
+add_executable(r-type_client ${client})
+
+target_link_libraries(r-type_server PRIVATE asio::asio)
+target_link_libraries(r-type_client PRIVATE asio::asio sfml-graphics sfml-window sfml-system sfml-audio)
+
+target_include_directories(r-type_server PRIVATE
+        src/server
+        src/server/client
+        src/share
+        src/share/packet
+        src/share/packet/packet_type
+)
+
+target_include_directories(r-type_client PRIVATE
+        src/client
+        src/client/networkClient
+        src/share
+        src/share/packet
+        src/share/packet/packet_type
+        src/share
+        src/ecs
+        src/ecs/systems
+        src/ecs/factories
+        src/ecs/components
+
+  )
+
+# Symlink the executables to the root directory (Unix only)
+
+if (UNIX)
+    add_custom_target(symlink-executables ALL BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/r-type_server ${CMAKE_CURRENT_SOURCE_DIR}/r-type_client
+        COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_BINARY_DIR}/r-type_server ${CMAKE_CURRENT_SOURCE_DIR}/r-type_server
+        COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_BINARY_DIR}/r-type_client ${CMAKE_CURRENT_SOURCE_DIR}/r-type_client
+    )
+    add_dependencies(symlink-executables r-type_server r-type_client)
 endif()
-
-if (NOT CLIENT_SOURCES)
-    message(FATAL_ERROR "No source files found for r-type_client")
-endif()
-
-add_executable(r-type_server ${SERVER_SOURCES})
-add_executable(r-type_client ${CLIENT_SOURCES})

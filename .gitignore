@@ -1,11 +1,19 @@
-.cmake
+# Build files
+/build
+/vcpkg_installed
+
+# User-specific files
 .idea
-CMakeFiles
-cmake-build-debug
-Testing
-.ninja*
-CMakeCache.txt
-cmake_install.cmake
+/.cache
+
+# Executables
 r-type_client
 r-type_server
-build.ninja
+
+# Generated documentation
+/docs/doxygen/html
+
+# Miscellaneous
+clients.csv
+
+vcpkg
