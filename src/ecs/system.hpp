@@ -16,6 +16,7 @@
 #include "../client/systems/button/button_system.hpp"
 #include "../client/systems/ennemy_state/ennemy_state_system.hpp"
 #include "../client/systems/shader/shader_system.hpp"
+#include "../client/systems/shooting_enemy/shooting_enemy_system.hpp"
 
 namespace ecs {
     /**
@@ -146,6 +147,17 @@ namespace ecs {
             shaderSystem.render(reg, window, shader);
         }
 
+        /**
+         * @brief shooting_enemy_system
+         * 
+         * @param registry contains all the logic of the components
+         * @param window contains the window of the game
+         * @return void
+         */
+        void shooting_enemy_system(Registry& reg, sf::RenderWindow& window) {
+            shootingEnemySystem.update(reg, window);
+        }
+
 
 private:
     systems::ControlSystem controlSystem;
@@ -157,6 +169,7 @@ private:
     systems::CollisionSystem collisionSystem;
     systems::EnemyStateSystem enemyStateSystem;
     systems::ShaderSystem shaderSystem;
+    systems::ShootingEnemySystem shootingEnemySystem;
 };
 
 }
