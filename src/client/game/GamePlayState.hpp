@@ -35,12 +35,17 @@ namespace rtype {
         rtype::game::BulletSystem bulletSystem;
         rtype::game::PowerUp powerUpSystem;
 
+        sf::View gameView;
+
         ecs::CreateEnnemies createEnnemies; // TODO: create a system for this
         ecs::HandleCollision handleCollision; // TODO: create a system for this
 
         void initPlayer(std::string path);
         void initChargeBullet();
-        // fps counter
-        // FPSCounter fpsCounter;
+
+        float calculateDeltaTime();
+        void moveView(float deltaTime);
+        void handlePlayerMovement(float deltaTime);
+        void constrainPlayerPosition(std::optional<ecs::Position>& playerPos);
     };
 }
