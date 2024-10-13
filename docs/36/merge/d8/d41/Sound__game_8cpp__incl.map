@@ -1,9 +1,9 @@
 <map id="client/Sound_game.cpp" name="client/Sound_game.cpp">
-<area shape="rect" id="node1" title=" " alt="" coords="2251,5,2425,32"/>
-<area shape="rect" id="node2" href="$d8/d89/Sound__game_8hpp.html" title=" " alt="" coords="2271,80,2405,107"/>
+<area shape="rect" id="node1" title=" " alt="" coords="2406,5,2579,32"/>
+<area shape="rect" id="node2" href="$d8/d89/Sound__game_8hpp.html" title=" " alt="" coords="2425,80,2560,107"/>
 <area shape="rect" id="node11" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/iostream.html" title=" " alt="" coords="407,319,487,345"/>
-<area shape="rect" id="node33" title=" " alt="" coords="4151,155,4277,181"/>
-<area shape="rect" id="node3" href="$d1/da2/registry_8hpp.html" title=" " alt="" coords="1699,155,1798,181"/>
+<area shape="rect" id="node34" title=" " alt="" coords="4367,155,4493,181"/>
+<area shape="rect" id="node3" href="$d1/da2/registry_8hpp.html" title=" " alt="" coords="1799,155,1898,181"/>
 <area shape="rect" id="node5" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/vector.html" title=" " alt="" coords="111,319,173,345"/>
 <area shape="rect" id="node19" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/string.html" title=" " alt="" coords="2082,319,2141,345"/>
 <area shape="rect" id="node4" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/unordered_map.html" title=" " alt="" coords="27,237,151,263"/>
@@ -27,6 +27,7 @@
 <area shape="rect" id="node30" href="$df/d37/GameState_8hpp.html" title=" " alt="" coords="3409,237,3616,263"/>
 <area shape="rect" id="node31" href="$d2/d08/LifeState_8hpp.html" title=" " alt="" coords="3641,237,3833,263"/>
 <area shape="rect" id="node32" href="$d1/df8/BulletCharge_8hpp.html" title=" " alt="" coords="3857,237,4075,263"/>
+<area shape="rect" id="node33" href="$dc/d83/Shooting_8hpp.html" title=" " alt="" coords="4100,237,4291,263"/>
 <area shape="rect" id="node10" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/optional.html" title=" " alt="" coords="307,319,382,345"/>
 <area shape="rect" id="node13" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/cstddef.html" title=" " alt="" coords="900,319,971,345"/>
 <area shape="rect" id="node18" title=" " alt="" coords="1767,319,1914,345"/>

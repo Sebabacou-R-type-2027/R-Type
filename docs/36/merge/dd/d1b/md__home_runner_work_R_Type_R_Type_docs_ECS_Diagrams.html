@@ -68,7 +68,7 @@ $(function() {
 <div class="title">ECS diagrams </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h1><a class="anchor" id="autotoc_md19"></a>
+<div class="textblock"><h1><a class="anchor" id="autotoc_md21"></a>
 ECS Architecture</h1>
 <div class="fragment"><div class="line">---</div>
 <div class="line">title: Entities and components</div>
@@ -114,20 +114,27 @@ ECS Architecture</h1>
 <div class="line">        +system~Components...~(std::invocable~Components...~ auto)</div>
 <div class="line">        +system~Components...~(std::invocable~registry&amp;, Components...~ auto)</div>
 <div class="line">    }</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md20"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md22"></a>
 ECS components</h1>
 <div class="fragment"><div class="line">---</div>
 <div class="line">title: General-purpose components</div>
 <div class="line">---</div>
 <div class="line">classDiagram</div>
 <div class="line">    position &lt;|-- velocity : affects</div>
+<div class="line">    position &lt;|-- controllable : affects</div>
+<div class="line">    position &lt;|-- drawable_old : uses</div>
+<div class="line">    position &lt;|-- hitbox : uses</div>
+<div class="line">    class controllable {</div>
+<div class="line">        +bool active</div>
+<div class="line">        +float speed</div>
+<div class="line">    }</div>
 <div class="line">    class position {</div>
-<div class="line">        -float x</div>
-<div class="line">        -float y</div>
+<div class="line">        +float x</div>
+<div class="line">        +float y</div>
 <div class="line">    }</div>
 <div class="line">    class velocity {</div>
-<div class="line">        -float dx</div>
-<div class="line">        -float dy</div>
+<div class="line">        +float dx</div>
+<div class="line">        +float dy</div>
 <div class="line">    }</div>
 <div class="line">    class drawable[&quot;drawable (TODO)&quot;] {</div>
 <div class="line">        +bool visible</div>
@@ -145,16 +152,48 @@ ECS components</h1>
 <div class="line">        RECTANGLE</div>
 <div class="line">    }</div>
 <div class="line">    &lt;&lt;enum&gt;&gt; hitbox_type</div>
-<div class="line">    hitbox --&gt; hitbox_type</div>
+<div class="line">    hitbox --&gt; hitbox_type : has</div>
 <div class="line">    class hitbox {</div>
 <div class="line">        +hitbox_type type</div>
 <div class="line">        +sf::RectangleShape rect</div>
 <div class="line">        +sf::CircleShape circle</div>
 <div class="line">        +bool debug_display</div>
 <div class="line">    }</div>
-<div class="line">    class controllable {</div>
-<div class="line">        +bool active</div>
+</div><!-- fragment --><div class="fragment"><div class="line">---</div>
+<div class="line">title: Game-specific components</div>
+<div class="line">---</div>
+<div class="line">classDiagram</div>
+<div class="line">    position &lt;|-- movement_loop : affects</div>
+<div class="line">    class position {</div>
+<div class="line">        +float x</div>
+<div class="line">        +float y</div>
+<div class="line">    }</div>
+<div class="line">    class movement_loop {</div>
+<div class="line">        +float min_x, max_x</div>
+<div class="line">        +float min_y, max_y</div>
 <div class="line">        +float speed</div>
+<div class="line">        +float angle</div>
+<div class="line">        +float radius</div>
+<div class="line">        +float angular_speed</div>
+<div class="line">    }</div>
+<div class="line">    class bullet {</div>
+<div class="line">        +int damage</div>
+<div class="line">    }</div>
+</div><!-- fragment --><div class="fragment"><div class="line">---</div>
+<div class="line">title: UI-specific components</div>
+<div class="line">---</div>
+<div class="line">classDiagram</div>
+<div class="line">    class button {</div>
+<div class="line">        +sf::RectangleShape rect</div>
+<div class="line">        +sf::Text text</div>
+<div class="line">        +std::function~void~ callback</div>
+<div class="line">        +sf::Color color</div>
+<div class="line">        +sf::Color hover_color</div>
+<div class="line">        +sf::Color click_color</div>
+<div class="line">    }</div>
+<div class="line">    class text_box {</div>
+<div class="line">        +sf::RectangleShape rect</div>
+<div class="line">        +sf::Text text</div>
 <div class="line">    }</div>
 </div><!-- fragment --> </div></div><!-- contents -->
 </div><!-- PageDoc -->

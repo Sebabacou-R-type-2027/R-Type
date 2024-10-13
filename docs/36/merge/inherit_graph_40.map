@@ -1,3 +1,7 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$db/dfb/classPacketFactory.html" title=" " alt="" coords="5,5,116,32"/>
+<area shape="rect" id="node1" href="$d7/d97/classPacket.html" title="Base class representing a generic packet." alt="" coords="5,81,69,108"/>
+<area shape="rect" id="node2" href="$d9/d57/classPacketACK.html" title=" " alt="" coords="123,5,214,32"/>
+<area shape="rect" id="node3" href="$df/d75/classPacketCMD.html" title=" " alt="" coords="121,56,216,83"/>
+<area shape="rect" id="node4" href="$de/d26/classPacketCMDP.html" title=" " alt="" coords="117,107,220,133"/>
+<area shape="rect" id="node5" href="$dc/db8/classPacketPing.html" title=" " alt="" coords="123,157,215,184"/>
 </map>

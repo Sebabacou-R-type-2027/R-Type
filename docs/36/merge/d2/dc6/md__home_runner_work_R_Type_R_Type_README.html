@@ -102,13 +102,39 @@ Building from source</h2>
 <div class="line">ctest --preset release</div>
 </div><!-- fragment --><h1><a class="anchor" id="autotoc_md4"></a>
 Running the game</h1>
-<p>After building the project, you can run the game by executing the <code>r-type_server</code> executable:</p>
-<div class="fragment"><div class="line">./r-type_server &lt;port&gt;</div>
-<div class="line">./r-type_client &lt;server-ip&gt; &lt;port&gt;</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md5"></a>
+<h1><a class="anchor" id="autotoc_md5"></a>
+Requirements</h1>
+<p>Before running the game, ensure that you have installed all the required libraries and compiled the project. Once the compilation is successful, follow the instructions below to launch the server and client.</p>
+<h1><a class="anchor" id="autotoc_md6"></a>
+How to Launch the Game</h1>
+<ol type="1">
+<li><b>Open two terminals</b> and navigate to the same directory (repository) where the executables are located.</li>
+<li><p class="startli"><b>Run the server</b> in the first terminal using the following command:</p>
+<p class="startli"><code>./r-type_server 8080</code></p>
+<p class="startli">This will start the server on port <code>8080</code>.</p>
+</li>
+<li><p class="startli"><b>Run the client</b> in the second terminal using this command:</p>
+<p class="startli"><code>./r-type_client 127.0.0.1 8080</code></p>
+<p class="startli">This command connects the client to the server running on <code>127.0.0.1</code> (localhost) at port <code>8080</code>.</p>
+</li>
+<li><p class="startli">The game will launch, but you will need to return to the <b>client terminal</b>. A prompt will appear:</p>
+<p class="startli"><code>$&gt;</code></p>
+</li>
+<li><p class="startli"><b>Login</b> to the game by entering the following command:</p>
+<p class="startli"><code>login &lt;username&gt; &lt;password&gt;</code></p>
+<p class="startli">Replace <code>&lt;username&gt;</code> and <code>&lt;password&gt;</code> with your credentials.</p>
+</li>
+<li><p class="startli"><b>Create a lobby</b> using the command:</p>
+<p class="startli"><code>create_lobby</code></p>
+</li>
+<li><p class="startli"><b>Start the game</b> by typing:</p>
+<p class="startli"><code>start</code></p>
+</li>
+</ol>
+<h1><a class="anchor" id="autotoc_md7"></a>
 License</h1>
 <p>This project is licensed under the MIT License. See the <code>LICENSE</code> file for details.</p>
-<h1><a class="anchor" id="autotoc_md6"></a>
+<h1><a class="anchor" id="autotoc_md8"></a>
 Contributing</h1>
 <p>Contributions are welcome! Feel free to submit a pull request or open an issue for any bug reports, feature requests, or general improvements. </p>
 </div></div><!-- contents -->
