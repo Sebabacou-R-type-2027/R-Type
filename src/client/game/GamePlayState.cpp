@@ -84,6 +84,8 @@ namespace rtype {
         registry.emplace_component<ecs::Drawable>(player, path);
         registry.emplace_component<ecs::Controllable>(player, true, 5.0f);
         registry.emplace_component<ecs::EntityType>(player, ecs::Type::Player);
+        registry.emplace_component<ecs::CollisionState>(player, false);
+        registry.emplace_component<ecs::LifeState>(player, true);
 
         auto& hitbox = registry.emplace_component<ecs::Hitbox>(player, ecs::ShapeType::Rectangle, false);
         hitbox->rect = sf::RectangleShape(sf::Vector2f(50.0f, 50.0f));
