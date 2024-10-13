@@ -1,5 +1,6 @@
 #include "MultiplayerMenuState.hpp"
 #include <iostream>
+#include <cctype>
 
 namespace rtype {
     MultiplayerMenuState::MultiplayerMenuState(sf::RenderWindow& window)
@@ -75,8 +76,9 @@ namespace rtype {
                 sf::Color::White,
                 24,
                 [this]() {
-                    // Print the server address and port when the button is pressed
-                    std::cout << "Connecting to server at " << hostAddress << ":" << portInput << std::endl;
+                    Settings::getInstance().serverAddress = hostAddress;
+                    Settings::getInstance().serverPort = std::stoi(portInput);
+                    std::cout << "Connecting to server at " << Settings::getInstance().serverAddress << ":" << Settings::getInstance().serverPort << std::endl;
                 }
             )
         );
