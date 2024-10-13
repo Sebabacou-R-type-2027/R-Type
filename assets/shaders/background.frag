@@ -28,7 +28,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 	vec3 dir=vec3(uv*zoom,1.);
 	float time=iTime*speed+.25;
 
-    float a1=0.5;
+    float a1=200.5;
 	float a2=0.5;
 	mat2 rot1=mat2(cos(a1),sin(a1),-sin(a1),cos(a1));
 	mat2 rot2=mat2(cos(a2),sin(a2),-sin(a2),cos(a2));
@@ -56,7 +56,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 		if (r>6) fade*=1.-dm; // dark matter, don't render near
 		//v+=vec3(dm,dm*.5,0.);
 		v+=fade;
-		v+=vec3(s,s*s,s*s)*a*brightness*fade; // coloring based on distance
+		v+=vec3(s,s*s,s*s * 2.0 + 0.5)*a*brightness*fade; // coloring based on distance
 		fade*=distfading; // distance fading
 		s+=stepsize;
 	}
@@ -64,6 +64,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 	fragColor = vec4(v*.006,1.);
 
 }
+
 
 
 void main() {
