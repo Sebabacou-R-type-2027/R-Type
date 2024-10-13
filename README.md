@@ -48,12 +48,43 @@ ctest --preset release
 
 ## Running the game
 
-After building the project, you can run the game by executing the `r-type_server` executable:
+## Requirements
 
-```bash
-./r-type_server <port>
-./r-type_client <server-ip> <port>
-```
+Before running the game, ensure that you have installed all the required libraries and compiled the project. Once the compilation is successful, follow the instructions below to launch the server and client.
+
+## How to Launch the Game
+
+1. **Open two terminals** and navigate to the same directory (repository) where the executables are located.
+
+2. **Run the server** in the first terminal using the following command:
+
+   `./r-type_server 8080`
+
+   This will start the server on port `8080`.
+
+3. **Run the client** in the second terminal using this command:
+
+   `./r-type_client 127.0.0.1 8080`
+
+   This command connects the client to the server running on `127.0.0.1` (localhost) at port `8080`.
+
+4. The game will launch, but you will need to return to the **client terminal**. A prompt will appear: 
+
+   `$> `
+
+5. **Login** to the game by entering the following command:
+
+   `login <username> <password>`
+
+   Replace `<username>` and `<password>` with your credentials.
+
+6. **Create a lobby** using the command:
+
+   `create_lobby`
+
+7. **Start the game** by typing:
+
+   `start`
 
 ## License
 
