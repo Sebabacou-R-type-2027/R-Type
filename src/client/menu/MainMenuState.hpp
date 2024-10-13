@@ -13,6 +13,7 @@
 #include "../game_state.hpp"
 #include "../game/Game.hpp"
 #include "../game/GamePlayState.hpp"
+#include "../multiplayer/MultiplayerMenuState.hpp"
 #include "../factories/button_factory.hpp"
 #include "../utils/FPSCounter.hpp"
 #include "../utils/Settings.hpp"
@@ -34,6 +35,7 @@ namespace rtype {
         void createMenuButtons();
         void createMenuTitle();
         void startGame();
+        void startMultiplayer();
         void disableShader();
         void enableShader();
 
@@ -42,8 +44,6 @@ namespace rtype {
 
         ecs::Registry& registry;
         ecs::System& system;
-
-        bool isShaderEnabled = true;
     };
 }
 
