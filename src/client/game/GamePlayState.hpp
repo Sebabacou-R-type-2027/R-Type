@@ -11,6 +11,7 @@
 #include "registry.hpp"
 #include "system.hpp"
 #include "../Create_ennemies.hpp"
+#include <networkClient/Client.hpp>
 #include "../Handle_collision.hpp"
 #include "../utils/FPSCounter.hpp"
 #include "../utils/Settings.hpp"
@@ -19,7 +20,7 @@
 namespace rtype {
     class GamePlayState : public GameState {
     public:
-        GamePlayState(sf::RenderWindow& window);
+        GamePlayState(sf::RenderWindow& window, client::Client& network);
 
         void handleInput() override;
         void update() override;
@@ -33,12 +34,13 @@ namespace rtype {
         sf::Font font;
         rtype::game::BulletSystem bulletSystem;
 
+        client::Client& network_;
         sf::View gameView;
 
         ecs::CreateEnnemies createEnnemies; // TODO: create a system for this
         ecs::HandleCollision handleCollision; // TODO: create a system for this
 
-        void initPlayer(std::string path);
+        void initPlayer(std::string path, float posx, bool me);
         void initChargeBullet();
 
         float calculateDeltaTime();

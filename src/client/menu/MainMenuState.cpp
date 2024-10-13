@@ -1,15 +1,18 @@
 #include "MainMenuState.hpp"
+#include "../game/Game.hpp"
+#include "../factories/button_factory.hpp"
+#include <iostream>
+#include "../game/GamePlayState.hpp"
 
 namespace rtype {
-    MainMenuState::MainMenuState(sf::RenderWindow& window, Game& game)
-        : window(window), game(game), registry(game.getRegistry()), system(game.getSystem()), backgroundShader(game.getBackgroundShader())
+    MainMenuState::MainMenuState(sf::RenderWindow& window, Game& game, client::Client& network)
+        : window(window), game(game), registry(game.getRegistry()), system(game.getSystem()), network_(network),  backgroundShader(game.getBackgroundShader())  // Initialize registry and system here
     {
         if (!font.loadFromFile("assets/fonts/arial.ttf")) {
             throw std::runtime_error("Could not load font");
         }
 
         registry.register_all_components();
-
 
         createMenuButtons();
         createMenuTitle();
@@ -55,7 +58,7 @@ namespace rtype {
         std::cout << "Starting the game..." << std::endl;
         sf::Shader::bind(nullptr);
         // delete the FPS counter
-        game.changeState(std::make_shared<GamePlayState>(window));
+        game.changeState(std::make_shared<GamePlayState>(window, network_));
     }
 
     void MainMenuState::startMultiplayer() {
