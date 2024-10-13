@@ -51,3 +51,48 @@ classDiagram
         +system~Components...~(std::invocable~registry&, Components...~ auto)
     }
 ```
+
+## ECS components
+
+```mermaid
+---
+title: General-purpose components
+---
+classDiagram
+    position <|-- velocity : affects
+    class position {
+        -float x
+        -float y
+    }
+    class velocity {
+        -float dx
+        -float dy
+    }
+    class drawable["drawable (TODO)"] {
+        +bool visible
+        +std::forward_list~std::unique_ptr~sf::Drawable&~~ elements
+    }
+    class drawable_old["drawable (current)"] {
+        +bool visible
+        +sf::Sprite sprite
+        +sf::Text text
+        +sf::RectangleShape rectangle
+    }
+    drawable_old ..> drawable : to refactor into
+    class hitbox_type {
+        CIRCLE
+        RECTANGLE
+    }
+    <<enum>> hitbox_type
+    hitbox --> hitbox_type
+    class hitbox {
+        +hitbox_type type
+        +sf::RectangleShape rect
+        +sf::CircleShape circle
+        +bool debug_display
+    }
+    class controllable {
+        +bool active
+        +float speed
+    }
+```
