@@ -30,6 +30,7 @@ namespace rtype {
         }
 
         system.button_system_render(registry, window);
+        // fpsCounter.update();
     }
 
     void MainMenuState::render() {
@@ -43,13 +44,24 @@ namespace rtype {
         system.button_system_render(registry, window);
         system.draw_system(registry, window);
 
+        // Draw FPS counter
+        // sf::Text fpsText("FPS: " + std::to_string(fpsCounter.getFPS()), font, 24);
+        // window.draw(fpsText);
+
         window.display();
     }
 
     void MainMenuState::startGame() {
         std::cout << "Starting the game..." << std::endl;
         sf::Shader::bind(nullptr);
-        game.changeState(std::make_unique<GamePlayState>(window));
+        // delete the FPS counter
+        game.changeState(std::make_shared<GamePlayState>(window));
+    }
+
+    void MainMenuState::startMultiplayer() {
+        std::cout << "Starting multiplayer..." << std::endl;
+        sf::Shader::bind(nullptr);
+        game.changeState(std::make_shared<MultiplayerMenuState>(window));
     }
 
     void MainMenuState::disableShader() {
@@ -92,9 +104,9 @@ namespace rtype {
                     sf::Vector2f(button_x, yPos),
                     sf::Vector2f(button_width, button_height),
                     font,
+                    sf::Color(14, 94, 255, 255),
+                    sf::Color(7, 115, 255, 255),
                     sf::Color::Blue,
-                    sf::Color::Cyan,
-                    sf::Color::Green,
                     sf::Color::White,
                     24,
                     callback
@@ -107,7 +119,9 @@ namespace rtype {
         createButton("Solo Campaign", yPos, [this]() { startGame(); });
         yPos += button_height + spacing;
 
-        createButton("Multiplayer", yPos, [this]() { startGame(); });
+        createButton("Multiplayer", yPos, [this]() {
+            game.changeState(std::make_shared<MultiplayerMenuState>(window));
+        });
         yPos += button_height + spacing;
 
         createButton("Customize Ship", yPos, [this]() { startGame(); });

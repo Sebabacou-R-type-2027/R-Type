@@ -14,7 +14,7 @@ Sound_game::~Sound_game()
 {
 }
 
-void Sound_game::playSound(const std::string& filename)
+void Sound_game::playSound(const std::string& filename, float volume = 50)
 {
     buffers.emplace_back();
     if (!buffers.back().loadFromFile(filename)) {
@@ -24,15 +24,17 @@ void Sound_game::playSound(const std::string& filename)
     }
     sounds.emplace_back();
     sounds.back().setBuffer(buffers.back());
+    sounds.back().setVolume(volume);
     sounds.back().play();
 }
 
-void Sound_game::playMusic(const std::string& filename)
+void Sound_game::playMusic(const std::string& filename, float volume = 50)
 {
     if (!music.openFromFile(filename)) {
         std::cerr << "Erreur: Impossible de charger la musique " << filename << std::endl;
         return;
     }
+    music.setVolume(volume);
     music.play();
 }
 }

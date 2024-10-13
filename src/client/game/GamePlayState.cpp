@@ -55,7 +55,7 @@ namespace rtype {
         system.animation_system(registry, deltaTime, window);
         system.collision_system(registry, window);
         handleCollision.handle_collision(registry);
-        // fpsCounter.update();
+        // // fpsCounter.update();
     }
 
     void GamePlayState::render() {

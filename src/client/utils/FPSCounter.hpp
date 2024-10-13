@@ -11,6 +11,7 @@
 class FPSCounter {
 public:
     FPSCounter() : m_frameCount(0), m_fps(0) {}
+    ~FPSCounter() = default;
 
     void update() {
         m_frameCount++;
