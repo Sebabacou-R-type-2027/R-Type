@@ -56,7 +56,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 		if (r>6) fade*=1.-dm; // dark matter, don't render near
 		//v+=vec3(dm,dm*.5,0.);
 		v+=fade;
-		v+=vec3(s,s*s,s*s * 2.0 + 0.5)*a*brightness*fade; // coloring based on distance
+		v+=vec3(s,s*s,s*s * 2.0 + 0.9)*a*brightness*fade; // coloring based on distance
 		fade*=distfading; // distance fading
 		s+=stepsize;
 	}
