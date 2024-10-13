@@ -57,9 +57,11 @@ namespace rtype {
         gameView.move(viewScrollSpeed, 0.0f);
     }
 
-    void GamePlayState::handlePlayerMovement(float deltaTime) {
-        auto playerEntity = registry.get_player_entity();
-        auto& playerPositions = registry.get_components<ecs::Position>();
+void GamePlayState::handlePlayerMovement(float deltaTime) {
+    auto playerEntities = registry.get_all_player_entity();
+    auto& playerPositions = registry.get_components<ecs::Position>();
+
+    for (auto playerEntity : playerEntities) {
         auto& playerPos = playerPositions[static_cast<std::size_t>(playerEntity)];
 
         if (!playerPos.has_value()) {
@@ -71,6 +73,7 @@ namespace rtype {
 
         constrainPlayerPosition(playerPos);
     }
+}
 
 void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& playerPos) {
     float viewLeft = gameView.getCenter().x - gameView.getSize().x / 2;
@@ -111,8 +114,8 @@ void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& player
         handleCollision.handle_collision(registry);
         // // fpsCounter.update();
 
-//        moveView(deltaTime):; // TODO: Commented out because it break the view movement in network
-//        handlePlayerMovement(deltaTime);
+        moveView(deltaTime); // TODO: Commented out because it break the view movement in network
+        handlePlayerMovement(deltaTime);
 
         window.setView(gameView);
     }
