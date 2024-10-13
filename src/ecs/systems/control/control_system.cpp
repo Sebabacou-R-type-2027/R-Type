@@ -9,25 +9,39 @@
 
 namespace ecs::systems {
 
-void ControlSystem::update(Registry& registry) {
+void ControlSystem::update(Registry& registry, client::Client& network) {
     auto& velocities = registry.get_components<Velocity>();
     auto& controllables = registry.get_components<Controllable>();
 
     for (std::size_t i = 0; i < controllables.size(); ++i) {
         if (controllables[i] && velocities[i]) {
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-                velocities[i]->vx += acceleration;
+            if (i == network.my_id_in_lobby_) {
+	            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+	                network.send_message("CMDP|0");
+    	        }
+        	    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+	                network.send_message("CMDP|1");
+    	        }
+        	    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+	                network.send_message("CMDP|2");
+    	        }
+        	    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+	                network.send_message("CMDP|3");
+    	        }
             }
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-                velocities[i]->vx -= acceleration;
-            }
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-                velocities[i]->vy -= acceleration;
-            }
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-                velocities[i]->vy += acceleration;
-            }
-
+            for (auto it = network._commandsToDo.begin(); it != network._commandsToDo.end(); ) {
+//                  std::cout << "command to do: " << it->first << " " << it->second << " my id: " << network.my_id_in_lobby_ << std::endl;
+                  if (it->second == "0") {
+                      velocities[std::stoi(it->first)]->vx += acceleration;
+                  } else if (it->second == "1") {
+                      velocities[std::stoi(it->first)]->vx -= acceleration;
+                  } else if (it->second == "2") {
+                      velocities[std::stoi(it->first)]->vy -= acceleration;
+                  } else if (it->second == "3") {
+                      velocities[std::stoi(it->first)]->vy += acceleration;
+                  }
+                  it = network._commandsToDo.erase(it);
+			}
             if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
                 velocities[i]->vx *= 0.9f;
             }
