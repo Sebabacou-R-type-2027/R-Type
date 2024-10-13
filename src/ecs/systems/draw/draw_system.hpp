@@ -18,10 +18,10 @@ namespace ecs::systems {
         private:
             void drawSprite(Drawable& drawable, Position& position, sf::RenderWindow& window);
             void drawText(Drawable& drawable, Position& position, sf::RenderWindow& window);
+            void drawRectangle(Drawable& drawable, Position& position, sf::RenderWindow& window);
 
             void updateDrawable(Drawable& drawable, Position& position, sf::RenderWindow& window);
     };
 
 }
-
 
