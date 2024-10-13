@@ -40,10 +40,10 @@ namespace ecs {
         int max_y = window.getSize().y - 25;
         int max_x = window.getSize().x;
 
-        for (int i = 0; i < 5; ++i) {
+        for (int i = 0; i < 10; ++i) {
             float yPosition = i * 100.0f;
             create_enemy(registry,
-                        max_x, yPosition,
+                        max_x + i * 50.0, yPosition,
                         100.0f,
                        "assets/sprites/r-type-enemy.gif",
                         0.0f, max_x,
@@ -51,6 +51,7 @@ namespace ecs {
                         0.0f, 0.0f, 0.0f,
                         State::Patrolling);
         }
+
     }
 
 }
