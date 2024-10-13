@@ -55,8 +55,12 @@ namespace ecs {
             enemyStateSystem.update(reg, deltaTime);
         }
 
-        void shader_system_render(Registry& reg, sf::RenderWindow& window, sf::Shader& shader) {
+        void shader_system(Registry& reg, sf::RenderWindow& window, sf::Shader& shader) {
             shaderSystem.update(reg, window, shader);
+        }
+
+        void shader_system_render(Registry& reg, sf::RenderWindow& window, sf::Shader& shader) {
+            shaderSystem.render(reg, window, shader);
         }
 
 
