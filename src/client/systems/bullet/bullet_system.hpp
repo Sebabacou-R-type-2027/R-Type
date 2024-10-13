@@ -29,5 +29,10 @@ namespace rtype::game {
             bool check = false;
             rtype::game::Sound_game Sound_game;
 
+            bool bonus1_activate = true;
+
+            sf::Clock timeLimitBonus1Clock;
+            float bonus1_activationTime = 0;
+            const float bonus1_duration = 15.0f;
     };
 }

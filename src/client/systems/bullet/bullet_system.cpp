@@ -81,7 +81,52 @@ namespace rtype::game {
 
                 float timePressed = spacePressClock.getElapsedTime().asSeconds();
 
-                if (timePressed < 1 && currentTime - lastShootTime > shootCooldown) {
+
+
+                if (bonus1_activate) {
+                    if (currentTime.asSeconds() - bonus1_activationTime > bonus1_duration) {
+                        bonus1_activate = false;
+                    }
+                }
+
+                if (timePressed < 1 && currentTime - lastShootTime > shootCooldown && bonus1_activate == true) {
+                    Sound_game.playSound("assets/Son/laser_gun2.wav", 40);
+                    lastShootTime = currentTime;
+
+                    auto laser_entity1 = registry.spawn_entity();
+                    auto laser_entity2 = registry.spawn_entity();
+                    auto laser_entity3 = registry.spawn_entity();
+
+                    registry.emplace_component<ecs::Velocity>(laser_entity1, 35.0f, 0.0f);
+                    registry.emplace_component<ecs::EntityType>(laser_entity1, ecs::Type::Bullet);
+                    auto &hit1 = registry.emplace_component<ecs::Hitbox>(laser_entity1, ecs::ShapeType::Rectangle, false);
+                    hit1->rect = sf::RectangleShape(sf::Vector2f(20.0f, 20.0f));
+                    registry.emplace_component<ecs::Position>(laser_entity1, positions[CheckEntity(registry, ecs::Type::Player)]->x + 40, positions[CheckEntity(registry, ecs::Type::Player)]->y - 30);
+                    registry.emplace_component<ecs::Drawable>(laser_entity1, "assets/Bullets/01.png");
+                    registry.emplace_component<ecs::Bullet>(laser_entity1);
+
+                    registry.emplace_component<ecs::Velocity>(laser_entity2, 35.0f, 0.0f);
+                    registry.emplace_component<ecs::EntityType>(laser_entity2, ecs::Type::Bullet);
+                    auto &hit2 = registry.emplace_component<ecs::Hitbox>(laser_entity2, ecs::ShapeType::Rectangle, false);
+                    hit2->rect = sf::RectangleShape(sf::Vector2f(20.0f, 20.0f));
+                    registry.emplace_component<ecs::Position>(laser_entity2, positions[CheckEntity(registry, ecs::Type::Player)]->x + 40, positions[CheckEntity(registry, ecs::Type::Player)]->y + 5);
+                    registry.emplace_component<ecs::Drawable>(laser_entity2, "assets/Bullets/01.png");
+                    registry.emplace_component<ecs::Bullet>(laser_entity2);
+
+                    registry.emplace_component<ecs::Velocity>(laser_entity3, 35.0f, 0.0f);
+                    registry.emplace_component<ecs::EntityType>(laser_entity3, ecs::Type::Bullet);
+                    auto &hit3 = registry.emplace_component<ecs::Hitbox>(laser_entity3, ecs::ShapeType::Rectangle, false);
+                    hit3->rect = sf::RectangleShape(sf::Vector2f(20.0f, 20.0f));
+                    registry.emplace_component<ecs::Position>(laser_entity3, positions[CheckEntity(registry, ecs::Type::Player)]->x + 40, positions[CheckEntity(registry, ecs::Type::Player)]->y + 40);
+                    registry.emplace_component<ecs::Drawable>(laser_entity3, "assets/Bullets/01.png");
+                    registry.emplace_component<ecs::Bullet>(laser_entity3);
+
+                } else {
+                    ChargedOneDraw = true;
+                }
+
+                // TIR CLASSIQUE
+                if (timePressed < 1 && currentTime - lastShootTime > shootCooldown && bonus1_activate == false) {
                     Sound_game.playSound("assets/Son/laser_gun2.wav", 40);
                     lastShootTime = currentTime;
                     auto laser_entity = registry.spawn_entity();

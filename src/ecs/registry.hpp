@@ -28,6 +28,7 @@
 #include "components/Entity_type.hpp"
 #include "components/Bullet.hpp"
 #include "components/BulletCharge.hpp"
+#include "components/BulletBonus1.hpp"
 
 namespace ecs {
 
@@ -103,6 +104,7 @@ class Registry {
             register_component<EntityType>();
             register_component<Bullet>();
             register_component<BulletCharge>();
+            register_component<BulletBonus1>();
         }
     private:
         std::size_t _next_entity_id = 0;
