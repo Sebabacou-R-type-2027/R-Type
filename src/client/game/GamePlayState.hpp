@@ -10,7 +10,8 @@
 #include "game_state.hpp"
 #include "registry.hpp"
 #include "system.hpp"
-#include "../create_ennemies.hpp"
+#include "../Create_ennemies.hpp"
+#include "../Handle_collision.hpp"
 #include "../utils/FPSCounter.hpp"
 #include "../utils/Settings.hpp"
 #include "../systems/bullet/bullet_system.hpp"
@@ -35,6 +36,7 @@ namespace rtype {
         rtype::game::PowerUp powerUpSystem;
 
         ecs::CreateEnnemies createEnnemies; // TODO: create a system for this
+        ecs::HandleCollision handleCollision; // TODO: create a system for this
 
         void initPlayer(std::string path);
         void initChargeBullet();

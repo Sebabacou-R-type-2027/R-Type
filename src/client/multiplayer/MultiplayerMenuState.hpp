@@ -26,25 +26,25 @@ namespace rtype {
         void render() override;
 
     private:
-        sf::RenderWindow& window;
-        ecs::Registry registry;
-        ecs::System system;
-        sf::Font font;
-        sf::Shader backgroundShader;
+        sf::RenderWindow& window; ///< Reference to the window
+        ecs::Registry registry; ///< Registry to store all the components
+        ecs::System system; ///< System to store all the systems
+        sf::Font font; ///< Font for the text
+        sf::Shader backgroundShader; ///< Shader for the background
 
-        std::string hostAddress;
-        std::string portInput; // Store raw input for port
-        std::optional<unsigned int> port; // Store validated port
+        std::string hostAddress; ///< Store the host address
+        std::string portInput; ///< Store the port input
+        std::optional<unsigned int> port; ///< Store the port
 
-        sf::Text addressText;
-        sf::Text portText;
-        sf::Text connectButtonText;
+        sf::Text addressText; ///< Text for the address
+        sf::Text portText; ///< Text for the port
+        sf::Text connectButtonText; ///< Text for the connect button
 
 
-        sf::Vector2f inputRectAddressPos;
-        sf::Vector2f inputRectPortPos;
-        sf::RectangleShape HitboxAddress;
-        sf::RectangleShape HitboxPort;
+        sf::Vector2f inputRectAddressPos; ///< Position of the address input field
+        sf::Vector2f inputRectPortPos; ///< Position of the port input field
+        sf::RectangleShape HitboxAddress; ///< Hitbox for the address input field
+        sf::RectangleShape HitboxPort; ///< Hitbox for the port input field
 
         enum InputField { NONE, ADDRESS, PORT } activeField; // Track the active input field
 

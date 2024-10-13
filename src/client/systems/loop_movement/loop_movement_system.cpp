@@ -18,8 +18,8 @@ namespace ecs::systems {
 
         for (std::size_t i = 0; i < positions.size() && i < loop_movements.size(); ++i) {
             if (positions[i] && loop_movements[i]) {
-                auto &position = *positions[i];
-                auto &loop = *loop_movements[i];
+                Position &position = *positions[i];
+                LoopMovement &loop = *loop_movements[i];
 
                 position.y += loop.speed * deltaTime;
 

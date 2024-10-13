@@ -16,7 +16,7 @@ namespace ecs::systems {
 
         for (std::size_t i = 0; i < states.size(); ++i) {
             if (states[i]) {
-                auto &state = *states[i];
+                EnemyState &state = *states[i];
 
                 switch (state.current_state) {
                     case State::Idle:

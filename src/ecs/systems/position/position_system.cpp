@@ -10,8 +10,8 @@
 namespace ecs::systems {
 
 void PositionSystem::update(Registry& registry) {
-    auto& positions = registry.get_components<Position>();
-    auto& velocities = registry.get_components<Velocity>();
+    auto &positions = registry.get_components<Position>();
+    auto &velocities = registry.get_components<Velocity>();
 
     auto size = std::min(positions.size(), velocities.size());
 
@@ -19,6 +19,7 @@ void PositionSystem::update(Registry& registry) {
         if (positions[i] && velocities[i]) {
             positions[i]->x += velocities[i]->vx;
             positions[i]->y += velocities[i]->vy;
+
         }
     }
 }

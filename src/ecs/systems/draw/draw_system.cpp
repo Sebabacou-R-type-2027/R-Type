@@ -52,10 +52,20 @@ namespace ecs::systems {
     void DrawSystem::update(Registry& registry, sf::RenderWindow& window) {
         auto& drawables = registry.get_components<Drawable>();
         auto& positions = registry.get_components<Position>();
+        auto& animations = registry.get_components<Animation>();
 
-        for (std::size_t i = 0; i < drawables.size(); ++i) {
+        for (std::size_t i = 0; i < drawables.size() && i < positions.size(); ++i) {
             if (drawables[i] && positions[i]) {
                 updateDrawable(*drawables[i], *positions[i], window);
+            }
+        }
+
+        for (std::size_t i = 0; i < animations.size() && i < positions.size(); ++i) {
+            if (animations[i] && positions[i]) {
+                Animation& animation = *animations[i];
+                Position& position = *positions[i];
+                animation.sprite.setPosition(position.x, position.y);
+                window.draw(animation.sprite);
             }
         }
     }

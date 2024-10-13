@@ -12,20 +12,20 @@
 
 namespace ecs::systems {
 
+    /**
+     * @brief Class that contains all the logic of the animation system
+     */
     class AnimationSystem {
         public:
-            AnimationSystem() = default;
+            /**
+             * @brief Update the animation system
+             *
+             * @param registry contains all the logic of the components
+             * @param deltaTime contains the time between two frames
+             * @param window contains the window of the game
+             */
             void update(Registry& registry, float deltaTime, sf::RenderWindow& window);
-            void setPos(sf::Sprite &sprite, float x, float y);
-            void setTexture(sf::Sprite &sprite, sf::Texture &texture);
-            void setScale(sf::Sprite &sprite, float x, float y);
-            void setOrigin(sf::Sprite &sprite, float x, float y);
-            void setRotation(sf::Sprite &sprite, float angle);
-            void setTextureRect(sf::Sprite &sprite, int x, int y, int width, int height);
-            void draw(sf::RenderWindow& window, sf::Sprite &sprite);
         private:
-            float _time = 0.0f;
-            float _switchTime = 0.1f;
     };
 
 }
