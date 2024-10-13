@@ -12,7 +12,15 @@
 
 namespace ecs::systems {
     class ControlSystem {
+        /**
+         * @brief Class that contains all the logic of the control system
+         */
         public:
+            /**
+             * @brief Update the control system
+             *
+             * @param registry contains all the logic of the components
+             */
             void update(Registry& registry);
 
         private:

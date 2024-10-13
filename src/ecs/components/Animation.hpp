@@ -9,6 +9,16 @@
 #include <iostream>
 
 namespace ecs {
+    /**
+     * @brief Class that contains the animation of an entity
+     * 
+     * @param sprite Sprite of the entity
+     * @param imageCount Number of images in the sprite
+     * @param currentImage Current image of the sprite
+     * @param imageSize Size of the image
+     * @param switchTime Time between two images
+     * @param totalTime Total time of the animation
+     */
     struct Animation {
         sf::Sprite sprite;
         sf::Vector2i imageCount;
@@ -17,6 +27,14 @@ namespace ecs {
         float switchTime;
         float totalTime;
 
+        /**
+         * @brief Construct a new Animation object
+         * 
+         * @param spriteSheetPath Path to the sprite sheet
+         * @param imageCountX Number of images on the x axis
+         * @param imageCountY Number of images on the y axis
+         * @param switchTime Time between two images
+         */
         Animation(const std::string& spriteSheetPath = "", int imageCountX = 0, int imageCountY = 0, float switchTime = 0.0f)
             : imageCount(imageCountX, imageCountY), currentImage(0, 0), switchTime(switchTime), totalTime(0.0f) {
             static sf::Texture sharedTexture;
@@ -31,6 +49,11 @@ namespace ecs {
             sprite.setTexture(sharedTexture);
         }
 
+        /**
+         * @brief Update the animation
+         * 
+         * @param deltaTime Time between two frames
+         */
         void update(float deltaTime) {
             totalTime += deltaTime;
 
