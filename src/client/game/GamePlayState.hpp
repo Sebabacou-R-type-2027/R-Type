@@ -36,7 +36,7 @@ namespace rtype {
         client::Client& network_;
         ecs::CreateEnnemies createEnnemies; // TODO: create a system for this
 
-        void initPlayer(std::string path, float posx);
+        void initPlayer(std::string path, float posx, bool me);
         void initChargeBullet();
         // fps counter
         // FPSCounter fpsCounter;

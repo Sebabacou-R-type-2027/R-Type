@@ -268,11 +268,6 @@ namespace client {
                 data = player_key + data;
                 this->command_handler_->addCommand(data);
                 auto cmd = command_handler_->getCommands();
-                for (const auto& command : cmd) {
-    				if (_commandsSend.find(command.first) == _commandsSend.end()) {
-        				std::cout << command.first << " : " << command.second << std::endl;
-    				}
-				}
                 return;
             }
         }

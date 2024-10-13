@@ -26,7 +26,11 @@ namespace rtype {
 
         std::cout << "nbr player to load " << network.number_of_players_ << std::endl;
         for (int i = 0; i - 1 != network.number_of_players_; i++) {
-            initPlayer("assets/Ship/Ship.png", posx * i + 1);
+          	if (i == network.my_id_in_lobby_) {
+            	initPlayer("assets/Ship/Ship.png", posx * i + 1, true);
+            } else {
+            	initPlayer("assets/Ship/Ship.png", posx * i + 1, true);
+            }
         }
         createEnnemies.create_enemies(registry, window);
 
@@ -39,7 +43,6 @@ namespace rtype {
             if (event.type == sf::Event::Closed || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
                 window.close();
             }
-
         }
     }
 
@@ -78,13 +81,15 @@ namespace rtype {
         // registry.process_entity_deaths();
     }
 
-    void GamePlayState::initPlayer(std::string path, float posx)
+    void GamePlayState::initPlayer(std::string path, float posx, bool me)
     {
         auto player = registry.spawn_entity();
         registry.emplace_component<ecs::Position>(player, 400.0f, posx);
         registry.emplace_component<ecs::Velocity>(player, 0.0f, 0.0f);
         registry.emplace_component<ecs::Drawable>(player, path);
-        registry.emplace_component<ecs::Controllable>(player, true, 5.0f);
+        if (me == true) {
+        	registry.emplace_component<ecs::Controllable>(player, true, 5.0f);
+        }
         registry.emplace_component<ecs::EntityType>(player, ecs::Type::Player);
 
         auto& hitbox = registry.emplace_component<ecs::Hitbox>(player, ecs::ShapeType::Rectangle, false);
