@@ -23,7 +23,7 @@ namespace rtype::game {
             auto &hit1 = registry.emplace_component<ecs::Hitbox>(powerup1, ecs::ShapeType::Rectangle, false);
             hit1->rect = sf::RectangleShape(sf::Vector2f(20.0f, 20.0f));
             registry.emplace_component<ecs::Position>(powerup1, 500, 600);
-            registry.emplace_component<ecs::Drawable>(powerup1, "assets/Power-Up/power1.png");
+            //registry.emplace_component<ecs::Drawable>(powerup1, "assets/Power-Up/power1.png");
         }
         // faire un if hitbox is touch mettre le bool  a true
     }
