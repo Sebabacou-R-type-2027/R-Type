@@ -46,7 +46,7 @@ namespace rtype::game {
                     if (check == false) {
                         clock.restart();
                         auto laser_charge = registry.spawn_entity();
-                        Sound_game.playSound("assets/Son/laser_gun1.wav");
+                        Sound_game.playSound("assets/Son/laser_gun1.wav", 40);
                         registry.emplace_component<ecs::Velocity>(laser_charge, 45.0f, 0.0f);
                         registry.emplace_component<ecs::EntityType>(laser_charge, ecs::Type::Bullet);
                         auto &hit = registry.emplace_component<ecs::Hitbox>(laser_charge, ecs::ShapeType::Rectangle, false);
@@ -82,7 +82,7 @@ namespace rtype::game {
                 float timePressed = spacePressClock.getElapsedTime().asSeconds();
 
                 if (timePressed < 1 && currentTime - lastShootTime > shootCooldown) {
-                    Sound_game.playSound("assets/Son/laser_gun2.wav");
+                    Sound_game.playSound("assets/Son/laser_gun2.wav", 40);
                     lastShootTime = currentTime;
                     auto laser_entity = registry.spawn_entity();
                     registry.emplace_component<ecs::Velocity>(laser_entity, 35.0f, 0.0f);
