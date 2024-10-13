@@ -45,6 +45,7 @@ The **TYPE** field in the packet differentiates between various packet types use
 |----------------|------------------------------------------------------------------------------------------|
 | 0x00           | **PING_PACKET**: Sends a ping to a client to test connectivity or determine a host.      |
 | 0x01           | **ACK_PACKET**: Used to send an acknowledgment back to the sender, can be true or false. |
+| ...           | ...                                                                                      |
 
 ## 4. Packet Handling
 
