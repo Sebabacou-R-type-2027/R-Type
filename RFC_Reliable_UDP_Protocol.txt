@@ -1,0 +1,160 @@
+RFC                     Reliable UDP Protocol               October 2024
+
+
+Network Working Group                                       Ewen Emeraud
+Request for Comments:                                        Epitech
+Category: Standards Track                                  October 10, 2024
+
+
+                   Reliable UDP Communication Protocol
+
+Status of This Memo
+
+   This document specifies a standard for the Internet community.
+   Distribution of this memo is unlimited.
+
+Abstract
+
+   This document describes a protocol for reliable communication over
+   UDP, intended for use in distributed applications such as multiplayer
+   games. The protocol includes several packet types: ACK (Acknowledgement),
+   PING, CMD (Command), and CMDP (Command with status). Each packet type
+   is designed to handle a specific aspect of communication.
+
+Table of Contents
+
+   1. Introduction .................................................... 2
+   2. Packet Structure ................................................ 2
+      2.1. Header Format .............................................. 2
+      2.2. Packet Fields .............................................. 3
+      2.3. Packet Types ............................................... 3
+   3. Packet Processing ............................................... 4
+      3.1. ACK Processing ............................................. 4
+      3.2. PING Processing ............................................ 4
+      3.3. CMD Processing ............................................. 4
+      3.4. CMDP Processing ............................................ 5
+   4. Example Packet Exchange ......................................... 5
+      4.1. PING-ACK Exchange .......................................... 5
+      4.2. Command Execution .......................................... 5
+   5. Security Considerations ......................................... 6
+   6. Conclusion ...................................................... 6
+   7. References ...................................................... 6
+
+1. Introduction
+
+   This document specifies a protocol designed for reliable communication
+   over UDP (User Datagram Protocol). The protocol is suited for distributed
+   applications where low latency is critical, such as real-time multiplayer
+   games or sensor networks.
+
+2. Packet Structure
+
+   All packets follow a common structure, including a header and a data
+   section.
+
+2.1. Header Format
+
+   The packet structure is defined as follows:
+
+      0                              1                             2                             3
+      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     |                                      SIZE (1-3 bytes)                                    |
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     |                   ID (1-2 bytes)                      |           TYPE (1)           |
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     |                                       DATA (variable)                                    |
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+2.2. Packet Fields
+
+   - **SIZE:** Indicates the size of the data in the DATA field. It can be encoded
+     in 1, 2, or 3 bytes depending on the amount of data to be transmitted.
+     This allows flexibility for small to large payloads.
+
+   - **ID:** A unique identifier for the packet, encoded in 1 or 2 bytes. This
+     allows for a large range of unique identifiers, useful for tracking packets
+     in communication sessions.
+
+   - **TYPE:** An 8-bit field indicating the packet type. This field determines
+     the nature of the packet, such as ACK, PING, CMD, or CMDP.
+
+   - **DATA:** The actual content of the packet, with a length defined by the SIZE
+     field. The content varies depending on the packet type.
+
+2.3. Packet Types
+
+   The protocol defines the following packet types:
+
+   - **ACK (Acknowledgement)**
+     - Type Value: 0x01
+     - Data: Contains a status field (1 byte).
+     - Purpose: Used to acknowledge the receipt of a packet.
+
+   - **PING**
+     - Type Value: 0x02
+     - Data: Contains the ID of the PING request.
+     - Purpose: Used to check the availability of a peer.
+
+   - **CMD (Command)**
+     - Type Value: 0x03
+     - Data: Contains a command string (variable length).
+     - Purpose: Used to transmit commands between peers.
+
+   - **CMDP (Command with Status)**
+     - Type Value: 0x04
+     - Data: Contains a command status (1 byte).
+     - Purpose: Used to send commands along with a status indicator.
+
+3. Packet Processing
+
+3.1. ACK Processing
+
+   Upon receiving an ACK packet, the client or server should verify the
+   status field:
+
+   - Status: Indicates the success (1) or failure (0) of the associated packet.
+
+3.2. PING Processing
+
+   A client sends a PING packet to test the availability of a peer. The
+   receiver should respond with an ACK packet containing a status indicating
+   successful receipt.
+
+3.3. CMD Processing
+
+   CMD packets carry commands between peers. The receiver should parse the
+   command string and perform the corresponding action. If the action is
+   completed successfully, an ACK packet should be sent back.
+
+3.4. CMDP Processing
+
+   CMDP packets are similar to CMD but include a status byte. This status can
+   represent various states such as command execution success or error codes.
+
+4. Example Packet Exchange
+
+4.1. PING-ACK Exchange
+
+   1. Client sends a PING packet to the server.
+   2. Server responds with an ACK packet if the PING is received successfully.
+
+4.2. Command Execution
+
+   1. Client sends a CMD packet with a specific command.
+   2. Server processes the command and sends a CMDP packet with the status of
+      execution.
+
+5. Security Considerations
+
+   The protocol is designed for low-latency environments but lacks built-in
+   security features. Since it operates over UDP, it is susceptible to
+   spoofing and denial-of-service (DoS) attacks. Implementing packet
+   verification and encryption is recommended to secure the communication.
+
+6. Conclusion
+
+   This protocol provides a simple framework for implementing reliable
+   communication over UDP using different packet types. It can be extended
+   or modified to fit specific application needs, ensuring efficient and
+   reliable data transfer in distributed systems.
