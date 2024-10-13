@@ -121,6 +121,10 @@ classDiagram
     class bullet {
         +int damage
     }
+    class shooter {
+        +float cooldown
+        +float last_shot
+    }
 ```
 
 ```mermaid
@@ -140,4 +144,121 @@ classDiagram
         +sf::RectangleShape rect
         +sf::Text text
     }
+```
+
+## ECS systems
+
+```mermaid
+---
+title: General-purpose systems
+---
+classDiagram
+    class system {
+        +void update(entity, registry&)
+    }
+    <<interface>> system
+    system <|-- movement_system : implements
+    system <|-- rendering_system : implements
+    system <|-- collision_system : implements
+    system <|-- input_system : implements
+    system <|-- draw_system : implements
+    class position {
+        +float x
+        +float y
+    }
+    class velocity {
+        +float dx
+        +float dy
+    }
+    class hitbox {
+        +hitbox_type type
+        +sf::RectangleShape rect
+        +sf::CircleShape circle
+        +bool debug_display
+    }
+    class controllable {
+        +bool active
+        +float speed
+    }
+    class drawable {
+        +bool visible
+        +sf::Sprite sprite
+        +sf::Text text
+        +sf::RectangleShape rectangle
+    }
+    movement_system --> velocity : uses
+    movement_system --> position : uses
+    rendering_system --> position : uses
+    collision_system --> position : uses
+    collision_system --> hitbox : uses
+    input_system --> controllable : uses
+    input_system --> position : uses
+    draw_system --> drawable : uses
+    draw_system --> position : uses
+```
+
+```mermaid
+---
+title: Game-specific systems
+---
+classDiagram
+    class system {
+        +void update(entity, registry&)
+    }
+    <<interface>> system
+    system <|-- movement_loop_system : implements
+    system <|-- bullet_system : implements
+    system <|-- shooter_system : implements
+    class position {
+        +float x
+        +float y
+    }
+    class movement_loop {
+        +float min_x, max_x
+        +float min_y, max_y
+        +float speed
+        +float angle
+        +float radius
+        +float angular_speed
+    }
+    class bullet {
+        +int damage
+    }
+    class shooter {
+        +float cooldown
+        +float last_shot
+    }
+    movement_loop_system --> movement_loop : uses
+    movement_loop_system --> position : uses
+    bullet_system --> position : uses
+    bullet_system --> bullet : uses
+    shooter_system --> position : uses
+    shooter_system --> shooter : uses
+```
+
+```mermaid
+---
+title: UI-specific systems
+---
+classDiagram
+    class system {
+        +void update(entity, registry&)
+    }
+    <<interface>> system
+    system <|-- button_system : implements
+    system <|-- text_box_system : implements
+    class button {
+        +sf::RectangleShape rect
+        +sf::Text text
+        +std::function~void~ callback
+        +sf::Color color
+        +sf::Color hover_color
+        +sf::Color click_color
+    }
+    class text_box {
+        +sf::RectangleShape rect
+        +sf::Text text
+    }
+    button_system --> button : uses
+    text_box_system --> text_box : uses
 ```
