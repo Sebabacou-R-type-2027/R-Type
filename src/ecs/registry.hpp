@@ -7,27 +7,30 @@
 
 #pragma once
 
-#include <unordered_map>
-#include <vector>
-#include <typeindex>
-#include <any>
-#include <algorithm>
-#include "sparse_array.hpp"
-#include "entity.hpp"
+            #include <unordered_map>
+            #include <vector>
+            #include <typeindex>
+            #include <any>
+            #include <algorithm>
+            #include "sparse_array.hpp"
+            #include "entity.hpp"
 
-// include all components
-#include "components/Position.hpp"
-#include "components/Velocity.hpp"
-#include "components/Controllable.hpp"
-#include "components/Drawable.hpp"
-#include "components/LoopMovement.hpp"
-#include "components/Hitbox.hpp"
-#include "components/Button.hpp"
-#include "components/Animation.hpp"
-#include "components/Ennemy_state.hpp"
-#include "components/Entity_type.hpp"
-#include "components/Bullet.hpp"
-#include "components/BulletCharge.hpp"
+            // include all components
+            #include "components/Position.hpp"
+            #include "components/Velocity.hpp"
+            #include "components/Controllable.hpp"
+            #include "components/Drawable.hpp"
+            #include "components/LoopMovement.hpp"
+            #include "components/Hitbox.hpp"
+            #include "components/Button.hpp"
+            #include "components/Animation.hpp"
+            #include "components/Ennemy_state.hpp"
+            #include "components/Entity_type.hpp"
+            #include "components/Bullet.hpp"
+            #include "components/Collision_state.hpp"
+            #include "components/GameState.hpp"
+            #include "components/LifeState.hpp"
+            #include "components/BulletCharge.hpp"
 
 namespace ecs {
 
@@ -81,8 +84,9 @@ class Registry {
 
         template <typename Component, typename... Params>
         typename sparse_array<Component>::reference_type emplace_component(Entity const& to, Params&&... params) {
-            return get_components<Component>().emplace_at(static_cast<std::size_t>(to), std::forward<Params>(params)...);
-        }
+            auto& component = get_components<Component>().emplace_at(static_cast<std::size_t>(to), std::forward<Params>(params)...);
+            return component;
+    }
 
 
         template <typename Component>
@@ -112,6 +116,9 @@ class Registry {
             register_component<EnemyState>();
             register_component<EntityType>();
             register_component<Bullet>();
+            register_component<CollisionState>();
+            register_component<GameStateComponent>();
+            register_component<LifeState>();
             register_component<BulletCharge>();
         }
     private:

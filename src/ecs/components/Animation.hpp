@@ -6,10 +6,10 @@
 */
 
 #pragma once
+#include <iostream>
 
 namespace ecs {
-        struct Animation {
-        sf::Texture texture;
+    struct Animation {
         sf::Sprite sprite;
         sf::Vector2i imageCount;
         sf::Vector2i currentImage;
@@ -17,14 +17,40 @@ namespace ecs {
         float switchTime;
         float totalTime;
 
-        Animation(const std::string& spriteSheetPath = nullptr, int imageCountX = 0, int imageCountY = 0, float switchTime = 0.0f)
+        Animation(const std::string& spriteSheetPath = "", int imageCountX = 0, int imageCountY = 0, float switchTime = 0.0f)
             : imageCount(imageCountX, imageCountY), currentImage(0, 0), switchTime(switchTime), totalTime(0.0f) {
-            if (!texture.loadFromFile(spriteSheetPath)) {
+            static sf::Texture sharedTexture;
+            if (!sharedTexture.loadFromFile(spriteSheetPath)) {
                 throw std::runtime_error("Failed to load sprite sheet");
+            } else {
+                std::cout << "Loaded sprite sheet" << std::endl;
             }
-            sprite.setTexture(texture);
-            imageSize = sf::Vector2i(texture.getSize().x / imageCount.x, texture.getSize().y / imageCount.y);
-            sprite.setTextureRect(sf::IntRect(0, 0, imageSize.x, imageSize.y));
+
+            imageSize = sf::Vector2i(sharedTexture.getSize().x / imageCount.x, sharedTexture.getSize().y / imageCount.y);
+
+            sprite.setTexture(sharedTexture);
+        }
+
+        void update(float deltaTime) {
+            totalTime += deltaTime;
+
+            if (totalTime >= switchTime) {
+                totalTime -= switchTime;
+
+                currentImage.x++;
+                if (currentImage.x >= imageCount.x) {
+                    currentImage.x = 0;
+                    currentImage.y++;
+
+                    if (currentImage.y >= imageCount.y) {
+                        currentImage.y = 0;
+                    }
+                }
+                sprite.setTextureRect(sf::IntRect(currentImage.x * imageSize.x,
+                                                currentImage.y * imageSize.y,
+                                                imageSize.x,
+                                                imageSize.y));
+            }
         }
     };
 }

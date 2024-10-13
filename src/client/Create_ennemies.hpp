@@ -18,7 +18,6 @@ namespace ecs {
             float x, float y,
             float speed,
             const std::string& texturePath,
-            float hitboxSize,
             float minX, float maxX,
             float minY, float maxY,
             float angle = 0.0f, float radius = 0.0f, float angular_speed = 0.0f,

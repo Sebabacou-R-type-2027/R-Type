@@ -24,6 +24,7 @@ find_package(SFML 2.5 COMPONENTS graphics window system audio CONFIG REQUIRED)
 find_package(OpenAL REQUIRED)
 find_package(FLAC REQUIRED)
 find_package(Vorbis REQUIRED)
+add_compile_options($<$<CONFIG:Debug>:-g>)
 
 add_executable(r-type_server ${server})
 add_executable(r-type_client ${client})

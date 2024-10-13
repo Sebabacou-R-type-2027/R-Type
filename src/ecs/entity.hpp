@@ -16,6 +16,7 @@ class Entity {
         explicit Entity(std::size_t id) : _id(id) {}
         operator std::size_t() const { return _id; }
 
+        bool is_valid() const { return _id != -1; }
     private:
         std::size_t _id;
 };
