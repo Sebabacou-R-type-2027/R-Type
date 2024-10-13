@@ -170,6 +170,16 @@ class Registry {
             return playerEntities;
         }
 
+        std::vector<Entity> get_all_enemy_entity() const {
+            std::vector<Entity> enemyEntities;
+            const auto& types = get_components<EntityType>();
+            for (std::size_t i = 0; i < types.size(); ++i) {
+                if (types[i] && types[i]->current_type == Type::Ennemy) {
+                    enemyEntities.push_back(entity_from_index(i));
+                }
+            }
+            return enemyEntities;
+        }
         void register_all_components() {
             register_component<Position>();
             register_component<Velocity>();

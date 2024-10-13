@@ -1,4 +1,4 @@
-/*
+    /*
 ** EPITECH PROJECT, 2024
 ** R-Type
 ** File description:
@@ -49,5 +49,6 @@ namespace rtype {
         void moveView(float deltaTime);
         void handlePlayerMovement(float deltaTime);
         void constrainPlayerPosition(std::optional<ecs::Position>& playerPos);
+        void handle_mobs_wave(ecs::Registry& registry, sf::RenderWindow& window);
     };
 }

@@ -103,7 +103,32 @@ void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& player
 }
 
 
+    void GamePlayState::handle_mobs_wave(ecs::Registry& registry, sf::RenderWindow& window) {
+        auto& positions = registry.get_components<ecs::Position>();
+        auto& lifeStates = registry.get_components<ecs::LifeState>();
+        auto enemies = registry.get_all_enemy_entity();
+        int check = 0;
 
+        for (auto enemy : enemies) {
+            auto& position = positions[static_cast<std::size_t>(enemy)];
+            auto& lifeState = lifeStates[static_cast<std::size_t>(enemy)];
+
+            if (!position.has_value() || !lifeState.has_value()) {
+                throw std::runtime_error("Enemy position component not found");
+            }
+
+            if (lifeState->isAlive) {
+                check = 1;
+            }
+
+            if (position->x < -100.0f) {
+                lifeState->isAlive = false;
+            }
+        }
+        if (check == 0) {
+            createEnnemies.create_enemies(registry, window);
+        }
+    }
     void GamePlayState::update() {
         if (Settings::getInstance().isShaderEnabled) {
             system.shader_system(registry, window, backgroundShader);
@@ -121,6 +146,7 @@ void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& player
         handleCollision.handle_collision(registry);
         // // fpsCounter.update();
 
+        handle_mobs_wave(registry, window);
         moveView(deltaTime); // TODO: Commented out because it break the view movement in network
         handlePlayerMovement(deltaTime);
 
