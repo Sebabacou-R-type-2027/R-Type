@@ -21,18 +21,23 @@ void ShaderSystem::update(Registry& registry, sf::RenderWindow& window, sf::Shad
         shader.setUniform("iTime", static_cast<float>(clock.getElapsedTime().asSeconds())); // Pass time
         shader.setUniform("iResolution", sf::Glsl::Vec3(window.getSize().x, window.getSize().y, 1.0f)); // Pass resolution
     } catch (const std::exception& e) {
-        std::cout << "Error setting shader uniforms: " << e.what() << std::endl;
         std::cerr << "Error setting shader uniforms: " << e.what() << std::endl;
     }
 }
 
-
-
-
 void ShaderSystem::render(Registry& registry, sf::RenderWindow& window, sf::Shader& shader) {
-    sf::RectangleShape fullscreenRect(sf::Vector2f(window.getSize().x, window.getSize().y));
+    sf::View currentView = window.getView();
+    sf::Vector2f viewCenter = currentView.getCenter();
+    sf::Vector2f viewSize = currentView.getSize();
+
+    sf::RectangleShape fullscreenRect(viewSize);
+    fullscreenRect.setPosition(viewCenter.x - viewSize.x / 2, viewCenter.y - viewSize.y / 2);
     fullscreenRect.setFillColor(sf::Color(0, 0, 0, 100));
+
     window.draw(fullscreenRect, &shader);
+
+    sf::Shader::bind(nullptr);
 }
+
 
 }

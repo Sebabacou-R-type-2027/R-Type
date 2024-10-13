@@ -32,11 +32,16 @@ namespace rtype {
         sf::Font font;
         rtype::game::BulletSystem bulletSystem;
 
+        sf::View gameView;
+
         ecs::CreateEnnemies createEnnemies; // TODO: create a system for this
 
         void initPlayer(std::string path);
         void initChargeBullet();
-        // fps counter
-        // FPSCounter fpsCounter;
+
+        float calculateDeltaTime();
+        void moveView(float deltaTime);
+        void handlePlayerMovement(float deltaTime);
+        void constrainPlayerPosition(std::optional<ecs::Position>& playerPos);
     };
 }

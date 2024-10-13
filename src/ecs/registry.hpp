@@ -90,6 +90,16 @@ class Registry {
             get_components<Component>().erase(static_cast<std::size_t>(from));
         }
 
+        Entity get_player_entity() const {
+            const auto& types = get_components<EntityType>();
+            for (std::size_t i = 0; i < types.size(); ++i) {
+                if (types[i] && types[i]->current_type == Type::Player) {
+                    return entity_from_index(i);
+                }
+            }
+            throw std::runtime_error("Player entity not found");
+        }
+
         void register_all_components() {
             register_component<Position>();
             register_component<Velocity>();

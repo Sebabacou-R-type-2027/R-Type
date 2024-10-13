@@ -26,8 +26,6 @@ namespace rtype::game {
         static sf::Clock spacePressClock; // Horloge pour mesurer le temps d'appui
         static bool isSpacePressed = false; // État précédent de la touche espace
 
-
-
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
 
 
@@ -36,7 +34,6 @@ namespace rtype::game {
                     isSpacePressed = true;
                     spacePressClock.restart();
             }
-
 
             if (clock.getElapsedTime().asSeconds() >= 1.0f) {
                 // Faire une boucle de deux segonde avec le component chargé image
@@ -52,25 +49,12 @@ namespace rtype::game {
                         auto &hit = registry.emplace_component<ecs::Hitbox>(laser_charge, ecs::ShapeType::Rectangle, false);
                         hit->rect = sf::RectangleShape(sf::Vector2f(20.0f, 20.0f));
 
-                        registry.emplace_component<ecs::Position>(laser_charge, positions[CheckEntity(registry, ecs::Type::Player)]->x + 40, positions[CheckEntity(registry, ecs::Type::Player)]->y + 5); // Use player position
+                        registry.emplace_component<ecs::Position>(laser_charge, positions[CheckEntity(registry, ecs::Type::Player)]->x + 60, positions[CheckEntity(registry, ecs::Type::Player)]->y - 10); // Use player position
 
                         registry.emplace_component<ecs::Drawable>(laser_charge, "assets/Bullets/11.png");
                         registry.emplace_component<ecs::BulletCharge>(laser_charge);
                     }
                 }
-
-
-
-
-
-
-            //auto charge_animation = registry.spawn_entity();
-            //registry.emplace_component<ecs::Position>(charge_animation, positions[CheckEntity(registry, ecs::Type::Player)]->x + 40, positions[CheckEntity(registry, ecs::Type::Player)]->y + 5); // Use player position
-            //registry.emplace_component<ecs::Velocity>(charge_animation, 0.0f, 0.0f);
-            //registry.emplace_component<ecs::Controllable>(charge_animation, true, 5.0f);
-            //registry.emplace_component<ecs::Drawable>(charge_animation, "assets/Charged Bullet/charged1.gif");
-            //check = true;
-
             }
         } else {
             if (isSpacePressed) {
@@ -89,7 +73,7 @@ namespace rtype::game {
                     registry.emplace_component<ecs::EntityType>(laser_entity, ecs::Type::Bullet);
                     auto &hit = registry.emplace_component<ecs::Hitbox>(laser_entity, ecs::ShapeType::Rectangle, false);
                     hit->rect = sf::RectangleShape(sf::Vector2f(20.0f, 20.0f));
-                    registry.emplace_component<ecs::Position>(laser_entity, positions[CheckEntity(registry, ecs::Type::Player)]->x + 40, positions[CheckEntity(registry, ecs::Type::Player)]->y + 5);
+                    registry.emplace_component<ecs::Position>(laser_entity, positions[CheckEntity(registry, ecs::Type::Player)]->x + 85, positions[CheckEntity(registry, ecs::Type::Player)]->y + 15); // Use player position
                     registry.emplace_component<ecs::Drawable>(laser_entity, "assets/Bullets/01.png");
                     registry.emplace_component<ecs::Bullet>(laser_entity);
                 } else {
