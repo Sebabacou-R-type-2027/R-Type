@@ -28,26 +28,27 @@ namespace rtype {
     public:
         /**
          * @brief Construct a new Main Menu State object
-         * 
+         *
          * @param window contains the window of the game
          * @param game contains the game object
          */
-        MainMenuState(sf::RenderWindow& window, Game& game);
+        MainMenuState(sf::RenderWindow& window, Game& game, client::Client& network);
         /**
          * @brief Handle the input of the main menu state
-         * 
+         *
          * @return void
          */
+
         void handleInput() override;
         /**
          * @brief Update the main menu state
-         * 
+         *
          * @return void
          */
         void update() override;
         /**
          * @brief Render the main menu state
-         * 
+         *
          * @return void
          */
         void render() override;
@@ -63,6 +64,10 @@ namespace rtype {
         void disableShader(); ///< Disable the shader
         void enableShader(); ///< Enable the shader
 
+
+        client::Client& network_;
+
+        bool isShaderEnabled = true;
         sf::Font font; ///< Font for the text
         sf::Shader& backgroundShader; ///< Shader for the background
         ecs::Registry& registry; ///< Registry to store all the components

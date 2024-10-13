@@ -10,8 +10,10 @@
 #include <chrono>
 
 namespace rtype {
-    GamePlayState::GamePlayState(sf::RenderWindow& window)
-        : window(window) {
+    GamePlayState::GamePlayState(sf::RenderWindow& window, client::Client& network)
+        : window(window), network_(network) {
+        int posx = 200;
+
         registry.register_all_components();
 
         if (!backgroundShader.loadFromFile("assets/shaders/background.frag", sf::Shader::Fragment)) {
@@ -26,7 +28,9 @@ namespace rtype {
         gameView = window.getDefaultView();
         gameView.setCenter(sf::Vector2f(gameView.getSize().x / 2, gameView.getSize().y / 2));
 
-        initPlayer("assets/Ship/Ship.png");
+        for (int i = 0; i - 1 != network.number_of_players_; i++) {
+            initPlayer("assets/Ship/Ship.png", posx * i + 1, true);
+        }
         createEnnemies.create_enemies(registry, window);
         initChargeBullet();
     }
@@ -37,7 +41,6 @@ namespace rtype {
             if (event.type == sf::Event::Closed || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
                 window.close();
             }
-
         }
     }
 
@@ -54,9 +57,11 @@ namespace rtype {
         gameView.move(viewScrollSpeed, 0.0f);
     }
 
-    void GamePlayState::handlePlayerMovement(float deltaTime) {
-        auto playerEntity = registry.get_player_entity();
-        auto& playerPositions = registry.get_components<ecs::Position>();
+void GamePlayState::handlePlayerMovement(float deltaTime) {
+    auto playerEntities = registry.get_all_player_entity();
+    auto& playerPositions = registry.get_components<ecs::Position>();
+
+    for (auto playerEntity : playerEntities) {
         auto& playerPos = playerPositions[static_cast<std::size_t>(playerEntity)];
 
         if (!playerPos.has_value()) {
@@ -68,6 +73,7 @@ namespace rtype {
 
         constrainPlayerPosition(playerPos);
     }
+}
 
 void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& playerPos) {
     float viewLeft = gameView.getCenter().x - gameView.getSize().x / 2;
@@ -97,8 +103,7 @@ void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& player
         if (Settings::getInstance().isShaderEnabled) {
             system.shader_system(registry, window, backgroundShader);
         }
-
-        system.control_system(registry);
+        system.control_system(registry, network_);
         system.position_system(registry);
 
         float deltaTime = calculateDeltaTime();
@@ -110,7 +115,7 @@ void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& player
         handleCollision.handle_collision(registry);
         // // fpsCounter.update();
 
-        moveView(deltaTime);
+        moveView(deltaTime); // TODO: Commented out because it break the view movement in network
         handlePlayerMovement(deltaTime);
 
         window.setView(gameView);
@@ -118,7 +123,6 @@ void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& player
 
     void GamePlayState::render() {
         window.clear();
-
         if (Settings::getInstance().isShaderEnabled) {
             system.shader_system_render(registry, window, backgroundShader);
         } else {
@@ -132,13 +136,15 @@ void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& player
         window.display();
     }
 
-    void GamePlayState::initPlayer(std::string path)
+    void GamePlayState::initPlayer(std::string path, float posx, bool me)
     {
         auto player = registry.spawn_entity();
-        registry.emplace_component<ecs::Position>(player, 400.0f, 300.0f);
+        registry.emplace_component<ecs::Position>(player, 400.0f, posx);
         registry.emplace_component<ecs::Velocity>(player, 0.0f, 0.0f);
         registry.emplace_component<ecs::Drawable>(player, path);
-        registry.emplace_component<ecs::Controllable>(player, true, 5.0f);
+        if (me == true) {
+        	registry.emplace_component<ecs::Controllable>(player, true, 5.0f);
+        }
         registry.emplace_component<ecs::EntityType>(player, ecs::Type::Player);
 
         auto& hitbox = registry.emplace_component<ecs::Hitbox>(player, ecs::ShapeType::Rectangle, false, true);

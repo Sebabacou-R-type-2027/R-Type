@@ -28,12 +28,13 @@ void Sound_game::playSound(const std::string& filename, float volume = 50)
     sounds.back().play();
 }
 
-void Sound_game::playMusic(const std::string& filename, float volume = 50)
+void Sound_game::playMusic(const std::string& filename, float volume, bool loop)
 {
     if (!music.openFromFile(filename)) {
         std::cerr << "Erreur: Impossible de charger la musique " << filename << std::endl;
         return;
     }
+    music.setLoop(loop);
     music.setVolume(volume);
     music.play();
 }
