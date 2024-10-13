@@ -108,8 +108,10 @@ void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& player
 
         float deltaTime = calculateDeltaTime();
         bulletSystem.update(registry);
+        powerUpSystem.update(registry);
         system.loop_movement_system(registry, deltaTime);
         system.animation_system(registry, deltaTime, window);
+        system.shooting_enemy_system(registry, window);
         system.collision_system(registry, window);
         handleCollision.handle_collision(registry);
         // // fpsCounter.update();
@@ -145,6 +147,8 @@ void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& player
         	registry.emplace_component<ecs::Controllable>(player, true, 5.0f);
         }
         registry.emplace_component<ecs::EntityType>(player, ecs::Type::Player);
+        registry.emplace_component<ecs::CollisionState>(player, false);
+        registry.emplace_component<ecs::LifeState>(player, true);
 
         auto& hitbox = registry.emplace_component<ecs::Hitbox>(player, ecs::ShapeType::Rectangle, false, true);
         hitbox->rect = sf::RectangleShape(sf::Vector2f(50.0f, 50.0f));
