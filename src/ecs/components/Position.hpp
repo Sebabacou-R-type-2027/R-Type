@@ -9,8 +9,9 @@
 
 namespace ecs {
     struct Position {
-        float x = 0;
-        float y = 0;
-        Position(float x = 0, float y = 0) : x(x), y(y) {}
+        float x, y;
+
+        Position() : x(0), y(0) {}
+        Position(float left, float top) : x(left), y(top) {}
     };
 }

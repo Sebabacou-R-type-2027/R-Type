@@ -9,6 +9,7 @@
 
 #include <vector>
 #include <optional>
+#include <iostream>
 #include <algorithm> // For std::find
 
 namespace ecs {
@@ -47,7 +48,7 @@ class sparse_array {
             if (pos >= _data.size()) {
                 _data.resize(pos + 1);
             }
-            _data[pos] = std::move(component);
+            _data[pos] = std::forward<Component>(component);
             return _data[pos];
         }
 
@@ -70,6 +71,12 @@ class sparse_array {
             auto it = std::find(_data.begin(), _data.end(), component);
             return (it != _data.end()) ? std::distance(_data.begin(), it) : -1;
         }
+
+        auto begin() { return _data.begin(); }
+        auto end() { return _data.end(); }
+
+        auto begin() const { return _data.begin(); }
+        auto end() const { return _data.end(); }
 
     private:
         container_t _data;
