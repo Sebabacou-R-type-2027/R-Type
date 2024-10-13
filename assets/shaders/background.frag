@@ -1,38 +1,72 @@
 #version 130
 
-#define rot(a) mat2(cos(a),sin(a),-sin(a),cos(a))
+uniform float iTime;        // Time uniform
+uniform vec3 iResolution;   // Resolution uniform
 
+#define iterations 18
+#define formuparam 0.53
 
-uniform float iTime;        // Declare iTime as a uniform float
-uniform vec3 iResolution;   // Declare iResolution as a uniform vec3
+#define volsteps 10
+#define stepsize 0.05
 
-void mainImage( out vec4 O, vec2 u )
+#define zoom   0.800
+#define tile   0.850
+#define speed  0.002
+
+#define brightness 0.002
+#define darkmatter 0.9
+#define distfading 0.730
+#define saturation 0.9
+
+out vec4 fragColor; // Output fragment color
+
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
-    float t = (iTime * 0.25) *.01+.25, s=.1, f=1. ,a,l;
-    vec3  R = iResolution,p,
-          D = vec3( ( u - .5*R.xy ) / R.x*.4 , .5 ),
-          o = vec3(1,.5,.5) + vec3(t+t, t, -2);
+    vec2 uv = fragCoord.xy / iResolution.xy;
+    uv.y*=iResolution.y/iResolution.x;
 
-    O -= O;
+	vec3 dir=vec3(uv*zoom,1.);
+	float time=iTime*speed+.25;
 
-    mat2 r1 = rot(.5);
-    D.xz *= r1; o.xz *= r1;
+    float a1=200.5;
+	float a2=0.5;
+	mat2 rot1=mat2(cos(a1),sin(a1),-sin(a1),cos(a1));
+	mat2 rot2=mat2(cos(a2),sin(a2),-sin(a2),cos(a2));
+	dir.xz*=rot1;
+	dir.xy*=rot2;
+	vec3 from=vec3(1.,.5,0.5);
+	from+=vec3(time*2.,time,-2.);
+	from.xz*=rot1;
+	from.xy*=rot2;
 
-    for (int i,r=0; r++<10; f*=.73, s+=.1 ) {
-        p = abs( mod( o + s*D ,1.7) -.85 );
-        a = t = 0.;
-        for ( i=0; i++<15; t=l )
-            l = length( p= abs(p)/dot(p,p) - .53 ),
-            a += abs(l-t);
+    float s=0.1,fade=1.;
+	vec3 v=vec3(0.);
 
-        a *= a*a;
-        r>7 ? f *= min(1., .7 + a*a*.001 ) : f;
-        O.rgb += f + s*vec3(1,s,s*s*s)*a*.0015*f;
-    }
+	for (int r=0; r<volsteps; r++) {
+		vec3 p=from+s*dir*.5;
+		p = abs(vec3(tile)-mod(p,vec3(tile*2.))); // tiling fold
+		float pa,a=pa=0.;
+		for (int i=0; i<iterations; i++) {
+			p=abs(p)/dot(p,p)-formuparam; // the magic formula
+			a+=abs(length(p)-pa); // absolute sum of average change
+			pa=length(p);
+		}
+		float dm=max(0.,darkmatter-a*a*.0005); //dark matter
+		a*=a*a; // add contrast
+		if (r>6) fade*=1.-dm; // dark matter, don't render near
+		//v+=vec3(dm,dm*.5,0.);
+		v+=fade;
+		v+=vec3(s,s*s,s*s * 2.0 + 0.5)*a*brightness*fade; // coloring based on distance
+		fade*=distfading; // distance fading
+		s+=stepsize;
+	}
+	mix(vec3(length(v * v)),v,saturation); //color adjust
+	fragColor = vec4(v*.006,1.);
 
-    O = .0085*O + .0015*length(O);
 }
 
+
+
 void main() {
-    mainImage(gl_FragColor, gl_FragCoord.xy);
+    mainImage(fragColor, gl_FragCoord.xy);
 }
