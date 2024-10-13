@@ -37,7 +37,7 @@ namespace rtype::game {
             bool check = false; ///< Check if the bullet is charged
             rtype::game::Sound_game Sound_game; ///< Sound of the game
 
-            bool bonus1_activate = true;
+            bool bonus1_activate = false;
 
             sf::Clock timeLimitBonus1Clock;
             float bonus1_activationTime = 0;
