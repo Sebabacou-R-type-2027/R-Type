@@ -31,7 +31,7 @@ namespace rtype {
         for (int i = 0; i - 1 != network.number_of_players_; i++) {
             initPlayer("assets/Ship/Ship.png", posx * i + 1, true);
         }
-        createEnnemies.create_enemies(registry, window);
+        createEnnemies.create_initial_enemies(registry, window);
         initChargeBullet();
     }
 
@@ -126,7 +126,7 @@ void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& player
             }
         }
         if (check == 0) {
-            createEnnemies.create_enemies(registry, window);
+            createEnnemies.create_initial_enemies(registry, window);
         }
     }
     void GamePlayState::update() {

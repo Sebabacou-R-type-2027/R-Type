@@ -63,7 +63,7 @@ namespace ecs {
         registry.emplace_component<ecs::Shooting>(enemy, 1.5f, 0.5f);
     }
 
-    void CreateEnnemies::create_enemies(Registry& registry, sf::RenderWindow& window)
+    void CreateEnnemies::create_initial_enemies(Registry& registry, sf::RenderWindow& window)
     {
         int max_y = window.getSize().y - 25;
         int max_x = window.getSize().x;

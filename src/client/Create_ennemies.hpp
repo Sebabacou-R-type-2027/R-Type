@@ -78,6 +78,6 @@ namespace ecs {
              * @param window contains the window of the game
              * @return void
              */
-            void create_enemies(Registry& registry, sf::RenderWindow& window);
+            void create_initial_enemies(Registry& registry, sf::RenderWindow& window);
     };
 }
