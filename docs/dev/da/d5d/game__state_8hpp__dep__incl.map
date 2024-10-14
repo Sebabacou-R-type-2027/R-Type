@@ -1,12 +1,12 @@
 <map id="client/game_state.hpp" name="client/game_state.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="343,5,509,32"/>
-<area shape="rect" id="node2" href="$d5/d4b/Game_8hpp.html" title=" " alt="" coords="101,87,271,114"/>
-<area shape="rect" id="node6" href="$d1/dbf/MainMenuState_8hpp.html" title=" " alt="" coords="275,177,508,203"/>
-<area shape="rect" id="node7" href="$de/d4d/GamePlayState_8hpp.html" title=" " alt="" coords="387,87,619,114"/>
-<area shape="rect" id="node9" href="$d0/d5f/MultiplayerMenuState_8hpp.html" title=" " alt="" coords="644,80,843,121"/>
-<area shape="rect" id="node3" href="$d0/dc4/Game_8cpp.html" title=" " alt="" coords="116,259,285,285"/>
-<area shape="rect" id="node4" href="$d5/de0/Main_8cpp.html" title=" " alt="" coords="27,177,148,203"/>
-<area shape="rect" id="node5" href="$d1/d65/MainMenuState_8cpp.html" title=" " alt="" coords="310,259,542,285"/>
-<area shape="rect" id="node8" href="$d0/d5f/GamePlayState_8cpp.html" title=" " alt="" coords="532,177,763,203"/>
-<area shape="rect" id="node10" href="$db/da8/MultiplayerMenuState_8cpp.html" title=" " alt="" coords="838,169,1035,211"/>
+<area shape="rect" id="node1" title=" " alt="" coords="343,5,509,31"/>
+<area shape="rect" id="node2" href="$d5/d4b/Game_8hpp.html" title=" " alt="" coords="101,86,271,111"/>
+<area shape="rect" id="node6" href="$d1/dbf/MainMenuState_8hpp.html" title=" " alt="" coords="275,174,508,199"/>
+<area shape="rect" id="node7" href="$de/d4d/GamePlayState_8hpp.html" title=" " alt="" coords="387,86,619,111"/>
+<area shape="rect" id="node9" href="$d0/d5f/MultiplayerMenuState_8hpp.html" title=" " alt="" coords="644,79,843,119"/>
+<area shape="rect" id="node3" href="$d5/de0/Main_8cpp.html" title=" " alt="" coords="27,174,148,199"/>
+<area shape="rect" id="node4" href="$d0/dc4/Game_8cpp.html" title=" " alt="" coords="116,255,285,280"/>
+<area shape="rect" id="node5" href="$d1/d65/MainMenuState_8cpp.html" title=" " alt="" coords="310,255,542,280"/>
+<area shape="rect" id="node8" href="$d0/d5f/GamePlayState_8cpp.html" title=" " alt="" coords="532,174,763,199"/>
+<area shape="rect" id="node10" href="$db/da8/MultiplayerMenuState_8cpp.html" title=" " alt="" coords="838,167,1035,207"/>
 </map>

@@ -1,4 +1,4 @@
 <map id="PacketPing" name="PacketPing">
-<area shape="rect" id="node1" title=" " alt="" coords="5,80,97,107"/>
-<area shape="rect" id="node2" href="$d7/d97/classPacket.html" title="Base class representing a generic packet." alt="" coords="19,5,83,32"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,79,97,104"/>
+<area shape="rect" id="node2" href="$d7/d97/classPacket.html" title="Base class representing a generic packet." alt="" coords="19,5,83,31"/>
 </map>
