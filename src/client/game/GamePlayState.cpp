@@ -147,7 +147,7 @@ void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& player
         // // fpsCounter.update();
 
         handle_mobs_wave(registry, window);
-        moveView(deltaTime); // TODO: Commented out because it break the view movement in network
+        moveView(deltaTime);
         handlePlayerMovement(deltaTime);
 
         window.setView(gameView);

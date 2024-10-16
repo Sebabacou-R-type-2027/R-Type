@@ -64,7 +64,7 @@ namespace rtype {
     void MainMenuState::startMultiplayer() {
         std::cout << "Starting multiplayer..." << std::endl;
         sf::Shader::bind(nullptr);
-        game.changeState(std::make_shared<MultiplayerMenuState>(window));
+        game.changeState(std::make_shared<MultiplayerMenuState>(window, network_));
     }
 
     void MainMenuState::disableShader() {
@@ -123,7 +123,7 @@ namespace rtype {
         yPos += button_height + spacing;
 
         createButton("Multiplayer", yPos, [this]() {
-            game.changeState(std::make_shared<MultiplayerMenuState>(window));
+            game.changeState(std::make_shared<MultiplayerMenuState>(window, network_));
         });
         yPos += button_height + spacing;
 
