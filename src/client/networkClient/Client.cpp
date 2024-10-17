@@ -83,10 +83,6 @@ namespace client {
                     	}
                 		command = std::to_string(my_id_in_lobby_) + command;
                 		this->command_handler_->addCommand(command);
-//                		auto cmd = command_handler_->getCommands(); // TODO : uncomment this line for debug purpose
-//                		for (const auto& cmdd : cmd) {
-//                    		std::cout << cmdd.first << " : " << cmdd.second << std::endl;
-//                		}
                     } catch (const std::exception& e) {
                     	std::cerr << "Error parsing command: " << e.what() << std::endl;
                     }

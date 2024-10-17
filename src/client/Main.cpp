@@ -22,7 +22,7 @@ int main(int argc, char* argv[]) {
 
     try {
         std::thread network_thread(&client::Client::main_loop, &client);
-//        client.connect(argv[1], std::stoi(argv[2]));
+//        client.connect(argv[1], std::stoi(argv[2])); // TODO uncomment this line if you wnat only multiplayer
         game.run();
         network_thread.join();
     } catch (const std::invalid_argument& e) {
