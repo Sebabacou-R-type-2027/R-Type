@@ -35,7 +35,7 @@ void Sound_game::playMusic(const std::string& filename, float volume, bool loop)
         return;
     }
     music.setLoop(loop);
-    music.setVolume(volume);
+    music.setVolume(0);
     music.play();
 }
 }

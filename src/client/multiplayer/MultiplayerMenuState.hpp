@@ -15,17 +15,21 @@
 #include <stdexcept>
 #include <string>
 #include "../factories/button_factory.hpp"
+#include "../game/Game.hpp"
+#include "../menu/MainMenuState.hpp"
+
 
 namespace rtype {
     class MultiplayerMenuState : public GameState {
     public:
-        MultiplayerMenuState(sf::RenderWindow& window);
+        MultiplayerMenuState(sf::RenderWindow& window, Game& game);
 
         void handleInput() override;
         void update() override;
         void render() override;
 
     private:
+        Game& game; ///< Reference to the game object
         sf::RenderWindow& window; ///< Reference to the window
         ecs::Registry registry; ///< Registry to store all the components
         ecs::System system; ///< System to store all the systems

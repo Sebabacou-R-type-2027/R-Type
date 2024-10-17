@@ -3,8 +3,8 @@
 #include <cctype>
 
 namespace rtype {
-    MultiplayerMenuState::MultiplayerMenuState(sf::RenderWindow& window)
-        : window(window), port(std::nullopt), activeField(ADDRESS) {
+    MultiplayerMenuState::MultiplayerMenuState(sf::RenderWindow& window, Game& game)
+        : window(window), port(std::nullopt), activeField(ADDRESS), game(game), registry(game.getRegistry()), system(game.getSystem()) {
         registry.register_all_components();
 
         if (!font.loadFromFile("assets/fonts/arial.ttf")) {
@@ -99,8 +99,13 @@ namespace rtype {
         sf::Event event;
 
         while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+            if (event.type == sf::Event::Closed) {
                 window.close();
+            }
+
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+                std::cout << "Escape key pressed, returning to main menu" << std::endl;
+                game.changeState(std::make_shared<MainMenuState>(window, game));
             }
 
             if (event.type == sf::Event::TextEntered) {

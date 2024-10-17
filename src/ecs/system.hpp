@@ -151,7 +151,7 @@ namespace ecs {
 
         /**
          * @brief shooting_enemy_system
-         * 
+         *
          * @param registry contains all the logic of the components
          * @param window contains the window of the game
          * @return void
