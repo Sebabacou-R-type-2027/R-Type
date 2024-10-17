@@ -16,11 +16,12 @@
 #include <string>
 #include "../factories/button_factory.hpp"
 #include <networkClient/Client.hpp>
+#include "../game/GamePlayState.hpp"
 
 namespace rtype {
     class MultiplayerMenuState : public GameState {
     public:
-        MultiplayerMenuState(sf::RenderWindow& window, client::Client& network);
+        MultiplayerMenuState(sf::RenderWindow& window, client::Client& network, Game& game);
 
         void handleInput() override;
         void update() override;
@@ -49,6 +50,6 @@ namespace rtype {
 
         enum InputField { NONE, ADDRESS, PORT } activeField; // Track the active input field
 
-        void initUI(client::Client& network);
+        void initUI(client::Client& network, Game& game);
     };
 }

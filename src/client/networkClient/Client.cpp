@@ -129,6 +129,9 @@ namespace client {
     }
 
     void Client::connect(const std::string& server_ip, short server_port) {
+        if (connected_ == true) {
+            return;
+        }
         socket_ = udp::socket(io_context_, udp::endpoint(udp::v4(), 0));
         remote_endpoint_ = udp::endpoint(asio::ip::address::from_string(server_ip), server_port);
         receive_thread_ = std::thread(&Client::receive_loop, this);

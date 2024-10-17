@@ -8,12 +8,12 @@
 #include "GamePlayState.hpp"
 #include <iostream>
 #include <chrono>
+#include <ostream>
 
 namespace rtype {
-    GamePlayState::GamePlayState(sf::RenderWindow& window, client::Client& network)
-        : window(window), network_(network) {
+    GamePlayState::GamePlayState(sf::RenderWindow& window, client::Client& network, bool isSolo)
+        : window(window), network_(network), isSolo_(isSolo) {
         int posx = 200;
-
         registry.register_all_components();
 
         if (!backgroundShader.loadFromFile("assets/shaders/background.frag", sf::Shader::Fragment)) {
@@ -27,7 +27,6 @@ namespace rtype {
         // Initialize view with window size
         gameView = window.getDefaultView();
         gameView.setCenter(sf::Vector2f(gameView.getSize().x / 2, gameView.getSize().y / 2));
-
         for (int i = 0; i - 1 != network.number_of_players_; i++) {
             initPlayer("assets/Ship/Ship.png", posx * i + 1, true);
         }

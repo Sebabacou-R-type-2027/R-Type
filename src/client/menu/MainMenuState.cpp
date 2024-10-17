@@ -58,7 +58,7 @@ namespace rtype {
         std::cout << "Starting the game..." << std::endl;
         sf::Shader::bind(nullptr);
         // delete the FPS counter
-        game.changeState(std::make_shared<GamePlayState>(window, network_));
+        game.changeState(std::make_shared<GamePlayState>(window, network_, true));
     }
 
     void MainMenuState::startMultiplayer() {
@@ -122,9 +122,7 @@ namespace rtype {
         createButton("Solo Campaign", yPos, [this]() { startGame(); });
         yPos += button_height + spacing;
 
-        createButton("Multiplayer", yPos, [this]() {
-            game.changeState(std::make_shared<MultiplayerMenuState>(window, network_));
-        });
+        createButton("Multiplayer", yPos, [this]() { startMultiplayer(); });
         yPos += button_height + spacing;
 
         createButton("Customize Ship", yPos, [this]() { startGame(); });

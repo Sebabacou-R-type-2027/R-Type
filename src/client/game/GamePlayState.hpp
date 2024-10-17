@@ -21,13 +21,14 @@
 namespace rtype {
     class GamePlayState : public GameState {
     public:
-        GamePlayState(sf::RenderWindow& window, client::Client& network);
+        GamePlayState(sf::RenderWindow& window, client::Client& network, bool isSolo);
 
         void handleInput() override;
         void update() override;
         void render() override;
 
     private:
+        bool isSolo_;
         sf::RenderWindow& window;
         ecs::Registry registry;
         ecs::System system;
