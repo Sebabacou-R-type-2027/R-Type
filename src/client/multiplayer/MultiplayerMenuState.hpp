@@ -21,7 +21,7 @@
 namespace rtype {
     class MultiplayerMenuState : public GameState {
     public:
-        MultiplayerMenuState(sf::RenderWindow& window, client::Client& network, Game& game);
+        MultiplayerMenuState(sf::RenderWindow& window, client::Client& network);
 
         void handleInput() override;
         void update() override;
@@ -50,6 +50,6 @@ namespace rtype {
 
         enum InputField { NONE, ADDRESS, PORT } activeField; // Track the active input field
 
-        void initUI(client::Client& network, Game& game);
+        void initUI(client::Client& network);
     };
 }
