@@ -33,7 +33,7 @@ namespace ecs {
          * @return void
          */
         void control_system(Registry& reg, client::Client& network) {
-            controlSystem.update(reg, network);
+            controlSystem.update(reg, network, true);
         }
 
         /**

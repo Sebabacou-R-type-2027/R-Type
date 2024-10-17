@@ -8,14 +8,8 @@
 #include "PacketCMDP.hpp"
 
 namespace client {
-    Client::Client(asio::io_context& io_context, const std::string& server_ip, short server_port)
-        :   io_context_(io_context),
-            socket_(io_context, udp::endpoint(udp::v4(), 0)),
-            remote_endpoint_(asio::ip::address::from_string(server_ip), server_port),
-            is_running_(false) {
-
-        receive_thread_ = std::thread(&Client::receive_loop, this);
-        send_commands_thread_ = std::thread(&Client::send_commands_to_all_clients, this);
+    Client::Client(asio::io_context& io_context)
+        : io_context_(io_context), socket_(io_context, udp::v4()), is_running_(false) {
     }
 
     Client::~Client() {
@@ -89,10 +83,6 @@ namespace client {
                     	}
                 		command = std::to_string(my_id_in_lobby_) + command;
                 		this->command_handler_->addCommand(command);
-//                		auto cmd = command_handler_->getCommands(); // TODO : uncomment this line for debug purpose
-//                		for (const auto& cmdd : cmd) {
-//                    		std::cout << cmdd.first << " : " << cmdd.second << std::endl;
-//                		}
                     } catch (const std::exception& e) {
                     	std::cerr << "Error parsing command: " << e.what() << std::endl;
                     }
@@ -134,8 +124,21 @@ namespace client {
           packet->send_packet(player_endpoint);
     }
 
+    void Client::connect(const std::string& server_ip, short server_port) {
+        if (connected_ == true) {
+            return;
+        }
+        socket_ = udp::socket(io_context_, udp::endpoint(udp::v4(), 0));
+        remote_endpoint_ = udp::endpoint(asio::ip::address::from_string(server_ip), server_port);
+        receive_thread_ = std::thread(&Client::receive_loop, this);
+        send_commands_thread_ = std::thread(&Client::send_commands_to_all_clients, this);
+        connected_ = true;
+    }
+
     void Client::main_loop() {
         std::string input;
+
+        while (connected_ == false) {}
         while (!is_running_) {
             std::cout << "$> ";
             std::getline(std::cin, input);
