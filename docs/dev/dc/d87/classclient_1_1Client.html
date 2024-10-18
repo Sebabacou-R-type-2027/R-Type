@@ -102,15 +102,17 @@ Collaboration diagram for client::Client:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a177d509fa53149cfa380f914983fd045"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d87/classclient_1_1Client.html#a177d509fa53149cfa380f914983fd045">Client</a> (asio::io_context &amp;io_context, const <a class="elRef" href="https://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> &amp;server_ip, short server_port)</td></tr>
-<tr class="memdesc:a177d509fa53149cfa380f914983fd045"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructeur de la classe <a class="el" href="../../dc/d87/classclient_1_1Client.html" title="Classe représentant un client réseau.">Client</a>.  <br /></td></tr>
-<tr class="separator:a177d509fa53149cfa380f914983fd045"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78fb42e2fd22380d716c96aa0e1b66cf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d87/classclient_1_1Client.html#a78fb42e2fd22380d716c96aa0e1b66cf">Client</a> (asio::io_context &amp;io_context)</td></tr>
+<tr class="memdesc:a78fb42e2fd22380d716c96aa0e1b66cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructeur de la classe <a class="el" href="../../dc/d87/classclient_1_1Client.html" title="Classe représentant un client réseau.">Client</a>.  <br /></td></tr>
+<tr class="separator:a78fb42e2fd22380d716c96aa0e1b66cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a43375f5795e05bd983448ce3357bc3df"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d87/classclient_1_1Client.html#a43375f5795e05bd983448ce3357bc3df">~Client</a> ()</td></tr>
 <tr class="memdesc:a43375f5795e05bd983448ce3357bc3df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructeur de la classe <a class="el" href="../../dc/d87/classclient_1_1Client.html" title="Classe représentant un client réseau.">Client</a>.  <br /></td></tr>
 <tr class="separator:a43375f5795e05bd983448ce3357bc3df"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd7f0a71192ae3cc0e151547af2ff3ad"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d87/classclient_1_1Client.html#abd7f0a71192ae3cc0e151547af2ff3ad">main_loop</a> ()</td></tr>
 <tr class="memdesc:abd7f0a71192ae3cc0e151547af2ff3ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Boucle principale de la logique du client.  <br /></td></tr>
 <tr class="separator:abd7f0a71192ae3cc0e151547af2ff3ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a79910e1de8009eaa1e093c500ca9a0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d87/classclient_1_1Client.html#a3a79910e1de8009eaa1e093c500ca9a0">connect</a> (const <a class="elRef" href="https://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> &amp;server_ip, short server_port)</td></tr>
+<tr class="separator:a3a79910e1de8009eaa1e093c500ca9a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a199161482506e53cc556418a35399199"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d87/classclient_1_1Client.html#a199161482506e53cc556418a35399199">send_packet</a> (<a class="el" href="../../d7/d97/classPacket.html">Packet</a> &amp;packet) const</td></tr>
 <tr class="memdesc:a199161482506e53cc556418a35399199"><td class="mdescLeft">&#160;</td><td class="mdescRight">Envoie un paquet au serveur.  <br /></td></tr>
 <tr class="separator:a199161482506e53cc556418a35399199"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -145,8 +147,8 @@ Public Attributes</h2></td></tr>
 <div class="textblock"><p>Classe représentant un client réseau. </p>
 <p>Cette classe gère la connexion d'un client à un serveur via UDP et la création d'un client host, l'envoi et la réception de paquets, ainsi que l'exécution de commandes. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a177d509fa53149cfa380f914983fd045" name="a177d509fa53149cfa380f914983fd045"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a177d509fa53149cfa380f914983fd045">&#9670;&#160;</a></span>Client()</h2>
+<a id="a78fb42e2fd22380d716c96aa0e1b66cf" name="a78fb42e2fd22380d716c96aa0e1b66cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a78fb42e2fd22380d716c96aa0e1b66cf">&#9670;&#160;</a></span>Client()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -155,24 +157,8 @@ Public Attributes</h2></td></tr>
           <td class="memname">client::Client::Client </td>
           <td>(</td>
           <td class="paramtype">asio::io_context &amp;&#160;</td>
-          <td class="paramname"><em>io_context</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramname"><em>io_context</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">const <a class="elRef" href="https://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> &amp;&#160;</td>
-          <td class="paramname"><em>server_ip</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">short&#160;</td>
-          <td class="paramname"><em>server_port</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -211,6 +197,34 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a3a79910e1de8009eaa1e093c500ca9a0" name="a3a79910e1de8009eaa1e093c500ca9a0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3a79910e1de8009eaa1e093c500ca9a0">&#9670;&#160;</a></span>connect()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void client::Client::connect </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="elRef" href="https://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> &amp;&#160;</td>
+          <td class="paramname"><em>server_ip</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">short&#160;</td>
+          <td class="paramname"><em>server_port</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a41ffaeb99f0ccf84faf99e93f7e7c113" name="a41ffaeb99f0ccf84faf99e93f7e7c113"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a41ffaeb99f0ccf84faf99e93f7e7c113">&#9670;&#160;</a></span>fillCommandsToSends()</h2>
 

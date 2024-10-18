@@ -86,13 +86,91 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a8ed5c81fb66998d9c8f7eec38acd1bf7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/d54/classecs_1_1systems_1_1ControlSystem.html#a8ed5c81fb66998d9c8f7eec38acd1bf7">update</a> (<a class="el" href="../../df/dcd/classecs_1_1Registry.html">Registry</a> &amp;registry, <a class="el" href="../../dc/d87/classclient_1_1Client.html">client::Client</a> &amp;network)</td></tr>
-<tr class="memdesc:a8ed5c81fb66998d9c8f7eec38acd1bf7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class that contains all the logic of the control system.  <br /></td></tr>
-<tr class="separator:a8ed5c81fb66998d9c8f7eec38acd1bf7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a20e71de87df27c12184b714462c2f28a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/d54/classecs_1_1systems_1_1ControlSystem.html#a20e71de87df27c12184b714462c2f28a">update</a> (<a class="el" href="../../df/dcd/classecs_1_1Registry.html">Registry</a> &amp;registry, <a class="el" href="../../dc/d87/classclient_1_1Client.html">client::Client</a> &amp;network, bool issolo)</td></tr>
+<tr class="memdesc:a20e71de87df27c12184b714462c2f28a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class that contains all the logic of the control system.  <br /></td></tr>
+<tr class="separator:a20e71de87df27c12184b714462c2f28a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5516ed0885a956b50a9a904869fad89f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/d54/classecs_1_1systems_1_1ControlSystem.html#a5516ed0885a956b50a9a904869fad89f">network_handle</a> (<a class="elRef" href="https://en.cppreference.com/w/cpp/types/size_t.html">std::size_t</a> i, <a class="el" href="../../df/d83/classecs_1_1sparse__array.html">ecs::sparse_array</a>&lt; <a class="el" href="../../dc/de8/structecs_1_1Velocity.html">ecs::Velocity</a> &gt; &amp;velocities, <a class="el" href="../../df/d83/classecs_1_1sparse__array.html">ecs::sparse_array</a>&lt; <a class="el" href="../../da/ddb/structecs_1_1Controllable.html">ecs::Controllable</a> &gt; &amp;controllables, <a class="el" href="../../dc/d87/classclient_1_1Client.html">client::Client</a> &amp;network)</td></tr>
+<tr class="separator:a5516ed0885a956b50a9a904869fad89f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a144e099e0e7ccab05f71d19a8a317666"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/d54/classecs_1_1systems_1_1ControlSystem.html#a144e099e0e7ccab05f71d19a8a317666">solo_handle</a> (<a class="elRef" href="https://en.cppreference.com/w/cpp/types/size_t.html">std::size_t</a> i, <a class="el" href="../../df/d83/classecs_1_1sparse__array.html">ecs::sparse_array</a>&lt; <a class="el" href="../../dc/de8/structecs_1_1Velocity.html">ecs::Velocity</a> &gt; &amp;velocities, <a class="el" href="../../df/d83/classecs_1_1sparse__array.html">ecs::sparse_array</a>&lt; <a class="el" href="../../da/ddb/structecs_1_1Controllable.html">ecs::Controllable</a> &gt; &amp;controllables)</td></tr>
+<tr class="separator:a144e099e0e7ccab05f71d19a8a317666"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a8ed5c81fb66998d9c8f7eec38acd1bf7" name="a8ed5c81fb66998d9c8f7eec38acd1bf7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8ed5c81fb66998d9c8f7eec38acd1bf7">&#9670;&#160;</a></span>update()</h2>
+<a id="a5516ed0885a956b50a9a904869fad89f" name="a5516ed0885a956b50a9a904869fad89f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5516ed0885a956b50a9a904869fad89f">&#9670;&#160;</a></span>network_handle()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ecs::systems::ControlSystem::network_handle </td>
+          <td>(</td>
+          <td class="paramtype"><a class="elRef" href="https://en.cppreference.com/w/cpp/types/size_t.html">std::size_t</a>&#160;</td>
+          <td class="paramname"><em>i</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="../../df/d83/classecs_1_1sparse__array.html">ecs::sparse_array</a>&lt; <a class="el" href="../../dc/de8/structecs_1_1Velocity.html">ecs::Velocity</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>velocities</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="../../df/d83/classecs_1_1sparse__array.html">ecs::sparse_array</a>&lt; <a class="el" href="../../da/ddb/structecs_1_1Controllable.html">ecs::Controllable</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>controllables</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="../../dc/d87/classclient_1_1Client.html">client::Client</a> &amp;&#160;</td>
+          <td class="paramname"><em>network</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a144e099e0e7ccab05f71d19a8a317666" name="a144e099e0e7ccab05f71d19a8a317666"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a144e099e0e7ccab05f71d19a8a317666">&#9670;&#160;</a></span>solo_handle()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ecs::systems::ControlSystem::solo_handle </td>
+          <td>(</td>
+          <td class="paramtype"><a class="elRef" href="https://en.cppreference.com/w/cpp/types/size_t.html">std::size_t</a>&#160;</td>
+          <td class="paramname"><em>i</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="../../df/d83/classecs_1_1sparse__array.html">ecs::sparse_array</a>&lt; <a class="el" href="../../dc/de8/structecs_1_1Velocity.html">ecs::Velocity</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>velocities</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="../../df/d83/classecs_1_1sparse__array.html">ecs::sparse_array</a>&lt; <a class="el" href="../../da/ddb/structecs_1_1Controllable.html">ecs::Controllable</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>controllables</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a20e71de87df27c12184b714462c2f28a" name="a20e71de87df27c12184b714462c2f28a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a20e71de87df27c12184b714462c2f28a">&#9670;&#160;</a></span>update()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -107,7 +185,13 @@ Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="../../dc/d87/classclient_1_1Client.html">client::Client</a> &amp;&#160;</td>
-          <td class="paramname"><em>network</em>&#160;</td>
+          <td class="paramname"><em>network</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>issolo</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
