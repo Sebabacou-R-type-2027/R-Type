@@ -22,6 +22,8 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <cmath>
+
 
 namespace rtype {
     struct Mob {

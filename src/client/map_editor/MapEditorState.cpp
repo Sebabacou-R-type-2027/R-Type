@@ -1,13 +1,15 @@
+/*
+** EPITECH PROJECT, 2024
+** R-Type
+** File description:
+** MapEditorState
+*/
+
 #include "MapEditorState.hpp"
-#include <nlohmann/json.hpp>
-#include <fstream>
-#include <iostream>
-#include <cmath> // For std::sqrt and std::pow
 
 
 namespace rtype {
 
-    // Helper function to snap a value to the nearest grid point
     float snapToGrid(float value) {
         return std::round(value / MapEditorState::GRID_SIZE) * MapEditorState::GRID_SIZE;
     }
@@ -22,7 +24,7 @@ namespace rtype {
             throw std::runtime_error("Could not load shader");
         }
         for (int i = 1; i <= 10; i++) {
-            waves.emplace_back(i); // Using emplace_back for efficiency
+            waves.emplace_back(i);
         }
     }
 
@@ -38,11 +40,9 @@ namespace rtype {
                     auto mousePos = sf::Mouse::getPosition(window);
                     auto mousePosWorld = window.mapPixelToCoords(mousePos);
 
-                    // Snap to grid
                     float snappedX = snapToGrid(mousePosWorld.x);
                     float snappedY = snapToGrid(mousePosWorld.y);
 
-                    // Ensure currentWave is valid
                     if (currentWave - 1 < static_cast<int>(waves.size())) {
                         waves[currentWave - 1].addMob(snappedX, snappedY, "enemy1");
                         std::cout << "Added mob at: " << snappedX << ", " << snappedY << std::endl;
@@ -52,7 +52,6 @@ namespace rtype {
                     }
                 }
 
-                // Remove mob on right click
                 if (event.mouseButton.button == sf::Mouse::Right) {
                     auto mousePos = sf::Mouse::getPosition(window);
                     auto mousePosWorld = window.mapPixelToCoords(mousePos);
@@ -63,20 +62,17 @@ namespace rtype {
                         float closestDistanceSq = std::numeric_limits<float>::max();
                         int closestIndex = -1;
 
-                        // Iterate over mobs to find the closest one
                         for (size_t i = 0; i < mobs.size(); ++i) {
                             float dx = mobs[i].x - mousePosWorld.x;
                             float dy = mobs[i].y - mousePosWorld.y;
                             float distanceSq = dx * dx + dy * dy;
 
-                            // Find the closest mob within a certain range (e.g., 20 units)
-                            if (distanceSq < closestDistanceSq && distanceSq < 400.0f) { // 20^2 = 400
+                            if (distanceSq < closestDistanceSq && distanceSq < 400.0f) {
                                 closestDistanceSq = distanceSq;
                                 closestIndex = static_cast<int>(i);
                             }
                         }
 
-                        // If a mob is close enough, remove it
                         if (closestIndex != -1) {
                             mobs.erase(mobs.begin() + closestIndex);
                             std::cout << "Removed mob at index: " << closestIndex << std::endl;
@@ -101,13 +97,6 @@ namespace rtype {
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
                     saveWavesToJson();
 
-                // for (int key = sf::Keyboard::Num1; key <= sf::Keyboard::Num0; ++key) {
-                //     if (sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(key))) {
-                //         int waveNumber = (key == sf::Keyboard::Num0) ? 10 : (key - sf::Keyboard::Num1 + 1);
-                //         switchWave(currentWave, waveNumber);
-                //         break; // Prevent multiple switches in one frame
-                //     }
-                // }
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1)) {
                     switchWave(currentWave, 1);
                 }
@@ -148,7 +137,7 @@ namespace rtype {
                 for (const auto& mob : wave.mobs) {
                     if (mob.type == "enemy1") {
                         sf::Sprite sprite;
-                        static sf::Texture texture; // Make texture static to avoid reloading every frame
+                        static sf::Texture texture;
                         if (!texture.loadFromFile("assets/sprites/r-type-enemy.gif", sf::IntRect(0, 0, 32, 32))) {
                             std::cerr << "Failed to load texture for enemy1." << std::endl;
                             continue;
@@ -189,7 +178,6 @@ namespace rtype {
             sf::Shader::bind(nullptr);
         }
 
-        // Optional: Render grid
         renderGrid();
 
         displayWave();
@@ -198,16 +186,14 @@ namespace rtype {
 
     void MapEditorState::renderGrid() {
         sf::RectangleShape line;
-        line.setFillColor(sf::Color(200, 200, 200, 50)); // Light gray with some transparency
+        line.setFillColor(sf::Color(200, 200, 200, 50));
 
-        // Vertical lines
         for (float x = 0; x <= window.getSize().x; x += GRID_SIZE) {
             line.setPosition(x, 0);
             line.setSize(sf::Vector2f(1, window.getSize().y));
             window.draw(line);
         }
 
-        // Horizontal lines
         for (float y = 0; y <= window.getSize().y; y += GRID_SIZE) {
             line.setPosition(0, y);
             line.setSize(sf::Vector2f(window.getSize().x, 1));
