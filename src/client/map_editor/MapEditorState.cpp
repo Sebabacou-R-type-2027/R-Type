@@ -6,7 +6,10 @@
 */
 
 #include "MapEditorState.hpp"
-
+#include <nlohmann/json.hpp>
+#include <fstream>
+#include <iostream>
+#include <cmath>
 
 namespace rtype {
 
@@ -15,13 +18,16 @@ namespace rtype {
     }
 
     MapEditorState::MapEditorState(sf::RenderWindow& window)
-        : window(window), currentWave(1) {
+        : window(window), currentWave(1), previousWave(1) {
         registry.register_all_components();
         if (!font.loadFromFile("assets/fonts/arial.ttf")) {
             throw std::runtime_error("Could not load font");
         }
         if (!backgroundShader.loadFromFile("assets/shaders/background.frag", sf::Shader::Fragment)) {
             throw std::runtime_error("Could not load shader");
+        }
+        if (!enemyTexture.loadFromFile("assets/sprites/r-type-enemy.gif", sf::IntRect(0, 0, 32, 32))) {
+            throw std::runtime_error("Failed to load texture for enemy1.");
         }
         for (int i = 1; i <= 10; i++) {
             waves.emplace_back(i);
@@ -168,6 +174,9 @@ namespace rtype {
         if (Settings::getInstance().isShaderEnabled) {
             system.shader_system(registry, window, backgroundShader);
         }
+
+        mousePosWorld = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+        mousePosView = window.mapPixelToCoords(sf::Mouse::getPosition(window));
     }
 
     void MapEditorState::render() {
@@ -179,7 +188,7 @@ namespace rtype {
         }
 
         renderGrid();
-
+        renderPreview();
         displayWave();
         window.display();
     }
@@ -199,6 +208,23 @@ namespace rtype {
             line.setSize(sf::Vector2f(window.getSize().x, 1));
             window.draw(line);
         }
+    }
+
+    void MapEditorState::renderPreview() {
+        sf::Sprite sprite;
+        sprite.setTexture(enemyTexture);
+
+        sf::Vector2u textureSize = enemyTexture.getSize();
+        sprite.setOrigin(textureSize.x / 2.0f, textureSize.y / 2.0f);
+
+        sf::Vector2f mousePosPreview = {
+            snapToGrid(mousePosWorld.x),
+            snapToGrid(mousePosWorld.y)
+        };
+        sprite.setPosition(mousePosPreview.x, mousePosPreview.y);
+        sprite.setColor(sf::Color(128, 128, 128, 128));
+
+        window.draw(sprite);
     }
 
     void MapEditorState::saveWavesToJson() {

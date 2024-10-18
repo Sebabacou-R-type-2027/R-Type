@@ -35,7 +35,7 @@ namespace rtype {
     public:
         int wave_id;
         std::vector<Mob> mobs;
-        std::vector<ecs::Entity> entityIds; // Track entity IDs for this wave
+        std::vector<ecs::Entity> entityIds;
 
         Wave(int id) : wave_id(id) {}
 
@@ -44,7 +44,7 @@ namespace rtype {
         }
 
         void addEntityId(ecs::Entity entityId) {
-            entityIds.push_back(entityId); // Track the entity created for this mob
+            entityIds.push_back(entityId);
         }
     };
 
@@ -56,8 +56,7 @@ namespace rtype {
         void update() override;
         void render() override;
 
-        // **Make GRID_SIZE public**
-        static constexpr float GRID_SIZE = 32.0f; // Grid size in pixels
+        static constexpr float GRID_SIZE = 32.0f;
 
     private:
         sf::RenderWindow& window;
@@ -65,12 +64,15 @@ namespace rtype {
         ecs::System system;
         sf::Font font;
         sf::Shader backgroundShader;
-
+        sf::Texture enemyTexture;
         nlohmann::json map;
         std::vector<Wave> waves;
 
         int currentWave;
         int previousWave;
+
+        sf::Vector2f mousePosWorld;
+        sf::Vector2f mousePosView;
 
         void displayWave();
         std::vector<Mob>& getMobs(int waveId);
@@ -80,7 +82,7 @@ namespace rtype {
         void saveWavesToJson();
         void loadWavesFromJson();
 
-        // Optional: Function to render grid lines
         void renderGrid();
+        void renderPreview();
     };
 }
