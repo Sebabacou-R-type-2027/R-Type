@@ -3,7 +3,7 @@
 #include <cctype>
 
 namespace rtype {
-    MultiplayerMenuState::MultiplayerMenuState(sf::RenderWindow& window)
+    MultiplayerMenuState::MultiplayerMenuState(sf::RenderWindow& window, client::Client& network)
         : window(window), port(std::nullopt), activeField(ADDRESS) {
         registry.register_all_components();
 
@@ -14,10 +14,10 @@ namespace rtype {
         if (!backgroundShader.loadFromFile("assets/shaders/background.frag", sf::Shader::Fragment)) {
             throw std::runtime_error("Could not load shader");
         }
-        initUI();
+        initUI(network);
     }
 
-    void MultiplayerMenuState::initUI() {
+    void MultiplayerMenuState::initUI(client::Client& network) {
         auto multiplayerBackground = registry.spawn_entity();
 
         float width = 450.0f;
@@ -75,10 +75,11 @@ namespace rtype {
                 sf::Color::Blue,
                 sf::Color::White,
                 24,
-                [this]() {
+                [this, &network]() {
                     Settings::getInstance().serverAddress = hostAddress;
                     Settings::getInstance().serverPort = std::stoi(portInput);
                     std::cout << "Connecting to server at " << Settings::getInstance().serverAddress << ":" << Settings::getInstance().serverPort << std::endl;
+                    network.connect(Settings::getInstance().serverAddress, Settings::getInstance().serverPort);
                 }
             )
         );
