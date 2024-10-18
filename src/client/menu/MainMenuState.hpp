@@ -14,6 +14,7 @@
 #include "../game/Game.hpp"
 #include "../game/GamePlayState.hpp"
 #include "../multiplayer/MultiplayerMenuState.hpp"
+#include "../map_editor/MapEditorState.hpp"
 #include "../factories/button_factory.hpp"
 #include "../utils/FPSCounter.hpp"
 #include "../utils/Settings.hpp"
@@ -61,9 +62,9 @@ namespace rtype {
         void createMenuTitle(); ///< Create the menu title
         void startGame(); ///< Start the game
         void startMultiplayer(); ///< Start the multiplayer
+        void startMapEditor(); ///< Start the map editor
         void disableShader(); ///< Disable the shader
         void enableShader(); ///< Enable the shader
-
 
         client::Client& network_;
 
