@@ -30,7 +30,7 @@ namespace client {
              * @param server_ip Adresse IP du serveur.
              * @param server_port Port du serveur.
              */
-            Client(asio::io_context& io_context, const std::string& server_ip, short server_port);
+            Client(asio::io_context& io_context);
 
             /**
              * @brief Destructeur de la classe Client.
@@ -46,6 +46,8 @@ namespace client {
              * comme la gestion des commandes et la réception de messages.
              */
             void main_loop();
+
+            void connect(const std::string& server_ip, short server_port);
 
             /**
              * @brief Envoie un paquet au serveur.
@@ -103,6 +105,7 @@ namespace client {
             std::unique_ptr<CommandHandler> command_handler_;  ///< Gestionnaire de commandes du client.
             std::map<std::string, std::string> _commandsSend;  ///< Commandes à envoyer en tant que joueur.
             std::thread send_commands_thread_;
+            bool connected_ = false;
 
             /**
              * @brief Boucle de réception des messages.

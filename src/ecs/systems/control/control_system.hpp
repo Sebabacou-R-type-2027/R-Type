@@ -22,10 +22,19 @@ namespace ecs::systems {
              *
              * @param registry contains all the logic of the components
              */
-            void update(Registry& registry, client::Client& network);
+            void update(Registry& registry, client::Client& network, bool issolo);
+
+            void network_handle(std::size_t i,
+                                ecs::sparse_array<ecs::Velocity>& velocities,
+                                ecs::sparse_array<ecs::Controllable>& controllables,
+                                client::Client& network);
+
+            void solo_handle(std::size_t i,
+                                ecs::sparse_array<ecs::Velocity>& velocities,
+                                ecs::sparse_array<ecs::Controllable>& controllables);
 
         private:
-            float acceleration = 0.2f;
+            float acceleration = 0.5f;
             float maxSpeed = 4.0f;
     };
 }

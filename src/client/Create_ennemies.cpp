@@ -68,7 +68,7 @@ namespace ecs {
         int max_y = window.getSize().y - 25;
         int max_x = window.getSize().x;
 
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 5; ++i) {
             float yPosition = i * 100.0f;
             create_classic_enemy(registry,
                         max_x + i * 50.0, yPosition,

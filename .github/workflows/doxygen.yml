@@ -1,0 +1,23 @@
+name: Doxygen GitHub Pages Deploy Action
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request: {}
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    concurrency: doxygen-pages-${{ github.ref_name }}
+    steps:
+      - uses: DenverCoder1/doxygen-github-pages-action@v2.0.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          target_folder: "docs/${{ github.ref_name }}"
+          config_file: "docs/doxygen/Doxyfile"
+          folder: "docs/doxygen/html"
