@@ -6,6 +6,8 @@
 */
 
 #include "Create_ennemies.hpp"
+#include <nlohmann/json.hpp>
+#include <fstream>
 
 namespace ecs {
     void CreateEnnemies::create_classic_enemy(Registry& registry,
@@ -93,4 +95,47 @@ namespace ecs {
 
     }
 
+    void CreateEnnemies::loadWavesFromJson(Registry& registry, sf::RenderWindow& window, const std::string& filePath) {
+        std::ifstream file(filePath);
+        if (!file.is_open()) {
+            std::cerr << "Failed to open file: " << filePath << std::endl;
+            return;
+        }
+
+        nlohmann::json jsonData;
+        file >> jsonData;
+
+        if (!jsonData.contains("levels")) {
+            std::cerr << "Invalid JSON format: missing 'levels' key" << std::endl;
+            return;
+        }
+
+        for (const auto& level : jsonData["levels"]) {
+            if (!level.contains("waves")) {
+                std::cerr << "Invalid JSON format: missing 'waves' key in level" << std::endl;
+                continue;
+            }
+
+            for (const auto& wave : level["waves"]) {
+                if (!wave.contains("mobs")) {
+                    std::cerr << "Invalid JSON format: missing 'mobs' key in wave" << std::endl;
+                    continue;
+                }
+
+                for (const auto& mob : wave["mobs"]) {
+                    std::string type = mob["type"];
+                    float x = mob["x"];
+                    float y = mob["y"];
+                    float speed = 100.0f;
+                    std::string texturePath = (type == "enemy1") ? "assets/sprites/r-type-enemy.gif" : "assets/shooting_enemy.png";
+
+                    if (type == "enemy1") {
+                        create_classic_enemy(registry, x, y, speed, texturePath, 0.0f, window.getSize().x, 0.0f, window.getSize().y);
+                    } else if (type == "enemy2") {
+                        create_shooting_enemy(registry, x, y, speed, texturePath, 0.0f, window.getSize().x, 0.0f, window.getSize().y);
+                    }
+                }
+            }
+        }
+    }
 }

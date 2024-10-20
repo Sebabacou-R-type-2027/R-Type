@@ -24,13 +24,12 @@ namespace rtype {
             throw std::runtime_error("Could not load font");
         }
 
-        // Initialize view with window size
         gameView = window.getDefaultView();
         gameView.setCenter(sf::Vector2f(gameView.getSize().x / 2, gameView.getSize().y / 2));
         for (int i = 0; i - 1 != network.number_of_players_; i++) {
             initPlayer("assets/Ship/Ship.png", posx * i + 1, true);
         }
-        createEnnemies.create_enemies(registry, window);
+        createEnnemies.loadWavesFromJson(registry, window, "waves.json");
         initChargeBullet();
     }
 
@@ -125,7 +124,7 @@ void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& player
             }
         }
         if (check == 0) {
-            createEnnemies.create_enemies(registry, window);
+            createEnnemies.loadWavesFromJson(registry, window, "waves.json");
         }
     }
     void GamePlayState::update() {
@@ -143,7 +142,6 @@ void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& player
         system.shooting_enemy_system(registry, window);
         system.collision_system(registry, window);
         handleCollision.handle_collision(registry);
-        // // fpsCounter.update();
 
         handle_mobs_wave(registry, window);
         moveView(deltaTime);
@@ -194,3 +192,4 @@ void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& player
         registry.emplace_component<ecs::Controllable>(charge_animation, true, 5.0f);
     }
 }
+

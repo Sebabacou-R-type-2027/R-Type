@@ -13,7 +13,7 @@
 namespace rtype {
 
     Game::Game(const std::string& title, unsigned int width, unsigned int height, client::Client& network)
-        : window(sf::VideoMode(width, height), title), network_(network) {
+        : window(sf::VideoMode(width, height), title, sf::Style::Default), network_(network) {
         window.setFramerateLimit(60);
         currentState = std::make_unique<MainMenuState>(window, *this, network_);
         if (!backgroundShader.loadFromFile("assets/shaders/background.frag", sf::Shader::Fragment)) {

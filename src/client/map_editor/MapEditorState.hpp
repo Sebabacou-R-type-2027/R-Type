@@ -65,6 +65,7 @@ namespace rtype {
         sf::Font font;
         sf::Shader backgroundShader;
         sf::Texture enemyTexture;
+        sf::Texture enemy2Texture;
         nlohmann::json map;
         std::vector<Wave> waves;
 
@@ -84,5 +85,9 @@ namespace rtype {
 
         void renderGrid();
         void renderPreview();
+        void drawHotbar();
+        void drawHUD();
+
+        std::string currentMobType = "enemy1";
     };
 }

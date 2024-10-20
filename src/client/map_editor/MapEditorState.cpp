@@ -29,6 +29,9 @@ namespace rtype {
         if (!enemyTexture.loadFromFile("assets/sprites/r-type-enemy.gif", sf::IntRect(0, 0, 32, 32))) {
             throw std::runtime_error("Failed to load texture for enemy1.");
         }
+        if (!enemy2Texture.loadFromFile("assets/shooting_enemy.png")) {
+            throw std::runtime_error("Failed to load texture for enemy2.");
+        }
         for (int i = 1; i <= 10; i++) {
             waves.emplace_back(i);
         }
@@ -50,7 +53,7 @@ namespace rtype {
                     float snappedY = snapToGrid(mousePosWorld.y);
 
                     if (currentWave - 1 < static_cast<int>(waves.size())) {
-                        waves[currentWave - 1].addMob(snappedX, snappedY, "enemy1");
+                        waves[currentWave - 1].addMob(snappedX, snappedY, currentMobType);
                         std::cout << "Added mob at: " << snappedX << ", " << snappedY << std::endl;
                         std::cout << "Current wave: " << currentWave << std::endl;
                     } else {
@@ -92,9 +95,17 @@ namespace rtype {
             }
 
             if (event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::Space) {
-                    if (switchWave(currentWave, currentWave + 1)) {
-                        std::cout << "Switching to wave: " << currentWave + 1 << std::endl;
+                if (event.key.code == sf::Keyboard::Left) {
+                    if (currentWave > 1) {
+                        switchWave(currentWave, currentWave - 1);
+                    } else {
+                        switchWave(currentWave, 10);
+                    }
+                }
+
+                if (event.key.code == sf::Keyboard::Right) {
+                    if (currentWave < static_cast<int>(waves.size())) {
+                        switchWave(currentWave, currentWave + 1);
                     } else {
                         switchWave(currentWave, 1);
                     }
@@ -133,27 +144,49 @@ namespace rtype {
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num0)) {
                     switchWave(currentWave, 10);
                 }
+
+                if (event.key.code == sf::Keyboard::M) {
+                    if (currentMobType == "enemy1") {
+                        currentMobType = "enemy2";
+                    } else {
+                        currentMobType = "enemy1";
+                    }
+                    std::cout << "Current mob type: " << currentMobType << std::endl;
+                }
             }
         }
+    }
+
+    void MapEditorState::drawHotbar() {
+        sf::Sprite hotbar;
+        float scale = 1.5;
+        static sf::Texture hotbarTexture;
+        if (!hotbarTexture.loadFromFile("assets/sprites/Hotbar.png")) {
+            std::cerr << "Failed to load texture for hotbar." << std::endl;
+            return;
+        }
+        hotbar.setTexture(hotbarTexture);
+        hotbar.setScale(scale, scale);
+        auto windowSize = window.getSize();
+        float hotbarY = windowSize.y - hotbarTexture.getSize().y * scale;
+        hotbar.setPosition(windowSize.x / 2 - hotbarTexture.getSize().x * scale / 2, hotbarY);
+        window.draw(hotbar);
     }
 
     void MapEditorState::displayWave() {
         for (const auto& wave : waves) {
             if (currentWave == wave.wave_id) {
                 for (const auto& mob : wave.mobs) {
+                    sf::Sprite sprite;
                     if (mob.type == "enemy1") {
-                        sf::Sprite sprite;
-                        static sf::Texture texture;
-                        if (!texture.loadFromFile("assets/sprites/r-type-enemy.gif", sf::IntRect(0, 0, 32, 32))) {
-                            std::cerr << "Failed to load texture for enemy1." << std::endl;
-                            continue;
-                        }
-                        sf::Vector2u textureSize = texture.getSize();
-                        sprite.setOrigin(textureSize.x / 2.0f, textureSize.y / 2.0f);
-                        sprite.setTexture(texture);
-                        sprite.setPosition(mob.x, mob.y);
-                        window.draw(sprite);
+                        sprite.setTexture(enemyTexture);
+                    } else if (mob.type == "enemy2") {
+                        sprite.setTexture(enemy2Texture);
                     }
+                    sf::Vector2u textureSize = sprite.getTexture()->getSize();
+                    sprite.setOrigin(textureSize.x / 2.0f, textureSize.y / 2.0f);
+                    sprite.setPosition(mob.x, mob.y);
+                    window.draw(sprite);
                 }
             }
         }
@@ -190,11 +223,13 @@ namespace rtype {
         renderGrid();
         renderPreview();
         displayWave();
+        drawHUD();
         window.display();
     }
 
     void MapEditorState::renderGrid() {
         sf::RectangleShape line;
+
         line.setFillColor(sf::Color(200, 200, 200, 50));
 
         for (float x = 0; x <= window.getSize().x; x += GRID_SIZE) {
@@ -212,9 +247,16 @@ namespace rtype {
 
     void MapEditorState::renderPreview() {
         sf::Sprite sprite;
-        sprite.setTexture(enemyTexture);
+        sf::Texture previewTexture;
+        if (currentMobType == "enemy1") {
+            previewTexture = enemyTexture;
+        } else if (currentMobType == "enemy2") {
+            previewTexture = enemy2Texture;
+        }
 
-        sf::Vector2u textureSize = enemyTexture.getSize();
+        sprite.setTexture(previewTexture);
+
+        sf::Vector2u textureSize = previewTexture.getSize();
         sprite.setOrigin(textureSize.x / 2.0f, textureSize.y / 2.0f);
 
         sf::Vector2f mousePosPreview = {
@@ -227,10 +269,22 @@ namespace rtype {
         window.draw(sprite);
     }
 
-    void MapEditorState::saveWavesToJson() {
-        nlohmann::json jsonWaves;
+    void MapEditorState::drawHUD() {
+        sf::Text text;
+        text.setFont(font);
+        text.setCharacterSize(20);
+        text.setFillColor(sf::Color::White);
+        text.setString("Wave: " + std::to_string(currentWave));
+        window.draw(text);
 
-        jsonWaves["level"] = 1;
+        drawHotbar();
+    }
+
+    void MapEditorState::saveWavesToJson() {
+        nlohmann::json jsonLevels;
+
+        nlohmann::json jsonLevel;
+        jsonLevel["level_id"] = 1;
 
         for (const auto& wave : waves) {
             nlohmann::json jsonWave;
@@ -245,12 +299,14 @@ namespace rtype {
                 jsonWave["mobs"].push_back(jsonMob);
             }
 
-            jsonWaves["waves"].push_back(jsonWave);
+            jsonLevel["waves"].push_back(jsonWave);
         }
+
+        jsonLevels["levels"].push_back(jsonLevel);
 
         std::ofstream file("waves.json");
         if (file.is_open()) {
-            file << jsonWaves.dump(4);
+            file << jsonLevels.dump(4);
             file.close();
             std::cout << "Waves saved to 'waves.json'" << std::endl;
         } else {
