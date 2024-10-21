@@ -142,11 +142,12 @@ void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& player
         system.loop_movement_system(registry, deltaTime);
         system.animation_system(registry, deltaTime, window);
         system.shooting_enemy_system(registry, window);
+        system.chasing_enemy_system(registry, window);
         system.collision_system(registry, window);
         handleCollision.handle_collision(registry);
         // // fpsCounter.update();
 
-        handle_mobs_wave(registry, window);
+        // handle_mobs_wave(registry, window);
         moveView(deltaTime); // TODO: Commented out because it break the view movement in network
         handlePlayerMovement(deltaTime);
 
@@ -173,7 +174,7 @@ void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& player
         auto player = registry.spawn_entity();
         registry.emplace_component<ecs::Position>(player, 400.0f, posx);
         registry.emplace_component<ecs::Velocity>(player, 0.0f, 0.0f);
-        registry.emplace_component<ecs::Drawable>(player, path);
+        auto &draw = registry.emplace_component<ecs::Drawable>(player, path);
         if (me == true) {
         	registry.emplace_component<ecs::Controllable>(player, true, 5.0f);
         }
@@ -182,7 +183,7 @@ void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& player
         registry.emplace_component<ecs::LifeState>(player, true);
 
         auto& hitbox = registry.emplace_component<ecs::Hitbox>(player, ecs::ShapeType::Rectangle, false, true);
-        hitbox->rect = sf::RectangleShape(sf::Vector2f(50.0f, 50.0f));
+        hitbox->rect = sf::RectangleShape(sf::Vector2f(draw->sprite.getGlobalBounds().width, draw->sprite.getGlobalBounds().height));
         hitbox->rect.setOutlineColor(sf::Color::Red);
         hitbox->rect.setOutlineThickness(1.0f);
     }
