@@ -18,7 +18,8 @@ namespace ecs {
         Bullet,
         Button,
         PowerUp,
-        EnnemyBullet
+        EnnemyBullet,
+        ChargedBullet,
     };
 
     /**
