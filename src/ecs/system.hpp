@@ -32,8 +32,8 @@ namespace ecs {
          * @param registry contains all the logic of the components
          * @return void
          */
-        void control_system(Registry& reg, client::Client& network) {
-            controlSystem.update(reg, network, true);
+        void control_system(Registry& reg, client::Client& network, bool isSolo) {
+            controlSystem.update(reg, network, isSolo);
         }
 
         /**

@@ -58,7 +58,7 @@ namespace rtype {
         std::cout << "Starting the game..." << std::endl;
         sf::Shader::bind(nullptr);
         // delete the FPS counter
-        game.changeState(std::make_shared<GamePlayState>(window, network_, true)); // TODO : change to false when multiplayer is implemented
+        game.changeState(std::make_shared<GamePlayState>(window, network_, false)); // TODO : change to false when multiplayer is implemented
     }
 
     void MainMenuState::startMultiplayer() {

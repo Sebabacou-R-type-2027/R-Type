@@ -132,7 +132,7 @@ void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& player
         if (Settings::getInstance().isShaderEnabled) {
             system.shader_system(registry, window, backgroundShader);
         }
-        system.control_system(registry, network_);
+        system.control_system(registry, network_, isSolo_);
         system.position_system(registry);
 
         float deltaTime = calculateDeltaTime();
