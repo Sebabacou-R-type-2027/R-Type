@@ -24,7 +24,6 @@
             #include "components/Hitbox.hpp"
             #include "components/Button.hpp"
             #include "components/Animation.hpp"
-            #include "components/Ennemy_state.hpp"
             #include "components/Entity_type.hpp"
             #include "components/Bullet.hpp"
             #include "components/Collision_state.hpp"
@@ -32,6 +31,7 @@
             #include "components/LifeState.hpp"
             #include "components/BulletCharge.hpp"
             #include "components/Shooting.hpp"
+            #include "components/Chasing.hpp"
 
 namespace ecs {
 
@@ -189,7 +189,6 @@ class Registry {
             register_component<Hitbox>();
             register_component<Button>();
             register_component<Animation>();
-            register_component<EnemyState>();
             register_component<EntityType>();
             register_component<Bullet>();
             register_component<CollisionState>();
@@ -197,6 +196,7 @@ class Registry {
             register_component<LifeState>();
             register_component<BulletCharge>();
             register_component<Shooting>();
+            register_component<Chasing>();
         }
     private:
         std::size_t _next_entity_id = 0;
