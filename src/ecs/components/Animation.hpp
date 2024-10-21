@@ -24,7 +24,6 @@ namespace ecs {
         sf::Vector2i imageCount;
         sf::Vector2i currentImage;
         sf::Vector2i imageSize;
-        sf::Texture texture;
         float switchTime;
         float totalTime;
 
@@ -38,15 +37,16 @@ namespace ecs {
          */
         Animation(const std::string& spriteSheetPath = "", int imageCountX = 0, int imageCountY = 0, float switchTime = 0.0f)
             : imageCount(imageCountX, imageCountY), currentImage(0, 0), switchTime(switchTime), totalTime(0.0f) {
-            if (!texture.loadFromFile(spriteSheetPath)) {
+            static sf::Texture sharedTexture;
+            if (!sharedTexture.loadFromFile(spriteSheetPath)) {
                 throw std::runtime_error("Failed to load sprite sheet");
             } else {
                 std::cout << "Loaded sprite sheet" << std::endl;
             }
 
-            imageSize = sf::Vector2i(texture.getSize().x / imageCount.x, texture.getSize().y / imageCount.y);
+            imageSize = sf::Vector2i(sharedTexture.getSize().x / imageCount.x, sharedTexture.getSize().y / imageCount.y);
 
-            sprite.setTexture(texture);
+            sprite.setTexture(sharedTexture);
         }
 
         /**
