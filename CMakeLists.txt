@@ -5,34 +5,29 @@ project(R-Type)
 include(CTest)
 enable_testing()
 
-add_executable(r-type_server)
-add_executable(r-type_client)
-
-add_subdirectory(src)
-
 find_package(asio CONFIG REQUIRED)
 find_package(SFML 2.5 COMPONENTS graphics window system audio CONFIG REQUIRED)
 find_package(OpenAL REQUIRED)
 find_package(FLAC REQUIRED)
 find_package(Vorbis REQUIRED)
 
-target_link_libraries(r-type_server PRIVATE asio::asio)
-target_link_libraries(r-type_client PRIVATE asio::asio sfml-graphics sfml-window sfml-system sfml-audio)
+add_executable(r-type_server)
+add_executable(r-type_client)
+
+add_subdirectory(src)
+add_subdirectory(lib)
+
+target_link_libraries(r-type_server PRIVATE packet asio::asio)
+target_link_libraries(r-type_client PRIVATE packet asio::asio sfml-graphics sfml-window sfml-system sfml-audio)
 
 target_include_directories(r-type_server PRIVATE
     src/server
     src/server/client
-    src/share
-    src/share/packet
-    src/share/packet/packet_type
 )
 
 target_include_directories(r-type_client PRIVATE
     src/client
     src/client/networkClient
-    src/share
-    src/share/packet
-    src/share/packet/packet_type
     src/share
     src/ecs
     src/ecs/systems
