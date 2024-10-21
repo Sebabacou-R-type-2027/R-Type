@@ -10,7 +10,9 @@
 #include <unordered_map>
 #include <vector>
 
-#include "Lobby.hpp"
+#include "lobby/Lobby.hpp"
+#include "matchmaking/MatchmakingSystem.hpp"
+#include "matchmaking/MatchmakingQueue.hpp"
 #include "client/client.hpp"
 #include "client/ClientSaver.hpp"
 #include "Packet.hpp"
@@ -123,6 +125,8 @@ class UdpServer {
          */
         void start_game(const std::string& message);
         void send_message(const std::string& message, const udp::endpoint& endpoint);
+        void add_client_to_matchmaking(const udp::endpoint& client_endpoint);
+        void handle_matchmaking_queue();
 
         asio::io_context& io_context_; ///< Contexte d'entrée/sortie d'Asio.
         udp::socket socket_; ///< Socket UDP pour gérer les connexions.
@@ -139,6 +143,7 @@ class UdpServer {
         int lobby_id_ = 0; ///< Compteur d'ID pour les lobbies.
 
         std::map<std::string, std::function<void(const std::string&)>> function_map_; ///< Map des fonctions pour gérer les différents types de messages.
+        MatchmakingSystem matchmaking_system_; ///< Système de matchmaking pour gérer les parties.
 };
 
 #endif //UDPSERVER_HPP

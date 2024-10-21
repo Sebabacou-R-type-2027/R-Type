@@ -26,6 +26,7 @@ UdpServer::UdpServer(asio::io_context& io_context, short port)
     };
     message_id_counter_ = 0;
     receive_thread_ = std::thread(&UdpServer::receive_loop, this);
+    matchmaking_system_ = MatchmakingSystem();
     server_loop();
 }
 
@@ -174,6 +175,17 @@ void UdpServer::handle_receive(std::size_t bytes_transferred) {
 }
 
 /**
+* @brief add a client to the matchmaking queue
+* @param client_endpoint The endpoint of the client to add to the matchmaking queue
+*/
+void UdpServer::add_client_to_matchmaking(const udp::endpoint& client_endpoint) {
+    std::cout << "Adding client to matchmaking" << std::endl;
+    auto client = get_client(client_endpoint);
+    std::cout << "Adding client to matchmaking: " << client.get_ip() << ":" << client.get_port() << std::endl;
+    matchmaking_system_.addPlayerToQueue(client);
+}
+
+/**
  * @brief Handles a client message by processing commands or handling client connection state.
  *
  * @param message The message sent by the client.
@@ -213,6 +225,9 @@ void UdpServer::handle_client_message(const std::string& msg, const asio::ip::ud
         }
     } else if (message == "start") {
         ping_to_choose_host(remote_endpoint_);
+    } else if (message == "matchmaking") {
+        std::cout << "Adding client to matchmaking" << std::endl;
+        add_client_to_matchmaking(remote_endpoint_);
     } else {
         auto it = std::find_if(connected_clients_.begin(), connected_clients_.end(), [&client_str](const server::client& cli) {
             return cli.get_ip() + ":" + cli.get_port() == client_str;
@@ -256,6 +271,31 @@ void UdpServer::handle_client_message(const std::string& msg, const asio::ip::ud
 }
 
 /**
+ * @brief Handles the matchmaking queue by checking if there are enough players to start a game.
+ */
+void UdpServer::handle_matchmaking_queue() {
+    std::cout << "Handling matchmaking queue" << std::endl;
+    matchmaking_system_.matchPlayers();
+    std::cout << "Client Matched" << std::endl;
+    try {
+        Lobby lobby = matchmaking_system_.getLobby();
+        if (!lobby.is_empty()) {
+            std::cout << "Lobby ID: " << lobby.get_id() << std::endl;
+            std::cout << "Host: " << lobby.get_host() << std::endl;
+            std::cout << "Clients:" << std::endl;
+            for (const auto& cli : lobby.get_clients()) {
+                std::cout << "\t" << cli << std::endl;
+            }
+            lobbies_.insert(std::make_pair(lobby.get_id(), lobby));
+            ping_to_choose_host(lobby.get_host().get_endpoint());
+        }
+    } catch (const std::runtime_error& e) {
+        std::cerr << e.what() << std::endl;
+    }
+    std::cout << "Matchmaking queue handled" << std::endl;
+}
+
+/**
  * @brief Main server loop. Waits for messages and processes them.
  */
 void UdpServer::server_loop() {
@@ -280,6 +320,7 @@ void UdpServer::server_loop() {
         }
         // Call the function to handle the client message
         handle_client_message(message, client_endpoint, bytes_receive);
+        handle_matchmaking_queue();
     }
 }
 
