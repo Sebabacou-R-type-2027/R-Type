@@ -11,6 +11,7 @@
 #include "Sound_game.hpp"
 #include <SFML/Audio.hpp>
 
+#include "../power-up/powerup_system.hpp"
 
 namespace rtype::game {
     /**
@@ -42,5 +43,7 @@ namespace rtype::game {
             sf::Clock timeLimitBonus1Clock;
             float bonus1_activationTime = 0;
             const float bonus1_duration = 15.0f;
+
+            rtype::game::PowerUp powerup1;
     };
 }
