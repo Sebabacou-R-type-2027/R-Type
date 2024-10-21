@@ -1,3 +1,3 @@
-file(GLOB server *.cpp *.hpp)
+file(GLOB sources *.cpp *.hpp)
 
-set_property(GLOBAL APPEND PROPERTY SERVER_SOURCES ${server})
+target_sources(r-type_server PRIVATE ${sources})

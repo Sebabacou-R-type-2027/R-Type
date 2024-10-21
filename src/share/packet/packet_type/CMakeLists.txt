@@ -1,5 +1,4 @@
-file(GLOB client *.cpp *.hpp)
-file(GLOB server *.cpp *.hpp)
+file(GLOB sources *.cpp *.hpp)
 
-set_property(GLOBAL APPEND PROPERTY CLIENT_SOURCES ${client})
-set_property(GLOBAL APPEND PROPERTY SERVER_SOURCES ${server})
+target_sources(r-type_client PRIVATE ${sources})
+target_sources(r-type_server PRIVATE ${sources})
