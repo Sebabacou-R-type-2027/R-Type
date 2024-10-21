@@ -2,9 +2,11 @@
 /build
 /vcpkg_installed
 
-# User-specific files
-.idea
+# IDE
 /.cache
+/.idea
+/.vscode
+/.vs
 
 # Executables
 r-type_client
