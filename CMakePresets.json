@@ -10,6 +10,9 @@
             "name": "base",
             "binaryDir": "${sourceDir}/build",
             "generator": "Ninja Multi-Config",
+            "environment": {
+                "VCPKG_ROOT": "${sourceDir}/vcpkg"
+            },
             "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
             "cacheVariables": {
                 "CMAKE_CXX_STANDARD": "26",
@@ -23,9 +26,9 @@
             "name": "llvm",
             "inherits": "base",
             "environment": {
+                "CC": "clang",
                 "CXX": "clang++",
-                "CXXFLAGS": "$penv{CXXFLAGS} -stdlib=libc++",
-                "LDFLAGS": "$penv{LDFLAGS} -stdlib=libc++"
+                "CXXFLAGS": "$penv{CXXFLAGS} -stdlib=libc++"
             }
         }
     ],

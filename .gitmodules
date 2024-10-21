@@ -4,3 +4,6 @@
 [submodule "ecs"]
 	path = lib/ecs
 	url = git@github.com:Sebabacou-R-type-2027/ECS.git
+[submodule "vcpkg"]
+	path = vcpkg
+	url = https://github.com/microsoft/vcpkg
