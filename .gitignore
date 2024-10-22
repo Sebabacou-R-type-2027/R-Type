@@ -9,8 +9,9 @@
 /.vs
 
 # Executables
-r-type_client
-r-type_server
+/r-type_client
+/r-type_server
+/sample
 
 # Generated documentation
 /docs/doxygen/html
