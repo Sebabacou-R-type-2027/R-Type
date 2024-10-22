@@ -11,38 +11,34 @@ find_package(OpenAL REQUIRED)
 find_package(FLAC REQUIRED)
 find_package(Vorbis REQUIRED)
 
+# `import std;` support
+if(${CMAKE_CXX_STANDARD} IN_LIST CMAKE_CXX_COMPILER_IMPORT_STD)
+    set(CMAKE_CXX_MODULE_STD ON)
+    add_compile_definitions(__cpp_lib_modules=202207L)
+else()
+    message(WARNING "Compiler does not support `import std;`")
+endif()
+
 add_executable(r-type_server)
-add_executable(r-type_client)
 
 add_subdirectory(src)
 add_subdirectory(lib)
 
 target_link_libraries(r-type_server PRIVATE packet asio::asio)
-target_link_libraries(r-type_client PRIVATE packet asio::asio sfml-graphics sfml-window sfml-system sfml-audio)
 
 target_include_directories(r-type_server PRIVATE
     src/server
     src/server/client
 )
 
-target_include_directories(r-type_client PRIVATE
-    src/client
-    src/client/networkClient
-    src/share
-    src/ecs
-    src/ecs/systems
-    src/ecs/factories
-    src/ecs/components
-)
-
 # Symlink the executables to the root directory (Unix only)
 
 if (UNIX)
-    add_custom_target(symlink-executables ALL BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/r-type_server ${CMAKE_CURRENT_SOURCE_DIR}/r-type_client
-        COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_BINARY_DIR}/r-type_server ${CMAKE_CURRENT_SOURCE_DIR}/r-type_server
-        COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_BINARY_DIR}/r-type_client ${CMAKE_CURRENT_SOURCE_DIR}/r-type_client
+    add_custom_target(symlink-executables ALL BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/r-type_server ${CMAKE_CURRENT_SOURCE_DIR}/sample
+        COMMAND ${CMAKE_COMMAND} -E create_symlink $<TARGET_FILE:r-type_server> ${CMAKE_CURRENT_SOURCE_DIR}/r-type_server
+        COMMAND ${CMAKE_COMMAND} -E create_symlink $<TARGET_FILE:sample> ${CMAKE_CURRENT_SOURCE_DIR}/sample
     )
-    add_dependencies(symlink-executables r-type_server r-type_client)
+    add_dependencies(symlink-executables r-type_server sample)
 endif()
 
 include(CPack)
