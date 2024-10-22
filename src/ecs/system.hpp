@@ -19,6 +19,7 @@
 #include "../client/systems/shader/shader_system.hpp"
 #include "../client/systems/shooting_enemy/shooting_enemy_system.hpp"
 #include "../client/systems/chasing_enemy/chasing_enemy_system.hpp"
+#include "../client/systems/spawner_enemy/spawner_enemy_system.hpp"
 
 namespace ecs {
     /**
@@ -160,6 +161,17 @@ namespace ecs {
             chasingEnemySystem.update(reg, window);
         }
 
+        /**
+         * @brief spawner_enemy_system
+         *
+         * @param registry contains all the logic of the components
+         * @param window contains the window of the game
+         * @return void
+         */
+        void spawner_enemy_system(Registry& reg, sf::RenderWindow& window) {
+            spawnerEnemySystem.update(reg, window);
+        }
+
 private:
     systems::ControlSystem controlSystem;
     systems::DrawSystem drawSystem;
@@ -171,6 +183,7 @@ private:
     systems::ShaderSystem shaderSystem;
     systems::ShootingEnemySystem shootingEnemySystem;
     systems::ChasingEnemySystem chasingEnemySystem;
+    systems::SpawnerEnemySystem spawnerEnemySystem;
 };
 
 }

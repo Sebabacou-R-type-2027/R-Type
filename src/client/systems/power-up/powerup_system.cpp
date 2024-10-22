@@ -17,7 +17,7 @@ namespace rtype::game {
 
     void  PowerUp::update(ecs::Registry& registry) {
 
-            if (isCreate == false) {
+        if (isCreate == false) {
             auto powerup1 = registry.spawn_entity();
 
             auto &hit1 = registry.emplace_component<ecs::Hitbox>(powerup1, ecs::ShapeType::Rectangle, false);

@@ -32,6 +32,7 @@
             #include "components/BulletCharge.hpp"
             #include "components/Shooting.hpp"
             #include "components/Chasing.hpp"
+            #include "components/Spawner.hpp"
 
 namespace ecs {
 
@@ -197,6 +198,7 @@ class Registry {
             register_component<BulletCharge>();
             register_component<Shooting>();
             register_component<Chasing>();
+            register_component<Spawner>();
         }
     private:
         std::size_t _next_entity_id = 0;
