@@ -28,9 +28,9 @@ namespace rtype {
         gameView = window.getDefaultView();
         gameView.setCenter(sf::Vector2f(gameView.getSize().x / 2, gameView.getSize().y / 2));
         for (int i = 0; i - 1 != network.number_of_players_; i++) {
-            initPlayer("assets/Ship/Ship.png", posx * i + 1, true);
+            initPlayer("assets/Player/Spaceship.gif", posx * i + 1, true);
         }
-        createEnnemies.create_initial_enemies(registry, window);
+        createEnemies.create_initial_enemies(registry, window);
         initChargeBullet();
     }
 
@@ -72,8 +72,6 @@ void GamePlayState::handlePlayerMovement(float deltaTime) {
         if (!lifeState->isAlive) {
             continue;
         }
-        float viewScrollSpeed = 50.0f * deltaTime;
-        playerPos->x += viewScrollSpeed;
 
         constrainPlayerPosition(playerPos);
     }
@@ -125,7 +123,7 @@ void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& player
             }
         }
         if (check == 0) {
-            createEnnemies.create_initial_enemies(registry, window);
+            createEnemies.create_initial_enemies(registry, window);
         }
     }
     void GamePlayState::update() {
@@ -137,17 +135,16 @@ void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& player
 
         float deltaTime = calculateDeltaTime();
         bulletSystem.update(registry);
-        powerUpSystem.update(registry);
+        // powerUpSystem.update(registry);
         system.loop_movement_system(registry, deltaTime);
         system.animation_system(registry, deltaTime, window);
         system.shooting_enemy_system(registry, window);
         system.chasing_enemy_system(registry, window);
+        system.spawner_enemy_system(registry, window);
         system.collision_system(registry, window);
         handleCollision.handle_collision(registry);
-        // // fpsCounter.update();
 
-        // handle_mobs_wave(registry, window);
-        moveView(deltaTime);
+        // moveView(deltaTime);
         handlePlayerMovement(deltaTime);
 
         window.setView(gameView);
@@ -174,6 +171,7 @@ void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& player
         registry.emplace_component<ecs::Position>(player, 400.0f, posx);
         registry.emplace_component<ecs::Velocity>(player, 0.0f, 0.0f);
         auto &draw = registry.emplace_component<ecs::Drawable>(player, path);
+        draw->sprite.setScale(2.0f, 2.0f);
         if (me == true) {
         	registry.emplace_component<ecs::Controllable>(player, true, 5.0f);
         }

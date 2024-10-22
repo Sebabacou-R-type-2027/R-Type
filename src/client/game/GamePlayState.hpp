@@ -10,12 +10,12 @@
 #include "game_state.hpp"
 #include "registry.hpp"
 #include "system.hpp"
-#include "../Create_ennemies.hpp"
 #include <networkClient/Client.hpp>
 #include "../Handle_collision.hpp"
 #include "../utils/FPSCounter.hpp"
 #include "../utils/Settings.hpp"
 #include "../systems/bullet/bullet_system.hpp"
+#include "create_enemies.hpp"
 #include "../systems/power-up/powerup_system.hpp"
 
 namespace rtype {
@@ -40,7 +40,7 @@ namespace rtype {
         client::Client& network_;
         sf::View gameView;
 
-        ecs::CreateEnnemies createEnnemies; // TODO: create a system for this
+        ecs::CreateEnemies createEnemies;
         ecs::HandleCollision handleCollision; // TODO: create a system for this
 
         void initPlayer(std::string path, float posx, bool me);
