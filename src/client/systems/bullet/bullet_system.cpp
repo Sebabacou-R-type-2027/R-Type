@@ -46,8 +46,6 @@ namespace rtype::game {
 
 
                 if (timePressed > 1) {
-                    // Faire une boucle de deux segonde avec le component chargé image
-                    //puis executer le reste apres
                     sf::Time waitCharge;
                         if (check == false) {
                             clock.restart();
@@ -57,7 +55,7 @@ namespace rtype::game {
                         auto laser_charge = registry.spawn_entity();
                             Sound_game.playSound("assets/Son/laser_gun1.wav", 40);
                             registry.emplace_component<ecs::Velocity>(laser_charge, 45.0f, 0.0f);
-                            registry.emplace_component<ecs::EntityType>(laser_charge, ecs::Type::Bullet);
+                            registry.emplace_component<ecs::EntityType>(laser_charge, ecs::Type::ChargedBullet);
 
                             auto& draw = registry.emplace_component<ecs::Drawable>(laser_charge, "assets/Bullets/11.png");
                             auto &hit = registry.emplace_component<ecs::Hitbox>(laser_charge, ecs::ShapeType::Rectangle, false, true);
@@ -69,6 +67,7 @@ namespace rtype::game {
                             registry.emplace_component<ecs::BulletCharge>(laser_charge);
                             registry.emplace_component<ecs::LifeState>(laser_charge, true);
                             registry.emplace_component<ecs::CollisionState>(laser_charge, false);
+
                         }
                     }
 
