@@ -10,11 +10,9 @@
 #include "game_state.hpp"
 #include "registry.hpp"
 #include "system.hpp"
-#include "../utils/Settings.hpp"
 #include <optional>
 #include <networkClient/Client.hpp>
 #include "menu/MainMenuState.hpp"
-#include <stdexcept>
 #include <string>
 #include "../factories/button_factory.hpp"
 #include <networkClient/Client.hpp>
@@ -61,6 +59,7 @@ namespace rtype {
 
         enum InputField {ADDRESS, PORT, USERNAME, PASSWORD} activeField; // Track the active input field
 
+        void startLobby();
         void initUI(client::Client& network);
     };
 }
