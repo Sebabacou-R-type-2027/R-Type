@@ -3,6 +3,7 @@
   "name": "r-type",
   "dependencies": [
     "asio",
-    "sfml"
+    "sfml",
+    "nlohmann-json"
   ]
 }

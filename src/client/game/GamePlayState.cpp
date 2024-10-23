@@ -23,13 +23,12 @@ namespace rtype {
             throw std::runtime_error("Could not load font");
         }
 
-        // Initialize view with window size
         gameView = window.getDefaultView();
         gameView.setCenter(sf::Vector2f(gameView.getSize().x / 2, gameView.getSize().y / 2));
         for (int i = 0; i - 1 != network.number_of_players_; i++) {
             initPlayer("assets/Player/Spaceship.gif", posx * i + 1, true);
         }
-        createEnemies.create_initial_enemies(registry, window);
+        createEnemies.loadWavesFromJson(registry, window, "waves.json");
         initChargeBullet();
     }
 
@@ -125,7 +124,7 @@ void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& player
             }
         }
         if (check == 0) {
-            createEnemies.create_initial_enemies(registry, window);
+            createEnemies.loadWavesFromJson(registry, window, "waves.json");
         }
     }
     void GamePlayState::update() {
@@ -195,3 +194,4 @@ void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& player
         registry.emplace_component<ecs::Controllable>(charge_animation, true, 5.0f);
     }
 }
+

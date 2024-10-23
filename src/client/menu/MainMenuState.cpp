@@ -5,6 +5,7 @@
 #include <memory>
 #include "../game/GamePlayState.hpp"
 #include "lobby/LobbyState.hpp"
+#include "../map_editor/MapEditorState.hpp"
 
 namespace rtype {
     MainMenuState::MainMenuState(sf::RenderWindow& window, Game& game, client::Client& network)
@@ -67,6 +68,12 @@ namespace rtype {
         std::cout << "Starting multiplayer..." << std::endl;
         sf::Shader::bind(nullptr);
         game.changeState(std::make_shared<MultiplayerMenuState>(window, network_, game));
+    }
+
+    void MainMenuState::startMapEditor() {
+        std::cout << "Starting the map editor..." << std::endl;
+        sf::Shader::bind(nullptr);
+        game.changeState(std::make_shared<MapEditorState>(window));
     }
 
     void MainMenuState::startMultiplayer() {
@@ -138,7 +145,7 @@ namespace rtype {
         createButton("Settings", yPos, [this]() { startGame(); });
         yPos += button_height + spacing;
 
-        createButton("Map Editor", yPos, [this]() { startGame(); });
+        createButton("Map Editor", yPos, [this]() { startMapEditor(); });
         yPos += button_height + spacing;
 
         createButton("Game Options (ON/OFF Shader)", yPos, [this]() { Settings::getInstance().isShaderEnabled ? disableShader() : enableShader(); });

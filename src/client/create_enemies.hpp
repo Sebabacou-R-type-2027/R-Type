@@ -21,7 +21,7 @@ namespace ecs {
             ~CreateEnemies() = default;
             /**
              * @brief Create an ennemy
-             * 
+             *
              * @param registry contains all the logic of the components
              * @param x Position on the x axis
              * @param y Position on the y axis
@@ -47,7 +47,7 @@ namespace ecs {
 
             /**
              * @brief Create a shooting ennemy
-             * 
+             *
              * @param registry contains all the logic of the components
              * @param x Position on the x axis
              * @param y Position on the y axis
@@ -73,7 +73,7 @@ namespace ecs {
 
             /**
              * @brief Create a chasing ennemy
-             * 
+             *
              * @param registry contains all the logic of the components
              * @param window contains the window of the game
              * @param x Position on the x axis
@@ -99,7 +99,7 @@ namespace ecs {
 
             /**
              * @brief Create a spawner ennemy
-             * 
+             *
              * @param registry contains all the logic of the components
              * @param x Position on the x axis
              * @param y Position on the y axis
@@ -124,12 +124,14 @@ namespace ecs {
             float cooldown = 1.0f, float lastSpawn = 0.0f, float nbSpawned = 0.0f);
             /**
              * @brief Create Enemies
-             * 
+             *
              * @param registry contains all the logic of the components
              * @param window contains the window of the game
              * @return void
              */
             void create_initial_enemies(Registry& registry, sf::RenderWindow& window);
+
+            void loadWavesFromJson(Registry& registry, sf::RenderWindow& window, const std::string& filePath);
 
     };
 }
