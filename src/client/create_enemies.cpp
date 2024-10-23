@@ -22,7 +22,7 @@ namespace ecs {
         float enemyWidth = animation->imageSize.x;
         registry.emplace_component<ecs::Position>(enemy, x - enemyWidth, y);
 
-        auto& hitbox = registry.emplace_component<ecs::Hitbox>(enemy, ecs::ShapeType::Rectangle, false, true);
+        auto& hitbox = registry.emplace_component<ecs::Hitbox>(enemy, ecs::ShapeType::Rectangle, false);
         hitbox->rect = sf::RectangleShape(sf::Vector2f(animation->imageSize.x, animation->imageSize.y));
         hitbox->rect.setOutlineColor(sf::Color::Red);
         hitbox->rect.setOutlineThickness(1.0f);
@@ -47,7 +47,7 @@ namespace ecs {
         float enemyWidth = draw->sprite.getGlobalBounds().width;
         registry.emplace_component<ecs::Position>(enemy, x - enemyWidth, y);
 
-        auto& hitbox = registry.emplace_component<ecs::Hitbox>(enemy, ecs::ShapeType::Rectangle, false, true);
+        auto& hitbox = registry.emplace_component<ecs::Hitbox>(enemy, ecs::ShapeType::Rectangle, false);
         hitbox->rect = sf::RectangleShape(sf::Vector2f(draw->sprite.getGlobalBounds().width, draw->sprite.getGlobalBounds().height));
         hitbox->rect.setOutlineColor(sf::Color::Red);
         hitbox->rect.setOutlineThickness(1.0f);
@@ -73,7 +73,7 @@ namespace ecs {
         float enemyWidth = animation->imageSize.x;
         registry.emplace_component<ecs::Position>(enemy, x - enemyWidth, y);
 
-        auto& hitbox = registry.emplace_component<ecs::Hitbox>(enemy, ecs::ShapeType::Rectangle, false, true);
+        auto& hitbox = registry.emplace_component<ecs::Hitbox>(enemy, ecs::ShapeType::Rectangle, false);
         hitbox->rect = sf::RectangleShape(sf::Vector2f(animation->imageSize.x, animation->imageSize.y));
         hitbox->rect.setOutlineColor(sf::Color::Red);
         hitbox->rect.setOutlineThickness(1.0f);
@@ -99,7 +99,7 @@ namespace ecs {
         float enemyWidth = animation->imageSize.x;
         registry.emplace_component<ecs::Position>(enemy, x - enemyWidth, y);
 
-        auto& hitbox = registry.emplace_component<ecs::Hitbox>(enemy, ecs::ShapeType::Rectangle, false, true);
+        auto& hitbox = registry.emplace_component<ecs::Hitbox>(enemy, ecs::ShapeType::Rectangle, false);
         hitbox->rect = sf::RectangleShape(sf::Vector2f(animation->imageSize.x, animation->imageSize.y));
         hitbox->rect.setOutlineColor(sf::Color::Red);
         hitbox->rect.setOutlineThickness(1.0f);
