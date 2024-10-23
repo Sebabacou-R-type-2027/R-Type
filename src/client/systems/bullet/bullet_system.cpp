@@ -9,22 +9,31 @@
 #include <iostream>
 #include "Sound_game.hpp"
 #include <SFML/Audio.hpp>
-#include "components/Entity_type.hpp"
 #include "utils/CheckEntity.hpp"
 
 namespace rtype::game {
 
     void BulletSystem::update(ecs::Registry& registry) {
-        auto& positions = registry.get_components<ecs::Position>();
-        auto& velocities = registry.get_components<ecs::Velocity>();
-        auto& bullet = registry.get_components<ecs::Bullet>();
-        auto& lifestate = registry.get_components<ecs::LifeState>();
+        auto &positions = registry.get_components<ecs::Position>();
+        auto &velocities = registry.get_components<ecs::Velocity>();
+        auto &bullet = registry.get_components<ecs::Bullet>();
+        auto &lifestate = registry.get_components<ecs::LifeState>();
+        auto &entitytypes = registry.get_components<ecs::EntityType>();
+
 
         sf::Time currentTime = shootClock.getElapsedTime();
 
         bool check_charge = false;
         static sf::Clock spacePressClock; // Horloge pour mesurer le temps d'appui
         static bool isSpacePressed = false; // État précédent de la touche espace
+
+
+        //for (std::size_t j = 0; j < positions.size() && j < entitytypes.size() && j < positions.size() && j < lifestate.size(); ++j) {
+        //    if (entitytypes[j]->current_type == ecs::Type::PowerUp && positions[j]->y < -800) {
+        //        bonus1_activate = true;
+        //    }
+        //}
+
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
 
@@ -92,7 +101,7 @@ namespace rtype::game {
                     auto &hit1 = registry.emplace_component<ecs::Hitbox>(laser_entity1, ecs::ShapeType::Rectangle, false);
                     hit1->rect.setPosition(100, positions[CheckEntity(registry, ecs::Type::Player)]->y + 5);
                     hit1->rect = sf::RectangleShape(sf::Vector2f(draw1->sprite.getGlobalBounds().width, draw1->sprite.getGlobalBounds().height));
-                    registry.emplace_component<ecs::Position>(laser_entity1, positions[CheckEntity(registry, ecs::Type::Player)]->x + 40, positions[CheckEntity(registry, ecs::Type::Player)]->y - 25);
+                    registry.emplace_component<ecs::Position>(laser_entity1, positions[CheckEntity(registry, ecs::Type::Player)]->x + 80, positions[CheckEntity(registry, ecs::Type::Player)]->y - 25);
                     registry.emplace_component<ecs::Bullet>(laser_entity1);
                     registry.emplace_component<ecs::LifeState>(laser_entity1, true);
                     registry.emplace_component<ecs::CollisionState>(laser_entity1, false);
@@ -104,7 +113,7 @@ namespace rtype::game {
                     auto &hit2 = registry.emplace_component<ecs::Hitbox>(laser_entity2, ecs::ShapeType::Rectangle, false);
                     hit2->rect.setPosition(100, positions[CheckEntity(registry, ecs::Type::Player)]->y + 5);
                     hit2->rect = sf::RectangleShape(sf::Vector2f(draw2->sprite.getGlobalBounds().width, draw2->sprite.getGlobalBounds().height));
-                    registry.emplace_component<ecs::Position>(laser_entity2, positions[CheckEntity(registry, ecs::Type::Player)]->x + 40, positions[CheckEntity(registry, ecs::Type::Player)]->y + 5);
+                    registry.emplace_component<ecs::Position>(laser_entity2, positions[CheckEntity(registry, ecs::Type::Player)]->x + 80, positions[CheckEntity(registry, ecs::Type::Player)]->y + 5);
                     registry.emplace_component<ecs::Bullet>(laser_entity2);
                     registry.emplace_component<ecs::LifeState>(laser_entity2, true);
                     registry.emplace_component<ecs::CollisionState>(laser_entity2, false);
@@ -119,7 +128,7 @@ namespace rtype::game {
                     auto &hit3 = registry.emplace_component<ecs::Hitbox>(laser_entity3, ecs::ShapeType::Rectangle, false);
                     hit3->rect.setPosition(100, positions[CheckEntity(registry, ecs::Type::Player)]->y + 5);
                     hit3->rect = sf::RectangleShape(sf::Vector2f(draw3->sprite.getGlobalBounds().width, draw3->sprite.getGlobalBounds().height));
-                    registry.emplace_component<ecs::Position>(laser_entity3, positions[CheckEntity(registry, ecs::Type::Player)]->x + 40, positions[CheckEntity(registry, ecs::Type::Player)]->y + 40);
+                    registry.emplace_component<ecs::Position>(laser_entity3, positions[CheckEntity(registry, ecs::Type::Player)]->x + 80, positions[CheckEntity(registry, ecs::Type::Player)]->y + 40);
                     registry.emplace_component<ecs::Bullet>(laser_entity3);
                     registry.emplace_component<ecs::LifeState>(laser_entity3, true);
                     registry.emplace_component<ecs::CollisionState>(laser_entity3, false);
@@ -149,7 +158,7 @@ namespace rtype::game {
                     hit->rect.setOutlineColor(sf::Color::Red);
                     hit->rect.setOutlineThickness(1.0f);
 
-                    registry.emplace_component<ecs::Position>(laser_entity, positions[CheckEntity(registry, ecs::Type::Player)]->x + 85, positions[CheckEntity(registry, ecs::Type::Player)]->y + 15); // Use player position
+                    registry.emplace_component<ecs::Position>(laser_entity, positions[CheckEntity(registry, ecs::Type::Player)]->x + 120, positions[CheckEntity(registry, ecs::Type::Player)]->y + 15); // Use player position
                     registry.emplace_component<ecs::Bullet>(laser_entity);
                     registry.emplace_component<ecs::LifeState>(laser_entity, true);
                     registry.emplace_component<ecs::CollisionState>(laser_entity, false);
