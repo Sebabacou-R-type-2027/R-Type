@@ -1,10 +1,14 @@
 var searchData=
 [
-  ['second_0',['second',['https://en.cppreference.com/w/cpp/utility/pair.html',1,'std::pair']]],
-  ['serveraddress_1',['serverAddress',['../df/d9a/classSettings.html#a61493f96136f5ae4ecfbf11637cdbb38',1,'Settings']]],
-  ['serverport_2',['serverPort',['../df/d9a/classSettings.html#a9bacb7d47cf5ad932376154827775fd9',1,'Settings']]],
-  ['shape_3',['shape',['../d3/d6d/structecs_1_1Hitbox.html#a32c2bb78cf6ac5108b639adea2881b53',1,'ecs::Hitbox']]],
-  ['speed_4',['speed',['../d3/d7e/structecs_1_1Chasing.html#a62a749f185b9046711db66b013f96faa',1,'ecs::Chasing::speed()'],['../d6/d35/structecs_1_1LoopMovement.html#aaa35b8b3282abe1fc2c6385858d32632',1,'ecs::LoopMovement::speed()'],['../da/ddb/structecs_1_1Controllable.html#a12719f9257f3ae80007242ec04efd630',1,'ecs::Controllable::speed()']]],
-  ['sprite_5',['sprite',['../d2/d1d/structecs_1_1Animation.html#a98697ad61e3d1a93265f852144abc776',1,'ecs::Animation::sprite()'],['../d1/d72/structecs_1_1Drawable.html#a552d4f1dbe49068b617a16f00cebe3fa',1,'ecs::Drawable::sprite()']]],
-  ['switchtime_6',['switchTime',['../d2/d1d/structecs_1_1Animation.html#a23cc3a1dd887bcb377bef00974d88434',1,'ecs::Animation']]]
+  ['radius_0',['radius',['../d6/d35/structecs_1_1LoopMovement.html#a1c195ddbeb1f25483ff97101c0a8992c',1,'ecs::LoopMovement']]],
+  ['rank_5fv_1',['rank_v',['https://en.cppreference.com/w/cpp/types/rank.html',1,'std::rank_v()'],['https://en.cppreference.com/w/cpp/experimental/type_trait_variable_templates.html',1,'std::experimental::rank_v()']]],
+  ['ratio_5fequal_5fv_2',['ratio_equal_v',['https://en.cppreference.com/w/cpp/numeric/ratio/ratio_equal.html',1,'std::ratio_equal_v()'],['https://en.cppreference.com/w/cpp/experimental/type_trait_variable_templates.html',1,'std::experimental::ratio_equal_v()']]],
+  ['ratio_5fgreater_5fequal_5fv_3',['ratio_greater_equal_v',['https://en.cppreference.com/w/cpp/numeric/ratio/ratio_greater_equal.html',1,'std::ratio_greater_equal_v()'],['https://en.cppreference.com/w/cpp/experimental/type_trait_variable_templates.html',1,'std::experimental::ratio_greater_equal_v()']]],
+  ['ratio_5fgreater_5fv_4',['ratio_greater_v',['https://en.cppreference.com/w/cpp/experimental/type_trait_variable_templates.html',1,'std::experimental::ratio_greater_v()'],['https://en.cppreference.com/w/cpp/numeric/ratio/ratio_greater.html',1,'std::ratio_greater_v()']]],
+  ['ratio_5fless_5fequal_5fv_5',['ratio_less_equal_v',['https://en.cppreference.com/w/cpp/experimental/type_trait_variable_templates.html',1,'std::experimental::ratio_less_equal_v()'],['https://en.cppreference.com/w/cpp/numeric/ratio/ratio_less_equal.html',1,'std::ratio_less_equal_v()']]],
+  ['ratio_5fless_5fv_6',['ratio_less_v',['https://en.cppreference.com/w/cpp/experimental/type_trait_variable_templates.html',1,'std::experimental::ratio_less_v()'],['https://en.cppreference.com/w/cpp/numeric/ratio/ratio_less.html',1,'std::ratio_less_v()']]],
+  ['ratio_5fnot_5fequal_5fv_7',['ratio_not_equal_v',['https://en.cppreference.com/w/cpp/experimental/type_trait_variable_templates.html',1,'std::experimental::ratio_not_equal_v()'],['https://en.cppreference.com/w/cpp/numeric/ratio/ratio_not_equal.html',1,'std::ratio_not_equal_v()']]],
+  ['rect_8',['rect',['../d3/d6d/structecs_1_1Hitbox.html#a72c45e84848c2b4f14670026791aaa0a',1,'ecs::Hitbox::rect()'],['../d8/d3c/structecs_1_1TextBox.html#a9b8ccce71768440f3dacd54b54bfc56a',1,'ecs::TextBox::rect()'],['../dc/d14/structecs_1_1Button.html#ae592a5e2aea62c4274a3c1e2bebf92f9',1,'ecs::Button::rect()']]],
+  ['rectangle_9',['rectangle',['../d1/d72/structecs_1_1Drawable.html#a41d9b879b91b40c78af45d79d9184225',1,'ecs::Drawable']]],
+  ['rem_10',['rem',['https://en.cppreference.com/w/cpp/numeric/math/div.html',1,'std::lldiv_t::rem()'],['https://en.cppreference.com/w/cpp/numeric/math/div.html',1,'std::ldiv_t::rem()'],['https://en.cppreference.com/w/cpp/numeric/math/div.html',1,'std::imaxdiv_t::rem()'],['https://en.cppreference.com/w/cpp/numeric/math/div.html',1,'std::div_t::rem()']]]
 ];

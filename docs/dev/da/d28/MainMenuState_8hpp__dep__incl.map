@@ -1,8 +1,9 @@
 <map id="client/menu/MainMenuState.hpp" name="client/menu/MainMenuState.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="453,5,687,31"/>
+<area shape="rect" id="node1" title=" " alt="" coords="559,5,792,31"/>
 <area shape="rect" id="node2" href="$d0/dc4/Game_8cpp.html" title=" " alt="" coords="5,86,175,111"/>
 <area shape="rect" id="node3" href="$d0/d5f/GamePlayState_8cpp.html" title=" " alt="" coords="199,86,429,111"/>
-<area shape="rect" id="node4" href="$d1/d65/MainMenuState_8cpp.html" title=" " alt="" coords="454,86,686,111"/>
-<area shape="rect" id="node5" href="$d0/d5f/MultiplayerMenuState_8hpp.html" title=" " alt="" coords="711,79,909,119"/>
-<area shape="rect" id="node6" href="$db/da8/MultiplayerMenuState_8cpp.html" title=" " alt="" coords="711,167,909,207"/>
+<area shape="rect" id="node4" href="$d2/d8d/LobbyState_8cpp.html" title=" " alt="" coords="454,86,657,111"/>
+<area shape="rect" id="node5" href="$d1/d65/MainMenuState_8cpp.html" title=" " alt="" coords="681,86,913,111"/>
+<area shape="rect" id="node6" href="$d0/d5f/MultiplayerMenuState_8hpp.html" title=" " alt="" coords="937,79,1136,119"/>
+<area shape="rect" id="node7" href="$db/da8/MultiplayerMenuState_8cpp.html" title=" " alt="" coords="938,167,1135,207"/>
 </map>

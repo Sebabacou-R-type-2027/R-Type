@@ -7,8 +7,9 @@ var searchData=
   ['color_4',['color',['../d1/d72/structecs_1_1Drawable.html#afaf4c349aff60ccd85cf2d225e88b492',1,'ecs::Drawable']]],
   ['conjunction_5fv_5',['conjunction_v',['https://en.cppreference.com/w/cpp/types/conjunction.html',1,'std']]],
   ['cooldown_6',['cooldown',['../d2/d49/structecs_1_1Shooting.html#acb49ccb002a0d8432bdcafd7858104ff',1,'ecs::Shooting::cooldown()'],['../dc/d73/structecs_1_1Spawner.html#a8f656505cb1b84d2c1a9dda5715b91bd',1,'ecs::Spawner::cooldown()']]],
-  ['current_5fstate_7',['current_state',['../d6/dbb/structecs_1_1GameStateComponent.html#afb754f98a7854fad22baf3b8ce8c46e3',1,'ecs::GameStateComponent']]],
-  ['current_5ftype_8',['current_type',['../d1/dde/structecs_1_1EntityType.html#aefc921f1fe45c8479f6290f623c10694',1,'ecs::EntityType']]],
-  ['currentimage_9',['currentImage',['../d2/d1d/structecs_1_1Animation.html#a186c1051c738d6a1cf6605b4a6e76120',1,'ecs::Animation']]],
-  ['currenttext_10',['currentText',['../d0/dd0/classecs_1_1ButtonFactory.html#a2c3a4a0eaa345465106630918a38a591',1,'ecs::ButtonFactory::currentText()'],['../db/d6d/classecs_1_1TextBoxFactory.html#aebce4badbf2db1fd33b0e18bc7a985ad',1,'ecs::TextBoxFactory::currentText()']]]
+  ['createlobbyid_7',['CreateLobbyID',['../df/d9a/classSettings.html#a4c9afab1034882b0ec49de7ebfb71509',1,'Settings']]],
+  ['current_5fstate_8',['current_state',['../d6/dbb/structecs_1_1GameStateComponent.html#afb754f98a7854fad22baf3b8ce8c46e3',1,'ecs::GameStateComponent']]],
+  ['current_5ftype_9',['current_type',['../d1/dde/structecs_1_1EntityType.html#aefc921f1fe45c8479f6290f623c10694',1,'ecs::EntityType']]],
+  ['currentimage_10',['currentImage',['../d2/d1d/structecs_1_1Animation.html#a186c1051c738d6a1cf6605b4a6e76120',1,'ecs::Animation']]],
+  ['currenttext_11',['currentText',['../d0/dd0/classecs_1_1ButtonFactory.html#a2c3a4a0eaa345465106630918a38a591',1,'ecs::ButtonFactory::currentText()'],['../db/d6d/classecs_1_1TextBoxFactory.html#aebce4badbf2db1fd33b0e18bc7a985ad',1,'ecs::TextBoxFactory::currentText()']]]
 ];

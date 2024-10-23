@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['onclick_0',['onClick',['../dc/d14/structecs_1_1Button.html#a3b51febebe29a01efd1c6f4156953793',1,'ecs::Button::onClick()'],['../d8/d3c/structecs_1_1TextBox.html#afda19ed2d5df6f4c3795af762325d8cb',1,'ecs::TextBox::onClick()']]]
+  ['nbspawned_0',['nbSpawned',['../dc/d73/structecs_1_1Spawner.html#aa94331e5f0e8fc0dc9f9a1808e95c444',1,'ecs::Spawner']]],
+  ['negation_5fv_1',['negation_v',['https://en.cppreference.com/w/cpp/types/negation.html',1,'std']]],
+  ['number_5fof_5fplayers_5f_2',['number_of_players_',['../dc/d87/classclient_1_1Client.html#a29cc326f4b7582d6ab40197eab3186a3',1,'client::Client']]]
 ];

@@ -1,4 +1,6 @@
 <map id="client/lobby/LobbyState.hpp" name="client/lobby/LobbyState.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,208,31"/>
-<area shape="rect" id="node2" href="$d2/d8d/LobbyState_8cpp.html" title=" " alt="" coords="5,79,208,104"/>
+<area shape="rect" id="node1" title=" " alt="" coords="247,5,449,31"/>
+<area shape="rect" id="node2" href="$d2/d8d/LobbyState_8cpp.html" title=" " alt="" coords="5,86,208,111"/>
+<area shape="rect" id="node3" href="$d1/d65/MainMenuState_8cpp.html" title=" " alt="" coords="232,86,464,111"/>
+<area shape="rect" id="node4" href="$db/da8/MultiplayerMenuState_8cpp.html" title=" " alt="" coords="488,79,685,119"/>
 </map>
