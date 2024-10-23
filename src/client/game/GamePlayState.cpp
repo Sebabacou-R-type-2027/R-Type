@@ -143,7 +143,7 @@ void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& player
         system.collision_system(registry, window);
         handleCollision.handle_collision(registry);
 
-        handle_mobs_wave(registry, window);
+        // handle_mobs_wave(registry, window);
         moveView(deltaTime);
         handlePlayerMovement(deltaTime);
 

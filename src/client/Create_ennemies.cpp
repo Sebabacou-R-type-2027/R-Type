@@ -118,14 +118,17 @@ namespace ecs {
 
             for (const auto& wave : level["waves"]) {
                 if (!wave.contains("mobs")) {
-                    std::cerr << "Invalid JSON format: missing 'mobs' key in wave" << std::endl;
+                    // std::cerr << "Invalid JSON format: missing 'mobs' key in wave" << std::endl;
                     continue;
                 }
 
                 for (const auto& mob : wave["mobs"]) {
                     std::string type = mob["type"];
+                    int wave_id = wave["wave_id"];
+                    std::cout << "Wave ID: " << wave_id << std::endl;
                     float x = mob["x"];
                     float y = mob["y"];
+                    x += wave_id * 1920.0f;
                     float speed = 100.0f;
                     std::string texturePath = (type == "enemy1") ? "assets/sprites/r-type-enemy.gif" : "assets/shooting_enemy.png";
 

@@ -29,12 +29,12 @@ namespace ecs {
                         && entitytypes[i]->current_type != entitytypes[j]->current_type
                         && lifestates[i]->isAlive && lifestates[j]->isAlive) {
                             // create_explosion(registry, positions[i]->x, positions[i]->y);
-                            lifestates[i]->isAlive = false;
-                            lifestates[j]->isAlive = false;
-                            positions[i]->x = -1000;
-                            positions[j]->x = -1000;
-                            positions[i]->y = -1000;
-                            positions[j]->y = -1000;
+                            // lifestates[i]->isAlive = false;
+                            // lifestates[j]->isAlive = false;
+                            // positions[i]->x = -1000;
+                            // positions[j]->x = -1000;
+                            // positions[i]->y = -1000;
+                            // positions[j]->y = -1000;
                         }
     }
 }
