@@ -566,7 +566,6 @@ void UdpServer::handle_disconnect(const udp::endpoint& client_endpoint) {
         std::cout << "Client not found: " << client_address << ":" << client_port << std::endl;
     }
 }
-
 /**
  * @brief Sends a ping message to a client to measure latency.
  *
