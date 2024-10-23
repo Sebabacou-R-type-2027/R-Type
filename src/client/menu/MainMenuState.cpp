@@ -21,7 +21,7 @@ namespace rtype {
     void MainMenuState::handleInput() {
         sf::Event event;
         while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+            if (event.type == sf::Event::Closed) {
                 window.close();
             }
         }
@@ -58,13 +58,13 @@ namespace rtype {
         std::cout << "Starting the game..." << std::endl;
         sf::Shader::bind(nullptr);
         // delete the FPS counter
-        game.changeState(std::make_shared<GamePlayState>(window, network_, true)); // TODO : change to false when multiplayer is implemented
+        game.changeState(std::make_shared<GamePlayState>(window, network_, true, game)); // TODO : change to false when multiplayer is implemented
     }
 
     void MainMenuState::startMultiplayer() {
         std::cout << "Starting multiplayer..." << std::endl;
         sf::Shader::bind(nullptr);
-        game.changeState(std::make_shared<MultiplayerMenuState>(window, network_));
+        game.changeState(std::make_shared<MultiplayerMenuState>(window, network_, game));
     }
 
     void MainMenuState::disableShader() {
