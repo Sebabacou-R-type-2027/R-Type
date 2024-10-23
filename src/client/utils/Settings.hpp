@@ -8,11 +8,15 @@
 #ifndef SETTINGS_HPP
 #define SETTINGS_HPP
 
+#include <string>
+
 class Settings {
 public:
-    bool isShaderEnabled = true;
+    bool isShaderEnabled = false;
     std::string serverAddress = "";
     int serverPort = 0;
+    std::string username = "";
+    std::string password = "";
 
     static Settings& getInstance() {
         static Settings instance;
