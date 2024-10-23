@@ -165,6 +165,8 @@ namespace server {
             std::chrono::steady_clock::time_point get_last_ping_time() const;
             void set_latency(long latency);
             long get_latency() const;
+            void set_lobby_id(int lobby_id);
+            int get_lobby_id() const;
 
         private:
             /// \brief Generate a unique id for the client
@@ -185,6 +187,7 @@ namespace server {
             bool is_ready_ = false; ///< True if the client is ready
             std::chrono::steady_clock::time_point last_ping_time_;
             long latency_;
+            int lobby_id_;
 
         };
 }
