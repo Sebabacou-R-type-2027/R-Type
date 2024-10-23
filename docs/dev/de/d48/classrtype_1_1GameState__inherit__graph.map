@@ -1,6 +1,7 @@
 <map id="rtype::GameState" name="rtype::GameState">
-<area shape="rect" id="node1" title="Class that contains the state of the game." alt="" coords="210,5,347,31"/>
-<area shape="rect" id="node2" href="$d5/dcf/classrtype_1_1GamePlayState.html" title=" " alt="" coords="5,79,171,104"/>
-<area shape="rect" id="node3" href="$de/df4/classrtype_1_1MainMenuState.html" title="Class that contains the logic of the main menu state." alt="" coords="195,79,362,104"/>
-<area shape="rect" id="node4" href="$de/d5e/classrtype_1_1MultiplayerMenuState.html" title=" " alt="" coords="387,79,595,104"/>
+<area shape="rect" id="node1" title="Class that contains the state of the game." alt="" coords="5,80,143,105"/>
+<area shape="rect" id="node2" href="$d5/dcf/classrtype_1_1GamePlayState.html" title=" " alt="" coords="212,5,377,31"/>
+<area shape="rect" id="node3" href="$de/d85/classrtype_1_1LobbyState.html" title="Class that contains the logic of the main menu state." alt="" coords="226,55,363,80"/>
+<area shape="rect" id="node4" href="$de/df4/classrtype_1_1MainMenuState.html" title="Class that contains the logic of the main menu state." alt="" coords="211,104,378,129"/>
+<area shape="rect" id="node5" href="$de/d5e/classrtype_1_1MultiplayerMenuState.html" title=" " alt="" coords="191,153,399,179"/>
 </map>

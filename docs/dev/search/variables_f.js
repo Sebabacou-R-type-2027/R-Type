@@ -1,9 +1,10 @@
 var searchData=
 [
-  ['text_0',['text',['../dc/d14/structecs_1_1Button.html#acd7f56591262e77b09c7ad3f4ba4d417',1,'ecs::Button::text()'],['../d8/d3c/structecs_1_1TextBox.html#a8f8364be7088f7215bfa80b72075746e',1,'ecs::TextBox::text()'],['../d1/d72/structecs_1_1Drawable.html#ae662c73a36f16d5200dedade086ac1c5',1,'ecs::Drawable::text()']]],
-  ['texture_1',['texture',['../d1/d72/structecs_1_1Drawable.html#a049bf3d34060bb200747a522f4c57ef9',1,'ecs::Drawable']]],
-  ['texture_5frect_2',['texture_rect',['../d1/d72/structecs_1_1Drawable.html#a10f453409c5ac34ea5bcea5ef0eb79e9',1,'ecs::Drawable']]],
-  ['totaltime_3',['totalTime',['../d2/d1d/structecs_1_1Animation.html#a4077c10ed92c1ccc83c64f9fee6e18b3',1,'ecs::Animation']]],
-  ['treat_5fas_5ffloating_5fpoint_5fv_4',['treat_as_floating_point_v',['https://en.cppreference.com/w/cpp/chrono/treat_as_floating_point.html',1,'std::chrono::treat_as_floating_point_v()'],['https://en.cppreference.com/w/cpp/experimental/type_trait_variable_templates.html',1,'std::experimental::treat_as_floating_point_v()']]],
-  ['tuple_5fsize_5fv_5',['tuple_size_v',['https://en.cppreference.com/w/cpp/utility/tuple/tuple_size.html',1,'std::tuple_size_v()'],['https://en.cppreference.com/w/cpp/experimental/type_trait_variable_templates.html',1,'std::experimental::tuple_size_v()']]]
+  ['second_0',['second',['https://en.cppreference.com/w/cpp/utility/pair.html',1,'std::pair']]],
+  ['serveraddress_1',['serverAddress',['../df/d9a/classSettings.html#a61493f96136f5ae4ecfbf11637cdbb38',1,'Settings']]],
+  ['serverport_2',['serverPort',['../df/d9a/classSettings.html#a9bacb7d47cf5ad932376154827775fd9',1,'Settings']]],
+  ['shape_3',['shape',['../d3/d6d/structecs_1_1Hitbox.html#a32c2bb78cf6ac5108b639adea2881b53',1,'ecs::Hitbox']]],
+  ['speed_4',['speed',['../d3/d7e/structecs_1_1Chasing.html#a62a749f185b9046711db66b013f96faa',1,'ecs::Chasing::speed()'],['../d6/d35/structecs_1_1LoopMovement.html#aaa35b8b3282abe1fc2c6385858d32632',1,'ecs::LoopMovement::speed()'],['../da/ddb/structecs_1_1Controllable.html#a12719f9257f3ae80007242ec04efd630',1,'ecs::Controllable::speed()']]],
+  ['sprite_5',['sprite',['../d2/d1d/structecs_1_1Animation.html#a98697ad61e3d1a93265f852144abc776',1,'ecs::Animation::sprite()'],['../d1/d72/structecs_1_1Drawable.html#a552d4f1dbe49068b617a16f00cebe3fa',1,'ecs::Drawable::sprite()']]],
+  ['switchtime_6',['switchTime',['../d2/d1d/structecs_1_1Animation.html#a23cc3a1dd887bcb377bef00974d88434',1,'ecs::Animation']]]
 ];

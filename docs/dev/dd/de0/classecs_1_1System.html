@@ -113,9 +113,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:abaf6839fb563cc72af2dfee08854a0b7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/de0/classecs_1_1System.html#abaf6839fb563cc72af2dfee08854a0b7">collision_system</a> (<a class="el" href="../../df/dcd/classecs_1_1Registry.html">Registry</a> &amp;reg, sf::RenderWindow &amp;window)</td></tr>
 <tr class="memdesc:abaf6839fb563cc72af2dfee08854a0b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">collision_system  <br /></td></tr>
 <tr class="separator:abaf6839fb563cc72af2dfee08854a0b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8fb6100aacd60d6d87c623daa2a0202d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/de0/classecs_1_1System.html#a8fb6100aacd60d6d87c623daa2a0202d">enemy_state_system</a> (<a class="el" href="../../df/dcd/classecs_1_1Registry.html">Registry</a> &amp;reg, float deltaTime)</td></tr>
-<tr class="memdesc:a8fb6100aacd60d6d87c623daa2a0202d"><td class="mdescLeft">&#160;</td><td class="mdescRight">enemy_state_system  <br /></td></tr>
-<tr class="separator:a8fb6100aacd60d6d87c623daa2a0202d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a33ca3b0e7c2f07a1a642a792f8f1d129"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/de0/classecs_1_1System.html#a33ca3b0e7c2f07a1a642a792f8f1d129">shader_system</a> (<a class="el" href="../../df/dcd/classecs_1_1Registry.html">Registry</a> &amp;reg, sf::RenderWindow &amp;window, sf::Shader &amp;shader)</td></tr>
 <tr class="memdesc:a33ca3b0e7c2f07a1a642a792f8f1d129"><td class="mdescLeft">&#160;</td><td class="mdescRight">shader_system  <br /></td></tr>
 <tr class="separator:a33ca3b0e7c2f07a1a642a792f8f1d129"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -125,6 +122,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:afd04e716fd20e5150dd8c787f94af8a6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/de0/classecs_1_1System.html#afd04e716fd20e5150dd8c787f94af8a6">shooting_enemy_system</a> (<a class="el" href="../../df/dcd/classecs_1_1Registry.html">Registry</a> &amp;reg, sf::RenderWindow &amp;window)</td></tr>
 <tr class="memdesc:afd04e716fd20e5150dd8c787f94af8a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">shooting_enemy_system  <br /></td></tr>
 <tr class="separator:afd04e716fd20e5150dd8c787f94af8a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a115e876117320cf6e54877fe1cb3921b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/de0/classecs_1_1System.html#a115e876117320cf6e54877fe1cb3921b">chasing_enemy_system</a> (<a class="el" href="../../df/dcd/classecs_1_1Registry.html">Registry</a> &amp;reg, sf::RenderWindow &amp;window)</td></tr>
+<tr class="memdesc:a115e876117320cf6e54877fe1cb3921b"><td class="mdescLeft">&#160;</td><td class="mdescRight">chasing_enemy_system  <br /></td></tr>
+<tr class="separator:a115e876117320cf6e54877fe1cb3921b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab6d570690178f3fad9d5eab9d089ffcb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/de0/classecs_1_1System.html#ab6d570690178f3fad9d5eab9d089ffcb">spawner_enemy_system</a> (<a class="el" href="../../df/dcd/classecs_1_1Registry.html">Registry</a> &amp;reg, sf::RenderWindow &amp;window)</td></tr>
+<tr class="memdesc:ab6d570690178f3fad9d5eab9d089ffcb"><td class="mdescLeft">&#160;</td><td class="mdescRight">spawner_enemy_system  <br /></td></tr>
+<tr class="separator:ab6d570690178f3fad9d5eab9d089ffcb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Class that contains all the systems. </p>
@@ -274,6 +277,52 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a115e876117320cf6e54877fe1cb3921b" name="a115e876117320cf6e54877fe1cb3921b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a115e876117320cf6e54877fe1cb3921b">&#9670;&#160;</a></span>chasing_enemy_system()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ecs::System::chasing_enemy_system </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../df/dcd/classecs_1_1Registry.html">Registry</a> &amp;&#160;</td>
+          <td class="paramname"><em>reg</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">sf::RenderWindow &amp;&#160;</td>
+          <td class="paramname"><em>window</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>chasing_enemy_system </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">registry</td><td>contains all the logic of the components </td></tr>
+    <tr><td class="paramname">window</td><td>contains the window of the game </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>void </dd></dl>
+
+</div>
+</div>
 <a id="abaf6839fb563cc72af2dfee08854a0b7" name="abaf6839fb563cc72af2dfee08854a0b7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abaf6839fb563cc72af2dfee08854a0b7">&#9670;&#160;</a></span>collision_system()</h2>
 
@@ -404,52 +453,6 @@ Public Member Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">registry</td><td>contains all the logic of the components </td></tr>
     <tr><td class="paramname">window</td><td>contains the window of the game </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>void </dd></dl>
-
-</div>
-</div>
-<a id="a8fb6100aacd60d6d87c623daa2a0202d" name="a8fb6100aacd60d6d87c623daa2a0202d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8fb6100aacd60d6d87c623daa2a0202d">&#9670;&#160;</a></span>enemy_state_system()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void ecs::System::enemy_state_system </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="../../df/dcd/classecs_1_1Registry.html">Registry</a> &amp;&#160;</td>
-          <td class="paramname"><em>reg</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>deltaTime</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>enemy_state_system </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">registry</td><td>contains all the logic of the components </td></tr>
-    <tr><td class="paramname">deltaTime</td><td>contains the time between two frames </td></tr>
   </table>
   </dd>
 </dl>
@@ -679,6 +682,52 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>shooting_enemy_system </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">registry</td><td>contains all the logic of the components </td></tr>
+    <tr><td class="paramname">window</td><td>contains the window of the game </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>void </dd></dl>
+
+</div>
+</div>
+<a id="ab6d570690178f3fad9d5eab9d089ffcb" name="ab6d570690178f3fad9d5eab9d089ffcb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab6d570690178f3fad9d5eab9d089ffcb">&#9670;&#160;</a></span>spawner_enemy_system()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ecs::System::spawner_enemy_system </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../df/dcd/classecs_1_1Registry.html">Registry</a> &amp;&#160;</td>
+          <td class="paramname"><em>reg</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">sf::RenderWindow &amp;&#160;</td>
+          <td class="paramname"><em>window</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>spawner_enemy_system </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">registry</td><td>contains all the logic of the components </td></tr>
