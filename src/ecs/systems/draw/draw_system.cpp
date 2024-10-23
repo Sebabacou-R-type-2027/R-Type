@@ -70,22 +70,22 @@ namespace ecs::systems {
             }
         }
 
-        // sf::Font font;
-        // if (!font.loadFromFile("assets/fonts/arial.ttf")) {
-        //     std::cerr << "Failed to load font!" << std::endl;
-        //     return;
-        // }
-        // for (std::size_t i = 0; i < hitboxes.size(); ++i) {
-        //     if (hitboxes[i] && positions[i] && hitboxes[i]->debugdisplay) {
-        //         auto &rect = hitboxes[i]->rect;
-        //         rect.setFillColor(sf::Color::Transparent);
-        //         rect.setPosition(positions[i]->x, positions[i]->y);
-        //         sf::Text text(std::to_string(i), font, 12);
-        //         text.setPosition(positions[i]->x, positions[i]->y);
-        //         window.draw(text);
-        //         window.draw(rect);
-        //     }
-        // }
+        sf::Font font;
+        if (!font.loadFromFile("assets/fonts/arial.ttf")) {
+            std::cerr << "Failed to load font!" << std::endl;
+            return;
+        }
+        for (std::size_t i = 0; i < hitboxes.size(); ++i) {
+            if (hitboxes[i] && positions[i] && hitboxes[i]->debugdisplay) {
+                auto &rect = hitboxes[i]->rect;
+                rect.setFillColor(sf::Color::Transparent);
+                rect.setPosition(positions[i]->x, positions[i]->y);
+                sf::Text text(std::to_string(i), font, 12);
+                text.setPosition(positions[i]->x, positions[i]->y);
+                window.draw(text);
+                window.draw(rect);
+            }
+        }
     }
 }
 

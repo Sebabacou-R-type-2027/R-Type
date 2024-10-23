@@ -23,18 +23,42 @@ namespace ecs {
 
         for (std::size_t i = 0; i < collisionstates.size() && i < entitytypes.size() && i < positions.size() && i < lifestates.size(); ++i)
             if (collisionstates[i] && collisionstates[i]->active)
-                for (std::size_t j = 0; j < collisionstates.size() && j < entitytypes.size() && j < positions.size() && j < lifestates.size(); ++j)
+                for (std::size_t j = 0; j < collisionstates.size() && j < entitytypes.size() && j < positions.size() && j < lifestates.size(); ++j) {
                     if (collisionstates[j] && collisionstates[j]->active
                         && i < entitytypes.size() && j < entitytypes.size()
                         && entitytypes[i]->current_type != entitytypes[j]->current_type
-                        && lifestates[i]->isAlive && lifestates[j]->isAlive) {
+                        && lifestates[i]->isAlive && lifestates[j]->isAlive && entitytypes[i]->current_type == ecs::Type::ChargedBullet) {
                             // create_explosion(registry, positions[i]->x, positions[i]->y);
-                            // lifestates[i]->isAlive = false;
-                            // lifestates[j]->isAlive = false;
-                            // positions[i]->x = -1000;
-                            // positions[j]->x = -1000;
-                            // positions[i]->y = -1000;
-                            // positions[j]->y = -1000;
+                            lifestates[j]->isAlive = false;
+                            positions[j]->x = -1000;
+                            positions[j]->y = -1000;
+                            continue;
                         }
+                    if (collisionstates[j] && collisionstates[j]->active
+                        && i < entitytypes.size() && j < entitytypes.size()
+                        && entitytypes[i]->current_type != entitytypes[j]->current_type
+                        && lifestates[i]->isAlive && lifestates[j]->isAlive && entitytypes[j]->current_type == ecs::Type::ChargedBullet) {
+                            // create_explosion(registry, positions[i]->x, positions[i]->y);
+                            lifestates[i]->isAlive = false;
+                            positions[i]->x = -1000;
+                            positions[i]->y = -1000;
+                            continue;
+                        }
+
+                    if (collisionstates[j] && collisionstates[j]->active
+                        && i < entitytypes.size() && j < entitytypes.size()
+                        && entitytypes[i]->current_type != entitytypes[j]->current_type
+                        && lifestates[i]->isAlive && lifestates[j]->isAlive && (entitytypes[i]->current_type != ecs::Type::ChargedBullet && entitytypes[j]->current_type != ecs::Type::ChargedBullet)) {
+                            // create_explosion(registry, positions[i]->x, positions[i]->y);
+                            lifestates[i]->isAlive = false;
+                            positions[i]->x = -1000;
+                            positions[i]->y = -1000;
+
+                            lifestates[j]->isAlive = false;
+                            positions[j]->x = -1000;
+                            positions[j]->y = -1000;
+                            continue;
+                        }
+                }
     }
 }

@@ -7,7 +7,6 @@
 
 #include "Game.hpp"
 #include "../menu/MainMenuState.hpp"
-#include "GamePlayState.hpp"
 #include "Sound_game.hpp"
 
 namespace rtype {
