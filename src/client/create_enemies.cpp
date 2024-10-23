@@ -6,6 +6,8 @@
 */
 
 #include "create_enemies.hpp"
+#include <nlohmann/json.hpp>
+#include <fstream>
 
 namespace ecs {
     void CreateEnemies::create_classic_enemy(Registry& registry,
@@ -166,6 +168,55 @@ namespace ecs {
                 0.0f,                            // radius (no sinusoidal movement)
                 0.0f,
                 100.0f, 2.0f, 5.0f);                            // angular_speed (no sinusoidal movement)
+        }
+    }
+
+
+    void CreateEnemies::loadWavesFromJson(Registry& registry, sf::RenderWindow& window, const std::string& filePath)
+    {
+        std::ifstream file(filePath);
+        if (!file.is_open()) {
+            std::cerr << "Failed to open file: " << filePath << std::endl;
+            return;
+        }
+
+        nlohmann::json jsonData;
+        file >> jsonData;
+
+        if (!jsonData.contains("levels")) {
+            std::cerr << "Invalid JSON format: missing 'levels' key" << std::endl;
+            return;
+        }
+
+        for (const auto& level : jsonData["levels"]) {
+            if (!level.contains("waves")) {
+                std::cerr << "Invalid JSON format: missing 'waves' key in level" << std::endl;
+                continue;
+            }
+
+            for (const auto& wave : level["waves"]) {
+                if (!wave.contains("mobs")) {
+                    continue;
+                }
+
+                for (const auto& mob : wave["mobs"]) {
+                    std::string type = mob["type"];
+                    int wave_id = wave["wave_id"];
+                    std::cout << "Wave ID: " << wave_id << std::endl;
+                    float x = mob["x"];
+                    float y = mob["y"];
+                    // x += wave_id * 1920.0f;
+                    float speed = 100.0f;
+                    std::string texturePath = (type == "enemy1") ? "assets/sprites/r-type-enemy.gif" : "assets/shooting_enemy.png";
+
+                    if (type == "enemy1") {
+                        create_classic_enemy(registry, x, y, speed, texturePath, 0.0f, window.getSize().x, 0.0f, window.getSize().y);
+                        std::cout << "Creating classic enemy at (" << x << ", " << y << ")" << std::endl;
+                    } else if (type == "enemy2") {
+                        create_shooting_enemy(registry, x, y, speed, texturePath, 0.0f, window.getSize().x, 0.0f, window.getSize().y);
+                    }
+                }
+            }
         }
     }
 }
