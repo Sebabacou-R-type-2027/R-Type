@@ -6,7 +6,6 @@
 */
 
 #include "bullet_system.hpp"
-#include <iostream>
 #include "Sound_game.hpp"
 #include <SFML/Audio.hpp>
 #include "components/Entity_type.hpp"

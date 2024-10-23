@@ -12,11 +12,13 @@
 
 class Settings {
 public:
-    bool isShaderEnabled = false;
+    bool isShaderEnabled = true;
     std::string serverAddress = "";
     int serverPort = 0;
     std::string username = "";
     std::string password = "";
+    std::string CreateLobbyID = "";
+    std::string JoinLobbyID = "";
 
     static Settings& getInstance() {
         static Settings instance;
