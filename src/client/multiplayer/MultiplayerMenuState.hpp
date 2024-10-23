@@ -12,16 +12,19 @@
 #include "system.hpp"
 #include "../utils/Settings.hpp"
 #include <optional>
+#include <networkClient/Client.hpp>
+#include "menu/MainMenuState.hpp"
 #include <stdexcept>
 #include <string>
 #include "../factories/button_factory.hpp"
 #include <networkClient/Client.hpp>
 #include "../game/GamePlayState.hpp"
+#include "../game/Game.hpp"
 
 namespace rtype {
     class MultiplayerMenuState : public GameState {
     public:
-        MultiplayerMenuState(sf::RenderWindow& window, client::Client& network);
+        MultiplayerMenuState(sf::RenderWindow& window, client::Client& network, Game& game);
 
         void handleInput() override;
         void update() override;
@@ -33,13 +36,20 @@ namespace rtype {
         ecs::System system; ///< System to store all the systems
         sf::Font font; ///< Font for the text
         sf::Shader backgroundShader; ///< Shader for the background
+        Game &game; ///< Reference to the game object
+        client::Client& network_; ///< Reference to the network object
 
         std::string hostAddress; ///< Store the host address
         std::string portInput; ///< Store the port input
+        std::string username; ///< Store the username
+        std::string password; ///< Store the password
+        std::string secretpassword; ///< Store the password hash
         std::optional<unsigned int> port; ///< Store the port
 
         sf::Text addressText; ///< Text for the address
         sf::Text portText; ///< Text for the port
+        sf::Text usernameText; ///< Text for the username
+        sf::Text passwordText; ///< Text for the password
         sf::Text connectButtonText; ///< Text for the connect button
 
 
@@ -47,8 +57,9 @@ namespace rtype {
         sf::Vector2f inputRectPortPos; ///< Position of the port input field
         sf::RectangleShape HitboxAddress; ///< Hitbox for the address input field
         sf::RectangleShape HitboxPort; ///< Hitbox for the port input field
+        bool showPassword = false; ///< Show the password
 
-        enum InputField { NONE, ADDRESS, PORT } activeField; // Track the active input field
+        enum InputField {ADDRESS, PORT, USERNAME, PASSWORD} activeField; // Track the active input field
 
         void initUI(client::Client& network);
     };
