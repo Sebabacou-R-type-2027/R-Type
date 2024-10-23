@@ -4,6 +4,7 @@
 #include "PacketACK.hpp"
 #include "PacketCMD.hpp"
 #include "PacketCMDP.hpp"
+#include "PacketMSG.hpp"
 #include "Packet.hpp"
 
 uint16_t PacketFactory::id_ = 0;
@@ -22,6 +23,9 @@ std::unique_ptr<Packet> PacketFactory::create_packet(TypePacket type, asio::ip::
         case CMDP:
             up_id();
             return std::make_unique<PacketCMDP>(socket_, id_);
+        case MSG:
+            up_id();
+            return std::make_unique<PacketMSG>(socket_, id_);
         default:
             throw PacketFactoryException("Unknown packet type", type);
     }
