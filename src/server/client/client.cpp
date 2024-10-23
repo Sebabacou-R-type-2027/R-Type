@@ -146,4 +146,12 @@ namespace server {
     long client::get_latency() const {
         return latency_;
     }
+
+    void client::set_lobby_id(int lobby_id) {
+        lobby_id_ = lobby_id;
+    }
+
+    int client::get_lobby_id() const {
+        return lobby_id_;
+    }
 }

@@ -19,22 +19,30 @@ void Lobby::remove_client(const server::client& cli) {
 }
 
 void Lobby::mark_ready(const server::client& cli) {
-    const auto it = std::find_if(clients_lobby_.begin(), clients_lobby_.end(), [&cli](const server::client& client) {
-        return client.get_id() == cli.get_id();
-    });
-
-    if (it != clients_lobby_.end()) {
-        it->set_ready(true);
+    for (auto& client : clients_lobby_) {
+        if (client.get_id() == cli.get_id()) {
+            client.set_ready(true);
+            return;
+        }
     }
 }
 
 void Lobby::mark_unready(const server::client& cli) {
-    const auto it = std::find_if(clients_lobby_.begin(), clients_lobby_.end(), [&cli](const server::client& client) {
-        return client.get_id() == cli.get_id();
-    });
+    for (auto& client : clients_lobby_) {
+        if (client.get_id() == cli.get_id()) {
+            client.set_ready(false);
+            return;
+        }
+    }
+}
 
-    if (it != clients_lobby_.end()) {
-        it->set_ready(false);
+void Lobby::set_client_ready(const server::client& cli, bool ready) {
+  	std::cout << "Setting client ready" << std::endl;
+    for (auto& client : clients_lobby_) {
+        if (client.get_id() == cli.get_id()) {
+            client.set_ready(ready);
+            return;
+        }
     }
 }
 

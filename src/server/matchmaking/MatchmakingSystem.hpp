@@ -14,10 +14,10 @@ class MatchmakingSystem {
     public:
         MatchmakingSystem() = default;
         ~MatchmakingSystem() = default;
-        void addPlayerToQueue(const server::client& cli);
+        void addPlayerToQueue(server::client& cli);
         void removePlayerFromQueue(const server::client& cli);
         void matchPlayers();
-        Lobby getLobby() const;
+        Lobby& getLobby();
         void displayeQueue() const;
     private:
          MatchmakingQueue queue_;

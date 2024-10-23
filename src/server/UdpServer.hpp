@@ -55,7 +55,7 @@ class UdpServer {
          * @param client_endpoint L'adresse du client.
          * @return Le client correspondant à l'endpoint donné.
          */
-        const server::client get_client(const asio::ip::udp::endpoint& client_endpoint) const;
+        server::client& get_client(const asio::ip::udp::endpoint& client_endpoint);
 
     private:
         /**
@@ -125,8 +125,14 @@ class UdpServer {
          */
         void start_game(const std::string& message);
         void send_message(const std::string& message, const udp::endpoint& endpoint);
-        void add_client_to_matchmaking(const udp::endpoint& client_endpoint);
+        void add_client_to_matchmaking(const std::string& message);
         void handle_matchmaking_queue();
+        void send_lobby_info(const std::string& message);
+        bool everyone_ready(std::vector<server::client> clients);
+        void lauch_game(const std::vector<server::client>& clients);
+        std::chrono::milliseconds set_elapsed_time(std::vector<server::client>& clients);
+        void handle_login(const std::string& message);
+        void execute_function(const std::string& message, std::string client_str);
 
         asio::io_context& io_context_; ///< Contexte d'entrée/sortie d'Asio.
         udp::socket socket_; ///< Socket UDP pour gérer les connexions.
