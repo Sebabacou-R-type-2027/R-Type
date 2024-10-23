@@ -6,13 +6,12 @@
 */
 
 #include "GamePlayState.hpp"
-#include <iostream>
+#include "menu/MainMenuState.hpp"
 #include <chrono>
-#include <ostream>
 
 namespace rtype {
-    GamePlayState::GamePlayState(sf::RenderWindow& window, client::Client& network, bool isSolo)
-        : window(window), network_(network), isSolo_(isSolo) {
+    GamePlayState::GamePlayState(sf::RenderWindow& window, client::Client& network, bool isSolo, Game& game)
+        : window(window), network_(network), isSolo_(isSolo), game(game) {
         int posx = 200;
         registry.register_all_components();
 
@@ -37,8 +36,11 @@ namespace rtype {
     void GamePlayState::handleInput() {
         sf::Event event;
         while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+            if (event.type == sf::Event::Closed) {
                 window.close();
+            }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+                game.changeState(std::make_shared<MainMenuState>(window, game, network_));
             }
         }
     }

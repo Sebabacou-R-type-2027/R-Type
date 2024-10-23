@@ -12,16 +12,15 @@
 #include "system.hpp"
 #include <networkClient/Client.hpp>
 #include "../Handle_collision.hpp"
-#include "../utils/FPSCounter.hpp"
-#include "../utils/Settings.hpp"
 #include "../systems/bullet/bullet_system.hpp"
 #include "create_enemies.hpp"
 #include "../systems/power-up/powerup_system.hpp"
+#include "Game.hpp"
 
 namespace rtype {
     class GamePlayState : public GameState {
     public:
-        GamePlayState(sf::RenderWindow& window, client::Client& network, bool isSolo);
+        GamePlayState(sf::RenderWindow& window, client::Client& network , bool isSolo, Game &game);
 
         void handleInput() override;
         void update() override;
@@ -34,6 +33,7 @@ namespace rtype {
         ecs::System system;
         sf::Shader backgroundShader;
         sf::Font font;
+        Game& game; ///< Reference to the game object
         rtype::game::BulletSystem bulletSystem;
         rtype::game::PowerUp powerUpSystem;
 
