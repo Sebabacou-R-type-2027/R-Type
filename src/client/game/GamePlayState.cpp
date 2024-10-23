@@ -6,13 +6,12 @@
 */
 
 #include "GamePlayState.hpp"
-#include <iostream>
+#include "menu/MainMenuState.hpp"
 #include <chrono>
-#include <ostream>
 
 namespace rtype {
-    GamePlayState::GamePlayState(sf::RenderWindow& window, client::Client& network, bool isSolo)
-        : window(window), network_(network), isSolo_(isSolo) {
+    GamePlayState::GamePlayState(sf::RenderWindow& window, client::Client& network, bool isSolo, Game& game)
+        : window(window), network_(network), isSolo_(isSolo), game(game) {
         int posx = 200;
         registry.register_all_components();
 
@@ -28,17 +27,20 @@ namespace rtype {
         gameView = window.getDefaultView();
         gameView.setCenter(sf::Vector2f(gameView.getSize().x / 2, gameView.getSize().y / 2));
         for (int i = 0; i - 1 != network.number_of_players_; i++) {
-            initPlayer("assets/Ship/Ship.png", posx * i + 1, true);
+            initPlayer("assets/Player/Spaceship.gif", posx * i + 1, true);
         }
-        createEnnemies.create_enemies(registry, window);
+        createEnemies.create_initial_enemies(registry, window);
         initChargeBullet();
     }
 
     void GamePlayState::handleInput() {
         sf::Event event;
         while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+            if (event.type == sf::Event::Closed) {
                 window.close();
+            }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+                game.changeState(std::make_shared<MainMenuState>(window, game, network_));
             }
         }
     }
@@ -72,8 +74,6 @@ void GamePlayState::handlePlayerMovement(float deltaTime) {
         if (!lifeState->isAlive) {
             continue;
         }
-        float viewScrollSpeed = 50.0f * deltaTime;
-        playerPos->x += viewScrollSpeed;
 
         constrainPlayerPosition(playerPos);
     }
@@ -125,7 +125,7 @@ void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& player
             }
         }
         if (check == 0) {
-            createEnnemies.create_enemies(registry, window);
+            createEnemies.create_initial_enemies(registry, window);
         }
     }
     void GamePlayState::update() {
@@ -141,12 +141,12 @@ void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& player
         system.loop_movement_system(registry, deltaTime);
         system.animation_system(registry, deltaTime, window);
         system.shooting_enemy_system(registry, window);
+        system.chasing_enemy_system(registry, window);
+        system.spawner_enemy_system(registry, window);
         system.collision_system(registry, window);
         handleCollision.handle_collision(registry);
-        // // fpsCounter.update();
 
-        handle_mobs_wave(registry, window);
-        moveView(deltaTime);
+        // moveView(deltaTime);
         handlePlayerMovement(deltaTime);
 
         window.setView(gameView);
@@ -172,7 +172,8 @@ void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& player
         auto player = registry.spawn_entity();
         registry.emplace_component<ecs::Position>(player, 400.0f, posx);
         registry.emplace_component<ecs::Velocity>(player, 0.0f, 0.0f);
-        registry.emplace_component<ecs::Drawable>(player, path);
+        auto &draw = registry.emplace_component<ecs::Drawable>(player, path);
+        draw->sprite.setScale(2.0f, 2.0f);
         if (me == true) {
         	registry.emplace_component<ecs::Controllable>(player, true, 5.0f);
         }
@@ -180,8 +181,8 @@ void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& player
         registry.emplace_component<ecs::CollisionState>(player, false);
         registry.emplace_component<ecs::LifeState>(player, true);
 
-        auto& hitbox = registry.emplace_component<ecs::Hitbox>(player, ecs::ShapeType::Rectangle, false, true);
-        hitbox->rect = sf::RectangleShape(sf::Vector2f(50.0f, 50.0f));
+        auto& hitbox = registry.emplace_component<ecs::Hitbox>(player, ecs::ShapeType::Rectangle, false);
+        hitbox->rect = sf::RectangleShape(sf::Vector2f(draw->sprite.getGlobalBounds().width, draw->sprite.getGlobalBounds().height));
         hitbox->rect.setOutlineColor(sf::Color::Red);
         hitbox->rect.setOutlineThickness(1.0f);
     }

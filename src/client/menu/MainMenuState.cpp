@@ -2,7 +2,9 @@
 #include "../game/Game.hpp"
 #include "../factories/button_factory.hpp"
 #include <iostream>
+#include <memory>
 #include "../game/GamePlayState.hpp"
+#include "lobby/LobbyState.hpp"
 
 namespace rtype {
     MainMenuState::MainMenuState(sf::RenderWindow& window, Game& game, client::Client& network)
@@ -21,7 +23,7 @@ namespace rtype {
     void MainMenuState::handleInput() {
         sf::Event event;
         while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+            if (event.type == sf::Event::Closed) {
                 window.close();
             }
         }
@@ -58,14 +60,20 @@ namespace rtype {
         std::cout << "Starting the game..." << std::endl;
         sf::Shader::bind(nullptr);
         // delete the FPS counter
-        game.changeState(std::make_shared<GamePlayState>(window, network_, false)); // TODO : change to false when multiplayer is implemented
+        game.changeState(std::make_shared<GamePlayState>(window, network_, false, game)); // TODO : change to false when multiplayer is implemented
+    }
+
+    void MainMenuState::startConnection() {
+        std::cout << "Starting multiplayer..." << std::endl;
+        sf::Shader::bind(nullptr);
+        game.changeState(std::make_shared<MultiplayerMenuState>(window, network_, game));
     }
 
     void MainMenuState::startMultiplayer() {
         std::cout << "Starting multiplayer..." << std::endl;
         sf::Shader::bind(nullptr);
-        game.changeState(std::make_shared<MultiplayerMenuState>(window, network_));
-    }
+        game.changeState(std::make_shared<LobbyState>(window, network_, game));
+    }m
 
     void MainMenuState::disableShader() {
         Settings::getInstance().isShaderEnabled = false;
@@ -125,7 +133,7 @@ namespace rtype {
         createButton("Multiplayer", yPos, [this]() { startMultiplayer(); });
         yPos += button_height + spacing;
 
-        createButton("Customize Ship", yPos, [this]() { startGame(); });
+        createButton("Connection", yPos, [this]() { startConnection(); });
         yPos += button_height + spacing;
 
         createButton("Settings", yPos, [this]() { startGame(); });
