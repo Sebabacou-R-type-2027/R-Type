@@ -14,8 +14,9 @@ void Packet::send_packet(const asio::ip::udp::endpoint& receiver) {
         if constexpr (std::is_same_v<std::decay_t<decltype(arg)>, uint8_t>) {
             buffer.push_back(arg);
         } else if constexpr (std::is_same_v<std::decay_t<decltype(arg)>, uint16_t>) {
-            buffer.push_back(static_cast<uint8_t>(arg >> 8));
-            buffer.push_back(static_cast<uint8_t>(arg & 0xFF));
+            uint16_t network_size = htons(arg);
+            buffer.push_back(static_cast<uint8_t>(network_size >> 8));
+            buffer.push_back(static_cast<uint8_t>(network_size & 0xFF));
         } else if constexpr (std::is_same_v<std::decay_t<decltype(arg)>, uint24_t>) {
             buffer.push_back(arg.data[0]);
             buffer.push_back(arg.data[1]);
@@ -27,8 +28,9 @@ void Packet::send_packet(const asio::ip::udp::endpoint& receiver) {
         if constexpr (std::is_same_v<std::decay_t<decltype(arg)>, uint8_t>) {
             buffer.push_back(arg);
         } else if constexpr (std::is_same_v<std::decay_t<decltype(arg)>, uint16_t>) {
-            buffer.push_back(static_cast<uint8_t>(arg >> 8));
-            buffer.push_back(static_cast<uint8_t>(arg & 0xFF));
+            uint16_t network_idp = htons(arg);
+            buffer.push_back(static_cast<uint8_t>(network_idp >> 8));
+            buffer.push_back(static_cast<uint8_t>(network_idp & 0xFF));
         }
     }, this->idp_);
 
@@ -40,13 +42,13 @@ void Packet::send_packet(const asio::ip::udp::endpoint& receiver) {
     this->socket_.send_to(asio::buffer(buffer, buffer.size()), receiver);
 }
 
-std::tuple<unsigned, unsigned, unsigned, std::vector<uint8_t>> Packet::extract_packet(
-    const char buffer[65535], size_t size) {
+std::tuple<unsigned, unsigned, unsigned, std::vector<uint8_t>> Packet::extract_packet(const char buffer[65535], size_t size) {
     uint32_t size_s = 0;
     uint32_t id = 0;
     uint32_t type = 0;
     uint32_t nbr_bytes_id = 0;
     uint32_t nbr_bytes_size = 0;
+    uint16_t network_id = 0;
 
     if (size < 3) {
         throw PacketFactory::PacketFactoryException("Packet too small", 0);
@@ -60,24 +62,29 @@ std::tuple<unsigned, unsigned, unsigned, std::vector<uint8_t>> Packet::extract_p
         size_s = static_cast<uint8_t>(buffer[0]);
     } else if (size - 3 <= 0xFFFF) {
         nbr_bytes_size = 2;
-        size_s = (static_cast<uint8_t>(buffer[0]) << 8 | static_cast<uint8_t>(buffer[1]));
+        uint16_t network_size = (static_cast<uint8_t>(buffer[0]) << 8 | static_cast<uint8_t>(buffer[1]));
+        size_s = ntohs(network_size);
     } else {
-        size_s = (static_cast<uint32_t>(static_cast<uint8_t>(buffer[0]) << 16) | static_cast<uint32_t>(static_cast<uint8_t>(buffer[1]) << 8) | static_cast<uint8_t>(buffer[2]));
+        nbr_bytes_size = 3;
+        size_s = (static_cast<uint32_t>(static_cast<uint8_t>(buffer[0]) << 16) |
+                  static_cast<uint32_t>(static_cast<uint8_t>(buffer[1]) << 8) |
+                  static_cast<uint8_t>(buffer[2]));
     }
     switch (size - size_s - nbr_bytes_size - 1) {
-    case 0:
-        throw PacketFactory::PacketFactoryException("No ID", 0);
-    case 1:
-        nbr_bytes_id = 1;
-        id = static_cast<uint8_t>(buffer[nbr_bytes_size]);
-        break;
-    case 2:
-        nbr_bytes_id = 2;
-        id = (static_cast<uint8_t>(buffer[nbr_bytes_size]) << 8 | static_cast<uint8_t>(buffer[nbr_bytes_size + 1]));
-        break;
-    default:
-        throw PacketFactory::PacketFactoryException("Unknown ID size", 0);
+        case 1:
+            nbr_bytes_id = 1;
+            id = static_cast<uint8_t>(buffer[nbr_bytes_size]);
+            break;
+        case 2:
+            nbr_bytes_id = 2;
+            network_id = (static_cast<uint8_t>(buffer[nbr_bytes_size]) << 8 |
+                                   static_cast<uint8_t>(buffer[nbr_bytes_size + 1]));
+            id = ntohs(network_id);
+            break;
+    	default:
+        	throw PacketFactory::PacketFactoryException("Unknown ID size", 0);
     }
+
     type = static_cast<uint8_t>(buffer[nbr_bytes_size + nbr_bytes_id]);
 
     std::vector<uint8_t> remaining_data(buffer + nbr_bytes_size + nbr_bytes_id + 1, buffer + size);
