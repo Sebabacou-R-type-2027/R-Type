@@ -201,11 +201,11 @@ namespace client {
             }
             if (type == PacketFactory::TypePacket::CMDP) {
 				std::string formatted_data = (data.size() == 1) ? "0 " + data : data.substr(0, 1) + " " + data.substr(1, 1);
-            	std::cout << "CMDP to handle : " << formatted_data << std::endl;
+//            	std::cout << "CMDP to handle : " << formatted_data << std::endl;
                 _commandsToDo[formatted_data.substr(0, formatted_data.find(' '))] = formatted_data.substr(formatted_data.find(' ') + 1);
-				for (const auto& command : _commandsToDo) {
-    				std::cout << "Player: " << command.first << " -> " << command.second << std::endl;
-				}
+//				for (const auto& command : _commandsToDo) {
+//    				std::cout << "Player: " << command.first << " -> " << command.second << std::endl;
+//				}
                 auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::ACK, socket_);
                 if (typeid(*packet) == typeid(PacketACK)) {
                     dynamic_cast<PacketACK*>(packet.get())->format_data(true);
@@ -269,6 +269,7 @@ namespace client {
                 }
             }
             if (type == PacketFactory::TypePacket::ACK) {
+//                std::cout << "Result Packet = " << data << std::endl;
                 return;
             }
             if (type == PacketFactory::TypePacket::CMDP) {
