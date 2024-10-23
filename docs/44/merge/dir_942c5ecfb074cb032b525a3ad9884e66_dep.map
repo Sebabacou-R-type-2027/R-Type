@@ -1,0 +1,10 @@
+<map id="client/lobby" name="client/lobby">
+<area shape="rect" id="node1" href="dir_1d7c65f790c103de4ebe9f520f7c10ef.html" title="factories" alt="" coords="27,125,106,151"/>
+<area shape="rect" id="node2" href="dir_4e216fde05fea1968aa059559682add7.html" title="game" alt="" coords="131,125,189,151"/>
+<area shape="rect" id="node3" href="dir_4e603c70a04111f621bb3388687f9e47.html" title="utils" alt="" coords="213,125,264,151"/>
+<area shape="rect" id="node4" href="dir_942c5ecfb074cb032b525a3ad9884e66.html" title="lobby" alt="" coords="131,52,189,77"/>
+<area shape="rect" id="edge1-headlabel" href="dir_000017_000014.html" title="1" alt="" coords="97,114,106,128"/>
+<area shape="rect" id="edge2-headlabel" href="dir_000017_000015.html" title="2" alt="" coords="164,100,173,114"/>
+<area shape="rect" id="edge3-headlabel" href="dir_000017_000034.html" title="2" alt="" coords="213,99,223,114"/>
+<area shape="rect" id="clust1" href="dir_6908ff505388a07996d238c763adbdab.html" title="client" alt="" coords="16,16,275,161"/>
+</map>
