@@ -1,13 +1,15 @@
 #include "MultiplayerMenuState.hpp"
+#include "../lobby/LobbyState.hpp"
+#include "registry.hpp"
+#include "system.hpp"
 #include "utils/Settings.hpp"
 #include <iostream>
 #include <cctype>
 
 namespace rtype {
     MultiplayerMenuState::MultiplayerMenuState(sf::RenderWindow& window, client::Client& network, Game& game)
-        : window(window), port(std::nullopt), activeField(ADDRESS), game(game), network_(network) {
+        : window(window), port(std::nullopt), activeField(ADDRESS), game(game), network_(network), registry(game.getRegistry()), system(game.getSystem()) {
         registry.register_all_components();
-
         if (!font.loadFromFile("assets/fonts/arial.ttf")) {
             throw std::runtime_error("Could not load font");
         }
@@ -105,6 +107,7 @@ namespace rtype {
                     std::cout << "Username: " << Settings::getInstance().username << std::endl;
                     std::cout << "Password: " << Settings::getInstance().password << std::endl;
                     network.connect(Settings::getInstance().serverAddress, Settings::getInstance().serverPort);
+                    std::cout << "Connected, now go to main menu with Echap" << std::endl;
                 }
             )
         );
@@ -146,7 +149,6 @@ namespace rtype {
             if (event.type == sf::Event::TextEntered) {
                 char enteredChar = static_cast<char>(event.text.unicode);
                 if (activeField == ADDRESS) {
-                    printf("Entered char address: %c\n", enteredChar);
                     if ((isdigit(enteredChar) || enteredChar == '.') && hostAddress.size() < 15) {
                         hostAddress += enteredChar;
                         addressText.setString(hostAddress);
@@ -155,7 +157,6 @@ namespace rtype {
                         addressText.setString(hostAddress);
                     }
                 } else if (activeField == PORT) {
-                    printf("Entered char port: %c\n", enteredChar);
                     if (isdigit(enteredChar) && portInput.size() < 5) {
                         portInput += enteredChar;
                         portText.setString(portInput);
@@ -164,7 +165,6 @@ namespace rtype {
                         portText.setString(portInput);
                     }
                 } else if (activeField == USERNAME) {
-                    printf("Entered char username: %c\n", enteredChar);
                     if (isalnum(enteredChar) && username.size() < 15) {
                         username += enteredChar;
                         usernameText.setString(username);
@@ -173,7 +173,6 @@ namespace rtype {
                         usernameText.setString(username);
                     }
                 } else if (activeField == PASSWORD) {
-                    printf("Entered char password: %c\n", enteredChar);
                     if (isalnum(enteredChar) && password.size() < 15) {
                         password += enteredChar;
                         secretpassword += '*';
