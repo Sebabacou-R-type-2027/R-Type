@@ -14,9 +14,12 @@
 namespace rtype::game {
     class PowerUp {
         public:
-            void update(ecs::Registry& registry);
+            void createCardPower(ecs::Registry& registry, sf::RenderWindow& window);
+            bool threeShootPower(ecs::Registry& registry);
+
         private:
             bool isCreate = false;
-
+            sf::Font font;
+            bool threeShootPower = false;
     };
 }

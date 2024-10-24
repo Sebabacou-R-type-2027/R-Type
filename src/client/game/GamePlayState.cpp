@@ -29,6 +29,7 @@ namespace rtype {
         for (int i = 0; i - 1 != network.number_of_players_; i++) {
             initPlayer("assets/Player/Spaceship.gif", posx * i + 1, true);
         }
+        powerUpSystem.createCardPower(registry, window);
         createEnemies.create_initial_enemies(registry, window);
         initChargeBullet();
     }
@@ -137,7 +138,6 @@ void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& player
 
         float deltaTime = calculateDeltaTime();
         bulletSystem.update(registry);
-        powerUpSystem.update(registry);
         system.loop_movement_system(registry, deltaTime);
         system.animation_system(registry, deltaTime, window);
         system.shooting_enemy_system(registry, window);
