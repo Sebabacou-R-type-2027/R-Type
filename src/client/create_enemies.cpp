@@ -33,6 +33,7 @@ namespace ecs {
         registry.emplace_component<ecs::EntityType>(enemy, Type::Ennemy);
         registry.emplace_component<ecs::CollisionState>(enemy, false);
         registry.emplace_component<ecs::LifeState>(enemy, true);
+        registry.emplace_component<ecs::Score>(enemy, 50 + rand() % 51);
     }
 
     void CreateEnemies::create_shooting_enemy(Registry& registry,
@@ -55,10 +56,13 @@ namespace ecs {
         hitbox->rect.setOutlineThickness(1.0f);
 
         registry.emplace_component<ecs::LoopMovement>(enemy, minX, maxX, minY, maxY, speed, angle, radius, angular_speed);
+        registry.emplace_component<ecs::Shooting>(enemy, 1.5f, 0.5f);
+
         registry.emplace_component<ecs::EntityType>(enemy, Type::Ennemy);
         registry.emplace_component<ecs::CollisionState>(enemy, false);
         registry.emplace_component<ecs::LifeState>(enemy, true);
-        registry.emplace_component<ecs::Shooting>(enemy, 1.5f, 0.5f);
+
+        registry.emplace_component<ecs::Score>(enemy, 150 + rand() % 51);
     }
 
     void CreateEnemies::create_chasing_enemy(Registry& registry,
@@ -84,6 +88,8 @@ namespace ecs {
         registry.emplace_component<ecs::CollisionState>(enemy, false);
         registry.emplace_component<ecs::LifeState>(enemy, true);
         registry.emplace_component<ecs::Chasing>(enemy, speed);
+
+        registry.emplace_component<ecs::Score>(enemy, 200 + rand() % 100);
     }
 
     void CreateEnemies::create_spawner_enemy(Registry& registry,
@@ -110,6 +116,7 @@ namespace ecs {
         registry.emplace_component<ecs::CollisionState>(enemy, false);
         registry.emplace_component<ecs::LifeState>(enemy, true);
         registry.emplace_component<ecs::Spawner>(enemy, cooldown, lastSpawn, nbSpawned);
+        registry.emplace_component<ecs::Score>(enemy, 300 + rand() % 200);
     }
 
     void CreateEnemies::create_initial_enemies(Registry& registry, sf::RenderWindow& window)
@@ -210,7 +217,15 @@ namespace ecs {
                     std::string texturePath = (type == "enemy1") ? "assets/sprites/r-type-enemy.gif" : "assets/shooting_enemy.png";
 
                     if (type == "enemy1") {
-                        create_classic_enemy(registry, x, y, speed, texturePath, 0.0f, window.getSize().x, 0.0f, window.getSize().y);
+                        create_classic_enemy(registry,
+                        x, y,    // Starting position x, random y
+                        -100.0f,                          // Horizontal speed (left to right)
+                        "assets/sprites/r-type-enemy.gif",       // Texture
+                        0.0f, window.getSize().x,                // min_x, max_x (movement bounds on x)
+                        0.0f, window.getSize().y,                  // min_y, max_y (vertical bounds)
+                        0.0f,                            // angle (no initial angle needed)
+                        100.0f,                          // radius for sinusoidal wave
+                        2.0f);
                         std::cout << "Creating classic enemy at (" << x << ", " << y << ")" << std::endl;
                     } else if (type == "enemy2") {
                         create_shooting_enemy(registry, x, y, speed, texturePath, 0.0f, window.getSize().x, 0.0f, window.getSize().y);
