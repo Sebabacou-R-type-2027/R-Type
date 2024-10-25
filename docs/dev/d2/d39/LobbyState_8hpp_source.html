@@ -123,13 +123,15 @@ $(function() {
 <div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>            <a class="code hl_class" href="../../df/dcd/classecs_1_1Registry.html">ecs::Registry</a> registry; </div>
 <div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>            <a class="code hl_class" href="../../dd/de0/classecs_1_1System.html">ecs::System</a> system; </div>
 <div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span> </div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>            <span class="keyword">enum</span> InputField {CREATE, JOIN} activeField; <span class="comment">// Track the active input field</span></div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>            <span class="keyword">enum</span> InputField {CREATE, JOIN} activeField = CREATE; </div>
 <div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span> </div>
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>            <span class="keywordtype">void</span> initUI(<a class="code hl_class" href="../../dc/d87/classclient_1_1Client.html">client::Client</a>&amp; network);</div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    };</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>}</div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span> </div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span><span class="preprocessor">#endif </span><span class="comment">// LOBBYSTATE_HPP</span></div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>            <a class="code hl_struct" href="../../d1/d72/structecs_1_1Drawable.html">ecs::Drawable</a>* inputRectCreateLobbyDrawablePtr;</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>            <a class="code hl_struct" href="../../d1/d72/structecs_1_1Drawable.html">ecs::Drawable</a>* inputRectJoinLobbyDrawablePtr;</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    };</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>}</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span> </div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span><span class="preprocessor">#endif </span><span class="comment">// LOBBYSTATE_HPP</span></div>
 <div class="ttc" id="aSettings_8hpp_html"><div class="ttname"><a href="../../db/d02/Settings_8hpp.html">Settings.hpp</a></div></div>
 <div class="ttc" id="abasic_string_html"><div class="ttname"><a href="https://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a></div></div>
 <div class="ttc" id="aclassclient_1_1Client_html"><div class="ttname"><a href="../../dc/d87/classclient_1_1Client.html">client::Client</a></div><div class="ttdoc">Classe représentant un client réseau.</div><div class="ttdef"><b>Definition:</b> Client.hpp:22</div></div>
@@ -138,10 +140,11 @@ $(function() {
 <div class="ttc" id="aclassrtype_1_1GameState_html"><div class="ttname"><a href="../../d7/da9/classrtype_1_1GameState.html">rtype::GameState</a></div><div class="ttdoc">Class that contains the state of the game.</div><div class="ttdef"><b>Definition:</b> game_state.hpp:15</div></div>
 <div class="ttc" id="aclassrtype_1_1Game_html"><div class="ttname"><a href="../../d0/d3b/classrtype_1_1Game.html">rtype::Game</a></div><div class="ttdoc">Class that contains the game.</div><div class="ttdef"><b>Definition:</b> Game.hpp:23</div></div>
 <div class="ttc" id="aclassrtype_1_1LobbyState_html"><div class="ttname"><a href="../../de/d85/classrtype_1_1LobbyState.html">rtype::LobbyState</a></div><div class="ttdoc">Class that contains the logic of the main menu state.</div><div class="ttdef"><b>Definition:</b> LobbyState.hpp:23</div></div>
-<div class="ttc" id="aclassrtype_1_1LobbyState_html_a80f75372912ab6357a466e7a859696e0"><div class="ttname"><a href="../../de/d85/classrtype_1_1LobbyState.html#a80f75372912ab6357a466e7a859696e0">rtype::LobbyState::update</a></div><div class="ttdeci">void update() override</div><div class="ttdoc">Update the game.</div><div class="ttdef"><b>Definition:</b> LobbyState.cpp:165</div></div>
-<div class="ttc" id="aclassrtype_1_1LobbyState_html_a9743dd1934ab177f6fa7006aa624934e"><div class="ttname"><a href="../../de/d85/classrtype_1_1LobbyState.html#a9743dd1934ab177f6fa7006aa624934e">rtype::LobbyState::handleInput</a></div><div class="ttdeci">void handleInput() override</div><div class="ttdoc">Handle the input of the game.</div><div class="ttdef"><b>Definition:</b> LobbyState.cpp:113</div></div>
-<div class="ttc" id="aclassrtype_1_1LobbyState_html_aa3ba458a980a08063d783fbd61ce4131"><div class="ttname"><a href="../../de/d85/classrtype_1_1LobbyState.html#aa3ba458a980a08063d783fbd61ce4131">rtype::LobbyState::render</a></div><div class="ttdeci">void render() override</div><div class="ttdoc">Render the game.</div><div class="ttdef"><b>Definition:</b> LobbyState.cpp:174</div></div>
+<div class="ttc" id="aclassrtype_1_1LobbyState_html_a80f75372912ab6357a466e7a859696e0"><div class="ttname"><a href="../../de/d85/classrtype_1_1LobbyState.html#a80f75372912ab6357a466e7a859696e0">rtype::LobbyState::update</a></div><div class="ttdeci">void update() override</div><div class="ttdoc">Update the game.</div><div class="ttdef"><b>Definition:</b> LobbyState.cpp:200</div></div>
+<div class="ttc" id="aclassrtype_1_1LobbyState_html_a9743dd1934ab177f6fa7006aa624934e"><div class="ttname"><a href="../../de/d85/classrtype_1_1LobbyState.html#a9743dd1934ab177f6fa7006aa624934e">rtype::LobbyState::handleInput</a></div><div class="ttdeci">void handleInput() override</div><div class="ttdoc">Handle the input of the game.</div><div class="ttdef"><b>Definition:</b> LobbyState.cpp:141</div></div>
+<div class="ttc" id="aclassrtype_1_1LobbyState_html_aa3ba458a980a08063d783fbd61ce4131"><div class="ttname"><a href="../../de/d85/classrtype_1_1LobbyState.html#aa3ba458a980a08063d783fbd61ce4131">rtype::LobbyState::render</a></div><div class="ttdeci">void render() override</div><div class="ttdoc">Render the game.</div><div class="ttdef"><b>Definition:</b> LobbyState.cpp:209</div></div>
 <div class="ttc" id="anamespacertype_html"><div class="ttname"><a href="../../d5/d2a/namespacertype.html">rtype</a></div><div class="ttdef"><b>Definition:</b> Game.cpp:12</div></div>
+<div class="ttc" id="astructecs_1_1Drawable_html"><div class="ttname"><a href="../../d1/d72/structecs_1_1Drawable.html">ecs::Drawable</a></div><div class="ttdoc">Class that contains the drawable component.</div><div class="ttdef"><b>Definition:</b> Drawable.hpp:20</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
