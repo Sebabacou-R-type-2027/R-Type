@@ -46,9 +46,11 @@ namespace rtype {
             ecs::Registry registry; ///< Registry to store all the components
             ecs::System system; ///< System to store all the systems
 
-            enum InputField {CREATE, JOIN} activeField; // Track the active input field
+            enum InputField {CREATE, JOIN} activeField = CREATE; ///< Track the active input field
 
             void initUI(client::Client& network);
+            ecs::Drawable* inputRectCreateLobbyDrawablePtr;
+            ecs::Drawable* inputRectJoinLobbyDrawablePtr;
     };
 }
 

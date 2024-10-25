@@ -39,15 +39,21 @@ namespace rtype {
         registry.emplace_component<ecs::Drawable>(LobbyBackground, width, height, fillColor, outlineColor);
         registry.emplace_component<ecs::Position>(LobbyBackground, _window.getSize().x / 2.0f - width / 2.0f, _window.getSize().y / 2.0f - height / 2.0f);
 
+        float InputFieldHeight = 50.0f;
+        float InputFieldWidth = 200.0f;
+
         // CREATE LOBBY
         auto CreateLobbyEntity = registry.spawn_entity();
         auto& CreateLobbyDrawable = registry.emplace_component<ecs::Drawable>(CreateLobbyEntity, "assets/fonts/arial.ttf", "Create lobby:", 24, sf::Color::White);
         sf::FloatRect CreateLobbyBounds = CreateLobbyDrawable.value().text.getGlobalBounds();
         registry.emplace_component<ecs::Position>(CreateLobbyEntity, _window.getSize().x / 2.0f - CreateLobbyBounds.width / 2.0f - 150.0f, _window.getSize().y / 2.0f - height / 2.0f + 10.0f);
 
+        // CREATE LOBBY INPUT
         auto inputRectCreateLobbyEntity = registry.spawn_entity();
-        auto &inputRectCreateLobbyDrawable = registry.emplace_component<ecs::Drawable>(inputRectCreateLobbyEntity, 200.0f, 40.0f, sf::Color(30, 30, 30, 255 * 0.8), sf::Color::Black);
-        registry.emplace_component<ecs::Position>(inputRectCreateLobbyEntity, _window.getSize().x / 2.0f - CreateLobbyBounds.width / 2.0f - 170.0f, _window.getSize().y / 2.0f - height / 2.0f + 50.0f);
+        auto &inputRectCreateLobbyDrawable = registry.emplace_component<ecs::Drawable>(inputRectCreateLobbyEntity, InputFieldWidth, InputFieldHeight, sf::Color(30, 30, 30, 255 * 0.8), sf::Color::Black);
+        registry.emplace_component<ecs::Position>(inputRectCreateLobbyEntity, _window.getSize().x / 2.0f - InputFieldWidth / 2.0f - 140.0f, _window.getSize().y / 2.0f - height / 2.0f + 50.0f);
+
+        inputRectCreateLobbyDrawablePtr = &inputRectCreateLobbyDrawable.value();
 
         // JOIN LOBBY
         auto JoinLobbyEntity = registry.spawn_entity();
@@ -55,59 +61,81 @@ namespace rtype {
         sf::FloatRect JoinLobbyBounds = JoinLobbyDrawable.value().text.getGlobalBounds();
         registry.emplace_component<ecs::Position>(JoinLobbyEntity, _window.getSize().x / 2.0f + JoinLobbyBounds.width / 2.0f + 30.0f, _window.getSize().y / 2.0f - height / 2.0f + 10.0f);
 
+
+        // JOIN LOBBY INPUT
         auto inputRectJoinLobbyEntity = registry.spawn_entity();
-        auto &inputRectJoinLobbyDrawable = registry.emplace_component<ecs::Drawable>(inputRectJoinLobbyEntity, 200.0f, 40.0f, sf::Color(30, 30, 30, 255 * 0.8), sf::Color::Black);
-        registry.emplace_component<ecs::Position>(inputRectJoinLobbyEntity, _window.getSize().x / 2.0f + JoinLobbyBounds.width / 2.0f, _window.getSize().y / 2.0f - height / 2.0f + 50.0f);
+        auto &inputRectJoinLobbyDrawable = registry.emplace_component<ecs::Drawable>(inputRectJoinLobbyEntity, InputFieldWidth, InputFieldHeight, sf::Color(30, 30, 30, 255 * 0.8), sf::Color::Black);
+        // they need to be symmetric by the center of the screen
+        registry.emplace_component<ecs::Position>(inputRectJoinLobbyEntity, _window.getSize().x / 2.0f - InputFieldWidth / 2.0f + 140.0f, _window.getSize().y / 2.0f - height / 2.0f + 50.0f);
 
-        auto CreateButtonEntity = registry.spawn_entity();
-        registry.emplace_component<ecs::Button>(
-            CreateButtonEntity,
-            ecs::ButtonFactory::create_button(
-                "Create lobby",
-                sf::Vector2f(_window.getSize().x / 2.0f - CreateLobbyBounds.width / 2.0f - 80.0f, _window.getSize().y / 2.0f - height / 2.0f + 150.0f),
-                sf::Vector2f(150, 30),
-                font,
-                sf::Color(14, 94, 255, 255),
-                sf::Color(7, 115, 255, 255),
-                sf::Color::Blue,
-                sf::Color::White,
-                24,
-                [this, &network]() {
-                    Settings::getInstance().CreateLobbyID = CreateLobbyInput;
-                    std::cout << "CreateLobbyID " << Settings::getInstance().CreateLobbyID << std::endl;
-                }
-            )
+
+        inputRectJoinLobbyDrawablePtr = &inputRectJoinLobbyDrawable.value();
+
+        auto createButton = [this](const std::string& label, float xPos, float yPos, std::function<void()> callback) -> ecs::Entity {
+            sf::Text text(label, font, 24);
+            float button_width = text.getLocalBounds().width + 40.0f;
+            float button_height = 30.0f;
+
+            auto entity = registry.spawn_entity();
+            registry.emplace_component<ecs::Button>(
+                entity,
+                ecs::ButtonFactory::create_button(
+                    label,
+                    sf::Vector2f(xPos, yPos),
+                    sf::Vector2f(button_width, button_height),
+                    font,
+                    sf::Color(14, 94, 255, 255),
+                    sf::Color(7, 115, 255, 255),
+                    sf::Color::Blue,
+                    sf::Color::White,
+                    24,
+                    callback
+                )
+            );
+            return entity;
+        };
+
+        // Use the createButton function to create buttons
+        createButton(
+            "Create lobby",
+            _window.getSize().x / 2.0f - 145.0f,
+            _window.getSize().y / 2.0f - height / 2.0f + 120.0f,
+            [this, &network]() {
+                Settings::getInstance().CreateLobbyID = CreateLobbyInput;
+                std::cout << "CreateLobbyID " << Settings::getInstance().CreateLobbyID << std::endl;
+            }
         );
 
-        auto JoinButtonEntity = registry.spawn_entity();
-        registry.emplace_component<ecs::Button>(
-            JoinButtonEntity,
-            ecs::ButtonFactory::create_button(
-                "Join lobby",
-                sf::Vector2f(_window.getSize().x / 2.0f + JoinLobbyBounds.width / 2.0f + 100.0f, _window.getSize().y / 2.0f - height / 2.0f + 150.0f),
-                sf::Vector2f(150, 30),
-                font,
-                sf::Color(14, 94, 255, 255),
-                sf::Color(7, 115, 255, 255),
-                sf::Color::Blue,
-                sf::Color::White,
-                24,
-                [this, &network]() {
-                    Settings::getInstance().JoinLobbyID = CreateLobbyInput;
-                    std::cout << "JoinLobbyID " << Settings::getInstance().JoinLobbyID << std::endl;
-                }
-            )
+        createButton(
+            "Join lobby",
+            _window.getSize().x / 2.0f + 145.0f,
+            _window.getSize().y / 2.0f - height / 2.0f + 120.0f,
+            [this, &network]() {
+                Settings::getInstance().JoinLobbyID = CreateLobbyInput;
+                std::cout << "JoinLobbyID " << Settings::getInstance().JoinLobbyID << std::endl;
+            }
         );
+
+        createButton(
+            "Join matchmaking",
+            _window.getSize().x / 2.0f,
+            _window.getSize().y / 2.0f - height / 2.0f + 370.0f,
+            []() { std::cout << "Join matchmaking" << std::endl; }
+        );
+
 
         CreateLobbyText.setFont(font);
         CreateLobbyText.setCharacterSize(24);
         CreateLobbyText.setFillColor(sf::Color::White);
-        CreateLobbyText.setPosition(_window.getSize().x / 2.0f - CreateLobbyBounds.width / 2.0f - 170.0f, _window.getSize().y / 2.0f - height / 2.0f + 50.0f + 5.0f);
+        CreateLobbyText.setPosition(_window.getSize().x / 2.0f - CreateLobbyBounds.width / 2.0f - 160.0f, _window.getSize().y / 2.0f - height / 2.0f + 50.0f + 5.0f);
 
         JoinLobbyText.setFont(font);
         JoinLobbyText.setCharacterSize(24);
         JoinLobbyText.setFillColor(sf::Color::White);
-        JoinLobbyText.setPosition(_window.getSize().x / 2.0f + JoinLobbyBounds.width / 2.0f, _window.getSize().y / 2.0f - height / 2.0f + 50.0f + 5.0f);
+        JoinLobbyText.setPosition(_window.getSize().x / 2.0f + JoinLobbyBounds.width / 2.0f - 20.0f, _window.getSize().y / 2.0f - height / 2.0f + 50.0f + 5.0f);
+
+        inputRectCreateLobbyDrawablePtr->rectangle.setOutlineColor(sf::Color::White);
+
     }
 
     void LobbyState::handleInput() {
@@ -147,6 +175,13 @@ namespace rtype {
                 if (event.key.code == sf::Keyboard::Tab) {
                     activeField = static_cast<InputField>((activeField + 1) % 2);
                     printf("Active field: %d\n", activeField);
+                    if (activeField == CREATE) {
+                        inputRectCreateLobbyDrawablePtr->rectangle.setOutlineColor(sf::Color::White);
+                        inputRectJoinLobbyDrawablePtr->rectangle.setOutlineColor(sf::Color::Black);
+                    } else {
+                        inputRectCreateLobbyDrawablePtr->rectangle.setOutlineColor(sf::Color::Black);
+                        inputRectJoinLobbyDrawablePtr->rectangle.setOutlineColor(sf::Color::White);
+                    }
                 }
                 if (event.key.code == sf::Keyboard::Delete) {
                     if (activeField == CREATE && !CreateLobbyInput.empty()) {
@@ -184,6 +219,7 @@ namespace rtype {
 
         _window.draw(CreateLobbyText);
         _window.draw(JoinLobbyText);
+
         _window.display();
     }
 
