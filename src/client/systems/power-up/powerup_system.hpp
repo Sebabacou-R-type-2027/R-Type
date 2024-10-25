@@ -9,6 +9,8 @@
 
 #include "registry.hpp"
 #include "Sound_game.hpp"
+#include "../utils/Settings.hpp"
+#include <system.hpp>
 
 
 namespace rtype::game {
@@ -16,10 +18,12 @@ namespace rtype::game {
         public:
             void createCardPower(ecs::Registry& registry, sf::RenderWindow& window);
             bool threeShootPower(ecs::Registry& registry);
+            void update();
 
         private:
             bool isCreate = false;
             sf::Font font;
-            bool threeShootPower = false;
+            bool threeShootPower_activate = false;
+            sf::Clock timer;
     };
 }

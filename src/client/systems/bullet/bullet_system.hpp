@@ -44,6 +44,5 @@ namespace rtype::game {
             float bonus1_activationTime = 0;
             const float bonus1_duration = 15.0f;
 
-            rtype::game::PowerUp powerup1;
     };
 }
