@@ -6,6 +6,9 @@
 */
 
 #include "Handle_collision.hpp"
+#include "components/Entity_type.hpp"
+#include <iostream>
+
 
 namespace ecs {
 
@@ -15,50 +18,91 @@ namespace ecs {
         registry.emplace_component<Position>(explosion, x, y);
         registry.emplace_component<LifeState>(explosion, true);
     }
-    void HandleCollision::handle_collision(Registry& registry) {
+
+    void HandleCollision::solo_handle_collision(std::size_t i, Registry& registry) {
         auto &collisionstates = registry.get_components<CollisionState>();
         auto &entitytypes = registry.get_components<EntityType>();
         auto &positions = registry.get_components<Position>();
         auto &lifestates = registry.get_components<LifeState>();
+        auto &scores = registry.get_components<Score>();
+        auto &killlogs = registry.get_components<KillLog>();
+        auto players = registry.get_all_player_entity();
 
-        // for (std::size_t i = 0; i < collisionstates.size() && i < entitytypes.size() && i < positions.size() && i < lifestates.size(); ++i)
-        //     if (collisionstates[i] && collisionstates[i]->active)
-        //         for (std::size_t j = 0; j < collisionstates.size() && j < entitytypes.size() && j < positions.size() && j < lifestates.size(); ++j) {
-        //             if (collisionstates[j] && collisionstates[j]->active
-        //                 && i < entitytypes.size() && j < entitytypes.size()
-        //                 && entitytypes[i]->current_type != entitytypes[j]->current_type
-        //                 && lifestates[i]->isAlive && lifestates[j]->isAlive && entitytypes[i]->current_type == ecs::Type::ChargedBullet) {
-        //                     // create_explosion(registry, positions[i]->x, positions[i]->y);
-        //                     lifestates[j]->isAlive = false;
-        //                     positions[j]->x = -1000;
-        //                     positions[j]->y = -1000;
-        //                     continue;
-        //                 }
-        //             if (collisionstates[j] && collisionstates[j]->active
-        //                 && i < entitytypes.size() && j < entitytypes.size()
-        //                 && entitytypes[i]->current_type != entitytypes[j]->current_type
-        //                 && lifestates[i]->isAlive && lifestates[j]->isAlive && entitytypes[j]->current_type == ecs::Type::ChargedBullet) {
-        //                     // create_explosion(registry, positions[i]->x, positions[i]->y);
-        //                     lifestates[i]->isAlive = false;
-        //                     positions[i]->x = -1000;
-        //                     positions[i]->y = -1000;
-        //                     continue;
-        //                 }
+        for (auto playerEntity : players) {
+            auto& killlog = killlogs[static_cast<std::size_t>(playerEntity)];
+            for (std::size_t j = 0; j < collisionstates.size() && j < entitytypes.size() && j < positions.size() && j < lifestates.size() && j < scores.size(); ++j) {
+                if (collisionstates[j] && collisionstates[j]->active
+                    && i < entitytypes.size() && j < entitytypes.size()
+                    && entitytypes[i]->current_type != entitytypes[j]->current_type
+                    && lifestates[i]->isAlive && lifestates[j]->isAlive) {
+                        if (scores[i] && killlog) {
+                            killlog->addKill(j);
+                        } else if (scores[j] && killlog) {
+                            killlog->addKill(i);
+                        }
+                        lifestates[i]->isAlive = false;
+                        positions[i]->x = -1000;
+                        positions[i]->y = -1000;
 
-        //             if (collisionstates[j] && collisionstates[j]->active
-        //                 && i < entitytypes.size() && j < entitytypes.size()
-        //                 && entitytypes[i]->current_type != entitytypes[j]->current_type
-        //                 && lifestates[i]->isAlive && lifestates[j]->isAlive && (entitytypes[i]->current_type != ecs::Type::ChargedBullet && entitytypes[j]->current_type != ecs::Type::ChargedBullet)) {
-        //                     // create_explosion(registry, positions[i]->x, positions[i]->y);
-        //                     lifestates[i]->isAlive = false;
-        //                     positions[i]->x = -1000;
-        //                     positions[i]->y = -1000;
-
-        //                     lifestates[j]->isAlive = false;
-        //                     positions[j]->x = -1000;
-        //                     positions[j]->y = -1000;
-        //                     continue;
-        //                 }
-        //         }
+                        lifestates[j]->isAlive = false;
+                        positions[j]->x = -1000;
+                        positions[j]->y = -1000;
+                        continue;
+                    }
+            }
+        }
     }
+
+    void HandleCollision::network_handle_collision(std::size_t i, Registry& registry, client::Client& network) {
+        auto &collisionstates = registry.get_components<CollisionState>();
+        auto &entitytypes = registry.get_components<EntityType>();
+        auto &positions = registry.get_components<Position>();
+        auto &lifestates = registry.get_components<LifeState>();
+        auto &scores = registry.get_components<Score>();
+        auto &killlogs = registry.get_components<KillLog>();
+        auto players = registry.get_all_player_entity();
+
+        if (i != network.my_id_in_lobby_) {
+            return;
+        }
+        for (auto playerEntity : players) {
+            auto& killlog = killlogs[static_cast<std::size_t>(playerEntity)];
+            for (std::size_t j = 0; j < collisionstates.size() && j < entitytypes.size() && j < positions.size() && j < lifestates.size() && j < scores.size(); ++j) {
+                if (collisionstates[j] && collisionstates[j]->active
+                    && i < entitytypes.size() && j < entitytypes.size()
+                    && entitytypes[i]->current_type != entitytypes[j]->current_type
+                    && lifestates[i]->isAlive && lifestates[j]->isAlive) {
+                        if (scores[i] && killlog) {
+                            killlog->addKill(j);
+                        } else if (scores[j] && killlog) {
+                            killlog->addKill(i);
+                        }
+                        std::cout << "kill log = " << killlog->killedEnemies.size() << std::endl;
+                        lifestates[i]->isAlive = false;
+                        positions[i]->x = -1000;
+                        positions[i]->y = -1000;
+
+                        lifestates[j]->isAlive = false;
+                        positions[j]->x = -1000;
+                        positions[j]->y = -1000;
+                        continue;
+                    }
+            }
+        }
+    }
+    void HandleCollision::handle_collision(Registry& registry, client::Client& network, bool isSolo) {
+        auto &collisionstates = registry.get_components<CollisionState>();
+        auto &entitytypes = registry.get_components<EntityType>();
+        auto &positions = registry.get_components<Position>();
+        auto &lifestates = registry.get_components<LifeState>();
+        auto &scores = registry.get_components<Score>();
+
+        for (std::size_t i = 0; i < entitytypes.size() && i < collisionstates.size() && i < positions.size() && i < lifestates.size(); ++i) {
+                if (isSolo && collisionstates[i] && collisionstates[i]->active) {
+                    solo_handle_collision(i, registry);
+                } else if (!isSolo && collisionstates[i] && collisionstates[i]->active) {
+                    network_handle_collision(i, registry, network);
+                }
+            }
+        }
 }
