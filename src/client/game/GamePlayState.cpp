@@ -6,8 +6,13 @@
 */
 
 #include "GamePlayState.hpp"
+#include "Drawable.hpp"
+#include "Position.hpp"
+#include "components/ScoreText.hpp"
 #include "menu/MainMenuState.hpp"
+#include "registry.hpp"
 #include <chrono>
+#include <cstddef>
 
 namespace rtype {
     GamePlayState::GamePlayState(sf::RenderWindow& window, client::Client& network, bool isSolo, Game& game)
@@ -28,7 +33,8 @@ namespace rtype {
         for (int i = 0; i - 1 != network.number_of_players_; i++) {
             initPlayer("assets/Player/Spaceship.gif", posx * i + 1, true);
         }
-        createEnemies.loadWavesFromJson(registry, window, "waves.json");
+        createEnemies.create_initial_enemies(registry, window);
+        // createEnemies.loadWavesFromJson(registry, window, "waves.json");
         initChargeBullet();
     }
 
@@ -127,6 +133,49 @@ void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& player
             createEnemies.loadWavesFromJson(registry, window, "waves.json");
         }
     }
+
+    void GamePlayState::update_score(ecs::Registry& registry, client::Client& network, bool isSolo) {
+        auto& scores = registry.get_components<ecs::Score>();
+        auto& killLogs = registry.get_components<ecs::KillLog>();
+        auto& entityTypes = registry.get_components<ecs::EntityType>();
+        auto& scoreText = registry.get_components<ecs::ScoreText>();
+        auto& Drawables = registry.get_components<ecs::Drawable>();
+
+
+        for (std::size_t i = 0; i < scores.size() && i < killLogs.size() && i < entityTypes.size(); ++i) {
+            if (scores[i] && killLogs[i] && entityTypes[i]) {
+                bool isPlayer = entityTypes[i]->current_type == ecs::Type::Player;
+
+                if ((isSolo && isPlayer) || (!isSolo && isPlayer && i == network.my_id_in_lobby_)) {
+                    for (size_t j = 0; j < killLogs[i]->killedEnemies.size();) {
+                        auto killedEnemy = killLogs[i]->killedEnemies[j];
+
+                        scores[i]->points += scores[killedEnemy]->points;
+                        for (std::size_t k = 0; k < scoreText.size() && k < Drawables.size(); ++k) {
+                            if (scoreText[k] && Drawables[k]) {
+                                Drawables[k]->setText("Score: " + std::to_string(scores[i]->points));
+                            }
+                        }
+
+                        killLogs[i]->killedEnemies.erase(killLogs[i]->killedEnemies.begin() + j);
+                    }
+                }
+        } else if (scores[i] && killLogs[i] && entityTypes[i] && !isSolo) {
+                if (i != network.my_id_in_lobby_)
+                    return;
+                if (entityTypes[i]->current_type == ecs::Type::Player && killLogs[i]->killedEnemies.size() > 0 && i == network.my_id_in_lobby_) {
+                    for (auto killedEnemy : killLogs[i]->killedEnemies) {
+                        scores[i]->points += scores[killedEnemy]->points;
+                        for (std::size_t k = 0; k < scoreText.size() && k < Drawables.size(); ++k) {
+                            if (scoreText[k] && Drawables[k]) {
+                                Drawables[k]->setText("Score: " + std::to_string(scores[i]->points));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
     void GamePlayState::update() {
         if (Settings::getInstance().isShaderEnabled) {
             system.shader_system(registry, window, backgroundShader);
@@ -143,7 +192,8 @@ void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& player
         system.chasing_enemy_system(registry, window);
         system.spawner_enemy_system(registry, window);
         system.collision_system(registry, window);
-        handleCollision.handle_collision(registry);
+        handleCollision.handle_collision(registry, network_, isSolo_);
+        update_score(registry, network_, isSolo_);
 
         // moveView(deltaTime);
         handlePlayerMovement(deltaTime);
@@ -184,6 +234,14 @@ void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& player
         hitbox->rect = sf::RectangleShape(sf::Vector2f(draw->sprite.getGlobalBounds().width, draw->sprite.getGlobalBounds().height));
         hitbox->rect.setOutlineColor(sf::Color::Red);
         hitbox->rect.setOutlineThickness(1.0f);
+        registry.emplace_component<ecs::Score>(player, 0);
+        registry.emplace_component<ecs::KillLog>(player);
+
+        auto scoreText = registry.spawn_entity();
+        auto windowSize = window.getSize();
+        registry.emplace_component<ecs::Position>(scoreText, 10, windowSize.y - 30);
+        registry.emplace_component<ecs::Drawable>(scoreText, "assets/fonts/arial.ttf", "Score: 0", 20, sf::Color::White);
+        registry.emplace_component<ecs::ScoreText>(scoreText, 0);
     }
 
     void GamePlayState::initChargeBullet()

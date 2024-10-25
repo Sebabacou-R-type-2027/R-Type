@@ -14,7 +14,6 @@
 #include "collision/collision_system.hpp"
 #include "../client/systems/loop_movement/loop_movement_system.hpp"
 #include "../client/systems/button/button_system.hpp"
-#include "../client/systems/bullet/bullet_system.hpp"
 #include <networkClient/Client.hpp>
 #include "../client/systems/shader/shader_system.hpp"
 #include "../client/systems/shooting_enemy/shooting_enemy_system.hpp"
@@ -171,6 +170,7 @@ namespace ecs {
         void spawner_enemy_system(Registry& reg, sf::RenderWindow& window) {
             spawnerEnemySystem.update(reg, window);
         }
+
 
 private:
     systems::ControlSystem controlSystem;

@@ -33,6 +33,9 @@
             #include "components/Shooting.hpp"
             #include "components/Chasing.hpp"
             #include "components/Spawner.hpp"
+            #include "components/Score.hpp"
+            #include "components/EnemyLog.hpp"
+            #include "components/ScoreText.hpp"
 
 namespace ecs {
 
@@ -181,6 +184,29 @@ class Registry {
             }
             return enemyEntities;
         }
+
+        bool has_component(Entity const& e, std::type_index type) const {
+            if (_components.find(type) == _components.end()) {
+            return false;
+            }
+            const auto& component_array = std::any_cast<const sparse_array<std::optional<std::remove_reference_t<decltype(_components.at(type))>>> &>(_components.at(type));
+            return component_array.size() > static_cast<std::size_t>(e) && component_array[static_cast<std::size_t>(e)].has_value();
+        }
+
+        std::pair<std::type_index, std::optional<std::any>> get_component(Entity const& e, std::type_index type) const {
+            for (const auto& [type, component_array] : _components) { // Note the `const` on component_array
+                try {
+                    // Cast component_array as a const sparse_array with std::optional<std::any>
+                    const auto& sparse_array_ref = std::any_cast<const sparse_array<std::optional<std::any>>&>(component_array);
+                    if (sparse_array_ref.size() > static_cast<std::size_t>(e) && sparse_array_ref[static_cast<std::size_t>(e)].has_value()) {
+                        return std::make_pair(type, sparse_array_ref[static_cast<std::size_t>(e)]);
+                    }
+                } catch (const std::bad_any_cast&) {
+                    // Handle the casting error if component_array isn't of expected type
+                }
+            }
+            return std::make_pair(std::type_index(typeid(void)), std::nullopt);
+        }
         void register_all_components() {
             register_component<Position>();
             register_component<Velocity>();
@@ -199,6 +225,9 @@ class Registry {
             register_component<Shooting>();
             register_component<Chasing>();
             register_component<Spawner>();
+            register_component<Score>();
+            register_component<KillLog>();
+            register_component<ScoreText>();
         }
     private:
         std::size_t _next_entity_id = 0;

@@ -51,5 +51,6 @@ namespace rtype {
         void handlePlayerMovement(float deltaTime);
         void constrainPlayerPosition(std::optional<ecs::Position>& playerPos);
         void handle_mobs_wave(ecs::Registry& registry, sf::RenderWindow& window);
+        void update_score(ecs::Registry& registry, client::Client& network, bool isSolo);
     };
 }

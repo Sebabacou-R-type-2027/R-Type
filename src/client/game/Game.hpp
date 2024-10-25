@@ -10,9 +10,9 @@
 #include "game_state.hpp"
 #include <memory>
 #include <networkClient/Client.hpp>
-
 #include "../ecs/registry.hpp"
 #include "../ecs/system.hpp"
+#include "../Sound_game.hpp"
 
 namespace rtype {
     class GameState;
