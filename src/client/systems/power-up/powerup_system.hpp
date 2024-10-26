@@ -8,14 +8,19 @@
 #pragma once
 
 #include "registry.hpp"
+#include "../utils/Settings.hpp"
 
-
-namespace rtype::game {
+namespace ecs::systems {
     class PowerUp {
         public:
-            void update(ecs::Registry& registry);
+            void createCardPower(ecs::Registry& registry, sf::RenderWindow& window);
+            bool threeShootPower(ecs::Registry& registry);
+            void update();
+
         private:
             bool isCreate = false;
-
+            sf::Font font;
+            bool threeShootPower_activate = false;
+            sf::Clock timer;
     };
 }
