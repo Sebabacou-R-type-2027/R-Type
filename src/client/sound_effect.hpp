@@ -22,8 +22,6 @@ namespace ecs {
      */
     class SoundEffect {
         public:
-            SoundEffect() = default;
-            ~SoundEffect() = default;
             /**
              * @brief Play a sound
              *
@@ -43,7 +41,6 @@ namespace ecs {
         private:
             std::vector<sf::Sound> sounds; ///< Vector of sounds
             std::vector<sf::SoundBuffer> buffers; ///< Vector of sound buffers
-            std::shared_ptr<sf::Music> music = std::make_shared<sf::Music>(); ///< Music of the game
+            std::shared_ptr<sf::Music> music = std::make_shared<sf::Music>(); ///< Shared pointer to an sf::Music object, managing the game's music. This approach facilitates memory management and allows multiple parts of the program to share access to the same music instance.
     };
-
 }
