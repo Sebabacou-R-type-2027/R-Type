@@ -1,0 +1,21 @@
+<map id="client/networkClient/Client.hpp" name="client/networkClient/Client.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="451,5,605,45"/>
+<area shape="rect" id="node2" href="$d3/dfa/CommandHandler_8hpp.html" title=" " alt="" coords="185,93,351,119"/>
+<area shape="rect" id="node3" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/iostream.html" title=" " alt="" coords="5,167,85,192"/>
+<area shape="rect" id="node9" href="$db/d1b/Packet_8hpp.html" title=" " alt="" coords="523,167,615,192"/>
+<area shape="rect" id="node16" href="$d9/d0f/PacketCMD_8hpp.html" title=" " alt="" coords="467,93,589,119"/>
+<area shape="rect" id="node17" title=" " alt="" coords="613,93,691,119"/>
+<area shape="rect" id="node18" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/atomic.html" title=" " alt="" coords="715,93,781,119"/>
+<area shape="rect" id="node19" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/thread.html" title=" " alt="" coords="805,93,869,119"/>
+<area shape="rect" id="node4" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/string.html" title=" " alt="" coords="284,313,343,339"/>
+<area shape="rect" id="node5" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/map.html" title=" " alt="" coords="160,167,211,192"/>
+<area shape="rect" id="node6" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/chrono.html" title=" " alt="" coords="235,167,301,192"/>
+<area shape="rect" id="node7" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/sstream.html" title=" " alt="" coords="325,167,400,192"/>
+<area shape="rect" id="node8" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/iomanip.html" title=" " alt="" coords="424,167,499,192"/>
+<area shape="rect" id="node10" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/cstdint.html" title=" " alt="" coords="367,313,433,339"/>
+<area shape="rect" id="node11" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/exception.html" title=" " alt="" coords="559,313,646,339"/>
+<area shape="rect" id="node12" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/variant.html" title=" " alt="" coords="409,240,477,265"/>
+<area shape="rect" id="node13" title=" " alt="" coords="670,313,791,339"/>
+<area shape="rect" id="node14" href="$d7/d61/PacketFactory_8hpp.html" title=" " alt="" coords="501,240,638,265"/>
+<area shape="rect" id="node15" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/memory.html" title=" " alt="" coords="457,313,535,339"/>
+</map>
