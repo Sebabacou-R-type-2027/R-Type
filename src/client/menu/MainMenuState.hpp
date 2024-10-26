@@ -14,6 +14,7 @@
 #include "../game/Game.hpp"
 #include "../game/GamePlayState.hpp"
 #include "../multiplayer/MultiplayerMenuState.hpp"
+#include "../settings/SettingsState.hpp"
 #include "../factories/button_factory.hpp"
 #include "../utils/FPSCounter.hpp"
 #include "../utils/Settings.hpp"
@@ -64,7 +65,7 @@ namespace rtype {
         void startConnection(); ///< Start the connection
         void disableShader(); ///< Disable the shader
         void enableShader(); ///< Enable the shader
-
+        void startSettings(); ///< Start the settings
 
         client::Client& network_;
 

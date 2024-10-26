@@ -4,6 +4,7 @@
 #include <iostream>
 #include <memory>
 #include "../game/GamePlayState.hpp"
+#include "../settings/SettingsState.hpp"
 #include "lobby/LobbyState.hpp"
 
 namespace rtype {
@@ -49,10 +50,6 @@ namespace rtype {
         system.button_system_render(registry, window);
         system.draw_system(registry, window);
 
-        // Draw FPS counter
-        // sf::Text fpsText("FPS: " + std::to_string(fpsCounter.getFPS()), font, 24);
-        // window.draw(fpsText);
-
         window.display();
     }
 
@@ -74,6 +71,13 @@ namespace rtype {
         sf::Shader::bind(nullptr);
         game.changeState(std::make_shared<LobbyState>(window, network_, game));
     }
+
+    void MainMenuState::startSettings() {
+        std::cout << "Starting settings..." << std::endl;
+        sf::Shader::bind(nullptr);
+        game.changeState(std::make_shared<SettingsState>(window, network_, game));
+    }
+
     void MainMenuState::disableShader() {
         Settings::getInstance().isShaderEnabled = false;
         sf::Shader::bind(nullptr);
@@ -114,7 +118,7 @@ namespace rtype {
                     sf::Vector2f(button_x, yPos),
                     sf::Vector2f(button_width, button_height),
                     font,
-                    sf::Color(14, 94, 255, 255),
+                    sf::Color(14, 78, 206, 255),
                     sf::Color(7, 115, 255, 255),
                     sf::Color::Blue,
                     sf::Color::White,
@@ -135,7 +139,7 @@ namespace rtype {
         createButton("Connection", yPos, [this]() { startConnection(); });
         yPos += button_height + spacing;
 
-        createButton("Settings", yPos, [this]() { startGame(); });
+        createButton("Settings", yPos, [this]() { startSettings(); });
         yPos += button_height + spacing;
 
         createButton("Map Editor", yPos, [this]() { startGame(); });
