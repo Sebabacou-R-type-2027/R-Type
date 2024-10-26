@@ -5,3 +5,5 @@ target_sources(sample
 )
 
 target_link_libraries(sample PRIVATE ecs)
+
+target_link_libraries(sample PRIVATE sfml-system sfml-window sfml-graphics sfml-audio)

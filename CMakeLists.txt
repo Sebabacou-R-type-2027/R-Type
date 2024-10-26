@@ -25,7 +25,6 @@ add_subdirectory(src)
 add_subdirectory(lib)
 
 target_link_libraries(r-type_server PRIVATE packet asio::asio)
-target_link_libraries(sample PRIVATE sfml-system sfml-window sfml-graphics sfml-audio)
 target_include_directories(r-type_server PRIVATE
     src/server
     src/server/client
