@@ -17,3 +17,5 @@ r-type_server
 clients.csv
 
 vcpkg
+
+.vscode/

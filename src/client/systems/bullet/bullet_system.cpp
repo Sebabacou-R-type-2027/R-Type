@@ -6,12 +6,12 @@
 */
 
 #include "bullet_system.hpp"
-#include "Sound_game.hpp"
+#include "sound_effect.hpp"
 #include <SFML/Audio.hpp>
 #include "components/Entity_type.hpp"
 #include "utils/CheckEntity.hpp"
 
-namespace rtype::game {
+namespace ecs::systems {
 
     void BulletSystem::update(ecs::Registry& registry) {
         auto& positions = registry.get_components<ecs::Position>();
