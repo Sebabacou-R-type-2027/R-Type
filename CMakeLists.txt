@@ -6,7 +6,7 @@ include(CTest)
 enable_testing()
 
 find_package(asio CONFIG REQUIRED)
-find_package(SFML 2.5 COMPONENTS graphics window system audio CONFIG REQUIRED)
+find_package(SFML 2.5 COMPONENTS system window graphics network audio REQUIRED)
 find_package(OpenAL REQUIRED)
 find_package(FLAC REQUIRED)
 find_package(Vorbis REQUIRED)
@@ -25,7 +25,7 @@ add_subdirectory(src)
 add_subdirectory(lib)
 
 target_link_libraries(r-type_server PRIVATE packet asio::asio)
-
+target_link_libraries(sample PRIVATE sfml-system sfml-window sfml-graphics sfml-audio)
 target_include_directories(r-type_server PRIVATE
     src/server
     src/server/client
