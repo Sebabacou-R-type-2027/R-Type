@@ -45,7 +45,8 @@ class Game {
 
     entity initializePlayerComponents(entity e) noexcept {
         _registry.emplace_component<position>(e, 50.0f, 50.0f);
-        _registry.emplace_component<engine::velocity>(e, 0.1f, 0.2f);
+        _registry.emplace_component<engine::velocity>(e, 10.0f, 10.0f);
+        _registry.emplace_component<engine::controllable>(e, true, 10.0f);
         auto label = std::make_shared<sf::Text>("Player", _assetManager.get_font("arial"));
         label->setOrigin(label->getGlobalBounds().left, label->getGlobalBounds().height);
         _registry.emplace_component<gui::drawable>(e, gui::drawable{_game,
@@ -70,6 +71,7 @@ class Game {
             std::signal(SIGINT, _sigHandler.target<void(int)>());
             _registry.register_system<ecs::components::gui::window>(ecs::systems::gui::clear);
             _registry.register_system<const ecs::components::gui::drawable>(ecs::systems::gui::draw);
+            _registry.register_system<ecs::components::engine::velocity, const ecs::components::engine::controllable>(ecs::systems::engine::control);
             _registry.register_system<ecs::components::gui::drawable, const ecs::components::position>(ecs::systems::gui::reposition);
             ecs::systems::position_logger logger(_registry);
             _registry.register_system<ecs::components::position, const ecs::components::engine::velocity>(ecs::systems::engine::movement);
