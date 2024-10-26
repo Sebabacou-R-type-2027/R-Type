@@ -34,8 +34,7 @@ namespace rtype {
         sf::Shader backgroundShader;
         sf::Font font;
         Game& game; ///< Reference to the game object
-        rtype::game::BulletSystem bulletSystem;
-        rtype::game::PowerUp powerUpSystem;
+
 
         client::Client& network_;
         sf::View gameView;

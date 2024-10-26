@@ -68,7 +68,7 @@ namespace rtype {
         sf::RenderWindow window; ///< Window of the game
         std::shared_ptr<GameState> currentState; ///< Current state of the game
         sf::Shader backgroundShader; ///< Shader for the background
-        rtype::game::Sound_game Sound_game; ///< Sound of the game
+        ecs::SoundEffect Sound_game; ///< Sound of the game
 
         client::Client& network_;
         ecs::Registry registry; ///< Registry to store all the components

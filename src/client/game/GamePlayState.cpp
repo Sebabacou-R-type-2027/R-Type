@@ -136,8 +136,7 @@ void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& player
         system.position_system(registry);
 
         float deltaTime = calculateDeltaTime();
-        bulletSystem.update(registry);
-        powerUpSystem.update(registry);
+        system.bullet_player_system(registry);
         system.loop_movement_system(registry, deltaTime);
         system.animation_system(registry, deltaTime, window);
         system.shooting_enemy_system(registry, window);

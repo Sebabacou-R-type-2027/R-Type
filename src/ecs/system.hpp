@@ -172,7 +172,13 @@ namespace ecs {
             spawnerEnemySystem.update(reg, window);
         }
 
+        void bullet_player_system(Registry& reg) {
+            bulletSystem.update(reg);
+        }
+
 private:
+
+    systems::BulletSystem bulletSystem;
     systems::ControlSystem controlSystem;
     systems::DrawSystem drawSystem;
     systems::PositionSystem positionSystem;
