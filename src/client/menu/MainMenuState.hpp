@@ -61,6 +61,7 @@ namespace rtype {
         void createMenuTitle(); ///< Create the menu title
         void startGame(); ///< Start the game
         void startMultiplayer(); ///< Start the multiplayer
+        void startConnection(); ///< Start the connection
         void disableShader(); ///< Disable the shader
         void enableShader(); ///< Enable the shader
 

@@ -2,7 +2,9 @@
 #include "../game/Game.hpp"
 #include "../factories/button_factory.hpp"
 #include <iostream>
+#include <memory>
 #include "../game/GamePlayState.hpp"
+#include "lobby/LobbyState.hpp"
 
 namespace rtype {
     MainMenuState::MainMenuState(sf::RenderWindow& window, Game& game, client::Client& network)
@@ -61,12 +63,17 @@ namespace rtype {
         game.changeState(std::make_shared<GamePlayState>(window, network_, true, game)); // TODO : change to false when multiplayer is implemented
     }
 
-    void MainMenuState::startMultiplayer() {
+    void MainMenuState::startConnection() {
         std::cout << "Starting multiplayer..." << std::endl;
         sf::Shader::bind(nullptr);
         game.changeState(std::make_shared<MultiplayerMenuState>(window, network_, game));
     }
 
+    void MainMenuState::startMultiplayer() {
+        std::cout << "Starting multiplayer..." << std::endl;
+        sf::Shader::bind(nullptr);
+        game.changeState(std::make_shared<LobbyState>(window, network_, game));
+    }
     void MainMenuState::disableShader() {
         Settings::getInstance().isShaderEnabled = false;
         sf::Shader::bind(nullptr);
@@ -125,7 +132,7 @@ namespace rtype {
         createButton("Multiplayer", yPos, [this]() { startMultiplayer(); });
         yPos += button_height + spacing;
 
-        createButton("Customize Ship", yPos, [this]() { startGame(); });
+        createButton("Connection", yPos, [this]() { startConnection(); });
         yPos += button_height + spacing;
 
         createButton("Settings", yPos, [this]() { startGame(); });

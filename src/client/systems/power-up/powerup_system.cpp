@@ -6,10 +6,6 @@
 */
 
 #include "powerup_system.hpp"
-#include <iostream>
-#include "Sound_game.hpp"
-#include <SFML/Audio.hpp>
-#include "components/Entity_type.hpp"
 #include "utils/CheckEntity.hpp"
 #include "../factories/button_factory.hpp"
 

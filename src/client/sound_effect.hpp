@@ -1,21 +1,27 @@
+/*
+** EPITECH PROJECT, 2024
+** R-Type
+** File description:
+** sound_effect
+*/
+
 #pragma once
 
 #include "registry.hpp"
 #include <SFML/Audio.hpp>
 #include <vector>
 #include <string>
+#include <memory>
 
-namespace rtype::game {
+namespace ecs {
 
     /**
      * @brief Class that contains the sound of the game
      * 
      * @tparam Sound_game
      */
-    class Sound_game {
+    class SoundEffect {
         public:
-            Sound_game();
-            ~Sound_game();
             /**
              * @brief Play a sound
              *
@@ -35,7 +41,6 @@ namespace rtype::game {
         private:
             std::vector<sf::Sound> sounds; ///< Vector of sounds
             std::vector<sf::SoundBuffer> buffers; ///< Vector of sound buffers
-            sf::Music music; ///< Music of the game
+            std::shared_ptr<sf::Music> music = std::make_shared<sf::Music>(); ///< Shared pointer to an sf::Music object, managing the game's music. This approach facilitates memory management and allows multiple parts of the program to share access to the same music instance.
     };
-
 }

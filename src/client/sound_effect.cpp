@@ -1,20 +1,17 @@
-#include "Sound_game.hpp"
+/*
+** EPITECH PROJECT, 2024
+** R-Type
+** File description:
+** sound_effect
+*/
+
+#include "sound_effect.hpp"
 #include <SFML/Audio.hpp>
 #include <iostream>
 
-namespace rtype::game {
+namespace ecs {
 
-
-
-Sound_game::Sound_game()
-{
-}
-
-Sound_game::~Sound_game()
-{
-}
-
-void Sound_game::playSound(const std::string& filename, float volume = 50)
+void SoundEffect::playSound(const std::string& filename, float volume = 50)
 {
     buffers.emplace_back();
     if (!buffers.back().loadFromFile(filename)) {
@@ -28,14 +25,14 @@ void Sound_game::playSound(const std::string& filename, float volume = 50)
     sounds.back().play();
 }
 
-void Sound_game::playMusic(const std::string& filename, float volume, bool loop)
+void SoundEffect::playMusic(const std::string& filename, float volume, bool loop)
 {
-    if (!music.openFromFile(filename)) {
+    if (!music->openFromFile(filename)) {
         std::cerr << "Erreur: Impossible de charger la musique " << filename << std::endl;
         return;
     }
-    music.setLoop(loop);
-    music.setVolume(volume);
-    music.play();
+    music->setLoop(loop);
+    music->setVolume(volume);
+    music->play();
 }
 }
