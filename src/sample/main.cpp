@@ -45,7 +45,8 @@ class Game {
 
     entity initializePlayerComponents(entity e) noexcept {
         _registry.emplace_component<position>(e, 50.0f, 50.0f);
-        _registry.emplace_component<engine::velocity>(e, 0.1f, 0.2f);
+        _registry.emplace_component<velocity>(e, 10.0f, 10.0f);
+        _registry.emplace_component<input>(e, input{});
         auto label = std::make_shared<sf::Text>("Player", _assetManager.get_font("arial"));
         label->setOrigin(label->getGlobalBounds().left, label->getGlobalBounds().height);
         _registry.emplace_component<gui::drawable>(e, gui::drawable{_game,
@@ -72,7 +73,7 @@ class Game {
             _registry.register_system<const ecs::components::gui::drawable>(ecs::systems::gui::draw);
             _registry.register_system<ecs::components::gui::drawable, const ecs::components::position>(ecs::systems::gui::reposition);
             ecs::systems::position_logger logger(_registry);
-            _registry.register_system<ecs::components::position, const ecs::components::engine::velocity>(ecs::systems::engine::movement);
+            _registry.register_system<ecs::components::position, const ecs::components::velocity, const ecs::components::input>(ecs::systems::controllable::control);
             _registry.register_system<ecs::components::gui::window>(ecs::systems::gui::display);
         }
 
@@ -80,9 +81,24 @@ class Game {
             sf::Event event;
             auto next = std::chrono::steady_clock::now();
             while (_window.isOpen()) {
-                while (_window.pollEvent(event))
-                    if (event.type == sf::Event::Closed)
+                while (_window.pollEvent(event)) {
+                    if (event.type == sf::Event::Closed || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
                         _window.close();
+                    if (event.type == sf::Event::KeyPressed || event.type == sf::Event::KeyReleased) {
+                        bool isPressed = (event.type == sf::Event::KeyPressed);
+                        auto playerInputOpt = _registry.get_entity_component<input>(_player);
+                        if (playerInputOpt) {
+                            auto &playerInput = playerInputOpt.value().get();
+                            switch (event.key.code) {
+                                case sf::Keyboard::Z: playerInput.up = isPressed; break;
+                                case sf::Keyboard::S: playerInput.down = isPressed; break;
+                                case sf::Keyboard::Q: playerInput.left = isPressed; break;
+                                case sf::Keyboard::D: playerInput.right = isPressed; break;
+                                default: break;
+                            }
+                        }
+                    }
+                }
                 using namespace std::chrono_literals;
                 if (next >= std::chrono::steady_clock::now())
                     continue;
