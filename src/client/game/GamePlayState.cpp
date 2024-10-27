@@ -7,6 +7,7 @@
 
 #include "GamePlayState.hpp"
 #include "menu/MainMenuState.hpp"
+#include "card-powerup/powerup_system.hpp"
 #include <chrono>
 
 namespace rtype {
@@ -31,6 +32,7 @@ namespace rtype {
         }
         createEnemies.create_initial_enemies(registry, window);
         initChargeBullet();
+        game.changeState(std::make_shared<PowerUp>(registry, window));
     }
 
     void GamePlayState::handleInput() {
@@ -134,7 +136,7 @@ void GamePlayState::constrainPlayerPosition(std::optional<ecs::Position>& player
         }
         system.control_system(registry, network_);
         system.position_system(registry);
-        system.card_powerup_system(registry, window);
+
         float deltaTime = calculateDeltaTime();
         system.bullet_player_system(registry);
         system.loop_movement_system(registry, deltaTime);

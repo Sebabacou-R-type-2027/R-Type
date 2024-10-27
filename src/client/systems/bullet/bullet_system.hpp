@@ -11,8 +11,6 @@
 #include "sound_effect.hpp"
 #include <SFML/Audio.hpp>
 
-#include "../power-up/powerup_system.hpp"
-
 namespace ecs::systems {
     /**
      * @brief Class that contains all the logic of the position system

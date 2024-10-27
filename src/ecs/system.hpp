@@ -20,7 +20,6 @@
 #include "../client/systems/shooting_enemy/shooting_enemy_system.hpp"
 #include "../client/systems/chasing_enemy/chasing_enemy_system.hpp"
 #include "../client/systems/spawner_enemy/spawner_enemy_system.hpp"
-#include "../client/systems/power-up/powerup_system.hpp"
 
 namespace ecs {
     /**
@@ -177,9 +176,6 @@ namespace ecs {
             bulletSystem.update(reg);
         }
 
-        void card_powerup_system(Registry& reg, sf::RenderWindow& window) {
-            powerupSystem.createCardPower(reg, window);
-        }
 
 private:
 
@@ -195,7 +191,6 @@ private:
     systems::ChasingEnemySystem chasingEnemySystem;
     systems::SpawnerEnemySystem spawnerEnemySystem;
     systems::BulletSystem bulletSystem;
-    systems::PowerUp powerupSystem;
 
 };
 

@@ -14,7 +14,6 @@
 #include "../Handle_collision.hpp"
 #include "../systems/bullet/bullet_system.hpp"
 #include "create_enemies.hpp"
-#include "../systems/power-up/powerup_system.hpp"
 #include "Game.hpp"
 
 namespace rtype {

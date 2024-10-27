@@ -6,13 +6,15 @@
 */
 
 #include "powerup_system.hpp"
-#include "utils/CheckEntity.hpp"
-#include "../factories/button_factory.hpp"
+#include "../utils/CheckEntity.hpp"
+#include "system.hpp"
+#include <iostream>
+#include <memory>
 
-namespace ecs::systems {
+namespace rtype {
 
 
-void PowerUp::createCardPower(ecs::Registry& registry, sf::RenderWindow& window) {
+PowerUp::PowerUp(ecs::Registry& registry, sf::RenderWindow& window): registry(registry), window(window) {
     if (isCreate == false) {
         isCreate = true;
         if (!font.loadFromFile("assets/fonts/arial.ttf")) {
@@ -50,7 +52,7 @@ void PowerUp::createCardPower(ecs::Registry& registry, sf::RenderWindow& window)
         };
 
         float yPos = start_y;
-        createButton("AUGUSTIN 1", yPos, [this, &registry]() { this->threeShootPower(registry);});
+        createButton("POWER 1", yPos, [this, &registry]() { printf("COUCOU");});
         yPos += button_height + spacing;
 
         createButton("AUGUSTIN 2", yPos, [this]() { return; });
@@ -62,24 +64,52 @@ void PowerUp::createCardPower(ecs::Registry& registry, sf::RenderWindow& window)
     }
 
 
-    bool PowerUp::threeShootPower(ecs::Registry& registry) {
-        if (!threeShootPower_activate) {
-            threeShootPower_activate = true;
-            timer.restart();
-            std::cout << "Power activated for 15 seconds!" << std::endl;
-        }
+    //bool PowerUp::threeShootPower(ecs::Registry& registry) {
+    //    if (!threeShootPower_activate) {
+    //        threeShootPower_activate = true;
+    //        timer.restart();
+    //        std::cout << "Power activated for 15 seconds!" << std::endl;
+    //    }
 
-        if (threeShootPower_activate && timer.getElapsedTime().asSeconds() >= 15.0f) {
-            threeShootPower_activate = false;
-            std::cout << "Power deactivated." << std::endl;
-        }
+    //    if (threeShootPower_activate && timer.getElapsedTime().asSeconds() >= 15.0f) {
+    //        threeShootPower_activate = false;
+    //        std::cout << "Power deactivated." << std::endl;
+    //    }
 
-        return threeShootPower_activate;
-    }
+    //    return threeShootPower_activate;
+    //}
 
 
     void PowerUp::update() {
-        return;
+        system.button_system(registry, window);
+        // fpsCounter.update();
     }
+
+    void PowerUp::handleInput() {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed) {
+                window.close();
+            }
+        }
+    }
+
+    void PowerUp::render() {
+        window.clear();
+        if (Settings::getInstance().isShaderEnabled) {
+            system.shader_system_render(registry, window, backgroundShader);
+        } else {
+            sf::Shader::bind(nullptr);
+        }
+
+        system.button_system_render(registry, window);
+        system.draw_system(registry, window);
+
+        // Draw FPS counter
+        // sf::Text fpsText("FPS: " + std::to_string(fpsCounter.getFPS()), font, 24);
+        // window.draw(fpsText);
+
+        window.display();
+        }
 }
 
