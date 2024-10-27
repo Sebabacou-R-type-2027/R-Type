@@ -43,6 +43,10 @@ class Game {
     static constexpr components::gui::asset_manager &loadAssets(components::gui::asset_manager &in) noexcept {
         in.load_font("arial", "assets/fonts/arial.ttf");
         in.load_texture("ship", "assets/Ship/Ship.png");
+        in.load_texture("enemy", "assets/r-type-enemy.gif");
+        in.load_texture("enemy_chaser", "assets/Chasing_enemy/r-typesheet11_right.gif");
+        in.load_texture("enemy_spawner", "assets/sprites/r-typesheet24.gif");
+        in.load_texture("enemy_shooter", "assets/sprites/r-typesheet26.gif");
         return in;
     }
 
