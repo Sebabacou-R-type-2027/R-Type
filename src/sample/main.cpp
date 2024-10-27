@@ -13,14 +13,18 @@
 import std;
 #endif
 import ecs;
+import game;
 
 using namespace ecs;
-using namespace ecs::components;
+using namespace game::components;
+using namespace game::systems;
+
+using namespace std::chrono_literals;
 
 class Game {
     registry _registry;
     entity _game;
-    gui::asset_manager &_assetManager;
+    components::gui::asset_manager &_assetManager;
     entity _player;
 
     sf::RenderWindow _window;
@@ -33,23 +37,23 @@ class Game {
     }
 
     constexpr entity initializeGameComponents(entity e) noexcept {
-        _registry.add_component<ecs::components::gui::window>(e, {_window});
+        _registry.add_component<components::gui::window>(e, {_window});
         return e;
     }
 
-    static constexpr gui::asset_manager &loadAssets(gui::asset_manager &in) noexcept {
+    static constexpr components::gui::asset_manager &loadAssets(components::gui::asset_manager &in) noexcept {
         in.load_font("arial", "assets/fonts/arial.ttf");
         in.load_texture("ship", "assets/Ship/Ship.png");
         return in;
     }
 
     entity initializePlayerComponents(entity e) noexcept {
-        _registry.emplace_component<position>(e, 50.0f, 50.0f);
-        _registry.emplace_component<engine::velocity>(e, 0.1f, 0.2f);
+        _registry.emplace_component<components::position>(e, 50.0f, 50.0f);
+        _registry.emplace_component<components::engine::velocity>(e, 0.1f, 0.2f);
         auto label = std::make_shared<sf::Text>("Player", _assetManager.get_font("arial"));
         label->setOrigin(label->getGlobalBounds().left, label->getGlobalBounds().height);
-        _registry.emplace_component<gui::drawable>(e, gui::drawable{_game,
-            std::initializer_list<gui::drawable::elements_container::value_type>{
+        _registry.emplace_component<components::gui::drawable>(e, components::gui::drawable{_game,
+            std::initializer_list<components::gui::drawable::elements_container::value_type>{
                 {_game, {std::make_shared<sf::Text>("Player", _assetManager.get_font("arial"), 12), "arial"}},
                 {_game, {std::make_shared<sf::Sprite>(_assetManager.get_texture("ship")), "ship"}}
             }
@@ -61,19 +65,24 @@ class Game {
         Game() noexcept
             : _registry(),
             _game(initializeGameComponents(_registry.create_entity())),
-            _assetManager(loadAssets(_registry.add_component<ecs::components::gui::asset_manager>(_game, {}))),
+            _assetManager(loadAssets(_registry.add_component<components::gui::asset_manager>(_game, {}))),
             _player(initializePlayerComponents(_registry.create_entity())),
             _window(sf::VideoMode(1920, 1080), "Game"),
             _sigHandler(std::bind_front(&Game::stop, this))
         {
             std::cout << "Press Ctrl+C to stop" << std::endl;
             std::signal(SIGINT, _sigHandler.target<void(int)>());
-            _registry.register_system<ecs::components::gui::window>(ecs::systems::gui::clear);
-            _registry.register_system<const ecs::components::gui::drawable>(ecs::systems::gui::draw);
-            _registry.register_system<ecs::components::gui::drawable, const ecs::components::position>(ecs::systems::gui::reposition);
-            ecs::systems::position_logger logger(_registry);
-            _registry.register_system<ecs::components::position, const ecs::components::engine::velocity>(ecs::systems::engine::movement);
-            _registry.register_system<ecs::components::gui::window>(ecs::systems::gui::display);
+            _registry.register_system<components::gui::window>(systems::gui::clear);
+            _registry.register_system<const components::gui::drawable>(systems::gui::draw);
+            _registry.register_system<components::gui::drawable, const components::position>(systems::gui::reposition);
+            _registry.register_system<projectile_launcher, const components::position>(launch_projectile);
+            _registry.register_system<const projectile>(cull_projectiles);
+            systems::position_logger logger(_registry);
+            _registry.register_system<components::position, const components::engine::velocity>(systems::engine::movement);
+            _registry.register_system<components::gui::window>(systems::gui::display);
+            auto launcher = _registry.create_entity();
+            _registry.emplace_component<components::position>(launcher, 700.0f, 100.0f);
+            _registry.add_component<projectile_launcher>(launcher, {1s, std::chrono::steady_clock::now(), _game});
         }
 
         void run() noexcept {
@@ -83,7 +92,6 @@ class Game {
                 while (_window.pollEvent(event))
                     if (event.type == sf::Event::Closed)
                         _window.close();
-                using namespace std::chrono_literals;
                 if (next >= std::chrono::steady_clock::now())
                     continue;
                 next += 50ms;
