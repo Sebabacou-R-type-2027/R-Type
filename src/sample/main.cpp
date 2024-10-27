@@ -54,7 +54,7 @@ class Game {
     entity initializePlayerComponents(entity e) noexcept {
         using namespace std::chrono_literals;
         _registry.emplace_component<position>(e, 50.0f, 50.0f);
-        _registry.emplace_component<engine::velocity>(e, 0.2f, 0.2f);
+        _registry.emplace_component<engine::velocity>(e, 0.0f, 0.0f);
         _registry.emplace_component<engine::controllable>(e, true, 10.0f);
         _registry.emplace_component<gui::animations>(e, gui::animations{_game,
             std::initializer_list<gui::animations::elements_container::value_type>{
