@@ -21,6 +21,15 @@ export namespace game::components {
         int health; ///< Health of the entity
         int damage; ///< Damage of the entity
         std::chrono::steady_clock::time_point _birth;
+
+        /**
+            * @brief Constructor of the enemy component
+
+            * @param health Health of the entity
+            * @param damage Damage of the entity
+         */
+        enemy(int health, int damage, std::chrono::steady_clock::time_point birth)
+            : health(health), damage(damage), _birth(birth) {}
     };
 
 
@@ -31,6 +40,7 @@ export namespace game::components {
      */
     struct enemy_chaser {
         float _speed; ///< Speed of the entity
+        ecs::entity _target; ///< Target entity
 
         /**
             * @brief Constructor of the enemy chaser component
@@ -39,7 +49,7 @@ export namespace game::components {
             * @param speed Speed of the entity
          */
         enemy_chaser(ecs::entity target, float speed)
-            : _speed(speed) {}
+            : _speed(speed), _target(target) {}
     };
 
     /**
@@ -49,15 +59,16 @@ export namespace game::components {
      */
     struct enemy_shooter {
         float cooldown; ///< Cooldown between shots
-        std::chrono::milliseconds last_update; ///< Last time the entity shot
+        std::chrono::steady_clock::time_point last_update; ///< Last time the entity shot
+        ecs::entity game;
 
         /**
             * @brief Constructor of the enemy shooter component
 
             * @param cooldown Cooldown between shots
          */
-        enemy_shooter(float cooldown)
-            : cooldown(cooldown) {}
+        enemy_shooter(float cooldown, std::chrono::steady_clock::time_point last_update, ecs::entity game)
+            : cooldown(cooldown), last_update(last_update), game(game) {}
     };
 
     /**
@@ -68,7 +79,8 @@ export namespace game::components {
     struct enemy_spawner {
         float cooldown; ///< Cooldown between spawns
         long max_enemies; ///< Maximum number of enemies
-        std::chrono::milliseconds last_update; ///< Last time the entity spawned an enemy
+        std::chrono::steady_clock::time_point last_update; ///< Last time the entity spawned an enemy
+        ecs::entity game;
 
         /**
             * @brief Constructor of the enemy spawner component
@@ -76,8 +88,8 @@ export namespace game::components {
             * @param cooldown Cooldown between spawns
             * @param max_enemies Maximum number of enemies
          */
-        enemy_spawner(float cooldown, long max_enemies)
-            : cooldown(cooldown), max_enemies(max_enemies) {}
+        enemy_spawner(float cooldown, long max_enemies, std::chrono::steady_clock::time_point last_update, ecs::entity game)
+            : cooldown(cooldown), max_enemies(max_enemies), last_update(last_update), game(game) {}
     };
 
     /**
