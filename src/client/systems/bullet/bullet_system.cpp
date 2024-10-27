@@ -75,8 +75,31 @@ namespace ecs::systems {
                         bonus1_activate = false;
                     }
                 }
+                if (timePressed < 1 && currentTime - lastShootTime > shootCooldown && bonus_heal == true) {
+                    Sound_game.playSound("assets/Son/laser_gun2.wav", 40);
+                    lastShootTime = currentTime;
+
+                    auto laser_heal = registry.spawn_entity();
+
+                    auto &draw1 = registry.emplace_component<ecs::Drawable>(laser_heal, "assets/Bullets/08.png");
+                    registry.emplace_component<ecs::Velocity>(laser_heal, 35.0f, 0.0f);
+                    registry.emplace_component<ecs::EntityType>(laser_heal, ecs::Type::BulletHeal);
+                    auto &hit1 = registry.emplace_component<ecs::Hitbox>(laser_heal, ecs::ShapeType::Rectangle, false);
+                    hit1->rect.setPosition(100, positions[CheckEntity(registry, ecs::Type::Player)]->y + 5);
+                    hit1->rect = sf::RectangleShape(sf::Vector2f(draw1->sprite.getGlobalBounds().width, draw1->sprite.getGlobalBounds().height));
+                    registry.emplace_component<ecs::Position>(laser_heal, positions[CheckEntity(registry, ecs::Type::Player)]->x + 75, positions[CheckEntity(registry, ecs::Type::Player)]->y + 5);
+                    registry.emplace_component<ecs::BulletHeal>(laser_heal);
+                    registry.emplace_component<ecs::LifeState>(laser_heal, true);
+                    registry.emplace_component<ecs::CollisionState>(laser_heal, false);
+
+                } else {
+                    ChargedOneDraw = true;
+                }
+
+
 
                 if (timePressed < 1 && currentTime - lastShootTime > shootCooldown && bonus1_activate == true) {
+                    //POWERUP 1 THREE SHOOT
                     Sound_game.playSound("assets/Son/laser_gun2.wav", 40);
                     lastShootTime = currentTime;
 

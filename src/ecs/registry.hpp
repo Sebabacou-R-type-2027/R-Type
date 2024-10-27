@@ -30,6 +30,7 @@
             #include "components/GameState.hpp"
             #include "components/LifeState.hpp"
             #include "components/BulletCharge.hpp"
+            #include "components/BulletHeal.hpp"
             #include "components/Shooting.hpp"
             #include "components/Chasing.hpp"
             #include "components/Spawner.hpp"
@@ -196,6 +197,7 @@ class Registry {
             register_component<GameStateComponent>();
             register_component<LifeState>();
             register_component<BulletCharge>();
+            register_component<BulletHeal>();
             register_component<Shooting>();
             register_component<Chasing>();
             register_component<Spawner>();

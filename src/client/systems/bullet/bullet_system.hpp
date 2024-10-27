@@ -41,6 +41,7 @@ namespace ecs::systems {
             ecs::SoundEffect Sound_game; ///< Sound of the game
 
             bool bonus1_activate = false;
+            bool bonus_heal = true;
 
             sf::Clock timeLimitBonus1Clock;
             float bonus1_activationTime = 0;
