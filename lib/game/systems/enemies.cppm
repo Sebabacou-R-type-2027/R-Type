@@ -13,6 +13,8 @@ import :components.projectiles;
 import std;
 #endif
 import ecs;
+import utils;
+
 
 export namespace game::systems {
     /**
@@ -22,24 +24,20 @@ export namespace game::systems {
      */
     void spawn_enemy(ecs::entity_container &ec, int health, int damage, const ecs::components::position& position, ecs::entity game)
     {
+        const ecs::components::gui::asset_manager &asset_manager = *ec.get_entity_component<const ecs::components::gui::asset_manager>(game);
         auto enemy = ec.create_entity();
         ec.add_component(enemy, components::enemy{health, damage, std::chrono::steady_clock::now()});
         ec.add_component(enemy, ecs::components::position{position.x, position.y});
         ec.add_component(enemy, ecs::components::engine::velocity{10.0f, 0.0f});
         ec.add_component(enemy, game::components::enemy_loop_movement{0.0f, 2000.0f, 200.0f, 800.0f, 1.0f, 0.0f, 100.0f, 2.0f});
         ec.emplace_component<ecs::components::gui::drawable>(enemy, ecs::components::gui::drawable{game,
-            std::initializer_list<ecs::components::gui::drawable::elements_container::value_type>{
-                {game, {
-                    std::make_shared<sf::Text>("Enemy",
-                        ec.get_entity_component<ecs::components::gui::asset_manager>(game)->get().get_font("arial"), 12),
-                        "arial"
-                    }
-                },
-                {game, {
-                    std::make_shared<sf::Sprite>(ec.get_entity_component<ecs::components::gui::asset_manager>(game)->get().get_texture("enemy")),
-                    "enemy"
-                }}
-            }
+            std::container<ecs::components::gui::drawable::elements_container>::make({
+                {game, std::make_unique<ecs::components::gui::display_element>(
+                    std::make_unique<sf::Text>("Enemy", asset_manager.get_font("arial"), 12), "arial")},
+                {game, std::make_unique<ecs::components::gui::animation>
+                    (asset_manager.get_texture("enemy"), 1, 8, "enemy")
+                }
+            })
         });
     }
 
@@ -50,24 +48,20 @@ export namespace game::systems {
      */
     void spawn_enemy_chaser(ecs::entity_container &ec, ecs::entity target, float speed, const ecs::components::position& position, ecs::entity game)
     {
+        const ecs::components::gui::asset_manager &asset_manager = *ec.get_entity_component<const ecs::components::gui::asset_manager>(game);
         auto enemy = ec.create_entity();
         ec.add_component(enemy, components::enemy{100, 10, std::chrono::steady_clock::now()});
         ec.add_component(enemy, ecs::components::position{position.x, position.y});
         ec.add_component(enemy, ecs::components::engine::velocity{10.0f, 0.0f});
         ec.add_component(enemy, game::components::enemy_chaser{target, speed});
         ec.emplace_component<ecs::components::gui::drawable>(enemy, ecs::components::gui::drawable{game,
-            std::initializer_list<ecs::components::gui::drawable::elements_container::value_type>{
-                {game, {
-                    std::make_shared<sf::Text>("Enemy Chaser",
-                        ec.get_entity_component<ecs::components::gui::asset_manager>(game)->get().get_font("arial"), 12),
-                        "arial"
-                    }
-                },
-                {game, {
-                    std::make_shared<sf::Sprite>(ec.get_entity_component<ecs::components::gui::asset_manager>(game)->get().get_texture("enemy_chaser")),
-                    "enemy_chaser"
-                }}
-            }
+            std::container<ecs::components::gui::drawable::elements_container>::make({
+                {game, std::make_unique<ecs::components::gui::display_element>(
+                    std::make_unique<sf::Text>("Chaser", asset_manager.get_font("arial"), 12), "arial")},
+                {game, std::make_unique<ecs::components::gui::animation>
+                    (asset_manager.get_texture("enemy_chaser"), 1, 3, "enemy_chaser")
+                }
+            })
         });
     }
 
@@ -78,24 +72,20 @@ export namespace game::systems {
      */
     void spawn_enemy_shooter(ecs::entity_container &ec, float cooldown, const ecs::components::position& position, ecs::entity game)
     {
+        const ecs::components::gui::asset_manager &asset_manager = *ec.get_entity_component<const ecs::components::gui::asset_manager>(game);
         auto enemy = ec.create_entity();
         ec.add_component(enemy, components::enemy{100, 10, std::chrono::steady_clock::now()});
         ec.add_component(enemy, ecs::components::position{position.x, position.y});
         ec.add_component(enemy, ecs::components::engine::velocity{10.0f, 0.0f});
         ec.add_component(enemy, game::components::enemy_shooter{cooldown, std::chrono::steady_clock::now(), game});
         ec.emplace_component<ecs::components::gui::drawable>(enemy, ecs::components::gui::drawable{game,
-            std::initializer_list<ecs::components::gui::drawable::elements_container::value_type>{
-                {game, {
-                    std::make_shared<sf::Text>("Enemy Shooter",
-                        ec.get_entity_component<ecs::components::gui::asset_manager>(game)->get().get_font("arial"), 12),
-                        "arial"
-                    }
-                },
-                {game, {
-                    std::make_shared<sf::Sprite>(ec.get_entity_component<ecs::components::gui::asset_manager>(game)->get().get_texture("enemy_shooter")),
-                    "enemy_shooter"
-                }}
-            }
+            std::container<ecs::components::gui::drawable::elements_container>::make({
+                {game, std::make_unique<ecs::components::gui::display_element>(
+                    std::make_unique<sf::Text>("Shooter", asset_manager.get_font("arial"), 12), "arial")},
+                {game, std::make_unique<ecs::components::gui::animation>
+                    (asset_manager.get_texture("enemy_shooter"), 1, 3, "enemy_shooter")
+                }
+            })
         });
     }
 
@@ -106,24 +96,20 @@ export namespace game::systems {
      */
     void spawn_enemy_spawner(ecs::entity_container &ec, float cooldown, int max_enemies, const ecs::components::position& position, ecs::entity game)
     {
+        const ecs::components::gui::asset_manager &asset_manager = *ec.get_entity_component<const ecs::components::gui::asset_manager>(game);
         auto enemy = ec.create_entity();
         ec.add_component(enemy, components::enemy{100, 10, std::chrono::steady_clock::now()});
         ec.add_component(enemy, ecs::components::position{position.x, position.y});
         ec.add_component(enemy, ecs::components::engine::velocity{0.0f, 0.0f});
         ec.add_component(enemy, game::components::enemy_spawner{cooldown, max_enemies, std::chrono::steady_clock::now(), game});
-        ec.emplace_component<ecs::components::gui::drawable>(enemy, ecs::components::gui::drawable{game,
-            std::initializer_list<ecs::components::gui::drawable::elements_container::value_type>{
-                {game, {
-                    std::make_shared<sf::Text>("Enemy Spawner",
-                        ec.get_entity_component<ecs::components::gui::asset_manager>(game)->get().get_font("arial"), 12),
-                        "arial"
-                    }
-                },
-                {game, {
-                    std::make_shared<sf::Sprite>(ec.get_entity_component<ecs::components::gui::asset_manager>(game)->get().get_texture("enemy_spawner")),
-                    "enemy_spawner"
-                }}
-            }
+                ec.emplace_component<ecs::components::gui::drawable>(enemy, ecs::components::gui::drawable{game,
+            std::container<ecs::components::gui::drawable::elements_container>::make({
+                {game, std::make_unique<ecs::components::gui::display_element>(
+                    std::make_unique<sf::Text>("Spawner", asset_manager.get_font("arial"), 12), "arial")},
+                {game, std::make_unique<ecs::components::gui::animation>
+                    (asset_manager.get_texture("enemy_spawner"), 1, 5, "enemy_spawner")
+                }
+            })
         });
     }
 
@@ -148,6 +134,7 @@ export namespace game::systems {
 
     void move_enemy_shooter(ecs::entity_container &ec, game::components::enemy_shooter &shooter, ecs::components::position& position, std::chrono::milliseconds dt)
     {
+        const ecs::components::gui::asset_manager &asset_manager = *ec.get_entity_component<const ecs::components::gui::asset_manager>(shooter.game);
         auto now = std::chrono::steady_clock::now();
         auto elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(now - shooter.last_update);
 
@@ -161,16 +148,12 @@ export namespace game::systems {
         ec.add_component(projectile, components::projectile{10, now, 3s});
         ec.add_component(projectile, ecs::components::position{position.x, position.y});
         ec.add_component(projectile, ecs::components::engine::velocity{10.0f, 10.0f});
-        ec.emplace_component<ecs::components::gui::drawable>(projectile, ecs::components::gui::drawable{shooter.game,
-            std::initializer_list<ecs::components::gui::drawable::elements_container::value_type>{
-                {shooter.game, {
-                    std::make_shared<sf::Text>("Pew",
-                        ec.get_entity_component<ecs::components::gui::asset_manager>(shooter.game)->get().get_font("arial"), 12),
-                        "arial"
-                    }
-                }
-            }
-        });
+        ec.emplace_component<ecs::components::gui::drawable>(projectile,
+            shooter.game, std::container<ecs::components::gui::drawable::elements_container>::make({
+                {shooter.game, std::make_unique<ecs::components::gui::display_element>(
+                    std::make_unique<sf::Text>("Pew", asset_manager.get_font("arial"), 12), "arial")}
+            })
+        );
     }
 
     void handle_enemy_spawner(ecs::entity_container &ec, game::components::enemy_spawner &spawner, ecs::components::position& position, std::chrono::milliseconds dt)

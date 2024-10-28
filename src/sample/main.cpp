@@ -46,21 +46,23 @@ class Game {
         in.load_texture("enemy", "assets/r-type-enemy.gif");
         in.load_texture("enemy_chaser", "assets/Chasing_enemy/r-typesheet11_right.gif");
         in.load_texture("enemy_spawner", "assets/sprites/r-typesheet24.gif");
-        in.load_texture("enemy_shooter", "assets/sprites/r-typesheet26.gif");
+        in.load_texture("enemy_shooter", "assets/r-typesheet26.gif");
         return in;
     }
 
     entity initializePlayerComponents(entity e) noexcept {
         _registry.emplace_component<components::position>(e, 50.0f, 50.0f);
-        _registry.emplace_component<components::engine::velocity>(e, 0.1f, 0.2f);
+        _registry.emplace_component<components::engine::velocity>(e, 0.0f, 0.0f);
+        _registry.emplace_component<components::engine::controllable>(e, true, 10.0f);
         auto label = std::make_shared<sf::Text>("Player", _assetManager.get_font("arial"));
         label->setOrigin(label->getGlobalBounds().left, label->getGlobalBounds().height);
         _registry.emplace_component<components::gui::drawable>(e, components::gui::drawable{_game,
             std::container<components::gui::drawable::elements_container>::make({
                 {_game, std::make_unique<ecs::components::gui::display_element>(
                     std::make_unique<sf::Text>("Player", _assetManager.get_font("arial"), 12), "arial")},
-                {_game, std::make_unique<ecs::components::gui::display_element>(
-                    std::make_unique<sf::Sprite>(_assetManager.get_texture("ship")), "ship")}
+                {_game, std::make_unique<ecs::components::gui::animation>
+                    (_assetManager.get_texture("ship"), 1, 5, "ship")
+                }
             })
         });
         return e;
@@ -83,6 +85,7 @@ class Game {
             _registry.register_system<const projectile>(cull_projectiles);
             systems::position_logger logger(_registry);
             _registry.register_system<components::position, const components::engine::velocity>(systems::engine::movement);
+            _registry.register_system<components::position, const components::engine::controllable>(systems::engine::control);
             _registry.register_system<components::gui::window>(systems::gui::display);
             auto launcher = _registry.create_entity();
             _registry.emplace_component<components::position>(launcher, 700.0f, 100.0f);
