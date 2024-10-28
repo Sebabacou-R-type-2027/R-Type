@@ -1,10 +1,10 @@
 module;
 
 #if __cpp_lib_modules < 202207L
+#include <cmath>
 #include <chrono>
 #endif
 #include <SFML/Graphics.hpp>
-#include <cmath>
 export module game:systems.enemies;
 import :components.enemies;
 import :components.projectiles;
@@ -15,6 +15,7 @@ import std;
 import ecs;
 import utils;
 
+using namespace std::chrono_literals;
 
 export namespace game::systems {
     /**
@@ -34,9 +35,8 @@ export namespace game::systems {
             std::container<ecs::components::gui::drawable::elements_container>::make({
                 {game, std::make_unique<ecs::components::gui::display_element>(
                     std::make_unique<sf::Text>("Enemy", asset_manager.get_font("arial"), 12), "arial")},
-                {game, std::make_unique<ecs::components::gui::animation>
-                    (asset_manager.get_texture("enemy"), 1, 8, "enemy")
-                }
+                {game, std::make_unique<ecs::components::gui::animation>(
+                    asset_manager.get_texture("enemy"), 1, 8, 10ms, "enemy")}
             })
         });
     }
@@ -59,7 +59,7 @@ export namespace game::systems {
                 {game, std::make_unique<ecs::components::gui::display_element>(
                     std::make_unique<sf::Text>("Chaser", asset_manager.get_font("arial"), 12), "arial")},
                 {game, std::make_unique<ecs::components::gui::animation>
-                    (asset_manager.get_texture("enemy_chaser"), 1, 3, "enemy_chaser")
+                    (asset_manager.get_texture("enemy_chaser"), 1, 3, 10ms, "enemy_chaser")
                 }
             })
         });
@@ -83,7 +83,7 @@ export namespace game::systems {
                 {game, std::make_unique<ecs::components::gui::display_element>(
                     std::make_unique<sf::Text>("Shooter", asset_manager.get_font("arial"), 12), "arial")},
                 {game, std::make_unique<ecs::components::gui::animation>
-                    (asset_manager.get_texture("enemy_shooter"), 1, 3, "enemy_shooter")
+                    (asset_manager.get_texture("enemy_shooter"), 1, 3, 10ms, "enemy_shooter")
                 }
             })
         });
@@ -107,7 +107,7 @@ export namespace game::systems {
                 {game, std::make_unique<ecs::components::gui::display_element>(
                     std::make_unique<sf::Text>("Spawner", asset_manager.get_font("arial"), 12), "arial")},
                 {game, std::make_unique<ecs::components::gui::animation>
-                    (asset_manager.get_texture("enemy_spawner"), 1, 5, "enemy_spawner")
+                    (asset_manager.get_texture("enemy_spawner"), 1, 5, 10ms, "enemy_spawner")
                 }
             })
         });

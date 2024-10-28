@@ -37,6 +37,7 @@ class Game {
 
     constexpr entity initializeGameComponents(entity e) noexcept {
         _registry.emplace_component<components::gui::window>(e, std::make_unique<sf::RenderWindow>(sf::VideoMode(1920, 1080), "Game"));
+        _registry.emplace_component<components::gui::animation_clock>(e);
         return e;
     }
 
@@ -60,9 +61,7 @@ class Game {
             std::container<components::gui::drawable::elements_container>::make({
                 {_game, std::make_unique<ecs::components::gui::display_element>(
                     std::make_unique<sf::Text>("Player", _assetManager.get_font("arial"), 12), "arial")},
-                {_game, std::make_unique<ecs::components::gui::animation>
-                    (_assetManager.get_texture("ship"), 1, 5, "ship")
-                }
+                {_game, std::make_unique<ecs::components::gui::animation>(_assetManager.get_texture("ship"), 1, 5, 10ms, "ship")}
             })
         });
         return e;
@@ -79,6 +78,7 @@ class Game {
             std::cout << "Press Ctrl+C to stop" << std::endl;
             std::signal(SIGINT, _sigHandler.target<void(int)>());
             _registry.register_system<components::gui::window>(systems::gui::clear);
+            _registry.register_system<components::gui::animation_clock>(systems::gui::update_clock);
             _registry.register_system<const components::gui::drawable>(systems::gui::draw);
             _registry.register_system<components::gui::drawable, const components::position>(systems::gui::reposition);
             _registry.register_system<projectile_launcher, const components::position>(launch_projectile);
@@ -87,9 +87,10 @@ class Game {
             _registry.register_system<components::position, const components::engine::velocity>(systems::engine::movement);
             _registry.register_system<components::position, const components::engine::controllable>(systems::engine::control);
             _registry.register_system<components::gui::window>(systems::gui::display);
-            auto launcher = _registry.create_entity();
-            _registry.emplace_component<components::position>(launcher, 700.0f, 100.0f);
-            _registry.add_component<projectile_launcher>(launcher, {1s, std::chrono::steady_clock::now(), _game});
+            _registry.register_system<components::gui::animation_clock>(systems::gui::reset_clock);
+            // auto launcher = _registry.create_entity();
+            // _registry.emplace_component<components::position>(launcher, 700.0f, 100.0f);
+            _registry.add_component<projectile_launcher>(_player, {1s, std::chrono::steady_clock::now(), _game});
         }
 
         void run() noexcept {
