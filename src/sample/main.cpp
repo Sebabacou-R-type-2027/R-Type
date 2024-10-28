@@ -42,7 +42,7 @@ class Game {
 
     static constexpr components::gui::asset_manager &loadAssets(components::gui::asset_manager &in) noexcept {
         in.load_font("arial", "assets/fonts/arial.ttf");
-        in.load_texture("ship", "assets/Ship/Ship.png");
+        in.load_texture("ship", "assets/Player/Player.gif");
         in.load_texture("enemy", "assets/r-type-enemy.gif");
         in.load_texture("enemy_chaser", "assets/Chasing_enemy/r-typesheet11_right.gif");
         in.load_texture("enemy_spawner", "assets/sprites/r-typesheet24.gif");
@@ -78,6 +78,7 @@ class Game {
             std::signal(SIGINT, _sigHandler.target<void(int)>());
             _registry.register_system<components::gui::window>(systems::gui::clear);
             _registry.register_system<const components::gui::drawable>(systems::gui::draw);
+            _registry.register_system<const components::gui::animations>(systems::gui::animate);
             _registry.register_system<components::gui::drawable, const components::position>(systems::gui::reposition);
             _registry.register_system<projectile_launcher, const components::position>(launch_projectile);
             _registry.register_system<const projectile>(cull_projectiles);
