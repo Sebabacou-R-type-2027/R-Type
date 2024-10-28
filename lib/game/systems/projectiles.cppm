@@ -24,13 +24,13 @@ export namespace game::systems {
         launcher.last_shot = now;
         auto projectile = ec.create_entity();
         const ecs::components::gui::asset_manager &asset_manager = *ec.get_entity_component<const ecs::components::gui::asset_manager>(launcher.game);
-        ec.add_component(projectile, components::projectile{10, now, 3s});
+        ec.add_component(projectile, components::projectile{10, now, 5s});
         ec.add_component(projectile, ecs::components::position{position.x, position.y});
-        ec.add_component(projectile, ecs::components::engine::velocity{10.0f, 0.0f});
+        ec.add_component(projectile, ecs::components::engine::velocity{30.0f, 0.0f});
         ec.emplace_component<ecs::components::gui::drawable>(projectile,
             launcher.game, std::container<ecs::components::gui::drawable::elements_container>::make({
                 {launcher.game, std::make_unique<ecs::components::gui::display_element>(
-                    std::make_unique<sf::Text>("Pew", asset_manager.get_font("arial"), 12), "arial")}
+                    std::make_unique<sf::Sprite>(asset_manager.get_texture("bullet")))},
             })
         );
     }
