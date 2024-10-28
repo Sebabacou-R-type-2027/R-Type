@@ -20,6 +20,7 @@
 #include "../client/systems/shooting_enemy/shooting_enemy_system.hpp"
 #include "../client/systems/chasing_enemy/chasing_enemy_system.hpp"
 #include "../client/systems/spawner_enemy/spawner_enemy_system.hpp"
+#include "../client/systems/shield/shield_system.hpp"
 
 namespace ecs {
     /**
@@ -176,9 +177,14 @@ namespace ecs {
             bulletSystem.update(reg);
         }
 
+        void shield_system(Registry& reg) {
+            shieldSystem.update(reg);
+        }
+
 private:
 
     systems::BulletSystem bulletSystem;
+    systems::ShieldSystem shieldSystem ;
     systems::ControlSystem controlSystem;
     systems::DrawSystem drawSystem;
     systems::PositionSystem positionSystem;

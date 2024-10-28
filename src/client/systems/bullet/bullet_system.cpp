@@ -81,6 +81,7 @@ namespace ecs::systems {
                     }
                 }
                 if (timePressed < 1 && currentTime - lastShootTime > shootCooldown && bonus_heal == true) {
+                    //POWERUP HEAL SHOOT
                     Sound_game.playSound("assets/Son/laser_gun2.wav", 40);
                     lastShootTime = currentTime;
 

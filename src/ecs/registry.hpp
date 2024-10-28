@@ -26,6 +26,8 @@
             #include "components/Animation.hpp"
             #include "components/Entity_type.hpp"
             #include "components/Bullet.hpp"
+            #include "components/Shield.hpp"
+
             #include "components/Collision_state.hpp"
             #include "components/GameState.hpp"
             #include "components/LifeState.hpp"
@@ -198,6 +200,7 @@ class Registry {
             register_component<LifeState>();
             register_component<BulletCharge>();
             register_component<BulletHeal>();
+            register_component<Shield>();
             register_component<Shooting>();
             register_component<Chasing>();
             register_component<Spawner>();

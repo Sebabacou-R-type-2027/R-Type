@@ -20,7 +20,8 @@ namespace ecs {
         PowerUp,
         EnnemyBullet,
         ChargedBullet,
-        BulletHeal
+        BulletHeal,
+        Shield
     };
 
     /**
