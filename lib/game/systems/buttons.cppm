@@ -27,7 +27,7 @@ export namespace game::systems {
         button.text.setScale(scaleFactor, scaleFactor);
 
         if (containsMouse) {
-            button.rect.setFillColor(button.clickColor);
+            button.rect.setFillColor(button.hoverColor);
             if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
                 button.rect.setScale(0.95f, 0.95f);
                 button.text.setScale(0.95f, 0.95f);
