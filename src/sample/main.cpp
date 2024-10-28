@@ -13,6 +13,7 @@
 import std;
 #endif
 import ecs;
+import utils;
 import game;
 
 using namespace ecs;
@@ -27,17 +28,15 @@ class Game {
     components::gui::asset_manager &_assetManager;
     entity _player;
 
-    sf::RenderWindow _window;
-
     std::function<void(int)> _sigHandler;
 
     void stop(int) noexcept
     {
-        _window.close();
+        _registry.get_entity_component<ecs::components::gui::window>(_game)->get().window->close();
     }
 
     constexpr entity initializeGameComponents(entity e) noexcept {
-        _registry.add_component<components::gui::window>(e, {_window});
+        _registry.emplace_component<components::gui::window>(e, std::make_unique<sf::RenderWindow>(sf::VideoMode(1920, 1080), "Game"));
         return e;
     }
 
@@ -53,10 +52,12 @@ class Game {
         auto label = std::make_shared<sf::Text>("Player", _assetManager.get_font("arial"));
         label->setOrigin(label->getGlobalBounds().left, label->getGlobalBounds().height);
         _registry.emplace_component<components::gui::drawable>(e, components::gui::drawable{_game,
-            std::initializer_list<components::gui::drawable::elements_container::value_type>{
-                {_game, {std::make_shared<sf::Text>("Player", _assetManager.get_font("arial"), 12), "arial"}},
-                {_game, {std::make_shared<sf::Sprite>(_assetManager.get_texture("ship")), "ship"}}
-            }
+            std::container<components::gui::drawable::elements_container>::make({
+                {_game, std::make_unique<ecs::components::gui::display_element>(
+                    std::make_unique<sf::Text>("Player", _assetManager.get_font("arial"), 12), "arial")},
+                {_game, std::make_unique<ecs::components::gui::display_element>(
+                    std::make_unique<sf::Sprite>(_assetManager.get_texture("ship")), "ship")}
+            })
         });
         return e;
     }
@@ -67,7 +68,6 @@ class Game {
             _game(initializeGameComponents(_registry.create_entity())),
             _assetManager(loadAssets(_registry.add_component<components::gui::asset_manager>(_game, {}))),
             _player(initializePlayerComponents(_registry.create_entity())),
-            _window(sf::VideoMode(1920, 1080), "Game"),
             _sigHandler(std::bind_front(&Game::stop, this))
         {
             std::cout << "Press Ctrl+C to stop" << std::endl;
@@ -86,12 +86,14 @@ class Game {
         }
 
         void run() noexcept {
+            sf::RenderWindow &window = *_registry.get_entity_component<ecs::components::gui::window>(_game)->get().window;
             sf::Event event;
+            signal(SIGINT, _sigHandler.target<void(int)>());
             auto next = std::chrono::steady_clock::now();
-            while (_window.isOpen()) {
-                while (_window.pollEvent(event))
+            while (window.isOpen()) {
+                while (window.pollEvent(event))
                     if (event.type == sf::Event::Closed)
-                        _window.close();
+                        window.close();
                 if (next >= std::chrono::steady_clock::now())
                     continue;
                 next += 50ms;

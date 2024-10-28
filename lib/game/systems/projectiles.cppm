@@ -11,6 +11,7 @@ import :components.projectiles;
 import std;
 #endif
 import ecs;
+import utils;
 
 export namespace game::systems {
     void launch_projectile(ecs::entity_container &ec, components::projectile_launcher& launcher, const ecs::components::position& position) {
@@ -22,19 +23,16 @@ export namespace game::systems {
 
         launcher.last_shot = now;
         auto projectile = ec.create_entity();
+        const ecs::components::gui::asset_manager &asset_manager = *ec.get_entity_component<const ecs::components::gui::asset_manager>(launcher.game);
         ec.add_component(projectile, components::projectile{10, now, 3s});
         ec.add_component(projectile, ecs::components::position{position.x, position.y});
         ec.add_component(projectile, ecs::components::engine::velocity{10.0f, 0.0f});
-        ec.emplace_component<ecs::components::gui::drawable>(projectile, ecs::components::gui::drawable{launcher.game,
-            std::initializer_list<ecs::components::gui::drawable::elements_container::value_type>{
-                {launcher.game, {
-                    std::make_shared<sf::Text>("Pew",
-                        ec.get_entity_component<ecs::components::gui::asset_manager>(launcher.game)->get().get_font("arial"), 12),
-                        "arial"
-                    }
-                }
-            }
-        });
+        ec.emplace_component<ecs::components::gui::drawable>(projectile,
+            launcher.game, std::container<ecs::components::gui::drawable::elements_container>::make({
+                {launcher.game, std::make_unique<ecs::components::gui::display_element>(
+                    std::make_unique<sf::Text>("Pew", asset_manager.get_font("arial"), 12), "arial")}
+            })
+        );
     }
 
     void cull_projectiles(ecs::entity e, ecs::entity_container &ec, const components::projectile &projectile) {
