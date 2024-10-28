@@ -20,36 +20,8 @@ import game;
 using namespace ecs;
 using namespace game::components;
 using namespace game::systems;
+
 using namespace std::chrono_literals;
-
-// Remove incorrect namespace usage
-
-static game::components::button create_button(const std::string& text, const sf::Vector2f& position, const sf::Vector2f& size, const sf::Font& font, const sf::Color& defaultColor, const sf::Color& hoverColor, const sf::Color& clickColor, const sf::Color& textColor, const unsigned int text_size, std::function<void()> action, ecs::entity window) {
-    sf::RectangleShape shape(size);
-    shape.setFillColor(defaultColor);
-    shape.setPosition(position);
-
-    sf::Text buttonText;
-    buttonText.setFont(font);
-
-    if (!text.empty()) {
-        buttonText.setString(text);
-    } else {
-        buttonText.setString("_");
-    }
-
-    buttonText.setCharacterSize(text_size);
-    buttonText.setFillColor(textColor);
-    buttonText.setOrigin(buttonText.getGlobalBounds().width / 2, buttonText.getGlobalBounds().height / 2 + buttonText.getGlobalBounds().top);
-    buttonText.setPosition(position);
-
-    game::components::button btn = button(shape, buttonText, action, window);
-
-    btn.defaultColor = defaultColor;
-    btn.hoverColor = hoverColor;
-    btn.clickColor = clickColor;
-    return btn;
-}
 
 class Game {
     registry _registry;
@@ -73,6 +45,28 @@ class Game {
         in.load_font("arial", "assets/fonts/arial.ttf");
         in.load_texture("ship", "assets/Ship/Ship.png");
         return in;
+    }
+
+    static game::components::button create_button(sf::Vector2f position, sf::Vector2f size,
+        const sf::Color& defaultColor, const sf::Color& hoverColor, const sf::Color& clickColor,
+        std::string_view text, const sf::Font& font, const sf::Color& textColor, std::size_t text_size,
+        std::function<void()> action, ecs::entity window) noexcept
+    {
+        sf::RectangleShape shape(size);
+        shape.setFillColor(defaultColor);
+        shape.setPosition(position);
+
+        sf::Text buttonText(std::string(text), font, text_size);
+        buttonText.setFillColor(textColor);
+        buttonText.setOrigin(buttonText.getGlobalBounds().width / 2, buttonText.getGlobalBounds().height / 2 + buttonText.getGlobalBounds().top);
+        buttonText.setPosition(position);
+
+        game::components::button btn = button(shape, buttonText, action, window);
+        btn.defaultColor = defaultColor;
+        btn.hoverColor = hoverColor;
+        btn.clickColor = clickColor;
+
+        return btn;
     }
 
     entity initializePlayerComponents(entity e) noexcept {
@@ -103,17 +97,22 @@ class Game {
             std::signal(SIGINT, _sigHandler.target<void(int)>());
             _registry.register_system<components::gui::window>(systems::gui::clear);
             _registry.register_system<const components::gui::drawable>(systems::gui::draw);
+            _registry.register_system<game::components::button>(render_button);
             _registry.register_system<components::gui::drawable, const components::position>(systems::gui::reposition);
             _registry.register_system<projectile_launcher, const components::position>(launch_projectile);
             _registry.register_system<const projectile>(cull_projectiles);
-            // _registry.register_system<game::components::button>(handle_button);
-            // _registry.register_system<game::components::button, const components::position>(systems::gui::reposition);
-            // systems::position_logger logger(_registry);
+            _registry.register_system<game::components::button>(handle_button);
+            systems::position_logger logger(_registry);
             _registry.register_system<components::position, const components::engine::velocity>(systems::engine::movement);
             _registry.register_system<components::gui::window>(systems::gui::display);
             auto launcher = _registry.create_entity();
             _registry.emplace_component<components::position>(launcher, 700.0f, 100.0f);
-            _registry.add_component<projectile_launcher>(launcher, {1s, std::chrono::steady_clock::now(), _game});
+            auto &proj_launcher = _registry.add_component<projectile_launcher>(launcher, {1s, std::chrono::steady_clock::now(), _game});
+            auto button = _registry.create_entity();
+            _registry.add_component(button, create_button({700, 200}, {100, 50},
+                    sf::Color::Blue, sf::Color::Cyan, sf::Color::Green,
+                    "Fire", _assetManager.get_font("arial"), sf::Color::White, 50,
+                    [&proj_launcher](){ proj_launcher.last_shot = std::chrono::steady_clock::time_point(0s); }, _game));
         }
 
         void run() noexcept {
