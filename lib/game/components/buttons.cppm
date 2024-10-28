@@ -1,11 +1,10 @@
 module;
 
 #if __cpp_lib_modules < 202207L
+#include <functional>
 #endif
 #include <SFML/Graphics.hpp>
-
-
-export module game.components.buttons;
+export module game:components.buttons;
 
 #if __cpp_lib_modules >= 202207L
 import std;

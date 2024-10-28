@@ -1,12 +1,8 @@
 module;
 
-#if __cpp_lib_modules < 202207L
-#endif
 #include <SFML/Graphics.hpp>
-
-
-export module game.systems.button_system;
-import game.components.buttons;
+export module game:systems.buttons;
+import :components.buttons;
 #if __cpp_lib_modules >= 202207L
 import std;
 #endif
@@ -21,7 +17,7 @@ export namespace game::systems {
         if (!window)
             return;
 
-        sf::Vector2i mousePos = sf::Mouse::getPosition(window->get().window);
+        sf::Vector2i mousePos = sf::Mouse::getPosition(*window->get().window);
 
         bool containsMouse = button.rect.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePos));
 
@@ -56,7 +52,7 @@ export namespace game::systems {
         if (!window)
             return;
 
-        window->get().window.draw(button.rect);
-        window->get().window.draw(button.text);
+        window->get().window->draw(button.rect);
+        window->get().window->draw(button.text);
     }
 }
