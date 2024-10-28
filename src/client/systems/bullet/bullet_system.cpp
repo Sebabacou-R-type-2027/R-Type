@@ -75,6 +75,11 @@ namespace ecs::systems {
                         bonus1_activate = false;
                     }
                 }
+                if (bonus_heal) {
+                    if (currentTime.asSeconds() - bonus1_activationTime > bonus1_duration) {
+                        bonus_heal = false;
+                    }
+                }
                 if (timePressed < 1 && currentTime - lastShootTime > shootCooldown && bonus_heal == true) {
                     Sound_game.playSound("assets/Son/laser_gun2.wav", 40);
                     lastShootTime = currentTime;
@@ -147,7 +152,7 @@ namespace ecs::systems {
                 }
 
                 // TIR CLASSIQUE
-                if (timePressed < 1 && currentTime - lastShootTime > shootCooldown && bonus1_activate == false) {
+                if (timePressed < 1 && currentTime - lastShootTime > shootCooldown && bonus1_activate == false && bonus_heal == false) {
                     if (lifestate[CheckEntity(registry, ecs::Type::Player)]->isAlive == false) {
                         return;
                     }
