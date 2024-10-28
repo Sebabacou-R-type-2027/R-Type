@@ -15,12 +15,42 @@ import std;
 import ecs;
 import utils;
 import game;
+import game.components.buttons;
+
 
 using namespace ecs;
 using namespace game::components;
 using namespace game::systems;
-
 using namespace std::chrono_literals;
+
+// Remove incorrect namespace usage
+
+static game::components::button create_button(const std::string& text, const sf::Vector2f& position, const sf::Vector2f& size, const sf::Font& font, const sf::Color& defaultColor, const sf::Color& hoverColor, const sf::Color& clickColor, const sf::Color& textColor, const unsigned int text_size, std::function<void()> action, ecs::entity window) {
+    sf::RectangleShape shape(size);
+    shape.setFillColor(defaultColor);
+    shape.setPosition(position);
+
+    sf::Text buttonText;
+    buttonText.setFont(font);
+
+    if (!text.empty()) {
+        buttonText.setString(text);
+    } else {
+        buttonText.setString("_");
+    }
+
+    buttonText.setCharacterSize(text_size);
+    buttonText.setFillColor(textColor);
+    buttonText.setOrigin(buttonText.getGlobalBounds().width / 2, buttonText.getGlobalBounds().height / 2 + buttonText.getGlobalBounds().top);
+    buttonText.setPosition(position);
+
+    game::components::button btn = button(shape, buttonText, action, window);
+
+    btn.defaultColor = defaultColor;
+    btn.hoverColor = hoverColor;
+    btn.clickColor = clickColor;
+    return btn;
+}
 
 class Game {
     registry _registry;
@@ -77,7 +107,9 @@ class Game {
             _registry.register_system<components::gui::drawable, const components::position>(systems::gui::reposition);
             _registry.register_system<projectile_launcher, const components::position>(launch_projectile);
             _registry.register_system<const projectile>(cull_projectiles);
-            systems::position_logger logger(_registry);
+            // _registry.register_system<game::components::button>(handle_button);
+            // _registry.register_system<game::components::button, const components::position>(systems::gui::reposition);
+            // systems::position_logger logger(_registry);
             _registry.register_system<components::position, const components::engine::velocity>(systems::engine::movement);
             _registry.register_system<components::gui::window>(systems::gui::display);
             auto launcher = _registry.create_entity();
