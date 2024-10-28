@@ -70,6 +70,91 @@ class Game {
         return e;
     }
 
+    void spawn_enemy(const ecs::components::position& position)
+    {
+        const ecs::components::gui::asset_manager &asset_manager = *_registry.get_entity_component<const ecs::components::gui::asset_manager>(_game);
+        auto e = _registry.create_entity();
+        _registry.add_component(e, enemy{1, 1, std::chrono::steady_clock::now()});
+        _registry.add_component(e, ecs::components::position{position.x, position.y});
+        _registry.add_component(e, ecs::components::engine::velocity{10.0f, 0.0f});
+        _registry.add_component(e, enemy_loop_movement{0.0f, 2000.0f, 200.0f, 800.0f, 1.0f, 0.0f, 100.0f, 2.0f});
+        _registry.emplace_component<ecs::components::gui::drawable>(e, ecs::components::gui::drawable{_game,
+            std::container<ecs::components::gui::drawable::elements_container>::make({
+                {_game, std::make_unique<ecs::components::gui::display_element>(
+                    std::make_unique<sf::Text>("Enemy", asset_manager.get_font("arial"), 12), "arial")},
+                {_game, std::make_unique<ecs::components::gui::animation>
+                    (asset_manager.get_texture("enemy"), 1, 8, 10ms, "enemy")
+                }
+            })
+        });
+    }
+
+    void spawn_enemy_chaser(ecs::entity target, const ecs::components::position& position, ecs::entity game)
+    {
+        const ecs::components::gui::asset_manager &asset_manager = *_registry.get_entity_component<const ecs::components::gui::asset_manager>(game);
+        auto e = _registry.create_entity();
+        _registry.add_component(e, enemy{100, 10, std::chrono::steady_clock::now()});
+        _registry.add_component(e, ecs::components::position{position.x, position.y});
+        _registry.add_component(e, ecs::components::engine::velocity{10.0f, 0.0f});
+        _registry.add_component(e, enemy_chaser{target, 10.0f});
+        _registry.emplace_component<ecs::components::gui::drawable>(e, ecs::components::gui::drawable{_game,
+            std::container<ecs::components::gui::drawable::elements_container>::make({
+                {_game, std::make_unique<ecs::components::gui::display_element>(
+                    std::make_unique<sf::Text>("Chaser", asset_manager.get_font("arial"), 12), "arial")},
+                {_game, std::make_unique<ecs::components::gui::animation>
+                    (asset_manager.get_texture("enemy_chaser"), 1, 3, 10ms, "enemy_chaser")
+                }
+            })
+        });
+    }
+    
+    void spawn_enemy_spawner(const ecs::components::position& position, ecs::entity game)
+    {
+        const ecs::components::gui::asset_manager &asset_manager = *_registry.get_entity_component<const ecs::components::gui::asset_manager>(game);
+        auto e = _registry.create_entity();
+        _registry.add_component(e, enemy{100, 10, std::chrono::steady_clock::now()});
+        _registry.add_component(e, ecs::components::position{position.x, position.y});
+        _registry.add_component(e, ecs::components::engine::velocity{0.0f, 0.0f});
+        _registry.add_component(e, enemy_spawner{2.0f, 5, std::chrono::steady_clock::now(), game});
+        _registry.emplace_component<ecs::components::gui::drawable>(e, ecs::components::gui::drawable{_game,
+            std::container<ecs::components::gui::drawable::elements_container>::make({
+                {_game, std::make_unique<ecs::components::gui::display_element>(
+                    std::make_unique<sf::Text>("Spawner", asset_manager.get_font("arial"), 12), "arial")},
+                {_game, std::make_unique<ecs::components::gui::animation>
+                    (asset_manager.get_texture("enemy_spawner"), 1, 5, 10ms, "enemy_spawner")
+                }
+            })
+        });
+    }
+
+
+    void spawn_enemy_shooter(const ecs::components::position& position, ecs::entity game)
+    {
+        const ecs::components::gui::asset_manager &asset_manager = *_registry.get_entity_component<const ecs::components::gui::asset_manager>(game);
+        auto e = _registry.create_entity();
+        _registry.add_component(e, enemy{100, 10, std::chrono::steady_clock::now()});
+        _registry.add_component(e, ecs::components::position{position.x, position.y});
+        _registry.add_component(e, ecs::components::engine::velocity{10.0f, 0.0f});
+        _registry.add_component(e, enemy_shooter{2.0f, std::chrono::steady_clock::now(), game});
+        _registry.emplace_component<ecs::components::gui::drawable>(e, ecs::components::gui::drawable{_game,
+            std::container<ecs::components::gui::drawable::elements_container>::make({
+                {_game, std::make_unique<ecs::components::gui::display_element>(
+                    std::make_unique<sf::Text>("Shooter", asset_manager.get_font("arial"), 12), "arial")},
+                {_game, std::make_unique<ecs::components::gui::animation>
+                    (asset_manager.get_texture("enemy_shooter"), 1, 3, 10ms, "enemy_shooter")
+                }
+            })
+        });
+    }
+
+
+    void initializeEnemies() noexcept {
+        // spawn_enemy({100.0f, 100.0f});
+        spawn_enemy_chaser(_player, {200.0f, 200.0f}, _game);
+    //    spawn_enemy_spawner({300.0f, 300.0f}, _game);
+    //    spawn_enemy_shooter(1s, {400.0f, 400.0f}, _game);
+    }
+
     public:
         Game() noexcept
             : _registry(),
@@ -77,7 +162,8 @@ class Game {
             _assetManager(loadAssets(_registry.add_component<components::gui::asset_manager>(_game, {}))),
             _player(initializePlayerComponents(_registry.create_entity())),
             _sigHandler(std::bind_front(&Game::stop, this))
-        {
+            {
+            initializeEnemies();
             std::cout << "Press Ctrl+C to stop" << std::endl;
             std::signal(SIGINT, _sigHandler.target<void(int)>());
             _registry.register_system<components::gui::window>(systems::gui::clear);
@@ -85,15 +171,16 @@ class Game {
             _registry.register_system<const components::gui::drawable>(systems::gui::draw);
             _registry.register_system<components::gui::drawable, const components::position>(systems::gui::reposition);
             _registry.register_system<projectile_launcher, const components::position>(launch_projectile);
+            _registry.register_system<enemy_shooter, const components::position>(move_enemy_shooter);
+            _registry.register_system<enemy_loop_movement, components::position>(move_enemy_loop);
+            _registry.register_system<enemy_chaser, components::position>(move_enemy_chaser);
+            _registry.register_system<enemy_spawner, components::position>(handle_enemy_spawner);
             _registry.register_system<const projectile>(cull_projectiles);
             systems::position_logger logger(_registry);
             _registry.register_system<components::position, const components::engine::velocity>(systems::engine::movement);
             _registry.register_system<components::position, const components::engine::controllable>(systems::engine::control);
             _registry.register_system<components::gui::window>(systems::gui::display);
             _registry.register_system<components::gui::animation_clock>(systems::gui::reset_clock);
-            // auto launcher = _registry.create_entity();
-            // _registry.emplace_component<components::position>(launcher, 700.0f, 100.0f);
-            // _registry.add_component<projectile_launcher>(_player, {1s, std::chrono::steady_clock::now(), _game});
         }
 
         void run() noexcept {

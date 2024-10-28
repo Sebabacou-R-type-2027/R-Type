@@ -24,7 +24,7 @@ export namespace game::systems {
         launcher.last_shot = now;
         auto projectile = ec.create_entity();
         const ecs::components::gui::asset_manager &asset_manager = *ec.get_entity_component<const ecs::components::gui::asset_manager>(launcher.game);
-        ec.add_component(projectile, components::projectile{10, now, 10s});
+        ec.add_component(projectile, components::projectile{10, now, 5s});
         ec.add_component(projectile, ecs::components::position{position.x, position.y});
         ec.add_component(projectile, ecs::components::engine::velocity{30.0f, 0.0f});
         ec.emplace_component<ecs::components::gui::drawable>(projectile,
