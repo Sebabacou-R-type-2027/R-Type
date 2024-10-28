@@ -78,7 +78,6 @@ class Game {
             std::signal(SIGINT, _sigHandler.target<void(int)>());
             _registry.register_system<components::gui::window>(systems::gui::clear);
             _registry.register_system<const components::gui::drawable>(systems::gui::draw);
-            _registry.register_system<const components::gui::animations>(systems::gui::animate);
             _registry.register_system<components::gui::drawable, const components::position>(systems::gui::reposition);
             _registry.register_system<projectile_launcher, const components::position>(launch_projectile);
             _registry.register_system<const projectile>(cull_projectiles);
