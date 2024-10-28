@@ -48,6 +48,7 @@ class Game {
         in.load_texture("enemy_chaser", "assets/Chasing_enemy/r-typesheet11_right.gif");
         in.load_texture("enemy_spawner", "assets/sprites/r-typesheet24.gif");
         in.load_texture("enemy_shooter", "assets/r-typesheet26.gif");
+        in.load_texture("bullet", "assets/Bullets/01.png");
         return in;
     }
 
@@ -55,13 +56,15 @@ class Game {
         _registry.emplace_component<components::position>(e, 50.0f, 50.0f);
         _registry.emplace_component<components::engine::velocity>(e, 0.0f, 0.0f);
         _registry.emplace_component<components::engine::controllable>(e, true, 10.0f);
-        auto label = std::make_shared<sf::Text>("Player", _assetManager.get_font("arial"));
+        _registry.add_component<projectile_launcher>(e, {1s, std::chrono::steady_clock::now(), _game});
+        auto label = std::make_shared<sf::Text>("Play", _assetManager.get_font("arial"));
         label->setOrigin(label->getGlobalBounds().left, label->getGlobalBounds().height);
         _registry.emplace_component<components::gui::drawable>(e, components::gui::drawable{_game,
             std::container<components::gui::drawable::elements_container>::make({
                 {_game, std::make_unique<ecs::components::gui::display_element>(
                     std::make_unique<sf::Text>("Player", _assetManager.get_font("arial"), 12), "arial")},
-                {_game, std::make_unique<ecs::components::gui::animation>(_assetManager.get_texture("ship"), 1, 5, 10ms, "ship")}
+                {_game, std::make_unique<ecs::components::gui::animation>(
+                    _assetManager.get_texture("ship"), 1, 5, 10ms, "ship")}
             })
         });
         return e;
@@ -90,7 +93,7 @@ class Game {
             _registry.register_system<components::gui::animation_clock>(systems::gui::reset_clock);
             // auto launcher = _registry.create_entity();
             // _registry.emplace_component<components::position>(launcher, 700.0f, 100.0f);
-            _registry.add_component<projectile_launcher>(_player, {1s, std::chrono::steady_clock::now(), _game});
+            // _registry.add_component<projectile_launcher>(_player, {1s, std::chrono::steady_clock::now(), _game});
         }
 
         void run() noexcept {
