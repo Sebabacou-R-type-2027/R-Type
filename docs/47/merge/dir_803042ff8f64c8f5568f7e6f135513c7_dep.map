@@ -1,0 +1,35 @@
+<map id="client/systems" name="client/systems">
+<area shape="rect" id="node1" href="dir_2ae2b9f10225ed16d19c24a094356579.html" title="components" alt="" coords="81,136,183,161"/>
+<area shape="rect" id="node2" href="dir_4e603c70a04111f621bb3388687f9e47.html" title="utils" alt="" coords="29,209,80,235"/>
+<area shape="rect" id="node4" href="dir_538321d852df5674735f5539f9c8fe88.html" title="bullet" alt="" coords="205,63,264,88"/>
+<area shape="rect" id="edge1-headlabel" href="dir_000001_000007.html" title="1" alt="" coords="164,125,173,140"/>
+<area shape="rect" id="edge3-headlabel" href="dir_000001_000035.html" title="1" alt="" coords="47,182,56,196"/>
+<area shape="rect" id="node9" href="dir_31910c8b868927948ae5590c515b2102.html" title="power&#45;up" alt="" coords="243,136,325,161"/>
+<area shape="rect" id="edge2-headlabel" href="dir_000001_000026.html" title="1" alt="" coords="268,109,277,124"/>
+<area shape="rect" id="node14" href="dir_ddca5f149c4ce13074f28b270e950ba9.html" title="ecs" alt="" coords="1454,209,1498,235"/>
+<area shape="rect" id="edge4-headlabel" href="dir_000001_000013.html" title="1" alt="" coords="1433,192,1442,206"/>
+<area shape="rect" id="node5" href="dir_7f47419873cc9c7047ebd76d9b58b188.html" title="button" alt="" coords="373,63,437,88"/>
+<area shape="rect" id="edge5-headlabel" href="dir_000002_000007.html" title="1" alt="" coords="191,132,200,147"/>
+<area shape="rect" id="edge6-headlabel" href="dir_000002_000013.html" title="1" alt="" coords="1433,191,1442,206"/>
+<area shape="rect" id="node6" href="dir_9882addb71e35d77b86345adea67be98.html" title="chasing_enemy" alt="" coords="553,63,677,88"/>
+<area shape="rect" id="edge7-headlabel" href="dir_000003_000013.html" title="1" alt="" coords="1433,191,1442,206"/>
+<area shape="rect" id="node7" href="dir_20aadaf8efd4a6aacbf8112e98d0e4ef.html" title="gamestate_manager" alt="" coords="701,63,859,88"/>
+<area shape="rect" id="edge8-headlabel" href="dir_000016_000013.html" title="1" alt="" coords="1433,191,1443,206"/>
+<area shape="rect" id="node8" href="dir_1bf710b05544356ad631f56fb4185e09.html" title="loop_movement" alt="" coords="883,63,1011,88"/>
+<area shape="rect" id="edge9-headlabel" href="dir_000018_000013.html" title="1" alt="" coords="1434,191,1443,205"/>
+<area shape="rect" id="edge10-headlabel" href="dir_000026_000035.html" title="1" alt="" coords="95,212,105,227"/>
+<area shape="rect" id="edge11-headlabel" href="dir_000026_000013.html" title="1" alt="" coords="1433,191,1442,206"/>
+<area shape="rect" id="node10" href="dir_27bdca02ab918617c5b1ebe0afdd044d.html" title="shader" alt="" coords="461,63,528,88"/>
+<area shape="rect" id="edge12-headlabel" href="dir_000028_000007.html" title="1" alt="" coords="199,135,208,149"/>
+<area shape="rect" id="edge13-headlabel" href="dir_000028_000013.html" title="1" alt="" coords="1433,191,1442,206"/>
+<area shape="rect" id="node11" href="dir_78809da006ad008371d13f5117a8bb8b.html" title="shield" alt="" coords="288,63,349,88"/>
+<area shape="rect" id="edge15-headlabel" href="dir_000030_000035.html" title="1" alt="" coords="55,183,64,198"/>
+<area shape="rect" id="edge14-headlabel" href="dir_000030_000026.html" title="1" alt="" coords="301,116,310,131"/>
+<area shape="rect" id="edge16-headlabel" href="dir_000030_000013.html" title="1" alt="" coords="1433,191,1442,206"/>
+<area shape="rect" id="node12" href="dir_1a6ca5e794e9d0459b74cae3270d9cdb.html" title="shooting_enemy" alt="" coords="1035,63,1165,88"/>
+<area shape="rect" id="edge17-headlabel" href="dir_000031_000013.html" title="1" alt="" coords="1435,190,1444,204"/>
+<area shape="rect" id="node13" href="dir_c06a8ad3d11f9808f5e9a413a10eaf40.html" title="spawner_enemy" alt="" coords="1190,63,1319,88"/>
+<area shape="rect" id="edge18-headlabel" href="dir_000032_000013.html" title="1" alt="" coords="1443,185,1452,199"/>
+<area shape="rect" id="clust2" href="dir_803042ff8f64c8f5568f7e6f135513c7.html" alt="" coords="195,52,1432,172"/>
+<area shape="rect" id="clust1" href="dir_6908ff505388a07996d238c763adbdab.html" title="client" alt="" coords="16,16,1443,245"/>
+</map>
