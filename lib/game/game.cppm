@@ -69,9 +69,10 @@ export namespace game {
         constexpr void register_systems() noexcept
         {
             this->register_system<ecs::components::gui::window>(ecs::systems::gui::clear);
-            this->register_system<ecs::components::gui::animation_clock>(ecs::systems::gui::update_clock);
+            this->register_system<ecs::components::gui::animation_clock>(ecs::systems::gui::reset_clock);
             this->register_system<const button>(ecs::systems::gui::draw);
             this->register_system<const ecs::components::gui::drawable>(ecs::systems::gui::draw);
+            this->register_system<ecs::components::gui::animation_clock>(ecs::systems::gui::update_clock);
             this->register_system<button, const ecs::components::position>(ecs::systems::gui::reposition);
             this->register_system<ecs::components::gui::drawable, const ecs::components::position>(ecs::systems::gui::reposition);
             this->register_system<projectile_launcher, const ecs::components::position>(launch_projectile);
@@ -84,7 +85,6 @@ export namespace game {
             this->register_system<ecs::components::position, const ecs::components::engine::velocity>(ecs::systems::engine::movement);
             this->register_system<ecs::components::position, const ecs::components::engine::controllable>(ecs::systems::engine::control);
             this->register_system<ecs::components::gui::window>(ecs::systems::gui::display);
-            this->register_system<ecs::components::gui::animation_clock>(ecs::systems::gui::reset_clock);
         }
 
         public:
