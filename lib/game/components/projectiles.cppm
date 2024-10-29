@@ -18,6 +18,7 @@ export namespace game::components {
     };
 
     struct projectile_launcher {
+        float direction;
         const std::chrono::steady_clock::duration cooldown;
         std::chrono::steady_clock::time_point last_shot;
         ecs::entity game;

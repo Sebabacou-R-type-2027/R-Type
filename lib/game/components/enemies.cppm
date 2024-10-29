@@ -65,6 +65,8 @@ export namespace game::components {
     struct enemy_shooter {
         std::chrono::steady_clock::duration cooldown; ///< Cooldown between shots
         std::chrono::steady_clock::time_point last_update; ///< Last time the entity shot
+        bool moving_up = true;
+        float _speed = 5.0f;
         ecs::entity game;
 
         /**
@@ -129,4 +131,6 @@ export namespace game::components {
         enemy_loop_movement(float min_x, float max_x, float min_y, float max_y, float speed, float angle, float radius, float angular_speed)
             : min_x(min_x), max_x(max_x), min_y(min_y), max_y(max_y), speed(speed), angle(angle), radius(radius), angular_speed(angular_speed) {}
     };
+        
+        
 }
