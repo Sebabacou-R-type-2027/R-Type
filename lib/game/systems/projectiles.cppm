@@ -14,7 +14,8 @@ import ecs;
 import utils;
 
 export namespace game::systems {
-    void launch_projectile(ecs::entity_container &ec, components::projectile_launcher& launcher, const ecs::components::position& position) {
+    void launch_projectile(ecs::entity e, ecs::entity_container &ec, components::projectile_launcher& launcher, const ecs::components::position& position)
+    {
         auto now = std::chrono::steady_clock::now();
         if (now - launcher.last_shot < launcher.cooldown)
             return;
@@ -24,9 +25,10 @@ export namespace game::systems {
         launcher.last_shot = now;
         auto projectile = ec.create_entity();
         const ecs::components::gui::asset_manager &asset_manager = *ec.get_entity_component<const ecs::components::gui::asset_manager>(launcher.game);
-        ec.add_component(projectile, components::projectile{10, now, 5s});
+        ec.add_component(projectile, components::projectile{10, e, now, 5s});
         ec.add_component(projectile, ecs::components::position{position.x, position.y});
         ec.add_component(projectile, ecs::components::engine::velocity{50.0f * launcher.direction, 0.0f});
+        ec.add_component(projectile, ecs::components::engine::hitbox{10.0f, 10.0f, 0.0f, 0.0f});
         auto enemy_bullet = std::make_unique<sf::Sprite>(asset_manager.get_texture("bullet"));
         enemy_bullet->setOrigin(enemy_bullet->getLocalBounds().width / 2, enemy_bullet->getLocalBounds().height / 2);
         if (launcher.direction < 0)
@@ -37,6 +39,34 @@ export namespace game::systems {
         launcher.game, std::container<ecs::components::gui::drawable::elements_container>::make({
             {launcher.game, std::move(display_element)}
         }));
+    }
+
+    void launch_projectile_ownership(ecs::entity e, ecs::entity_container &ec, components::projectile_launcher_ownership& launcher, const ecs::components::position& position)
+    {
+        auto now = std::chrono::steady_clock::now();
+        if (now - launcher.last_shot < launcher.cooldown)
+            return;
+
+        using namespace std::chrono_literals;
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+            launcher.last_shot = now;
+            auto projectile = ec.create_entity();
+            const ecs::components::gui::asset_manager &asset_manager = *ec.get_entity_component<const ecs::components::gui::asset_manager>(launcher.game);
+            ec.add_component(projectile, components::projectile{10, e, now, 5s});
+            ec.add_component(projectile, ecs::components::position{position.x, position.y});
+            ec.add_component(projectile, ecs::components::engine::velocity{50.0f, 0.0f});
+            ec.add_component(projectile, ecs::components::engine::hitbox{10.0f, 10.0f, 0.0f, 0.0f});
+            ec.emplace_component<ecs::components::gui::drawable>(projectile, ecs::components::gui::drawable{launcher.game,
+                std::container<ecs::components::gui::drawable::elements_container>::make({
+                    {static_cast<ecs::entity>(launcher.game), std::make_unique<ecs::components::gui::display_element>(
+                        std::make_unique<sf::Text>("Bullet", asset_manager.get_font("arial"), 12), "arial")},
+                    {static_cast<ecs::entity>(launcher.game), std::make_unique<ecs::components::gui::display_element>(
+                        std::make_unique<sf::Sprite>(asset_manager.get_texture("bullet")), "bullet")
+                    }
+                })
+            });
+        }
     }
 
     void cull_projectiles(ecs::entity e, ecs::entity_container &ec, const components::projectile &projectile) {

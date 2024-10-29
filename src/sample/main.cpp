@@ -29,6 +29,7 @@ void spawn_enemy(const ecs::components::position& position, game::game &game)
     game.add_component(e, ecs::components::position{position.x, position.y});
     game.add_component(e, ecs::components::engine::velocity{10.0f, 0.0f});
     game.add_component(e, enemy_loop_movement{0.0f, 2000.0f, 200.0f, 800.0f, 1.0f, 0.0f, 100.0f, 2.0f});
+    game.add_component(e, ecs::components::engine::hitbox{34.0f, 36.0f, 0.0f, 0.0f});
     game.emplace_component<ecs::components::gui::drawable>(e, ecs::components::gui::drawable{game,
         std::container<ecs::components::gui::drawable::elements_container>::make({
             {static_cast<ecs::entity>(game), std::make_unique<ecs::components::gui::display_element>(
@@ -47,6 +48,7 @@ static void spawn_enemy_chaser(ecs::entity target, const ecs::components::positi
     game.add_component(e, enemy{100, 10, std::chrono::steady_clock::now()});
     game.add_component(e, ecs::components::position{position.x, position.y});
     game.add_component(e, ecs::components::engine::velocity{10.0f, 0.0f});
+    game.add_component(e, ecs::components::engine::hitbox{33.0f, 34.0f, 0.0f, 0.0f});
     game.add_component(e, enemy_chaser{target, 10.0f});
     game.emplace_component<ecs::components::gui::drawable>(e, ecs::components::gui::drawable{game,
         std::container<ecs::components::gui::drawable::elements_container>::make({
@@ -66,7 +68,8 @@ static void spawn_enemy_spawner(const ecs::components::position& position, game:
     auto e = game.create_entity();
     game.emplace_component<enemy>(e, 5, 10, now);
     game.emplace_component<enemy_spawner>(e, 2s, 5ul, game);
-    game.add_component(e, position);
+    game.emplace_component<ecs::components::position>(e, position.x, position.y);
+    game.emplace_component<ecs::components::engine::hitbox>(e, 65.2f, 66.0f, 0.0f, 0.0f);
     game.emplace_component<ecs::components::engine::velocity>(e);
     game.emplace_component<ecs::components::gui::drawable>(e, ecs::components::gui::drawable{game,
         std::container<ecs::components::gui::drawable::elements_container>::make({
@@ -87,6 +90,7 @@ static void spawn_enemy_shooter(const ecs::components::position& position, game:
     game.add_component(e, enemy{100, 10, std::chrono::steady_clock::now()});
     game.add_component(e, ecs::components::position{position.x, position.y});
     game.add_component(e, ecs::components::engine::velocity{0.0f, 10.0f});
+    game.add_component(e, ecs::components::engine::hitbox{65.0f, 50.0f, 0.0f, 0.0f});
     game.add_component(e, projectile_launcher{-1.0, 1s, std::chrono::steady_clock::now(), game});
     game.add_component(e, enemy_shooter{game});
     game.emplace_component<ecs::components::gui::drawable>(e, ecs::components::gui::drawable{game,
@@ -103,9 +107,9 @@ static void spawn_enemy_shooter(const ecs::components::position& position, game:
 
 static void initializeEnemies(game::game &game) noexcept {
     spawn_enemy({100.0f, 100.0f}, game);
-    spawn_enemy_chaser(game.player, {200.0f, 200.0f}, game);
-    spawn_enemy_spawner({300.0f, 300.0f}, game);
-    spawn_enemy_shooter({400.0f, 400.0f}, game);
+    // spawn_enemy_chaser(game.player, {200.0f, 200.0f}, game);
+    // spawn_enemy_spawner({300.0f, 300.0f}, game);
+    // spawn_enemy_shooter({400.0f, 400.0f}, game);
 }
 
 int main()

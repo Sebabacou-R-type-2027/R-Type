@@ -52,7 +52,8 @@ export namespace game {
             this->emplace_component<ecs::components::position>(e, 50.0f, 50.0f);
             this->emplace_component<ecs::components::engine::velocity>(e, 0.0f, 0.0f);
             this->emplace_component<ecs::components::engine::controllable>(e, true, 10.0f);
-            this->add_component<projectile_launcher>(e, {1.0f, 1s, std::chrono::steady_clock::now(), _game});
+            this->emplace_component<ecs::components::engine::hitbox>(e, 32.8f, 18.0f, 0.0f, 0.0f);
+            this->add_component<projectile_launcher_ownership>(e, {200ms, std::chrono::steady_clock::now(), _game});
             auto label = std::make_shared<sf::Text>("Play", _assetManager.get_font("arial"));
             label->setOrigin(label->getGlobalBounds().left, label->getGlobalBounds().height);
             this->emplace_component<ecs::components::gui::drawable>(e, ecs::components::gui::drawable{_game,
@@ -76,12 +77,14 @@ export namespace game {
             this->register_system<button, const ecs::components::position>(ecs::systems::gui::reposition);
             this->register_system<ecs::components::gui::drawable, const ecs::components::position>(ecs::systems::gui::reposition);
             this->register_system<projectile_launcher, const ecs::components::position>(launch_projectile);
+            this->register_system<projectile_launcher_ownership, const ecs::components::position>(launch_projectile_ownership);
             this->register_system<enemy_shooter, ecs::components::position, ecs::components::engine::velocity>(move_enemy_shooter);
             this->register_system<enemy_loop_movement, ecs::components::position>(move_enemy_loop);
             this->register_system<enemy_chaser, ecs::components::position>(move_enemy_chaser);
             this->register_system<enemy_spawner, ecs::components::position>(handle_enemy_spawner);
             this->register_system<const projectile>(cull_projectiles);
             this->register_system<button>(press_button);
+            this->register_system<ecs::components::engine::hitbox>(ecs::systems::engine::collision);
             this->register_system<ecs::components::position, const ecs::components::engine::velocity>(ecs::systems::engine::movement);
             this->register_system<ecs::components::position, const ecs::components::engine::controllable>(ecs::systems::engine::control);
             this->register_system<ecs::components::gui::window>(ecs::systems::gui::display);

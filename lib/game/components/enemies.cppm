@@ -22,6 +22,7 @@ export namespace game::components {
     struct enemy {
         int health; ///< Health of the entity
         int damage; ///< Damage of the entity
+        bool isAlive = true;
         std::chrono::steady_clock::time_point birth;
 
         /**
