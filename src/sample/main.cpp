@@ -52,28 +52,6 @@ class Game {
         return in;
     }
 
-    static game::components::button create_button(sf::Vector2f position, sf::Vector2f size,
-        const sf::Color& defaultColor, const sf::Color& hoverColor, const sf::Color& clickColor,
-        std::string_view text, const sf::Font& font, const sf::Color& textColor, std::size_t text_size,
-        std::function<void()> action, ecs::entity window) noexcept
-    {
-        sf::RectangleShape shape(size);
-        shape.setFillColor(defaultColor);
-        shape.setPosition(position);
-
-        sf::Text buttonText(std::string(text), font, text_size);
-        buttonText.setFillColor(textColor);
-        buttonText.setOrigin(buttonText.getGlobalBounds().width / 2, buttonText.getGlobalBounds().height / 2 + buttonText.getGlobalBounds().top);
-        buttonText.setPosition(position);
-
-        game::components::button btn = button(shape, buttonText, action, window);
-        btn.defaultColor = defaultColor;
-        btn.hoverColor = hoverColor;
-        btn.clickColor = clickColor;
-
-        return btn;
-    }
-
     entity initializePlayerComponents(entity e) noexcept {
         _registry.emplace_component<components::position>(e, 50.0f, 50.0f);
         _registry.emplace_component<components::engine::velocity>(e, 0.0f, 0.0f);
@@ -171,10 +149,10 @@ class Game {
 
 
     void initializeEnemies() noexcept {
-        // spawn_enemy({100.0f, 100.0f});
+        spawn_enemy({100.0f, 100.0f});
         spawn_enemy_chaser(_player, {200.0f, 200.0f}, _game);
-    //    spawn_enemy_spawner({300.0f, 300.0f}, _game);
-    //    spawn_enemy_shooter(1s, {400.0f, 400.0f}, _game);
+        spawn_enemy_spawner({300.0f, 300.0f}, _game);
+        spawn_enemy_shooter({400.0f, 400.0f}, _game);
     }
 
     public:
@@ -184,14 +162,15 @@ class Game {
             _assetManager(loadAssets(_registry.add_component<components::gui::asset_manager>(_game, {}))),
             _player(initializePlayerComponents(_registry.create_entity())),
             _sigHandler(std::bind_front(&Game::stop, this))
-            {
-            initializeEnemies();
+        {
+            // initializeEnemies();
             std::cout << "Press Ctrl+C to stop" << std::endl;
             std::signal(SIGINT, _sigHandler.target<void(int)>());
             _registry.register_system<components::gui::window>(systems::gui::clear);
             _registry.register_system<components::gui::animation_clock>(systems::gui::update_clock);
+            _registry.register_system<const button>(systems::gui::draw);
             _registry.register_system<const components::gui::drawable>(systems::gui::draw);
-            _registry.register_system<game::components::button>(render_button);
+            _registry.register_system<button, const components::position>(systems::gui::reposition);
             _registry.register_system<components::gui::drawable, const components::position>(systems::gui::reposition);
             _registry.register_system<projectile_launcher, const components::position>(launch_projectile);
             _registry.register_system<enemy_shooter, const components::position>(move_enemy_shooter);
@@ -199,24 +178,21 @@ class Game {
             _registry.register_system<enemy_chaser, components::position>(move_enemy_chaser);
             _registry.register_system<enemy_spawner, components::position>(handle_enemy_spawner);
             _registry.register_system<const projectile>(cull_projectiles);
-            _registry.register_system<game::components::button>(handle_button);
-            systems::position_logger logger(_registry);
+            _registry.register_system<button>(press_button);
             _registry.register_system<components::position, const components::engine::velocity>(systems::engine::movement);
             _registry.register_system<components::position, const components::engine::controllable>(systems::engine::control);
             _registry.register_system<components::gui::window>(systems::gui::display);
             _registry.register_system<components::gui::animation_clock>(systems::gui::reset_clock);
             auto button = _registry.create_entity();
             projectile_launcher &proj_launcher = *_registry.get_entity_component<projectile_launcher>(_player);
-            _registry.add_component(button, create_button({700, 200}, {100, 50},
-                    sf::Color::Blue, sf::Color::Cyan, sf::Color::Green,
-                    "Fire", _assetManager.get_font("arial"), sf::Color::White, 50,
-                    [&proj_launcher](){ proj_launcher.last_shot = std::chrono::steady_clock::time_point(0s); }, _game));
+            _registry.emplace_component<components::position>(button, 230.f, 875.f);
+            _registry.emplace_component<game::components::button>(button, 100.f, 50.f, "Fire", _assetManager.get_font("arial"),
+                    [launcher = std::addressof(proj_launcher)](){ launcher->last_shot = std::chrono::steady_clock::time_point(0s); }, _game);
         }
 
         void run() noexcept {
             sf::RenderWindow &window = *_registry.get_entity_component<ecs::components::gui::window>(_game)->get().window;
             sf::Event event;
-            signal(SIGINT, _sigHandler.target<void(int)>());
             auto next = std::chrono::steady_clock::now();
             while (window.isOpen()) {
                 while (window.pollEvent(event))
@@ -232,7 +208,7 @@ class Game {
 
 int main()
 {
-    Game game;
-    game.run();
+    Game().run();
+
     return 0;
 }
