@@ -27,21 +27,16 @@ export namespace game::systems {
         ec.add_component(projectile, components::projectile{10, now, 5s});
         ec.add_component(projectile, ecs::components::position{position.x, position.y});
         ec.add_component(projectile, ecs::components::engine::velocity{50.0f * launcher.direction, 0.0f});
-        if (launcher.direction < 0) {
-            ec.emplace_component<ecs::components::gui::drawable>(projectile,
-            launcher.game, std::container<ecs::components::gui::drawable::elements_container>::make({
-                {launcher.game, std::make_unique<ecs::components::gui::display_element>(
-                    std::make_unique<sf::Sprite>(asset_manager.get_texture("enemy_bullet")))},
-                })
-            );
-        } else {
-            ec.emplace_component<ecs::components::gui::drawable>(projectile,
-                launcher.game, std::container<ecs::components::gui::drawable::elements_container>::make({
-                    {launcher.game, std::make_unique<ecs::components::gui::display_element>(
-                        std::make_unique<sf::Sprite>(asset_manager.get_texture("bullet")))},
-                })
-            );
-        }
+        auto enemy_bullet = std::make_unique<sf::Sprite>(asset_manager.get_texture("bullet"));
+        enemy_bullet->setOrigin(enemy_bullet->getLocalBounds().width / 2, enemy_bullet->getLocalBounds().height / 2);
+        if (launcher.direction < 0)
+            enemy_bullet->setRotation(180);
+        auto display_element = std::make_unique<ecs::components::gui::display_element>(std::move(enemy_bullet));
+        display_element->reposition = ecs::components::gui::display_element::reposition_center;
+        ec.emplace_component<ecs::components::gui::drawable>(projectile,
+        launcher.game, std::container<ecs::components::gui::drawable::elements_container>::make({
+            {launcher.game, std::move(display_element)}
+        }));
     }
 
     void cull_projectiles(ecs::entity e, ecs::entity_container &ec, const components::projectile &projectile) {

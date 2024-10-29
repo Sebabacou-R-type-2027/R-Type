@@ -37,26 +37,20 @@ export namespace game::systems {
         position.y += vy;
     }
 
-    void move_enemy_shooter(ecs::entity_container &ec, game::components::enemy_shooter &shooter, ecs::components::position& position)
+    void move_enemy_shooter(ecs::entity_container &ec, game::components::enemy_shooter &shooter, ecs::components::position& position, ecs::components::engine::velocity &velocity)
     {
-        const auto now = std::chrono::steady_clock::now();
-        if (now - shooter.last_update < shooter.cooldown)
-            return;
-
         auto windowSize = ec.get_entity_component<ecs::components::gui::window>(shooter.game)->get().window->getSize();
         const ecs::components::gui::asset_manager &asset_manager = *ec.get_entity_component<const ecs::components::gui::asset_manager>(shooter.game);
-        shooter.last_update = now;
 
-        float speed = shooter._speed;
+        float speed = shooter.speed;
 
-        printf("Shooter position: %f, %f\n", position.x, position.y);
         if (shooter.moving_up) {
-            position.y -= speed;
+            velocity.y = -speed;
             if (position.y <= 0) {
                 shooter.moving_up = false;
             }
         } else {
-            position.y += speed;
+            velocity.y = speed;
             if (position.y >= windowSize.y - 50) {
                 shooter.moving_up = true;
             }
@@ -81,10 +75,21 @@ export namespace game::systems {
 
         if (count >= spawner.max_enemies)
             return;
-
-        // spawn_enemy(ec, 100, 10, position, spawner.game);
-        // spawn_enemy_chaser(ec, 0, 0.1f, position, spawner.game);
-        // spawn_enemy_shooter(ec, 1.0f, position, spawner.game);
+        
+        const ecs::components::gui::asset_manager &asset_manager = *ec.get_entity_component<const ecs::components::gui::asset_manager>(spawner.game);
+        auto enemy = ec.create_entity();
+        ec.add_component(enemy, ecs::components::position{position.x, position.y});
+        ec.add_component(enemy, ecs::components::engine::velocity{0.0f, 0.0f});
+        ec.add_component(enemy, components::enemy_loop_movement{0.0f, 2000.0f, 200.0f, 800.0f, 1.0f, 0.0f, 100.0f, 2.0f});
+        ec.emplace_component<ecs::components::gui::drawable>(enemy, ecs::components::gui::drawable{spawner.game,
+            std::container<ecs::components::gui::drawable::elements_container>::make({
+                {static_cast<ecs::entity>(spawner.game), std::make_unique<ecs::components::gui::display_element>(
+                    std::make_unique<sf::Text>("Enemy", asset_manager.get_font("arial"), 12), "arial")},
+                {static_cast<ecs::entity>(spawner.game), std::make_unique<ecs::components::gui::animation>(
+                    asset_manager.get_texture("enemy"), 1, 8, 10ms, "enemy")
+                }
+            })
+        });
     }
     /**
         * @brief Move the enemy

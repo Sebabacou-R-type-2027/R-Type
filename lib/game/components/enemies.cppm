@@ -3,7 +3,8 @@ module;
 
 #include <chrono>
 #endif
-export module game:components.enemies;
+export module game:components.enemies; 
+import :components.projectiles;
 
 #if __cpp_lib_modules >= 202207L
 import std;
@@ -63,10 +64,8 @@ export namespace game::components {
         * This component is used to define the enemy shooter. It contains the cooldown between shots and the last time the entity shot.
      */
     struct enemy_shooter {
-        std::chrono::steady_clock::duration cooldown; ///< Cooldown between shots
-        std::chrono::steady_clock::time_point last_update; ///< Last time the entity shot
         bool moving_up = true;
-        float _speed = 5.0f;
+        float speed = 5.0f;
         ecs::entity game;
 
         /**
@@ -74,9 +73,8 @@ export namespace game::components {
 
             * @param cooldown Cooldown between shots
          */
-        enemy_shooter(std::chrono::steady_clock::duration cooldown, ecs::entity game)
-            : cooldown(cooldown), last_update(std::chrono::steady_clock::time_point(0s)),
-            game(game)
+        enemy_shooter(ecs::entity game)
+            : game(game)
         {}
     };
 
@@ -131,6 +129,4 @@ export namespace game::components {
         enemy_loop_movement(float min_x, float max_x, float min_y, float max_y, float speed, float angle, float radius, float angular_speed)
             : min_x(min_x), max_x(max_x), min_y(min_y), max_y(max_y), speed(speed), angle(angle), radius(radius), angular_speed(angular_speed) {}
     };
-        
-        
 }
