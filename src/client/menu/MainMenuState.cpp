@@ -73,7 +73,7 @@ namespace rtype {
         std::cout << "Starting multiplayer..." << std::endl;
         sf::Shader::bind(nullptr);
         game.changeState(std::make_shared<LobbyState>(window, network_, game));
-    }m
+    }
 
     void MainMenuState::disableShader() {
         Settings::getInstance().isShaderEnabled = false;
