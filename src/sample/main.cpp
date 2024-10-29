@@ -61,12 +61,13 @@ static void spawn_enemy_chaser(ecs::entity target, const ecs::components::positi
 
 static void spawn_enemy_spawner(const ecs::components::position& position, game::game &game)
 {
+    const auto now = std::chrono::steady_clock::now();
     const ecs::components::gui::asset_manager &asset_manager = *game.get_entity_component<const ecs::components::gui::asset_manager>(game);
     auto e = game.create_entity();
-    game.add_component(e, enemy{100, 10, std::chrono::steady_clock::now()});
-    game.add_component(e, ecs::components::position{position.x, position.y});
-    game.add_component(e, ecs::components::engine::velocity{0.0f, 0.0f});
-    game.add_component(e, enemy_spawner{2.0f, 5, std::chrono::steady_clock::now(), game});
+    game.emplace_component<enemy>(e, 100, 10, now);
+    game.emplace_component<enemy_spawner>(e, 2s, 5ul, game);
+    game.add_component(e, position);
+    game.emplace_component<ecs::components::engine::velocity>(e);
     game.emplace_component<ecs::components::gui::drawable>(e, ecs::components::gui::drawable{game,
         std::container<ecs::components::gui::drawable::elements_container>::make({
             {static_cast<ecs::entity>(game), std::make_unique<ecs::components::gui::display_element>(
@@ -85,7 +86,7 @@ static void spawn_enemy_shooter(const ecs::components::position& position, game:
     game.add_component(e, enemy{100, 10, std::chrono::steady_clock::now()});
     game.add_component(e, ecs::components::position{position.x, position.y});
     game.add_component(e, ecs::components::engine::velocity{10.0f, 0.0f});
-    game.add_component(e, enemy_shooter{2.0f, std::chrono::steady_clock::now(), game});
+    game.add_component(e, enemy_shooter{2s, game});
     game.emplace_component<ecs::components::gui::drawable>(e, ecs::components::gui::drawable{game,
         std::container<ecs::components::gui::drawable::elements_container>::make({
             {static_cast<ecs::entity>(game), std::make_unique<ecs::components::gui::display_element>(

@@ -18,7 +18,6 @@ import utils;
 using namespace std::chrono_literals;
 
 export namespace game::systems {
-
     void move_enemy_chaser(ecs::entity_container &ec, game::components::enemy_chaser &chaser, ecs::components::position& position)
     {
         auto target_position = ec.get_entity_component<ecs::components::position>(chaser._target);
@@ -40,13 +39,11 @@ export namespace game::systems {
 
     void move_enemy_shooter(ecs::entity_container &ec, game::components::enemy_shooter &shooter, const ecs::components::position& position)
     {
-        const ecs::components::gui::asset_manager &asset_manager = *ec.get_entity_component<const ecs::components::gui::asset_manager>(shooter.game);
-        auto now = std::chrono::steady_clock::now();
-        auto elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(now - shooter.last_update);
-
-        if (elapsed_time < std::chrono::milliseconds(static_cast<long>(shooter.cooldown * 1000)))
+        const auto now = std::chrono::steady_clock::now();
+        if (now - shooter.last_update < shooter.cooldown)
             return;
 
+        const ecs::components::gui::asset_manager &asset_manager = *ec.get_entity_component<const ecs::components::gui::asset_manager>(shooter.game);
         shooter.last_update = now;
 
         using namespace std::chrono_literals;
@@ -62,24 +59,23 @@ export namespace game::systems {
         );
     }
 
-    void handle_enemy_spawner(ecs::entity_container &ec, game::components::enemy_spawner &spawner, ecs::components::position& position)
+    void handle_enemy_spawner(ecs::entity e, ecs::entity_container &ec, components::enemy_spawner &spawner, ecs::components::position& position)
     {
-        auto now = std::chrono::steady_clock::now();
-        auto elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(now - spawner.last_update);
-
-        if (elapsed_time < std::chrono::milliseconds(static_cast<long>(spawner.cooldown * 1000)))
+        const auto now = std::chrono::steady_clock::now();
+        if (now - spawner.last_update < spawner.cooldown)
             return;
 
         spawner.last_update = now;
 
-        float count = 0.0f;
-
-        std::for_each(ec.get_entities().begin(), ec.get_entities().end(), [&](auto e) {
-            if (ec.get_entity_component<game::components::enemy>(e)) {
-                ++count;
-            }
+        auto entities = ec.get_entities();
+        std::size_t count = std::count_if(entities.begin(), entities.end(), [spawner = e, &ec](auto e){
+            auto owned = ec.get_entity_component<components::enemy_ownership>(e).transform([spawner](components::enemy_ownership &enemy){
+                return enemy.owner == spawner;
+            });
+            return owned.has_value() && owned.value();
         });
-        if (count - 1 >= spawner.max_enemies)
+
+        if (count >= spawner.max_enemies)
             return;
 
         // spawn_enemy(ec, 100, 10, position, spawner.game);
