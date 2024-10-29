@@ -177,14 +177,10 @@ namespace ecs {
             bulletSystem.update(reg);
         }
 
-        void shield_system(Registry& reg) {
-            shieldSystem.update(reg);
-        }
 
 private:
 
     systems::BulletSystem bulletSystem;
-    systems::ShieldSystem shieldSystem ;
     systems::ControlSystem controlSystem;
     systems::DrawSystem drawSystem;
     systems::PositionSystem positionSystem;
