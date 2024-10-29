@@ -26,13 +26,22 @@ export namespace game::systems {
         const ecs::components::gui::asset_manager &asset_manager = *ec.get_entity_component<const ecs::components::gui::asset_manager>(launcher.game);
         ec.add_component(projectile, components::projectile{10, now, 5s});
         ec.add_component(projectile, ecs::components::position{position.x, position.y});
-        ec.add_component(projectile, ecs::components::engine::velocity{30.0f, 0.0f});
-        ec.emplace_component<ecs::components::gui::drawable>(projectile,
+        ec.add_component(projectile, ecs::components::engine::velocity{50.0f * launcher.direction, 0.0f});
+        if (launcher.direction < 0) {
+            ec.emplace_component<ecs::components::gui::drawable>(projectile,
             launcher.game, std::container<ecs::components::gui::drawable::elements_container>::make({
                 {launcher.game, std::make_unique<ecs::components::gui::display_element>(
-                    std::make_unique<sf::Sprite>(asset_manager.get_texture("bullet")))},
-            })
-        );
+                    std::make_unique<sf::Sprite>(asset_manager.get_texture("enemy_bullet")))},
+                })
+            );
+        } else {
+            ec.emplace_component<ecs::components::gui::drawable>(projectile,
+                launcher.game, std::container<ecs::components::gui::drawable::elements_container>::make({
+                    {launcher.game, std::make_unique<ecs::components::gui::display_element>(
+                        std::make_unique<sf::Sprite>(asset_manager.get_texture("bullet")))},
+                })
+            );
+        }
     }
 
     void cull_projectiles(ecs::entity e, ecs::entity_container &ec, const components::projectile &projectile) {
