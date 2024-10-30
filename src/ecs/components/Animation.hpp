@@ -7,11 +7,12 @@
 
 #pragma once
 #include <iostream>
+#include <SFML/Graphics.hpp>
 
 namespace ecs {
     /**
      * @brief Class that contains the animation of an entity
-     * 
+     *
      * @param sprite Sprite of the entity
      * @param imageCount Number of images in the sprite
      * @param currentImage Current image of the sprite
@@ -29,7 +30,7 @@ namespace ecs {
 
         /**
          * @brief Construct a new Animation object
-         * 
+         *
          * @param spriteSheetPath Path to the sprite sheet
          * @param imageCountX Number of images on the x axis
          * @param imageCountY Number of images on the y axis
@@ -51,7 +52,7 @@ namespace ecs {
 
         /**
          * @brief Update the animation
-         * 
+         *
          * @param deltaTime Time between two frames
          */
         void update(float deltaTime) {

@@ -14,11 +14,12 @@
 #include "collision/collision_system.hpp"
 #include "../client/systems/loop_movement/loop_movement_system.hpp"
 #include "../client/systems/button/button_system.hpp"
-#include "../client/systems/ennemy_state/ennemy_state_system.hpp"
 #include "../client/systems/bullet/bullet_system.hpp"
 #include <networkClient/Client.hpp>
 #include "../client/systems/shader/shader_system.hpp"
 #include "../client/systems/shooting_enemy/shooting_enemy_system.hpp"
+#include "../client/systems/chasing_enemy/chasing_enemy_system.hpp"
+#include "../client/systems/spawner_enemy/spawner_enemy_system.hpp"
 
 namespace ecs {
     /**
@@ -115,17 +116,6 @@ namespace ecs {
         }
 
         /**
-         * @brief enemy_state_system
-         *
-         * @param registry contains all the logic of the components
-         * @param deltaTime contains the time between two frames
-         * @return void
-         */
-        void enemy_state_system(Registry& reg, float deltaTime) {
-            enemyStateSystem.update(reg, deltaTime);
-        }
-
-        /**
          * @brief shader_system
          *
          * @param registry contains all the logic of the components
@@ -151,7 +141,7 @@ namespace ecs {
 
         /**
          * @brief shooting_enemy_system
-         * 
+         *
          * @param registry contains all the logic of the components
          * @param window contains the window of the game
          * @return void
@@ -160,6 +150,27 @@ namespace ecs {
             shootingEnemySystem.update(reg, window);
         }
 
+        /**
+         * @brief chasing_enemy_system
+         *
+         * @param registry contains all the logic of the components
+         * @param window contains the window of the game
+         * @return void
+         */
+        void chasing_enemy_system(Registry& reg, sf::RenderWindow& window) {
+            chasingEnemySystem.update(reg, window);
+        }
+
+        /**
+         * @brief spawner_enemy_system
+         *
+         * @param registry contains all the logic of the components
+         * @param window contains the window of the game
+         * @return void
+         */
+        void spawner_enemy_system(Registry& reg, sf::RenderWindow& window) {
+            spawnerEnemySystem.update(reg, window);
+        }
 
 private:
     systems::ControlSystem controlSystem;
@@ -169,9 +180,10 @@ private:
     systems::LoopMovementSystem loopMovementSystem;
     systems::ButtonSystem buttonSystem;
     systems::CollisionSystem collisionSystem;
-    systems::EnemyStateSystem enemyStateSystem;
     systems::ShaderSystem shaderSystem;
     systems::ShootingEnemySystem shootingEnemySystem;
+    systems::ChasingEnemySystem chasingEnemySystem;
+    systems::SpawnerEnemySystem spawnerEnemySystem;
 };
 
 }

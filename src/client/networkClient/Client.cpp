@@ -1,11 +1,11 @@
-//
-// Created by shooting_star_t33 on 9/24/24.
-//
-
 #include "Client.hpp"
 
 #include "PacketACK.hpp"
 #include "PacketCMDP.hpp"
+
+std::string format_command(const std::string& command) {
+    return (command.size() == 1) ? "0 " + command : command.substr(0, 1) + " " + command.substr(1, 1);
+}
 
 namespace client {
     Client::Client(asio::io_context& io_context)
@@ -15,7 +15,7 @@ namespace client {
     Client::~Client() {
         is_running_ = false;
         if (receive_thread_.joinable()) {
-            receive_thread_.join();  // Attends que le thread termine
+            receive_thread_.join();
             if (socket_.is_open()) {
                 socket_.close();
             }
@@ -25,37 +25,83 @@ namespace client {
     	}
     }
 
-	void Client::send_commands_to_all_clients() {
-		while (!is_running_) {
-    		if (im_host) {
-        	    std::this_thread::sleep_for(std::chrono::milliseconds(250));
-            	auto commands = command_handler_->getCommands();
-	            for (const auto& [time, command] : commands) {
-    	            if (_commandsSend.find(time) == _commandsSend.end()) {
+    void Client::send_commands_to_all_clients() {
+        while (!is_running_) {
+            if (im_host) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(250));
+                auto commands = command_handler_->getCommands();
+                for (const auto& [id, command] : commands) {
+                    if (_commandsSend.find(id) == _commandsSend.end()) {
                         if (players_endpoints_.empty()) {
                             std::string formatted_data = (command.size() == 1) ? "0 " + command : command.substr(0, 1) + " " + command.substr(1, 1);
-//                            std::cout << "CMDP to handle : " << formatted_data << std::endl;
                             _commandsToDo[formatted_data.substr(0, formatted_data.find(' '))] = formatted_data.substr(formatted_data.find(' ') + 1);
+                        } else {
+                            for (const auto& endpoint : players_endpoints_) {
+                                send_command_with_ack(command, endpoint.second);
+                            }
                         }
-        	            for (const auto& [_, endpoint] : players_endpoints_) {
-            	            auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::CMDP, socket_);
-                	        if (typeid(*packet) == typeid(PacketCMDP)) {
-                    	        dynamic_cast<PacketCMDP*>(packet.get())->format_data(std::stoi(command));
-                        	}
-	                        packet->send_packet(endpoint);
-                            std::string formatted_data = (command.size() == 1) ? "0 " + command : command.substr(0, 1) + " " + command.substr(1, 1);
-//            				std::cout << "CMDP to handle : " << formatted_data << std::endl;
-                			_commandsToDo[formatted_data.substr(0, formatted_data.find(' '))] = formatted_data.substr(formatted_data.find(' ') + 1);
-//							for (const auto& cmd : _commandsToDo) {
-//    							std::cout << "Player: " << cmd.first << " -> " << cmd.second << std::endl;
-//							}
-                    	}
-                    	_commandsSend[time] = command;
-	                }
-	            }
-    	    }
-    	}
+                    }
+                    _commandsSend[id] = command;
+                }
+            }
+        }
     }
+
+    void Client::send_command_with_ack(const std::string& command, const udp::endpoint& client_endpoint) {
+    	    bool ack_received = false;
+	        int attempts = 0;
+	        constexpr int max_attempts = 5;
+
+	        while (!ack_received && attempts < max_attempts) {
+            	try {
+                	auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::CMDP, socket_);
+            	    if (typeid(*packet) == typeid(PacketCMDP)) {
+        	            dynamic_cast<PacketCMDP*>(packet.get())->format_data(std::stoi(command));
+    	            }
+	                packet->send_packet(client_endpoint);
+                	std::string formatted_data = format_command(command);
+            	    _commandsToDo[formatted_data.substr(0, formatted_data.find(' '))] = formatted_data.substr(formatted_data.find(' ') + 1);
+
+        	        ack_received = wait_for_ack(client_endpoint);
+    	            if (!ack_received) {
+	                    std::this_thread::sleep_for(std::chrono::seconds(1));
+                    	++attempts;
+                	}
+            	} catch (const std::exception& e) {
+        	        std::cerr << "Error in sending command with ack: " << e.what() << std::endl;
+    	        }
+	        }
+
+        	if (!ack_received) {
+    	        std::cerr << "Failed to send CMDP after " << max_attempts << " attempts." << std::endl;
+	        }
+	}
+
+    bool Client::wait_for_ack(const udp::endpoint& client_endpoint) { // TODO : use a struct for received_messages_, id, size, timestamp, data, endpoint
+	    std::unique_lock<std::mutex> lock(messages_mutex_);
+        for (const auto& [id, message] : received_messages_) {
+            if (message.second == client_endpoint) {
+                try {
+                    uint32_t type = Packet::extract_type(message.first.data(), message.first.size()); // TODO : check if timstamp is not too old
+	                if (type == PacketFactory::TypePacket::ACK) {
+                        std::string data = Packet::extract_data(message.first.data(), message.first.size(), type);
+                        int idp = Packet::extract_id(message.first.data(), message.first.size());
+//                            std::cout << "Received Validation: " << data << " id of packet: " << idp << " id from received_meesages_ " << id << std::endl;
+                        if (data == "1") {
+                            received_messages_.erase(id);
+                            return true;
+                        } else {
+                            received_messages_.erase(id);
+                            return false;
+                        }
+        	        }
+            	} catch (const std::exception& e) {
+                	std::cerr << "Error extracting packet type: " << e.what() << std::endl;
+                }
+            }
+        }
+        return false;
+	}
 
     void Client::send_message(const std::string &message) {
         if (message.empty()) {

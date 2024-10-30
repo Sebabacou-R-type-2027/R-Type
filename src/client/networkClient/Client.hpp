@@ -84,6 +84,12 @@ namespace client {
              */
             void fillCommandsToSends(std::string command);
 
+
+            void send_command_with_ack(const std::string& command, const udp::endpoint& client_endpoint);
+
+            bool wait_for_ack(const udp::endpoint& client_endpoint);
+
+
             int number_of_players_ = 0;  ///< Nombre de joueurs actuellement connectés.
             int my_id_in_lobby_;
             std::map<std::string, std::string> _commandsToDo;  ///< Commandes à effectuer.

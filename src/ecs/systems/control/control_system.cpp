@@ -15,20 +15,24 @@ void ControlSystem::network_handle(std::size_t i,
                                    client::Client& network) {
     if (i == network.my_id_in_lobby_) {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+            std::cout << "sending message|0" << std::endl;
             network.send_message("CMDP|0");
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+            std::cout << "sending message|1" << std::endl;
             network.send_message("CMDP|1");
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+            std::cout << "sending message|2" << std::endl;
             network.send_message("CMDP|2");
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+            std::cout << "sending message|3" << std::endl;
             network.send_message("CMDP|3");
         }
     }
     for (auto it = network._commandsToDo.begin(); it != network._commandsToDo.end(); ) {
-        std::cout << "command to do: " << it->first << " " << it->second << " my id: " << network.my_id_in_lobby_ << std::endl;
+        std::cout << "P:" << it->first << " Dir:" << it->second << std::endl;
         if (it->second == "0") {
             velocities[std::stoi(it->first)]->vx += acceleration;
         } else if (it->second == "1") {
@@ -74,12 +78,13 @@ void ControlSystem::update(Registry& registry, client::Client& network, bool isS
     auto& velocities = registry.get_components<Velocity>();
     auto& controllables = registry.get_components<Controllable>();
 
+    std::cout << "=========== Control System S:0ms =========" << std::endl;
     for (std::size_t i = 0; i < controllables.size(); ++i) {
         if (controllables[i] && velocities[i]) {
           	if (isSolo) {
             	solo_handle(i, velocities, controllables);
           	} else {
-          		network_handle(i, velocities, controllables, network);
+          	    network_handle(i, velocities, controllables, network);
             }
         }
     }
