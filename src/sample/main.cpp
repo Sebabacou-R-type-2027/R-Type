@@ -34,7 +34,7 @@ void spawn_enemy(const ecs::components::position& position, game::game &game)
             {static_cast<ecs::entity>(game), std::make_unique<ecs::components::gui::display_element>(
                 std::make_unique<sf::Text>("Enemy", asset_manager.get_font("arial"), 12), "arial")},
             {static_cast<ecs::entity>(game), std::make_unique<ecs::components::gui::animation>(
-                asset_manager.get_texture("enemy"), 1, 8, 10ms, "enemy")
+                asset_manager.get_texture("enemy"), 1, 8, 200ms, "enemy")
             }
         })
     });
@@ -53,7 +53,7 @@ static void spawn_enemy_chaser(ecs::entity target, const ecs::components::positi
             {static_cast<ecs::entity>(game), std::make_unique<ecs::components::gui::display_element>(
                 std::make_unique<sf::Text>("Chaser", asset_manager.get_font("arial"), 12), "arial")},
             {static_cast<ecs::entity>(game), std::make_unique<ecs::components::gui::animation>
-                (asset_manager.get_texture("enemy_chaser"), 1, 3, 10ms, "enemy_chaser")
+                (asset_manager.get_texture("enemy_chaser"), 1, 3, 200ms, "enemy_chaser")
             }
         })
     });
@@ -73,7 +73,7 @@ static void spawn_enemy_spawner(const ecs::components::position& position, game:
             {static_cast<ecs::entity>(game), std::make_unique<ecs::components::gui::display_element>(
                 std::make_unique<sf::Text>("Spawner", asset_manager.get_font("arial"), 12), "arial")},
             {static_cast<ecs::entity>(game), std::make_unique<ecs::components::gui::animation>
-                (asset_manager.get_texture("enemy_spawner"), 1, 5, 10ms, "enemy_spawner")
+                (asset_manager.get_texture("enemy_spawner"), 1, 5, 200ms, "enemy_spawner")
             }
         })
     });
@@ -92,7 +92,7 @@ static void spawn_enemy_shooter(const ecs::components::position& position, game:
             {static_cast<ecs::entity>(game), std::make_unique<ecs::components::gui::display_element>(
                 std::make_unique<sf::Text>("Shooter", asset_manager.get_font("arial"), 12), "arial")},
             {static_cast<ecs::entity>(game), std::make_unique<ecs::components::gui::animation>
-                (asset_manager.get_texture("enemy_shooter"), 1, 3, 10ms, "enemy_shooter")
+                (asset_manager.get_texture("enemy_shooter"), 1, 3, 200ms, "enemy_shooter")
             }
         })
     });
