@@ -10,9 +10,11 @@ export module game;
 export import :components.buttons;
 export import :components.projectiles;
 export import :components.enemies;
+export import :components.score;
 export import :systems.buttons;
 export import :systems.projectiles;
 export import :systems.enemies;
+export import :systems.score;
 
 #if __cpp_lib_modules >= 202207L
 import std;
@@ -52,16 +54,15 @@ export namespace game {
             this->emplace_component<ecs::components::position>(e, 50.0f, 50.0f);
             this->emplace_component<ecs::components::engine::velocity>(e, 0.0f, 0.0f);
             this->emplace_component<ecs::components::engine::controllable>(e, true, 10.0f);
-            this->emplace_component<ecs::components::engine::hitbox>(e, 32.8f, 18.0f, 0.0f, 0.0f);
+            // this->emplace_component<ecs::components::engine::hitbox>(e, 32.8f, 18.0f, 50.0f, 50.0f);
+            this->emplace_component<ecs::components::lifestate>(e);
+            this->add_component<score>(e, {0, _game});
+            this->add_component<health>(e, {3, _game});
             this->add_component<projectile_launcher_ownership>(e, {200ms, std::chrono::steady_clock::now(), _game});
-            auto label = std::make_shared<sf::Text>("Play", _assetManager.get_font("arial"));
-            label->setOrigin(label->getGlobalBounds().left, label->getGlobalBounds().height);
             this->emplace_component<ecs::components::gui::drawable>(e, ecs::components::gui::drawable{_game,
                 std::container<ecs::components::gui::drawable::elements_container>::make({
-                    {_game, std::make_unique<ecs::components::gui::display_element>(
-                        std::make_unique<sf::Text>("Player", _assetManager.get_font("arial"), 12), "arial")},
                     {_game, std::make_unique<ecs::components::gui::animation>(
-                        _assetManager.get_texture("ship"), 1, 5, 10ms, "ship")}
+                        _assetManager.get_texture("ship"), 1, 5, 200ms, "ship")}
                 })
             });
             return e;
@@ -76,6 +77,7 @@ export namespace game {
             this->register_system<ecs::components::gui::animation_clock>(ecs::systems::gui::update_clock);
             this->register_system<button, const ecs::components::position>(ecs::systems::gui::reposition);
             this->register_system<ecs::components::gui::drawable, const ecs::components::position>(ecs::systems::gui::reposition);
+            this->register_system<score>(update_score);
             this->register_system<projectile_launcher, const ecs::components::position>(launch_projectile);
             this->register_system<projectile_launcher_ownership, const ecs::components::position>(launch_projectile_ownership);
             this->register_system<enemy_shooter, ecs::components::position, ecs::components::engine::velocity>(move_enemy_shooter);
@@ -84,7 +86,7 @@ export namespace game {
             this->register_system<enemy_spawner, ecs::components::position>(handle_enemy_spawner);
             this->register_system<const projectile>(cull_projectiles);
             this->register_system<button>(press_button);
-            this->register_system<ecs::components::engine::hitbox>(ecs::systems::engine::collision);
+            // this->register_system<ecs::components::engine::hitbox>(ecs::systems::engine::collision);
             this->register_system<ecs::components::position, const ecs::components::engine::velocity>(ecs::systems::engine::movement);
             this->register_system<ecs::components::position, const ecs::components::engine::controllable>(ecs::systems::engine::control);
             this->register_system<ecs::components::gui::window>(ecs::systems::gui::display);

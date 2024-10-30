@@ -22,7 +22,7 @@ export namespace game::components {
     struct enemy {
         int health; ///< Health of the entity
         int damage; ///< Damage of the entity
-        bool isAlive = true;
+        int points;
         std::chrono::steady_clock::time_point birth;
 
         /**
@@ -31,8 +31,8 @@ export namespace game::components {
             * @param health Health of the entity
             * @param damage Damage of the entity
          */
-        enemy(int health, int damage, std::chrono::steady_clock::time_point birth)
-            : health(health), damage(damage), birth(birth)
+        enemy(int health, int damage, int point, std::chrono::steady_clock::time_point birth)
+            : health(health), damage(damage), points(point), birth(birth)
         {}
     };
 

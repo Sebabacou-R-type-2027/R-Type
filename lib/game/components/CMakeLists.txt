@@ -3,4 +3,5 @@ target_sources(game PUBLIC
         FILES projectiles.cppm
             enemies.cppm
             buttons.cppm
+            stats.cppm
 )

@@ -27,8 +27,9 @@ export namespace game::systems {
         float dy = target_position->get().y - position.y;
         float distance = sqrt(dx * dx + dy * dy);
 
-        if (distance < 1.0f)
+        if (distance < 1.0f) {
             return;
+        }
 
         float vx = dx / distance * chaser._speed;
         float vy = dy / distance * chaser._speed;
@@ -37,6 +38,16 @@ export namespace game::systems {
         position.y += vy;
     }
 
+    /**
+        * @brief Move the enemy shooter
+
+        * This function is used to move the enemy shooter entity with the given position and velocity.
+
+        * @param ec The entity container
+        * @param shooter The enemy shooter component
+        * @param position The position of the enemy shooter
+        * @param velocity The velocity of the enemy shooter
+     */
     void move_enemy_shooter(ecs::entity_container &ec, game::components::enemy_shooter &shooter, ecs::components::position& position, ecs::components::engine::velocity &velocity)
     {
         auto windowSize = ec.get_entity_component<ecs::components::gui::window>(shooter.game)->get().window->getSize();
@@ -57,6 +68,16 @@ export namespace game::systems {
         }
     }
 
+    /**
+        * @brief Handle the enemy spawner
+
+        * This function is used to handle the enemy spawner entity. It will spawn an enemy if the cooldown has passed and the maximum number of enemies has not been reached.
+
+        * @param e The entity of the enemy spawner
+        * @param ec The entity container
+        * @param spawner The enemy spawner component
+        * @param position The position of the enemy spawner
+     */
     void handle_enemy_spawner(ecs::entity e, ecs::entity_container &ec, components::enemy_spawner &spawner, ecs::components::position& position)
     {
         const auto now = std::chrono::steady_clock::now();
@@ -79,14 +100,15 @@ export namespace game::systems {
         const ecs::components::gui::asset_manager &asset_manager = *ec.get_entity_component<const ecs::components::gui::asset_manager>(spawner.game);
         auto enemy = ec.create_entity();
         ec.add_component(enemy, ecs::components::position{position.x, position.y});
-        ec.add_component(enemy, ecs::components::engine::velocity{0.0f, 0.0f});
+        ec.add_component(enemy, ecs::components::engine::velocity{-10.0f, 0.0f});
+        ec.add_component(enemy, ecs::components::lifestate{});
+        ec.add_component<enemy, components::health(e, 1, game);
+        ec.add_component(enemy, ecs::components::engine::hitbox{34.0f, 36.0f, 0.0f, 0.0f});
         ec.add_component(enemy, components::enemy_loop_movement{0.0f, 2000.0f, 200.0f, 800.0f, 1.0f, 0.0f, 100.0f, 2.0f});
         ec.emplace_component<ecs::components::gui::drawable>(enemy, ecs::components::gui::drawable{spawner.game,
             std::container<ecs::components::gui::drawable::elements_container>::make({
-                {static_cast<ecs::entity>(spawner.game), std::make_unique<ecs::components::gui::display_element>(
-                    std::make_unique<sf::Text>("Enemy", asset_manager.get_font("arial"), 12), "arial")},
                 {static_cast<ecs::entity>(spawner.game), std::make_unique<ecs::components::gui::animation>(
-                    asset_manager.get_texture("enemy"), 1, 8, 10ms, "enemy")
+                    asset_manager.get_texture("enemy"), 1, 8, 200ms, "enemy")
                 }
             })
         });
@@ -95,10 +117,13 @@ export namespace game::systems {
         * @brief Move the enemy
 
         * This function is used to move the enemy entity with the given loop movement and position.
+
+        * @param loop_mvt The enemy loop movement component
+        * @param position The position of the enemy
      */
     void move_enemy_loop(game::components::enemy_loop_movement &loop_mvt, ecs::components::position &position)
     {
-        float delta_seconds = 1.0f / 60.0f;
+        float delta_seconds = 0.05f;
 
         position.x += loop_mvt.speed * delta_seconds;
 
