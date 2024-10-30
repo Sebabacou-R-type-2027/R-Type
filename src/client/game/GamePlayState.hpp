@@ -11,6 +11,8 @@
 #include "registry.hpp"
 #include "system.hpp"
 #include "../Create_ennemies.hpp"
+#include "../Create_powerup.hpp"
+
 #include <networkClient/Client.hpp>
 #include "../Handle_collision.hpp"
 #include "../utils/FPSCounter.hpp"
@@ -42,6 +44,7 @@ namespace rtype {
 
         ecs::CreateEnnemies createEnnemies; // TODO: create a system for this
         ecs::HandleCollision handleCollision; // TODO: create a system for this
+
 
         void initPlayer(std::string path, float posx, bool me);
         void initChargeBullet();

@@ -17,7 +17,8 @@ namespace ecs {
         Ennemy,
         Bullet,
         Button,
-        EnnemyBullet
+        EnnemyBullet,
+        PowerUp
     };
 
     /**

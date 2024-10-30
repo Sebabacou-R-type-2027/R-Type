@@ -31,6 +31,7 @@ namespace rtype {
             initPlayer("assets/Ship/Ship.png", posx * i + 1, true);
         }
         createEnnemies.create_enemies(registry, window);
+        createPowerUp.create_powerup(registry, window);
         initChargeBullet();
     }
 
