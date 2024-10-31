@@ -157,18 +157,51 @@ export namespace game::scenes {
         protected:
             void create_entities() noexcept override
             {
+
+                ecs::abstractions::vector<float> center_screen_position = _game.display.window->get_size();
+
+                create_rectangle({center_screen_position.x / 2, 0.0f}, {1.0f, center_screen_position.y}, ecs::abstractions::gui::color::green);
+                create_rectangle({0.0f, center_screen_position.y / 2.0f}, {center_screen_position.x, 1.0f}, ecs::abstractions::gui::color::green);
+                center_screen_position.x /= 2;
+                center_screen_position.y /= 2;
+
+                ecs::abstractions::vector<float> button_size = {100, 50};
+
+                center_screen_position.x -= button_size.x / 2;
+                center_screen_position.y -= button_size.y / 2;
+                // create_button(center_screen_position, button_size, ecs::abstractions::gui::color::red, "display Hello world", [](){ std::cout << "Hello world" << std::endl; });
+                // create_centered_button("Play Game", 500, [&game = _game](){ game.begin_scene(std::make_unique<game_scene>(game)); });
+                // create_centered_button("Welcome to the game", 500, [](){ std::cout << "Welcome to the game" << std::endl; });
+                create_centered_button("Mouse position", 600, [&game = _game](){
+                    ecs::abstractions::vector<float> mouse_position = game.display.window->get_cursor_position();
+                    std::cout << "Mouse position: " << mouse_position.x << ", " << mouse_position.y << std::endl;
+                    ecs::abstractions::vector<float> window_size = game.display.window->get_size();
+                    std::cout << "Window size: " << window_size.x << ", " << window_size.y << std::endl;
+                });
+            }
+
+        private:
+            game &_game;
+            void create_button(ecs::abstractions::vector<float> position, ecs::abstractions::vector<float> size, ecs::abstractions::gui::color color, std::string text, std::function<void()> action) noexcept
+            {
                 auto button = _game.create_entity();
-                _game.emplace_component<ecs::components::position>(button, 960, 540);
-                _game.emplace_component<components::button>(button, _game, ecs::abstractions::vector<float>(100, 50),
-                        [&game = _game](){ game.begin_scene(std::make_unique<game_scene>(game)); });
-                auto label = _game.display.factory->make_element(
-                    "Play", _game.asset_manager.get("arial"), 48);
-                label->set_origin({label->bounds(true).width / 2, label->bounds(true).height / 2});
-                label->set_repositioning(ecs::abstractions::gui::drawable_element::reposition_center);
-                auto background = _game.display.factory->make_element({100, 50},
-                    ecs::abstractions::gui::color::cyan);
-                background->set_origin({background->bounds(true).width / 2, background->bounds(true).height / 2});
+                _game.emplace_component<ecs::components::position>(button, position.x, position.y);
+                _game.emplace_component<components::button>(button, _game, size, action);
+
+                auto label = _game.display.factory->make_element(text, _game.asset_manager.get("arial"), 24);
+                // fix the y position of the text to be centered
+                // label->set_origin({0.0f, -12.0f});
+                //label->set_repositioning(ecs::abstractions::gui::drawable_element::reposition_center);
+                std::cout << "Text bounds: " << label->bounds(true).height << std::endl;
+                std::cout << "Text bounds: " << label->bounds(true).width << std::endl;
+                std::cout << "Text bounds: " << label->bounds(true).x << std::endl;
+                std::cout << "Text bounds: " << label->bounds(true).y << std::endl;
+                ecs::abstractions::vector<float> background_size = {label->bounds(true).width, label->bounds(true).height};
+                auto background = _game.display.factory->make_element(background_size,
+                    color);
+                // background->set_origin({background->bounds(true).width / 2, background->bounds(true).height / 2});
                 background->set_repositioning(ecs::abstractions::gui::drawable_element::reposition_center);
+                // background->set_origin({0.0f, 0.0f});
                 _game.emplace_component<ecs::components::gui::drawable>(button, ecs::components::gui::drawable{_game,
                     std::container<ecs::components::gui::drawable::elements_container>::make({
                         {static_cast<ecs::entity>(_game), std::move(background)},
@@ -178,7 +211,60 @@ export namespace game::scenes {
                 _entities.push_back(button);
             }
 
-        private:
-            game &_game;
+            void create_centered_button(const std::string &label, float yPos, std::function<void()> action) noexcept
+            {
+                int fontSize = 96;
+                ecs::abstractions::vector<float> window_size = _game.display.window->get_size();
+                auto text = _game.display.factory->make_element(label, _game.asset_manager.get("arial"), fontSize);
+                int text_top = text->bounds(true).y + 1;
+                ecs::abstractions::vector<float> text_size = {text->bounds(true).width, text->bounds(true).height};
+                create_text({(window_size.x - text_size.x) / 2, yPos - text_top / 2}, label, ecs::abstractions::gui::color::white, fontSize);
+
+                ecs::abstractions::vector<float> button_size = {text_size.x + 40, text_size.y + 20};
+                create_rectangle({(window_size.x - button_size.x) / 2, yPos}, button_size, ecs::abstractions::gui::color::cyan);
+
+                // auto button = _game.create_entity();
+                // _game.emplace_component<ecs::components::position>(button, (window_size.x - button_size.x) / 2, yPos /*- text_top*/);
+                // _game.emplace_component<components::button>(button, _game, button_size, action);
+                // _entities.push_back(button);
+                create_clickable_rectangle({(window_size.x - button_size.x) / 2, yPos}, button_size, ecs::abstractions::gui::color::cyan, action);
+            }
+
+            void create_rectangle(ecs::abstractions::vector<float> position, ecs::abstractions::vector<float> size, ecs::abstractions::gui::color color) noexcept
+            {
+                auto rectangle = _game.create_entity();
+                _game.emplace_component<ecs::components::position>(rectangle, position.x, position.y);
+                _game.emplace_component<ecs::components::gui::drawable>(rectangle, ecs::components::gui::drawable{_game,
+                    std::container<ecs::components::gui::drawable::elements_container>::make({
+                        {static_cast<ecs::entity>(_game), _game.display.factory->make_element(size, color)}
+                    })
+                });
+                _entities.push_back(rectangle);
+            }
+
+            void create_text(ecs::abstractions::vector<float> position, std::string text, ecs::abstractions::gui::color color, int size = 24) noexcept
+            {
+                auto text_entity = _game.create_entity();
+                _game.emplace_component<ecs::components::position>(text_entity, position.x, position.y);
+                _game.emplace_component<ecs::components::gui::drawable>(text_entity, ecs::components::gui::drawable{_game,
+                    std::container<ecs::components::gui::drawable::elements_container>::make({
+                        {static_cast<ecs::entity>(_game), _game.display.factory->make_element(text, _game.asset_manager.get("arial"), size, color)}
+                    })
+                });
+                _entities.push_back(text_entity);
+            }
+
+            void create_clickable_rectangle(ecs::abstractions::vector<float> position, ecs::abstractions::vector<float> size, ecs::abstractions::gui::color color, std::function<void()> action) noexcept
+            {
+                auto rectangle = _game.create_entity();
+                _game.emplace_component<ecs::components::position>(rectangle, position.x, position.y);
+                _game.emplace_component<ecs::components::gui::drawable>(rectangle, ecs::components::gui::drawable{_game,
+                    std::container<ecs::components::gui::drawable::elements_container>::make({
+                        {static_cast<ecs::entity>(_game), _game.display.factory->make_element(size, color)}
+                    })
+                });
+                _game.emplace_component<components::button>(rectangle, _game, size, action);
+                _entities.push_back(rectangle);
+            }
     };
 }
