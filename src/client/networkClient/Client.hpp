@@ -134,6 +134,10 @@ namespace client {
              */
             void manage_message(std::size_t bytes_transferred, const udp::endpoint& sender_endpoint);
 
+            void manage_player_msg(uint32_t type, std::string data);
+
+    		void manage_host_msg(uint32_t type, std::string data, std::string message, const udp::endpoint& remote_endpoint);
+
             /**
              * @brief Envoie un message à un joueur spécifique.
              *
