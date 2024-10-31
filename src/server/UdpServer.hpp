@@ -132,6 +132,9 @@ class UdpServer {
         void lauch_game(const std::vector<server::client>& clients);
         std::chrono::milliseconds set_elapsed_time(std::vector<server::client>& clients);
         void handle_login(const std::string& message);
+        void get_best_score_cli(const server::client& client);
+        void get_best_score_cli(std::string message);
+        void new_score_cli(std::string message);
         void execute_function(const std::string& message, std::string client_str);
 
         asio::io_context& io_context_; ///< Contexte d'entrée/sortie d'Asio.

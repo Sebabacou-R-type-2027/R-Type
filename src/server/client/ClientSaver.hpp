@@ -2,6 +2,8 @@
 #define CLIENTSAVER_HPP
 
 #include <fstream>
+#include <vector>
+#include <algorithm>
 
 #include "client.hpp"
 
@@ -70,6 +72,10 @@ namespace server {
             /// \param field the field to change
             /// \param value the value to set
             void change_field(uint32_t id, const std::string& field, const std::string& value) const;
+
+            uint32_t get_best_score_by_id(uint32_t id) const;
+
+            std::vector<std::pair<std::string, uint32_t>> get_all_best_scores() const;
 
     private:
             /// \brief Initialize the file

@@ -22,7 +22,9 @@ UdpServer::UdpServer(asio::io_context& io_context, short port)
         {"logout", [this](const std::string& message) { logout(message); }},
       	{"login", [this](const std::string& message) { handle_login(message); }},
       	{"lobby_info", [this](const std::string& message) { send_lobby_info(message); }},
-      	{"matchmaking", [this](const std::string& message) { add_client_to_matchmaking(message); }}
+      	{"matchmaking", [this](const std::string& message) { add_client_to_matchmaking(message); }},
+        {"score", [this](const std::string& message) { get_best_score_cli(message); }},
+        {"new_score", [this](const std::string& message) {  new_score_cli(message); }}
     };
     message_id_counter_ = 0;
     receive_thread_ = std::thread(&UdpServer::receive_loop, this);
@@ -209,7 +211,6 @@ void UdpServer::send_lobby_info(const std::string& message) {
         }	
     }
     std::cout << "Sending lobby info: " << messages << " to: " << client_endpoint << std::endl;
-    //send_message(message, client_endpoint);
 }
 
 /**
@@ -232,6 +233,26 @@ void UdpServer::handle_login(const std::string& message) {
             dynamic_cast<PacketACK*>(packet.get())->format_data(false);
         }
         packet->send_packet(remote_endpoint_);
+    }
+}
+
+void UdpServer::get_best_score_cli(std::string message) {
+    server::client& client = get_client(remote_endpoint_);
+    uint64_t bs = client.get_best_score();
+    auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::CMD, socket_);
+    if (typeid(*packet) == typeid(PacketCMD)) {
+        dynamic_cast<PacketCMD*>(packet.get())->format_data(std::to_string(bs));
+    }
+    packet->send_packet(remote_endpoint_);
+}
+
+void UdpServer::new_score_cli(std::string message) {
+    server::client& client = get_client(remote_endpoint_);
+    try {
+        const int lobby_id = std::stoi(message.substr(sizeof("new_score")));
+        client.new_score(lobby_id);
+    } catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
     }
 }
 
@@ -301,6 +322,17 @@ void UdpServer::handle_client_message(const std::string& msg, const asio::ip::ud
         message = Packet::extract_data(msg.data(), bytes_recv, type);
     } catch (const std::exception& e) {
         std::cerr << e.what() << std::endl;
+    }
+    if (message == "score") { // TODO : FOR TEST ONLY, GONNA BE REMOVED
+        server::ClientSaver cs("clients.csv");
+        try {
+            auto test = cs.get_all_best_scores();
+            for (const auto& [username, score] : test) {
+                std::cout << "Username: " << username << " Score: " << score << std::endl;
+            }
+       } catch (const server::ClientSaver::ClientSaverException& e) {
+            std::cerr << e.what() << std::endl;
+       }
     }
     if (message == "start") {
       	try {
@@ -395,12 +427,14 @@ void UdpServer::handle_new_connection(const udp::endpoint& client_endpoint, cons
                 connected_clients_.erase(existing_client, connected_clients_.end());
 
                 connected_clients_.emplace_back(client_address, client_port, username, password, id);
+                connected_clients_.back().new_score(cs.get_best_score_by_id(id));
                 std::cout << "New authorised client from db: " << client_address << ":" << client_port << std::endl;
             } catch (const server::client::ClientException& e) {
                 std::cout << e.what() << std::endl;
             }
         } else if (it == connected_clients_.end()) {
             connected_clients_.emplace_back(client_address, client_port, username, password);
+            connected_clients_.back().new_score(0);
             std::cout << "New authorised client: " << client_address << ":" << client_port << std::endl;
             cs.save_client(connected_clients_.back());
         } else {
@@ -423,7 +457,6 @@ void UdpServer::handle_new_connection(const udp::endpoint& client_endpoint, cons
 
 void UdpServer::send_message(const std::string &message,
                              const udp::endpoint &endpoint) {
-    // socket_.send_to(asio::buffer(message), endpoint);
     auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::CMD, socket_);
     if (typeid(*packet) == typeid(PacketCMD)) {
         dynamic_cast<PacketCMD*>(packet.get())->format_data(message);
