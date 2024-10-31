@@ -1,22 +1,24 @@
-module;
-
-#include <SFML/Graphics.hpp>
 export module game:systems.buttons;
 import :components.buttons;
-#if __cpp_lib_modules >= 202207L
-import std;
-#endif
+
 import ecs;
 
 using namespace ecs;
-
 export namespace game::systems {
-    void press_button(entity_container &ec, components::button &button) noexcept
+    void press_button(entity_container &ec, components::button &button, const ecs::components::position &position) noexcept
     {
-        auto window = ec.get_entity(button.asset_manager).and_then([&ec](auto e){
-            return ec.get_entity_component<gui::window>(e);
+        auto display = ec.get_entity(button.display).and_then([&ec](auto e){
+            return ec.get_entity_component<ecs::components::gui::display>(e);
         });
-        if (window)
-            button.update(sf::Vector2f(sf::Mouse::getPosition(*window->get().window)));
+        if (!display)
+            return;
+        if (!display->get().window->is_input_active(abstractions::gui::inputs::lclick))
+            button.is_pressed = false;
+        else if (ecs::abstractions::rectangle<float>(position, button.size).contains(display->get().window->get_cursor_position())
+            && !button.is_pressed) {
+            button.callback();
+            button.is_pressed = true;
+        } else
+            button.is_pressed = false;
     }
 }
