@@ -228,11 +228,12 @@ void UdpServer::handle_login(const std::string& message) {
         handle_new_connection(remote_endpoint_, username, password);
     } else {
         std::cout << "Invalid login format" << std::endl;
-        auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::ACK, socket_);
-        if (typeid(*packet) == typeid(PacketACK)) {
-            dynamic_cast<PacketACK*>(packet.get())->format_data(false);
-        }
-        packet->send_packet(remote_endpoint_);
+        throw std::runtime_error("Invalid login format");
+//        auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::ACK, socket_);
+//        if (typeid(*packet) == typeid(PacketACK)) {
+//            dynamic_cast<PacketACK*>(packet.get())->format_data(false);
+//        }
+//        packet->send_packet(remote_endpoint_);
     }
 }
 
@@ -269,7 +270,7 @@ void UdpServer::execute_function(const std::string& message, std::string client_
         std::cout << "Received: " << message << " from: " << client_str << std::endl;
         bool command_found = false;
         for (const auto& [command, func] : function_map_) {
-            if (message.find(command) == 0) { // Check if the message starts with the command
+            if (message.find(command) == 0) {
                 try {
                     func(message);
                     auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::ACK, socket_);
@@ -448,11 +449,9 @@ void UdpServer::handle_new_connection(const udp::endpoint& client_endpoint, cons
         std::cout << "Password or Username is not correct" << std::endl;
         status = false;
     }
-    auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::ACK, socket_);
-    if (typeid(*packet) == typeid(PacketACK)) {
-        dynamic_cast<PacketACK*>(packet.get())->format_data(status);
+    if (status == false) {
+        throw std::runtime_error("Error handling new connection");
     }
-    packet->send_packet(remote_endpoint_);
 }
 
 void UdpServer::send_message(const std::string &message,
