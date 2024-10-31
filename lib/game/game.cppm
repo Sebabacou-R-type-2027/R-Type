@@ -4,7 +4,7 @@ module;
 #include <chrono>
 #include <memory>
 #endif
-export module game;
+export module game:game;
 export import :components.buttons;
 export import :components.projectiles;
 export import :components.enemies;
@@ -24,7 +24,6 @@ export namespace game {
 
     class game : public ecs::registry {
         ecs::entity _game;
-        ecs::components::gui::asset_manager &_asset_manager;
 
         constexpr ecs::entity init_game(ecs::entity e) noexcept
         {
@@ -51,25 +50,6 @@ export namespace game {
             asset_manager.load("bullet", "assets/Bullets/01.png", "texture");
         }
 
-        inline ecs::entity init_player(ecs::entity e) noexcept
-        {
-            this->emplace_component<ecs::components::position>(e, 50.0f, 50.0f);
-            this->emplace_component<ecs::components::engine::velocity>(e, 0.0f, 0.0f);
-            this->emplace_component<ecs::components::engine::controllable>(e, _game, true, 10.0f);
-            this->add_component<projectile_launcher>(e, {1s, std::chrono::steady_clock::now(), _game});
-            auto label = display.factory->make_element("Player", _asset_manager.get("arial"), 12);
-            label->set_origin({label->bounds(true).width / 2, label->bounds(true).height / 2});
-            this->emplace_component<ecs::components::gui::drawable>(e, ecs::components::gui::drawable{_game,
-                std::container<ecs::components::gui::drawable::elements_container>::make({
-                    {_game, std::move(label)},
-                    {_game, display.factory->make_element(
-                        dynamic_cast<const ecs::abstractions::gui::texture &>(_asset_manager.get("ship")),
-                        {5, 1})}
-                })
-            });
-            return e;
-        }
-
         constexpr void register_systems() noexcept
         {
             this->register_system<ecs::components::gui::display>(ecs::systems::gui::display);
@@ -91,14 +71,13 @@ export namespace game {
 
         public:
             ecs::components::gui::display &display;
-            const ecs::entity player;
+            ecs::components::gui::asset_manager &asset_manager;
             std::chrono::steady_clock::duration tick_rate = 50ms;
 
             game() noexcept
                 : _game(init_game(this->create_entity())),
-                _asset_manager(*this->get_entity_component<ecs::components::gui::asset_manager>(_game)),
-                display(*this->get_entity_component<ecs::components::gui::display>(_game)),
-                player(init_player(this->create_entity()))
+                asset_manager(*this->get_entity_component<ecs::components::gui::asset_manager>(_game)),
+                display(*this->get_entity_component<ecs::components::gui::display>(_game))
             {
                 register_systems();
             }

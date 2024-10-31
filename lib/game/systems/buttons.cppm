@@ -17,7 +17,7 @@ export namespace game::systems {
         else if (ecs::abstractions::rectangle<float>(position, button.size).contains(display->get().window->get_cursor_position())
             && !button.is_pressed) {
             button.callback();
-            button.is_pressed = true;
+            button.is_pressed = true; // TODO: Prevent write on free'd memory if button is destroyed by callback
         } else
             button.is_pressed = false;
     }
