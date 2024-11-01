@@ -14,10 +14,11 @@ export namespace game::systems {
             return;
         if (!display->get().window->is_input_active(abstractions::gui::inputs::lclick))
             button.is_pressed = false;
-        else if (ecs::abstractions::rectangle<float>(position, button.size).contains(display->get().window->get_cursor_position())
-            && !button.is_pressed) {
-            button.callback();
-            button.is_pressed = true; // TODO: Prevent write on free'd memory if button is destroyed by callback
+        else if (ecs::abstractions::rectangle<float>(position, button.size).contains(display->get().window->get_cursor_position())) {
+            if (!button.is_pressed) {
+                button.is_pressed = true;
+                button.callback();
+            }
         } else
             button.is_pressed = false;
     }
