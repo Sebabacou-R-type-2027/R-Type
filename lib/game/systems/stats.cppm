@@ -16,30 +16,36 @@ import utils;
 using namespace std::chrono_literals;
 
 export namespace game::systems {
-    void update_score(ecs::entity_container &ec, components::score &score)
+    void update_score(ecs::entity_container &ec, components::score &score, ecs::components::engine::hitbox &box)
     {
-        if (ec.get_entity_component<ecs::components::lifestate>(score.game)->get().alive)
+        if (!box.is_trigger) {
             return;
-        auto windowSize = ec.get_entity_component<ecs::components::gui::window>(score.game)->get().window->getSize();
+        }
+        ec.get_entity_component<ecs::components::engine::hitbox>(score.game)->get().is_trigger = false;
+        auto windowSize = ec.get_entity_component<ecs::components::gui::display>(score.game)->get().window->get_size();
         const ecs::components::gui::asset_manager &asset_manager = *ec.get_entity_component<const ecs::components::gui::asset_manager>(score.game);
-        auto score_text = std::make_unique<sf::Text>("Score: " + std::to_string(score.value), asset_manager.get_font("arial"));
-        score_text->setPosition(100, 25);
-        ec.emplace_component<ecs::components::gui::drawable>(score.game, ecs::components::gui::drawable{score.game,
+        const ecs::components::gui::display &display = *ec.get_entity_component<const ecs::components::gui::display>(score.game);
+        auto score_text = ec.create_entity();
+        ec.add_component(score_text, ecs::components::position{windowSize.x - 100.0f, 0.0f});
+        ec.add_component(score_text, ecs::components::gui::drawable{score.game,
             std::container<ecs::components::gui::drawable::elements_container>::make({
-                {static_cast<ecs::entity>(score.game), std::make_unique<ecs::components::gui::display_element>(
-                    std::move(score_text), "arial")}
+                {static_cast<ecs::entity>(score.game), display.factory->make_element(
+                    "Score: " + std::to_string(score.value), asset_manager.get("arial"), 12)}
             })
         });
     }
 
-    void update_life(ecs::entity_container &ec, components::health &health)
+    void update_life(ecs::entity_container &ec, components::health &life, ecs::components::engine::hitbox &box)
     {
-        if (ec.get_entity_component<ecs::components::lifestate>(health.game)->get().alive)
+        if (!box.is_trigger) {
             return;
-        ec.get_entity_component<ecs::components::health>(health.game)->get().value -= 1;
+        }
 
-        if (ec.get_entity_component<ecs::components::health>(health.game)->get().value <= 0) {
-            ec.erase_entity(health.game);
+        box.is_trigger = false;
+        life.value -= 1;
+
+        if (life.value <= 0) {
+            ec.erase_entity(life.game);
         }
     }
 }

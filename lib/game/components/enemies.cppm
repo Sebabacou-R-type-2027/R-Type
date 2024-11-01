@@ -17,10 +17,9 @@ export namespace game::components {
     /**
         * @brief Component that defines the enemies
 
-        * This component is used to define the enemies of the game. It contains the health and damage of the entity.
+        * This component is used to define the enemies of the game. It contains damage and socre of the entity.
      */
     struct enemy {
-        int health; ///< Health of the entity
         int damage; ///< Damage of the entity
         int points;
         std::chrono::steady_clock::time_point birth;
@@ -28,11 +27,12 @@ export namespace game::components {
         /**
             * @brief Constructor of the enemy component
 
-            * @param health Health of the entity
             * @param damage Damage of the entity
+            * @param point Score of the entity
+        
          */
-        enemy(int health, int damage, int point, std::chrono::steady_clock::time_point birth)
-            : health(health), damage(damage), points(point), birth(birth)
+        enemy(int damage, int point, std::chrono::steady_clock::time_point birth)
+            : damage(damage), points(point), birth(birth)
         {}
     };
 
@@ -74,8 +74,8 @@ export namespace game::components {
 
             * @param cooldown Cooldown between shots
          */
-        enemy_shooter(ecs::entity game)
-            : game(game)
+        enemy_shooter(bool moving_up, float speed, ecs::entity game)
+            : moving_up(moving_up), speed(speed), game(game)
         {}
     };
 

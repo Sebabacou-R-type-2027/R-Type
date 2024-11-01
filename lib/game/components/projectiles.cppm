@@ -29,5 +29,6 @@ export namespace game::components {
         const std::chrono::steady_clock::duration cooldown;
         std::chrono::steady_clock::time_point last_shot;
         ecs::entity game;
+        bool shot;
     };
 }
