@@ -1,4 +1,3 @@
-#include <csignal>
 #if __cpp_lib_modules < 202207L
 #include <algorithm>
 #include <chrono>
@@ -6,8 +5,6 @@
 #include <iostream>
 #include <thread>
 #endif
-
-#include <SFML/Graphics.hpp>
 
 #if __cpp_lib_modules >= 202207L
 import std;
@@ -109,14 +106,7 @@ static void initializeEnemies(game::game &game) noexcept {
 int main()
 {
     game::game game;
-    initializeEnemies(game);
-    auto button = game.create_entity();
-
-    const ecs::components::gui::asset_manager &asset_manager = *game.get_entity_component<const ecs::components::gui::asset_manager>(game);
-    projectile_launcher &launcher = *game.get_entity_component<projectile_launcher>(game.player);
-    game.emplace_component<components::position>(button, 230.f, 875.f);
-    game.emplace_component<game::components::button>(button, 100.f, 50.f, "Fire", asset_manager.get_font("arial"),
-            [&launcher](){ launcher.last_shot = std::chrono::steady_clock::time_point(0s); }, game);
+    game.begin_scene(std::make_unique<game::scenes::menu>(game));
 
     game.run();
 

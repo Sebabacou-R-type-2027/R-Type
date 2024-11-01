@@ -1,10 +1,9 @@
+#if __cpp_lib_modules < 202207L
 module;
 
-#if __cpp_lib_modules < 202207L
 #include <cmath>
 #include <chrono>
 #endif
-#include <SFML/Graphics.hpp>
 export module game:systems.enemies;
 import :components.enemies;
 import :components.projectiles;
@@ -25,7 +24,7 @@ export namespace game::systems {
 
         float dx = target_position->get().x - position.x;
         float dy = target_position->get().y - position.y;
-        float distance = sqrt(dx * dx + dy * dy);
+        float distance = std::sqrt(dx * dx + dy * dy);
 
         if (distance < 1.0f)
             return;
@@ -47,14 +46,14 @@ export namespace game::systems {
         shooter.last_update = now;
 
         using namespace std::chrono_literals;
+        const ecs::components::gui::display &display = *ec.get_entity_component<const ecs::components::gui::display>(shooter.game);
         auto projectile = ec.create_entity();
         ec.add_component(projectile, components::projectile{10, now, 3s});
         ec.add_component(projectile, ecs::components::position{position.x, position.y});
         ec.add_component(projectile, ecs::components::engine::velocity{10.0f, 10.0f});
         ec.emplace_component<ecs::components::gui::drawable>(projectile,
             shooter.game, std::container<ecs::components::gui::drawable::elements_container>::make({
-                {shooter.game, std::make_unique<ecs::components::gui::display_element>(
-                    std::make_unique<sf::Text>("Pew", asset_manager.get_font("arial"), 12), "arial")}
+                {shooter.game, display.factory->make_element("Pew", asset_manager.get("arial"), 12)}
             })
         );
     }
