@@ -132,6 +132,11 @@ namespace server {
             /// \details The client has to be in a lobby to be ready
             void set_ready(bool ready);
 
+            /// \brief Get the best score of the client
+            uint32_t get_best_score() const;
+
+            bool new_score(uint32_t score);
+
             /// \brief Check if the client is ready
             /// \return true if the client is ready, false otherwise
             [[nodiscard]] bool is_ready() const;
@@ -182,6 +187,7 @@ namespace server {
             std::string password_; ///< password of the client
             uint32_t id_; ///< Unique id of the client, max value is 2^32
             asio::ip::udp::endpoint endpoint_; ///< Endpoint of the client
+            uint32_t best_score_; ///< Best score of the client
             bool host_; ///< True if the client is the host
             bool in_game_; ///< True if the client is in game
             bool is_ready_ = false; ///< True if the client is ready
