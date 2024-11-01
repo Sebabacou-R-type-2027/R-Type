@@ -6,6 +6,7 @@
 #include <atomic>
 #include <iostream>
 #include <thread>
+#include <lz4.h>
 
 #ifndef CLIENT_HPP
 #define CLIENT_HPP
@@ -83,11 +84,11 @@ namespace client {
              * @param command La commande à ajouter à la liste.
              */
             void fillCommandsToSends(std::string command);
-
-
             void send_command_with_ack(const std::string& command, const udp::endpoint& client_endpoint);
-
             bool wait_for_ack(const udp::endpoint& client_endpoint);
+            std::string compressString(const std::string& data);
+            std::string decompressString(const std::string& compressedData, size_t originalSize);
+
 
 
             int number_of_players_ = 0;  ///< Nombre de joueurs actuellement connectés.

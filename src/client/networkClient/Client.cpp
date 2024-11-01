@@ -2,6 +2,8 @@
 
 #include "PacketACK.hpp"
 #include "PacketCMDP.hpp"
+#include <lz4.h>
+
 
 std::string format_command(const std::string& command) {
     return (command.size() == 1) ? "0 " + command : command.substr(0, 1) + " " + command.substr(1, 1);
@@ -155,6 +157,7 @@ namespace client {
                 if (typeid(*packet) == typeid(PacketCMD)) {
                     dynamic_cast<PacketCMD*>(packet.get())->format_data(message);
                 }
+                std::cout << "Sending chat message: " << message << std::endl;
                 packet->send_packet(remote_endpoint_);
             }
         } catch (const std::exception& e) {
@@ -193,7 +196,15 @@ namespace client {
                 is_running_ = false;
                 break;
             }
-
+            if (input.rfind("chat:") == 0) {
+                 std::string cmd_snd = "chat:" + std::to_string(input.size() - 4) + ":" + compressString(input.substr(5));
+                 send_message(cmd_snd);
+                 if (input.rfind("chat:") == 0) {
+                     send_message("GET_CHAT");
+                 }
+                 std::cout << "INPUTTTTTT: " << cmd_snd << std::endl;
+                 continue;
+            }
             send_message(input);
         }
     }
@@ -351,4 +362,29 @@ namespace client {
             _commandsToDo[command.first] = command.second;
         }
     }
+
+    std::string Client::compressString(const std::string& data) {
+         int maxCompressedSize = LZ4_compressBound(data.size());
+         std::vector<char> compressedData(maxCompressedSize);
+
+        int compressedSize = LZ4_compress_default(data.data(), compressedData.data(), data.size(), maxCompressedSize);
+        if (compressedSize <= 0) {
+            throw std::runtime_error("Erreur de compression LZ4");
+        }
+
+        compressedData.resize(compressedSize);
+        return std::string(compressedData.begin(), compressedData.end());
+    }
+
+    std::string Client::decompressString(const std::string& compressedData, size_t originalSize) {
+        std::string decompressedData(originalSize, '\0');
+
+        int decompressedSize = LZ4_decompress_safe(compressedData.data(), &decompressedData[0], compressedData.size(), originalSize);
+        if (decompressedSize < 0) {
+            throw std::runtime_error("Erreur de décompression LZ4");
+        }
+
+        return decompressedData;
+    }
+
 }
