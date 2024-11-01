@@ -73,13 +73,22 @@ namespace server {
         std::ifstream infile(this->filename_);
         std::string line;
         std::istringstream iss(line);
+        size_t pos1;
         std::string saved_best_score, saved_id;
 
         if (!infile.is_open()) {
             throw ClientSaverException("Cannot open or create file", *this);
         }
+        std::getline(infile, line);
         while (std::getline(infile, line)) {
-            std::getline(iss, saved_id, ',');
+            pos1 = line.find(',');
+            if (pos1 == std::string::npos) {
+                throw ClientSaverException("Error parsing line: first comma not found", *this);
+            }
+            saved_id = line.substr(0, pos1);
+            saved_best_score = line.substr(line.rfind(',') + 1);
+            std::cout << saved_id << std::endl; // TODO : here problem
+            std::cout << saved_best_score << std::endl;
             if (std::stoul(saved_id) == id) {
                 infile.close();
                 return std::stoul(saved_best_score);
@@ -108,8 +117,10 @@ namespace server {
                 throw ClientSaverException("Error parsing line: second comma not found", *this);
             }
             saved_username = line.substr(pos1 + 1, pos2 - pos1 - 1);
-            saved_password = line.substr(pos2 + 1);
+            saved_password = line.substr(pos2 + 1, line.find(',', pos2 + 1) - pos2 - 1);
             if (saved_username == username) {
+                std::cout << saved_password << std::endl;
+                std::cout << client::hash_password(password) << std::endl;
                 if (saved_password == client::hash_password(password)) {
                     infile.close();
                     return std::stoul(id);
