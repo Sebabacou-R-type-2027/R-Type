@@ -28,6 +28,7 @@ export namespace game::scenes {
                 _entities.push_back(spawn_enemy({100.0f, 100.0f}));
                 // _entities.push_back(spawn_enemy_spawner({300.0f, 300.0f}));
                 // _entities.push_back(spawn_enemy_shooter({400.0f, 400.0f}));
+                _entities.push_back(spawn_powerup({500.0f, 500.0f}));
             }
 
         private:
@@ -158,6 +159,25 @@ export namespace game::scenes {
                     })
                 });
                 return e;
+            }
+
+            ecs::entity spawn_powerup(ecs::components::position position)
+            {
+                auto powerup = _game.create_entity();
+                //_game.add_component(powerup, powerup_tripleshoot{false, std::chrono::steady_clock::now()});
+                _game.add_component(powerup, ecs::components::position{position.x, position.y});
+                _game.add_component(powerup, ecs::components::engine::velocity{0.0f, 2.0f});
+                _game.add_component(powerup, enemy_loop_movement{0.0f, 2000.0f, 200.0f, 250.0f, 1.0f, 0.0f, 100.0f, 2.0f});
+
+                _game.emplace_component<ecs::components::gui::drawable>(powerup, ecs::components::gui::drawable{_game,
+                    std::container<ecs::components::gui::drawable::elements_container>::make({
+                        {static_cast<ecs::entity>(_game), _game.display.factory->make_element(
+                            "PowerupTriple", _game.asset_manager.get("arial"), 12)},
+                        {static_cast<ecs::entity>(_game), _game.display.factory->make_element(
+                            dynamic_cast<const ecs::abstractions::gui::texture &>(_game.asset_manager.get("powerup")))}
+                    })
+                });
+                return powerup;
             }
     };
 
