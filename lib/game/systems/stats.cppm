@@ -24,7 +24,6 @@ export namespace game::systems {
         const ecs::components::gui::asset_manager &asset_manager = *ec.get_entity_component<const ecs::components::gui::asset_manager>(score.game);
         auto score_text = std::make_unique<sf::Text>("Score: " + std::to_string(score.value), asset_manager.get_font("arial"));
         score_text->setPosition(100, 25);
-        std::cout << "Score: " << score.value << std::endl;
         ec.emplace_component<ecs::components::gui::drawable>(score.game, ecs::components::gui::drawable{score.game,
             std::container<ecs::components::gui::drawable::elements_container>::make({
                 {static_cast<ecs::entity>(score.game), std::make_unique<ecs::components::gui::display_element>(
