@@ -1,10 +1,9 @@
+#if __cpp_lib_modules < 202207L
 module;
 
-#if __cpp_lib_modules < 202207L
 #include <cmath>
 #include <chrono>
 #endif
-#include <SFML/Graphics.hpp>
 export module game:systems.enemies;
 import :components.enemies;
 import :components.projectiles;
@@ -25,7 +24,7 @@ export namespace game::systems {
 
         float dx = target_position->get().x - position.x;
         float dy = target_position->get().y - position.y;
-        float distance = sqrt(dx * dx + dy * dy);
+        float distance = std::sqrt(dx * dx + dy * dy);
 
         if (distance < 1.0f) {
             return;
