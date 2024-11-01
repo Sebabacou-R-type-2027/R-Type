@@ -84,3 +84,38 @@ server::client Lobby::get_host() const {
 int Lobby::get_id() const {
     return id_;
 }
+
+/**
+* @brief Handle chat message
+* @param message The message containing the chat message
+*/
+void Lobby::handle_chat_message(const std::string& message, const server::client& cli, std::size_t bytes_recv) {
+    std::cout << "Chat message: " << message << std::endl;
+
+    std::string chat_message;
+
+    auto now = std::chrono::system_clock::now();
+    std::time_t current_time = std::chrono::system_clock::to_time_t(now);
+    std::stringstream ss;
+    ss << std::put_time(std::localtime(&current_time), "%H:%M:%S");
+    std::string time = ss.str();
+
+    chat_message = "[" + time + "] " + cli.get_nickname() + ":";
+    for (std::size_t i = 0; i < bytes_recv; ++i) {
+        chat_message += message[i];
+    }
+    chat_history_.push_back(chat_message);
+
+    if (chat_history_.size() > 10) {
+        chat_history_.erase(chat_history_.begin());
+    }
+
+    std::cout << "Chat history of lobby id = " << id_ << std::endl;
+    for (auto& client : chat_history_) {
+        std::cout << "		chat:" << client << "\n" << std::endl;
+    }
+}
+
+std::vector<std::string>& Lobby::get_chat_history() {
+    return chat_history_;
+}

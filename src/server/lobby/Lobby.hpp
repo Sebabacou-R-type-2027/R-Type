@@ -9,6 +9,8 @@
 #include <string>
 #include <utility>
 #include <asio.hpp>
+#include <unordered_map>
+#include <iomanip>
 #include "client/client.hpp"
 
 class Lobby {
@@ -30,9 +32,12 @@ class Lobby {
         [[nodiscard]] bool is_full() const;
         [[nodiscard]] bool is_empty() const;
         [[nodiscard]] bool is_lobby_id(int id) const { return id_ == id; }
+        void handle_chat_message(const std::string& message, const server::client& cli, std::size_t bytes_recv);
+        std::vector<std::string>& get_chat_history();
 
     private:
         std::vector<server::client> clients_lobby_;
+        std::vector<std::string> chat_history_;
         server::client host_;
         bool everyone_ready_ = false;
         int id_;

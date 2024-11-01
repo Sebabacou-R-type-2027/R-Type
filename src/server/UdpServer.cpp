@@ -8,6 +8,7 @@
 #include <PacketFactory.hpp>
 #include "client/client.hpp"
 #include "client/ClientSaver.hpp"
+#include <lz4.h>
 
 /**
  * @class UdpServer
@@ -24,7 +25,10 @@ UdpServer::UdpServer(asio::io_context& io_context, short port)
       	{"lobby_info", [this](const std::string& message) { send_lobby_info(message); }},
       	{"matchmaking", [this](const std::string& message) { add_client_to_matchmaking(message); }},
         {"score", [this](const std::string& message) { get_best_score_cli(message); }},
-        {"new_score", [this](const std::string& message) {  new_score_cli(message); }}
+        {"new_score", [this](const std::string& message) {  new_score_cli(message); }},
+      	{"matchmaking", [this](const std::string& message) { add_client_to_matchmaking(message); }},
+        {"chat:", [this](const std::string& message) { add_chat_message(message); }},
+      	{"GET_CHAT", [this](const std::string& message) { messages_to_players_lobby(message); }}
     };
     message_id_counter_ = 0;
     receive_thread_ = std::thread(&UdpServer::receive_loop, this);
@@ -164,11 +168,26 @@ void UdpServer::logout(const std::string& message) {
  */
 void UdpServer::handle_receive(std::size_t bytes_transferred) {
     if (bytes_transferred > 0) {
+        std::cout << "Received " << bytes_transferred << " bytes" << std::endl;
+        for (int i = 0; i < bytes_transferred; i++) {
+            std::cout << recv_buffer_[i];
+        }
+        std::cout << std::endl;
         std::lock_guard<std::mutex> lock(messages_mutex_);
 
         std::fill(recv_buffer_.begin() + bytes_transferred, recv_buffer_.end(), 0);
 
         received_messages_[message_id_counter_] = std::make_pair(recv_buffer_, remote_endpoint_);
+
+        //fill received_messages_[message_id_counter_] manually
+        for (int i = 0; i < bytes_transferred; i++) {
+            received_messages_[message_id_counter_].first[i] = recv_buffer_[i];
+        }
+
+//        std::cout << "Received message2222: ";
+//        for (int i = 0; i < bytes_transferred; i++) {
+//            std::cout << received_messages_[message_id_counter_].first[i];
+//        }
         recv_buffer_size_ = bytes_transferred;
         // Increment the message ID
         message_id_counter_ += 1;
@@ -211,6 +230,7 @@ void UdpServer::send_lobby_info(const std::string& message) {
         }	
     }
     std::cout << "Sending lobby info: " << messages << " to: " << client_endpoint << std::endl;
+    //send_message(message, client_endpoint);
 }
 
 /**
@@ -395,7 +415,13 @@ void UdpServer::server_loop() {
             // Process the message
             int message_id = received_messages_.begin()->first;
             std::pair<std::array<char, 65535>, udp::endpoint> pair_data = received_messages_.begin()->second;
-            message = pair_data.first.data();
+
+//            std::cout << "Received message FROM SERVER_LOOP: " << recv_buffer_size_ << std::endl;
+            for (int i = 0; i <= recv_buffer_size_; i++) {
+//            	std::cout << received_messages_[message_id].first[i];
+                message += received_messages_[message_id].first[i];
+        	}
+//            std::cout << std::endl;
             client_endpoint = pair_data.second;
             bytes_receive = recv_buffer_size_;
 
@@ -608,4 +634,74 @@ void UdpServer::send_ping(const udp::endpoint& client_endpoint) {
     auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::PING, socket_);
     packet->format_data();
     packet->send_packet(client_endpoint);
+}
+
+void UdpServer::add_chat_message(const std::string& message) {
+
+    //message = "chat:size:message"
+    auto& client = get_client(remote_endpoint_);
+    std::string chat_message = message.substr(5);
+    size_t message_size = std::stoi(chat_message.substr(0, chat_message.find(':')));
+    chat_message = chat_message.substr(chat_message.find(':') + 1, message_size);
+    std::cout << "Compressed data: ";
+    for (size_t i = 0; i <= message_size; i++) {
+        std::cout << chat_message[i];
+    }
+//    std::cout << std::endl;
+//    chat_message = decompressString(chat_message, message_size);
+//    std::cout << "Chat message: " << chat_message << std::endl;
+
+    auto& lobby = lobbies_.at(client.get_lobby_id());
+    lobby.handle_chat_message(chat_message, client, message_size);
+}
+
+std::string UdpServer::compressString(const std::string& data) {
+     int maxCompressedSize = LZ4_compressBound(data.size());
+     std::vector<char> compressedData(maxCompressedSize);
+
+     int compressedSize = LZ4_compress_default(data.data(), compressedData.data(), data.size(), maxCompressedSize);
+     if (compressedSize <= 0) {
+         throw std::runtime_error("Erreur de compression LZ4");
+     }
+
+     compressedData.resize(compressedSize);
+     return std::string(compressedData.begin(), compressedData.end());
+}
+
+std::string UdpServer::decompressString(const std::string& compressedData, size_t originalSize) {
+    std::string decompressedData(originalSize, '\0');
+
+//    std::cout << "Compressed data: ";
+//    for (size_t i = 0; i < originalSize + 3; i++) {
+//        std::cout << compressedData[i];
+//    }
+//    std::cout << std::endl;
+
+    int decompressedSize = LZ4_decompress_safe(compressedData.data(), &decompressedData[0], compressedData.size(), originalSize);
+    if (decompressedSize < 0) {
+        throw std::runtime_error("Erreur de décompression LZ4");
+    }
+
+    return decompressedData;
+}
+
+void UdpServer::messages_to_players_lobby(const std::string& message)
+{
+    auto& client = get_client(remote_endpoint_);
+    auto& lobby = lobbies_.at(client.get_lobby_id());
+    std::vector<std::string> messages = lobby.get_chat_history();
+
+    for (const auto& msg : messages) {
+        std::cout << "Message: " << msg << std::endl;
+    }
+
+    for (const auto& cli : lobby.get_clients()) {
+        for (const auto& msg : messages) {
+            auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::CMD, socket_);
+            if (typeid(*packet) == typeid(PacketCMD)) {
+                dynamic_cast<PacketCMD*>(packet.get())->format_data(msg);
+            }
+            packet->send_packet(cli.get_endpoint());
+    	}
+    }
 }

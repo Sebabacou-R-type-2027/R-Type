@@ -24,12 +24,16 @@ find_package(SFML 2.5 COMPONENTS graphics window system audio CONFIG REQUIRED)
 find_package(OpenAL REQUIRED)
 find_package(FLAC REQUIRED)
 find_package(Vorbis REQUIRED)
+find_library(LZ4_LIBRARY lz4 REQUIRED)
+
 add_compile_options($<$<CONFIG:Debug>:-g>)
 
 add_executable(r-type_server ${server})
 add_executable(r-type_client ${client})
 
 target_link_libraries(r-type_server PRIVATE asio::asio)
+target_link_libraries(r-type_server PRIVATE ${LZ4_LIBRARY})
+target_link_libraries(r-type_client PRIVATE ${LZ4_LIBRARY})
 target_link_libraries(r-type_client PRIVATE asio::asio sfml-graphics sfml-window sfml-system sfml-audio)
 
 target_include_directories(r-type_server PRIVATE

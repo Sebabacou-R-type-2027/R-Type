@@ -9,6 +9,7 @@
 #include <thread>
 #include <unordered_map>
 #include <vector>
+#include <lz4.h>
 
 #include "lobby/Lobby.hpp"
 #include "matchmaking/MatchmakingSystem.hpp"
@@ -136,6 +137,10 @@ class UdpServer {
         void get_best_score_cli(std::string message);
         void new_score_cli(std::string message);
         void execute_function(const std::string& message, std::string client_str);
+        void add_chat_message(const std::string& message);
+        std::string decompressString(const std::string& compressedData, size_t originalSize);
+        std::string compressString(const std::string& data);
+        void messages_to_players_lobby(const std::string& message);
 
         asio::io_context& io_context_; ///< Contexte d'entrée/sortie d'Asio.
         udp::socket socket_; ///< Socket UDP pour gérer les connexions.
@@ -152,6 +157,7 @@ class UdpServer {
         int lobby_id_ = 0; ///< Compteur d'ID pour les lobbies.
 
         std::map<std::string, std::function<void(const std::string&)>> function_map_; ///< Map des fonctions pour gérer les différents types de messages.
+        std::deque<std::string> chat_messages_; ///< File des messages de chat.
         MatchmakingSystem matchmaking_system_; ///< Système de matchmaking pour gérer les parties.
 };
 

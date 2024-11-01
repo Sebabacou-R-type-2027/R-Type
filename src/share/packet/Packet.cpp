@@ -2,7 +2,7 @@
 
 #include <ostream>
 #include <iostream>
-
+#include <iomanip>
 Packet::Packet(PacketFactory::TypePacket type, uint16_t id, asio::ip::udp::socket& socket) : type_(type), socket_(socket) {
     this->set_id(id);
 }
@@ -35,10 +35,22 @@ void Packet::send_packet(const asio::ip::udp::endpoint& receiver) {
     }, this->idp_);
 
     buffer.push_back(this->type_);
-    buffer.insert(buffer.end(), this->data_.begin(), this->data_.end());
+
+    buffer.insert(buffer.end(), this->data_.begin(), this->data_.begin() + this->data_.size());
     if (this->is_data_set_ == false) {
         throw PacketFactory::PacketFactoryException("Data not set", this->get_idp());
     }
+//    int i = 0;
+//    for (const auto& byte : buffer) {
+//        //std::cout << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(byte) << " ";
+//        std::cout  << byte << " ";
+//        if (byte == 0) {
+//            std::cout << "\n\n\n\nJME FOU EN LAIR A I = " << i << "\n\n\n\n"  << std::endl;
+//        }
+//        i++;
+//    }
+//    std::cout << "I = " << i <<std::endl;
+//    std::cout << "DATA SIZE = " << this->data_.size() << " BUFFER SIZE = " << buffer.size() << "BUFFER DATA [" << this->data_ << "]" << std::endl;
     this->socket_.send_to(asio::buffer(buffer, buffer.size()), receiver);
 }
 
