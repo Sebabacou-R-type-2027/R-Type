@@ -39,7 +39,7 @@ export namespace game::systems {
 
     void update_life(ecs::entity e, ecs::entity_container &ec, components::health &life, ecs::components::engine::hitbox &box)
     {
-        if (!box.is_trigger) {
+        if (!box.triggered) {
             return;
         }
         std::ranges::for_each(ec.get_entities(), [&](ecs::entity other) {
@@ -50,15 +50,15 @@ export namespace game::systems {
                 return;
             }
             if (ec.get_entity_component<components::enemy>(other) && ec.get_entity_component<components::enemy>(e)) {
-                if (ec.get_entity_component<ecs::components::engine::hitbox>(other)->get().is_trigger == true && ec.get_entity_component<ecs::components::engine::hitbox>(e)->get().is_trigger == true) {
-                    ec.get_entity_component<ecs::components::engine::hitbox>(other)->get().is_trigger = false;
-                    ec.get_entity_component<ecs::components::engine::hitbox>(e)->get().is_trigger = false;
+                if (ec.get_entity_component<ecs::components::engine::hitbox>(other)->get().triggered == true && ec.get_entity_component<ecs::components::engine::hitbox>(e)->get().triggered == true) {
+                    ec.get_entity_component<ecs::components::engine::hitbox>(other)->get().triggered = false;
+                    ec.get_entity_component<ecs::components::engine::hitbox>(e)->get().triggered = false;
                     return;
                 }
                 return;
             }
         });
-        box.is_trigger = false;
+        box.triggered = false;
         life.value -= 1;
 
         if (life.value <= 0) {
