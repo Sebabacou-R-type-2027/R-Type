@@ -47,3 +47,46 @@ L'intégration d'**Asio** et **Lz4** a été motivée par des études comparativ
 ### Conclusion sur les Choix Technologiques
 
 L'intégration d'**Asio** et **Lz4** dans le projet R-Type répond aux besoins critiques du réseau, à savoir la vitesse, la réactivité et l'efficacité. **Asio** offre une solution flexible et robuste pour gérer la communication réseau asynchrone, tandis que **Lz4** garantit que les données compressées peuvent être transmises rapidement sans compromettre la performance globale du système. Ces choix permettent de créer un réseau performant et résilient, capable de répondre aux exigences d'un jeu multijoueur compétitif et immersif.
+
+### 1. Modèle de Communication
+
+Le projet R-Type utilise une approche hybride où le **serveur principal** gère la coordination initiale des lobbys et des connexions, tandis que des éléments de communication **peer-to-peer** peuvent être intégrés pour des échanges optimisés entre les clients. Cela permet de bénéficier à la fois de la robustesse d'un serveur centralisé et de la rapidité des interactions directes entre les pairs.
+
+#### Exemple de Lancement d'une Partie
+![Lancement de la Partie](./images/img.png)
+
+Lorsqu'une partie est lancée :
+- Chaque client envoie une requête de ping au serveur principal pour évaluer la latence.
+- Le serveur choisit le client ayant le meilleur ping pour être l'hôte de la partie, garantissant ainsi une latence minimale pour la majorité des participants.
+- Les requêtes `GAME_LAUNCH` sont envoyées aux autres clients pour synchroniser le début de la partie.
+
+### 2. Protocole de Gestion des Lobbys
+
+La gestion des lobbys se déroule en trois étapes principales :
+1. **Création du Lobby** : Un client envoie une requête au serveur principal pour créer un lobby. Le serveur génère un `LOBBY_ID` unique qui est retourné au client initiateur.
+2. **Rejoindre un Lobby** : Les autres clients utilisent le `LOBBY_ID` pour envoyer une requête `join_lobby` au serveur et rejoindre la même instance.
+3. **Synchronisation des Joueurs** : Une fois tous les joueurs connectés, le lobby est synchronisé et prêt pour le lancement de la partie.
+
+![Protocole de Lobby](./images/img_1.png)
+
+### 3. Protocole de Base entre le Client et le Serveur
+
+Le protocole de base gère l'authentification et les interactions standard, telles que la création de lobbys et la mise à jour des états des joueurs. Chaque interaction entre le client et le serveur est confirmée par un accusé de réception (`ACK`).
+
+![Protocole Client-Serveur](./images/img_2.png)
+
+### 4. Protocole de la Boîte de Discussion
+
+Le jeu intègre un protocole de chat permettant aux joueurs de communiquer pendant les parties. Les messages sont compressés pour optimiser la bande passante et envoyés au serveur principal, qui les distribue ensuite à tous les clients du lobby. Chaque client décompresse et affiche les messages reçus.
+
+![Protocole de Chat](./images/img_3.png)
+
+#### Étapes du Protocole de Chat :
+1. Le client envoie un message compressé au serveur principal.
+2. Le serveur ajoute le message à l'historique du chat compressé.
+3. Le serveur distribue le message compressé à tous les clients du lobby.
+4. Chaque client décompresse le message et l'affiche dans l'interface utilisateur.
+
+### Conclusion
+
+Cette architecture réseau, qui combine des aspects client/serveur et peer-to-peer, permet de maintenir une expérience de jeu fluide et réactive. Le choix d'utiliser un serveur principal pour la coordination initiale et la gestion des lobbys, tout en permettant des communications directes entre pairs lorsque cela est possible, assure une latence réduite et une synchronisation optimale des joueurs.
