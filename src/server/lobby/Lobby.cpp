@@ -100,10 +100,7 @@ void Lobby::handle_chat_message(const std::string& message, const server::client
     ss << std::put_time(std::localtime(&current_time), "%H:%M:%S");
     std::string time = ss.str();
 
-    chat_message = "[" + time + "] " + cli.get_nickname() + ":";
-    for (std::size_t i = 0; i < bytes_recv; ++i) {
-        chat_message += message[i];
-    }
+    chat_message = "[" + time + "] " + cli.get_nickname() + ":" + message;
     chat_history_.push_back(chat_message);
 
     if (chat_history_.size() > 10) {
