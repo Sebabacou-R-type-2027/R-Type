@@ -2,18 +2,19 @@
 /build
 /vcpkg_installed
 
-# User-specific files
-.idea
+# IDE
 /.cache
+/.idea
+/.vscode
+/.vs
 
 # Executables
-r-type_client
-r-type_server
+/r-type_client
+/r-type_server
+/sample
 
 # Generated documentation
 /docs/doxygen/html
 
 # Miscellaneous
 clients.csv
-
-vcpkg

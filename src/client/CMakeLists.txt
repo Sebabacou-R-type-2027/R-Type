@@ -1,14 +1,5 @@
-file(GLOB client *.cpp *.hpp )
+file(GLOB sources *.cpp *.hpp)
 
-add_subdirectory(networkClient)
+target_sources(r-type_client PRIVATE ${sources})
 
-set_property(GLOBAL APPEND PROPERTY CLIENT_SOURCES ${client})
-
-add_subdirectory(components)
-add_subdirectory(factories)
-add_subdirectory(systems)
-add_subdirectory(utils)
-add_subdirectory(game)
-add_subdirectory(multiplayer)
-add_subdirectory(menu)
-add_subdirectory(lobby)
+add_subdirectory(../sample/networkClient)

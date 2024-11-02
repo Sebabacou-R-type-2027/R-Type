@@ -1,76 +1,63 @@
 {
-    "version": 8,
+    "version": 9,
     "cmakeMinimumRequired": {
         "major": 3,
-        "minor": 10,
+        "minor": 30,
         "patch": 0
     },
     "configurePresets": [
         {
             "name": "base",
             "binaryDir": "${sourceDir}/build",
+            "generator": "Ninja Multi-Config",
+            "environment": {
+                "VCPKG_ROOT": "${sourceDir}/vcpkg"
+            },
             "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
             "cacheVariables": {
+                "CMAKE_CXX_STANDARD": "26",
+                "CMAKE_EXPERIMENTAL_CXX_IMPORT_STD": "0e5b6991-d74f-4b3d-a41c-cf096e0b2508",
+                "CMAKE_EXPERIMENTAL_EXPORT_PACKAGE_DEPENDENCIES": "1942b4fa-b2c5-4546-9385-83f254070067",
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "YES",
                 "CMAKE_COLOR_DIAGNOSTICS": "ON"
             }
         },
         {
-            "name": "default",
+            "name": "llvm",
             "inherits": "base",
-            "displayName": "Default",
-            "description": "Default CMake configure preset using Ninja",
-            "generator": "Ninja",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug"
-            }
-        },
-        {
-            "name": "release",
-            "inherits": "base",
-            "displayName": "Release",
-            "description": "Release CMake configure preset using Ninja",
-            "generator": "Ninja",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release"
-            }
-        },
-        {
-            "name": "ci",
-            "inherits": "base",
-            "displayName": "CI",
-            "description": "CI CMake configure preset",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release"
+            "environment": {
+                "CC": "clang",
+                "CXX": "clang++",
+                "CXXFLAGS": "$penv{CXXFLAGS} -stdlib=libc++"
             }
         }
     ],
     "buildPresets": [
         {
             "name": "default",
-            "displayName": "Default",
-            "description": "Default CMake build preset using Ninja",
-            "configurePreset": "default",
+            "configurePreset": "base",
             "configuration": "Debug"
         },
         {
+            "name": "llvm",
+            "inherits": "default",
+            "configurePreset": "llvm"
+        },
+        {
             "name": "release",
-            "displayName": "Release",
-            "description": "Release CMake build preset using Ninja",
-            "configurePreset": "release",
+            "configurePreset": "base",
             "configuration": "Release"
         },
         {
-            "name": "ci",
-            "inherits": "release"
+            "name": "release-llvm",
+            "inherits": "release",
+            "configurePreset": "llvm"
         }
     ],
     "testPresets": [
         {
             "name": "default",
-            "displayName": "Default",
-            "description": "Default CMake test preset using CTest",
-            "configurePreset": "default",
+            "configurePreset": "base",
             "configuration": "Debug",
             "output": {
                 "shortProgress": true,
@@ -79,27 +66,147 @@
             }
         },
         {
-            "name": "release",
-            "displayName": "Release",
-            "description": "Release CMake test preset using CTest",
-            "configurePreset": "release",
-            "configuration": "Release",
-            "output": {
-                "outputOnFailure": false,
-                "quiet": true
-            }
+            "name": "llvm",
+            "inherits": "default",
+            "configurePreset": "llvm"
         },
         {
-            "name": "ci",
-            "displayName": "CI",
-            "description": "CI CMake test preset using CTest",
-            "configurePreset": "ci",
+            "name": "release",
+            "configurePreset": "base",
             "configuration": "Release",
             "output": {
                 "shortProgress": false,
-                "outputOnFailure": true,
-                "verbosity": "verbose"
+                "outputOnFailure": false,
+                "verbosity": "default"
             }
+        },
+        {
+            "name": "release-llvm",
+            "inherits": "release",
+            "configurePreset": "llvm"
+        }
+    ],
+    "packagePresets": [
+        {
+            "name": "base",
+            "configurePreset": "base",
+            "packageName": "R-Type"
+        },
+        {
+            "name": "default",
+            "inherits": "base",
+            "configurations": [
+                "Debug"
+            ],
+            "output": {
+                "verbose": true
+            }
+        },
+        {
+            "name": "llvm",
+            "inherits": "default",
+            "configurePreset": "llvm"
+        },
+        {
+            "name": "release",
+            "inherits": "base",
+            "configurations": [
+                "Release"
+            ],
+            "output": {
+                "verbose": false
+            }
+        },
+        {
+            "name": "release-llvm",
+            "inherits": "release",
+            "configurePreset": "llvm"
+        }
+    ],
+    "workflowPresets": [
+        {
+            "name": "default",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "base"
+                },
+                {
+                    "type": "build",
+                    "name": "default"
+                },
+                {
+                    "type": "test",
+                    "name": "default"
+                },
+                {
+                    "type": "package",
+                    "name": "default"
+                }
+            ]
+        },
+        {
+            "name": "default-llvm",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "llvm"
+                },
+                {
+                    "type": "build",
+                    "name": "llvm"
+                },
+                {
+                    "type": "test",
+                    "name": "llvm"
+                },
+                {
+                    "type": "package",
+                    "name": "llvm"
+                }
+            ]
+        },
+        {
+            "name": "release",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "base"
+                },
+                {
+                    "type": "build",
+                    "name": "release"
+                },
+                {
+                    "type": "test",
+                    "name": "release"
+                },
+                {
+                    "type": "package",
+                    "name": "release"
+                }
+            ]
+        },
+        {
+            "name": "release-llvm",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "llvm"
+                },
+                {
+                    "type": "build",
+                    "name": "release-llvm"
+                },
+                {
+                    "type": "test",
+                    "name": "release-llvm"
+                },
+                {
+                    "type": "package",
+                    "name": "release-llvm"
+                }
+            ]
         }
     ]
 }
