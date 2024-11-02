@@ -80,12 +80,12 @@ namespace client {
 	        }
 	}
 
-    bool Client::wait_for_ack(const udp::endpoint& client_endpoint) { // TODO : use a struct for received_messages_, id, size, timestamp, data, endpoint
+    bool Client::wait_for_ack(const udp::endpoint& client_endpoint) {
 	    std::unique_lock<std::mutex> lock(messages_mutex_);
         for (const auto& [id, message] : received_messages_) {
             if (message.second == client_endpoint) {
                 try {
-                    uint32_t type = Packet::extract_type(message.first.data(), message.first.size()); // TODO : check if timstamp is not too old
+                    uint32_t type = Packet::extract_type(message.first.data(), message.first.size());
 	                if (type == PacketFactory::TypePacket::ACK) {
                         std::string data = Packet::extract_data(message.first.data(), message.first.size(), type);
                         int idp = Packet::extract_id(message.first.data(), message.first.size());
@@ -301,7 +301,6 @@ namespace client {
         		break;
     		}
 		}
-//			std::cout << "Received from Player[" << player_key << "]: " << data << std::endl;
         if (data.find("GAME_LAUNCH|ACK") == 0) {
         	players_endpoints_[std::to_string(number_of_players_)] = remote_endpoint;
             my_id_in_lobby_ = number_of_players_;
@@ -421,28 +420,14 @@ namespace client {
             }
         }
 
-        //loop on chat_ to decomrpess each message
 		chat_.clear();
         for (auto& message : chat_tmp) {
-//           	std::cout << "KLJHKJHKHHKJHKJHKJKJHKJHKHKJHJKHJKHKJHKJHHKJH" << std::endl;
-
-            //DELETE start of the string until ':'
             std::string removed_part = message.substr(0, 11);
             message = message.substr(11);
             removed_part += " " + message.substr(0, message.find(':')) + ":";
             message = message.substr(message.find(':') + 1);
-            //GET message_size from the string
-//			std::cout << "removed_part: " << removed_part << std::endl;
-//            std::cout << "Message to decompress: " << message << std::endl;
             size_t message_size = std::stoi(message.substr(0, message.find(':')));
-            //DELETE message_size from the string
-//            removed_part += std::to_string(message_size);
-//            std::cout << "removed_part: " << removed_part << std::endl;
-//            removed_part += ":" + std::to_string(message_size);
             message = message.substr(message.find(':') + 1);
-            //DECOMPRESS message
-//            std::cout << "String to decompress: " << message << std::endl;
-//            std::cout << "Size to decompress: " << message_size << std::endl;
             message = decompressString(message, message_size);
             std::cout << "Decompressed message: " << message << std::endl;
             chat_.push_back(removed_part + message);
