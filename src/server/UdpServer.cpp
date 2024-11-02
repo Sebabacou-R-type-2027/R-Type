@@ -455,9 +455,9 @@ void UdpServer::handle_new_connection(const udp::endpoint& client_endpoint, cons
                     return cli.get_nickname() == username;
                 });
                 connected_clients_.erase(existing_client, connected_clients_.end());
-
                 connected_clients_.emplace_back(client_address, client_port, username, password, id);
-                connected_clients_.back().new_score(cs.get_best_score_by_id(id));
+                uint32_t best_score = cs.get_best_score_by_id(id);
+                connected_clients_.back().new_score(best_score);
                 std::cout << "New authorised client from db: " << client_address << ":" << client_port << std::endl;
             } catch (const server::client::ClientException& e) {
                 std::cout << e.what() << std::endl;
