@@ -10,11 +10,13 @@ export import :components.projectiles;
 export import :components.enemies;
 export import :components.inputs;
 export import :components.stats;
+export import :components.powerup;
 export import :systems.buttons;
 export import :systems.projectiles;
 export import :systems.enemies;
 export import :systems.inputs;
 export import :systems.stats;
+export import :systems.powerup;
 
 #if __cpp_lib_modules >= 202207L
 import std;
@@ -66,7 +68,7 @@ export namespace game {
             this->register_system<enemy_loop_movement, ecs::components::position>(move_enemy_loop);
             this->register_system<enemy_chaser, ecs::components::position>(move_enemy_chaser);
             this->register_system<enemy_spawner, ecs::components::position>(handle_enemy_spawner);
-            //this->register_system<powerup_tripleshoot, ecs::components::position>(move_powerup);
+            this->register_system<powerup_tripleshoot, ecs::components::position>(triple_shoot_bonus);
             this->register_system<button, const ecs::components::position>(press_button);
             this->register_system<health, ecs::components::engine::hitbox>(update_life);
             this->register_system<score>(update_score);

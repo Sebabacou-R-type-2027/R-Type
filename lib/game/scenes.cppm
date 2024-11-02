@@ -40,10 +40,16 @@ export namespace game::scenes {
                 _game.emplace_component<ecs::components::position>(player, 50.0f, 50.0f);
                 _game.emplace_component<ecs::components::engine::velocity>(player, 0.0f, 0.0f);
                 _game.emplace_component<ecs::components::engine::controllable>(player, _game, true, 10.0f);
+
+
                 _game.emplace_component<ecs::components::engine::hitbox>(player, rectangle<float>{50.0f, 50.0f, 34.0f, 36.0f});
                 _game.emplace_component<components::score>(player, 0, _game);
                 _game.emplace_component<components::health>(player, 1, _game);
                 _game.add_component(player, components::projectile_launcher_ownership{100ms, std::chrono::steady_clock::now(), _game, false});
+                _game.emplace_component<powerup_tripleshoot>(player, 1s, std::chrono::steady_clock::now(), _game, 5s, std::chrono::steady_clock::now());
+
+
+
                 auto label = _game.display.factory->make_element("Player", _game.asset_manager.get("arial"), 12);
                 label->set_origin({label->bounds(true).width / 2, label->bounds(true).height / 2});
                 _game.emplace_component<ecs::components::gui::drawable>(player, ecs::components::gui::drawable{_game,
@@ -164,7 +170,7 @@ export namespace game::scenes {
             ecs::entity spawn_powerup(ecs::components::position position)
             {
                 auto powerup = _game.create_entity();
-                //_game.add_component(powerup, powerup_tripleshoot{false, std::chrono::steady_clock::now()});
+
                 _game.add_component(powerup, ecs::components::position{position.x, position.y});
                 _game.add_component(powerup, ecs::components::engine::velocity{0.0f, 2.0f});
                 _game.add_component(powerup, enemy_loop_movement{0.0f, 2000.0f, 200.0f, 250.0f, 1.0f, 0.0f, 100.0f, 2.0f});

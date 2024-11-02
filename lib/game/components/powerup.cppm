@@ -2,8 +2,10 @@
 module;
 
 #include <chrono>
+#include <chrono>
+
 #endif
-export module game:components.enemies;
+export module game:components.powerup;
 
 #if __cpp_lib_modules >= 202207L
 import std;
@@ -13,17 +15,10 @@ import ecs;
 export namespace game::components {
 
     struct powerup_tripleshoot {
-        bool tripleshoot; ///< Activate Triple Shoot
-        std::chrono::steady_clock::time_point _birth;
-
-        /**
-            * @brief Constructor of the enemy component
-        *
-            * @param health Health of the entity
-            * @param damage Damage of the entity
-         */
-
-        powerup_tripleshoot(bool tripleshoot, std::chrono::steady_clock::time_point birth)
-            : tripleshoot(tripleshoot), _birth(birth) {}
+        const std::chrono::steady_clock::duration cooldown;
+        std::chrono::steady_clock::time_point last_shot;
+        ecs::entity game;
+        const std::chrono::steady_clock::duration duration;
+        std::chrono::steady_clock::time_point start;
     };
 }
