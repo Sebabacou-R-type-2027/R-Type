@@ -27,7 +27,6 @@ UdpServer::UdpServer(asio::io_context& io_context, short port)
         {"score", [this](const std::string& message) { get_best_score_cli(message); }},
         {"new_score", [this](const std::string& message) {  new_score_cli(message); }},
       	{"matchmaking", [this](const std::string& message) { add_client_to_matchmaking(message); }},
-        {"chat:", [this](const std::string& message) { add_chat_message(message); }},
       	{"GET_CHAT", [this](const std::string& message) { messages_to_players_lobby(message); }}
     };
     message_id_counter_ = 0;
@@ -361,6 +360,9 @@ void UdpServer::handle_client_message(const std::string& msg, const asio::ip::ud
         } catch (const std::runtime_error& e) {
             std::cerr << e.what() << std::endl;
         }
+    }
+    if (message.rfind("chat:") == 0) {
+        add_chat_message(message, bytes_recv);
     } else {
       	try {
             execute_function(message, client_str);
@@ -417,7 +419,7 @@ void UdpServer::server_loop() {
             std::pair<std::array<char, 65535>, udp::endpoint> pair_data = received_messages_.begin()->second;
 
 //            std::cout << "Received message FROM SERVER_LOOP: " << recv_buffer_size_ << std::endl;
-            for (int i = 0; i <= recv_buffer_size_; i++) {
+            for (int i = 0; i < recv_buffer_size_; i++) {
 //            	std::cout << received_messages_[message_id].first[i];
                 message += received_messages_[message_id].first[i];
         	}
@@ -426,6 +428,7 @@ void UdpServer::server_loop() {
             bytes_receive = recv_buffer_size_;
 
             std::cout << "Received: " << message << " from " << client_endpoint << std::endl;
+            std::cout << "SSSIIIIIIZZZZZEEEEEE = " << bytes_receive << std::endl;
             received_messages_.erase(message_id);
         }
         // Call the function to handle the client message
@@ -636,23 +639,26 @@ void UdpServer::send_ping(const udp::endpoint& client_endpoint) {
     packet->send_packet(client_endpoint);
 }
 
-void UdpServer::add_chat_message(const std::string& message) {
+void UdpServer::add_chat_message(const std::string& message, size_t bytes_recv) {
 
     //message = "chat:size:message"
+
     auto& client = get_client(remote_endpoint_);
     std::string chat_message = message.substr(5);
     size_t message_size = std::stoi(chat_message.substr(0, chat_message.find(':')));
     chat_message = chat_message.substr(chat_message.find(':') + 1, message_size);
-    std::cout << "Compressed data: ";
-    for (size_t i = 0; i <= message_size; i++) {
-        std::cout << chat_message[i];
-    }
+    std::cout << "Compressed data: " << bytes_recv << std::endl;
+    std::cout << "Chat message: " << chat_message << std::endl;
+
+//    for (size_t i = 0; i < message.size(); i++) {
+//        std::cout << chat_message[i];
+//    }
 //    std::cout << std::endl;
 //    chat_message = decompressString(chat_message, message_size);
 //    std::cout << "Chat message: " << chat_message << std::endl;
 
     auto& lobby = lobbies_.at(client.get_lobby_id());
-    lobby.handle_chat_message(chat_message, client, message_size);
+    lobby.handle_chat_message(message.substr(5), client, bytes_recv);
 }
 
 std::string UdpServer::compressString(const std::string& data) {
@@ -690,18 +696,19 @@ void UdpServer::messages_to_players_lobby(const std::string& message)
     auto& client = get_client(remote_endpoint_);
     auto& lobby = lobbies_.at(client.get_lobby_id());
     std::vector<std::string> messages = lobby.get_chat_history();
-
+    std::string compact_msg;
     for (const auto& msg : messages) {
         std::cout << "Message: " << msg << std::endl;
     }
 
+    for (const auto& msg : messages)
+            compact_msg += msg;
+
     for (const auto& cli : lobby.get_clients()) {
-        for (const auto& msg : messages) {
-            auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::CMD, socket_);
-            if (typeid(*packet) == typeid(PacketCMD)) {
-                dynamic_cast<PacketCMD*>(packet.get())->format_data(msg);
-            }
-            packet->send_packet(cli.get_endpoint());
-    	}
+        auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::CMD, socket_);
+        if (typeid(*packet) == typeid(PacketCMD)) {
+            dynamic_cast<PacketCMD*>(packet.get())->format_data(compact_msg);
+        }
+        packet->send_packet(cli.get_endpoint());
     }
 }

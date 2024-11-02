@@ -88,13 +88,14 @@ namespace client {
             bool wait_for_ack(const udp::endpoint& client_endpoint);
             std::string compressString(const std::string& data);
             std::string decompressString(const std::string& compressedData, size_t originalSize);
-
+            std::vector<std::string> decouperMessages(const std::string& texte);
 
 
             int number_of_players_ = 0;  ///< Nombre de joueurs actuellement connectés.
             int my_id_in_lobby_;
             std::map<std::string, std::string> _commandsToDo;  ///< Commandes à effectuer.
             std::atomic<bool> is_running_;  ///< Indique si le client est en cours d'exécution.
+            std::vector<std::string> chat_ = {};  ///< Historique des messages de chat.
         private:
             bool im_host = false;  ///< Indique si le client est l'hôte du serveur.
             asio::io_context& io_context_;  ///< Contexte d'E/S ASIO.

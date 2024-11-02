@@ -3,6 +3,7 @@
 #include "PacketACK.hpp"
 #include "PacketCMDP.hpp"
 #include <lz4.h>
+#include <regex>
 
 
 std::string format_command(const std::string& command) {
@@ -198,9 +199,8 @@ namespace client {
             if (input.rfind("chat:") == 0) {
                  std::string cmd_snd = "chat:" + std::to_string(input.size() - 4) + ":" + compressString(input.substr(5));
                  send_message(cmd_snd);
-                 if (input.rfind("chat:") == 0) {
-                     send_message("GET_CHAT");
-                 }
+                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                 send_message("GET_CHAT");
                  std::cout << "INPUTTTTTT: " << cmd_snd << std::endl;
                  continue;
             }
@@ -235,6 +235,8 @@ namespace client {
     }
 
     void Client::manage_player_msg(uint32_t type, std::string data) {
+        std::regex regex_pattern(R"(\[\d{2}:\d{2}:\d{2}\])");
+
         if (type == PacketFactory::TypePacket::PING) {
             std::cout << "Received: PING" << std::endl;
             auto packet = PacketFactory::create_packet(PacketFactory::TypePacket::PING, socket_);
@@ -279,6 +281,13 @@ namespace client {
                 std::cout << "Host Port: " << host_port << std::endl;
                 remote_endpoint_ = udp::endpoint(asio::ip::address::from_string(host_ip), std::stoi(host_port));
                 send_message("GAME_LAUNCH|ACK");
+            } else if (data[0] == '[') {
+                decouperMessages(data);
+
+                std::cout << "Chat messages: " << std::endl;
+                for (const auto& message : chat_) {
+                    std::cout << message << std::endl;
+                }
             }
             return;
         }
@@ -390,6 +399,56 @@ namespace client {
         }
 
         return decompressedData;
+    }
+
+    std::vector<std::string> Client::decouperMessages(const std::string& texte) {
+        std::vector<std::string> chat_tmp;
+        size_t pos = 0;
+        std::string motif = "[";
+
+        while (pos < texte.size()) {
+            size_t debutMessage = texte.find(motif, pos);
+            if (debutMessage == std::string::npos) {
+                break;
+            }
+            size_t debutProchainMessage = texte.find(motif, debutMessage + 1);
+            if (debutProchainMessage != std::string::npos) {
+                chat_tmp.push_back(texte.substr(debutMessage, debutProchainMessage - debutMessage));
+                pos = debutProchainMessage;
+            } else {
+                chat_tmp.push_back(texte.substr(debutMessage));
+                break;
+            }
+        }
+
+        //loop on chat_ to decomrpess each message
+		chat_.clear();
+        for (auto& message : chat_tmp) {
+//           	std::cout << "KLJHKJHKHHKJHKJHKJKJHKJHKHKJHJKHJKHKJHKJHHKJH" << std::endl;
+
+            //DELETE start of the string until ':'
+            std::string removed_part = message.substr(0, 11);
+            message = message.substr(11);
+            removed_part += " " + message.substr(0, message.find(':')) + ":";
+            message = message.substr(message.find(':') + 1);
+            //GET message_size from the string
+//			std::cout << "removed_part: " << removed_part << std::endl;
+//            std::cout << "Message to decompress: " << message << std::endl;
+            size_t message_size = std::stoi(message.substr(0, message.find(':')));
+            //DELETE message_size from the string
+//            removed_part += std::to_string(message_size);
+//            std::cout << "removed_part: " << removed_part << std::endl;
+//            removed_part += ":" + std::to_string(message_size);
+            message = message.substr(message.find(':') + 1);
+            //DECOMPRESS message
+//            std::cout << "String to decompress: " << message << std::endl;
+//            std::cout << "Size to decompress: " << message_size << std::endl;
+            message = decompressString(message, message_size);
+            std::cout << "Decompressed message: " << message << std::endl;
+            chat_.push_back(removed_part + message);
+        }
+
+        return chat_;
     }
 
 }

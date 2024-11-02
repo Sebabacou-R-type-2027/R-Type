@@ -18,6 +18,7 @@
 #include "client/ClientSaver.hpp"
 #include "Packet.hpp"
 #include "PacketPing.hpp"
+#include "PacketFactory.hpp"
 
 using asio::ip::udp;
 
@@ -137,7 +138,7 @@ class UdpServer {
         void get_best_score_cli(std::string message);
         void new_score_cli(std::string message);
         void execute_function(const std::string& message, std::string client_str);
-        void add_chat_message(const std::string& message);
+        void add_chat_message(const std::string& message, size_t bytes_recv);
         std::string decompressString(const std::string& compressedData, size_t originalSize);
         std::string compressString(const std::string& data);
         void messages_to_players_lobby(const std::string& message);
