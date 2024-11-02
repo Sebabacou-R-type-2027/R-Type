@@ -158,6 +158,23 @@ export namespace game::scenes {
             void create_entities() noexcept
             {
                 initUI();
+                /*
+                export namespace game::components {
+                    struct input {
+                        bool has_focus = false;
+                        std::string content;
+                        ecs::entity display;
+                        ecs::entity text;
+
+                    };
+                }
+                                */
+                // test input
+                auto input_text = _game.create_entity();
+                _game.emplace_component<ecs::components::position>(input_text, 100.0f, 100.0f);
+                // set has_focus to true to test input
+                _game.emplace_component<components::input>(input_text, true, "", _game, _game.create_entity());
+
             }
 
         private:
