@@ -23,8 +23,4 @@ export namespace game::components {
         int value;
         ecs::entity game;
     };
-
-    struct id {
-        int value;
-    };
 }

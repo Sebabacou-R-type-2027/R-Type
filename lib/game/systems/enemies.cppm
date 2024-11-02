@@ -104,7 +104,6 @@ export namespace game::systems {
         ec.add_component(enemy, ecs::components::position{position.x, position.y});
         ec.add_component(enemy, ecs::components::engine::velocity{-10.0f, 0.0f});
         ec.add_component(enemy, components::health{1, spawner.game});
-        ec.add_component(enemy, components::id{1});
         ec.add_component(enemy, ecs::components::engine::hitbox{ecs::abstractions::rectangle<float>{position.x, position.y, 34.0f, 36.0f}});
         ec.add_component(enemy, components::enemy_loop_movement{0.0f, 2000.0f, 200.0f, 800.0f, 1.0f, 0.0f, 100.0f, 2.0f});
         ec.emplace_component<ecs::components::gui::drawable>(enemy, ecs::components::gui::drawable{spawner.game,

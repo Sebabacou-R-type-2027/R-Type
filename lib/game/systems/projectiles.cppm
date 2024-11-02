@@ -29,8 +29,6 @@ export namespace game::systems {
             *ec.get_entity_component<const ecs::components::gui::display>(launcher.game);
         ec.add_component(projectile, components::projectile{10, e, now, 5s});
         ec.add_component(projectile, ecs::components::position{position.x, position.y});
-        ec.add_component(projectile, components::health{1, launcher.game});
-        ec.add_component(projectile, components::id{4});
         ec.add_component(projectile, ecs::components::engine::velocity{50.0f * launcher.direction, 0.0f});
         ec.add_component(projectile, ecs::components::engine::hitbox{ecs::abstractions::rectangle<float>{position.x, position.y, 10.0f, 10.0f}});
         ec.emplace_component<ecs::components::gui::drawable>(projectile, ecs::components::gui::drawable{launcher.game,
@@ -66,8 +64,6 @@ export namespace game::systems {
                 const ecs::components::gui::asset_manager &asset_manager = *ec.get_entity_component<const ecs::components::gui::asset_manager>(launcher.game);
                 ec.add_component(projectile, components::projectile{10, e, now, 5s});
                 ec.add_component(projectile, ecs::components::position{position.x, position.y});
-                ec.add_component(projectile, components::health{1, launcher.game});
-                ec.add_component(projectile, components::id{0});
                 ec.add_component(projectile, ecs::components::engine::velocity{50.0f, 0.0f});
                 ec.add_component(projectile, ecs::components::engine::hitbox{ecs::abstractions::rectangle<float>{position.x, position.y, 10.0f, 10.0f}});
                 ec.emplace_component<ecs::components::gui::drawable>(projectile, ecs::components::gui::drawable{launcher.game,

@@ -7,6 +7,7 @@ module;
 export module game:systems.stats;
 import :components.stats;
 import :components.enemies;
+import :components.projectiles;
 
 #if __cpp_lib_modules >= 202207L
 import std;
@@ -39,37 +40,18 @@ export namespace game::systems {
 
     void update_life(ecs::entity e, ecs::entity_container &ec, components::health &life, ecs::components::engine::hitbox &box)
     {
-        if (!box.triggered) {
+        if (!box.triggered_by) {
             return;
         }
-        std::ranges::for_each(ec.get_entities(), [&](ecs::entity other) {
-            if (e == other) {
+        if (auto projectile = ec.get_entity_component<components::projectile>(*box.triggered_by)) {
+            if (projectile->get().owner == e) {
                 return;
             }
-            if (ec.get_entity_component<components::id>(other)->get().value == ec.get_entity_component<components::id>(e)->get().value) {
-                return;
+            life.value -= projectile->get().damage;
+            auto score = ec.get_entity_component<components::score>(projectile->get().owner);
+            if (ec.get_entity_component<components::enemy>(e) && score) {
+                score->get().value += ec.get_entity_component<components::enemy>(e)->get().points;
             }
-            if (ec.get_entity_component<components::enemy>(other) && ec.get_entity_component<components::enemy>(e)) {
-                if (ec.get_entity_component<ecs::components::engine::hitbox>(other)->get().triggered == true && ec.get_entity_component<ecs::components::engine::hitbox>(e)->get().triggered == true) {
-                    ec.get_entity_component<ecs::components::engine::hitbox>(other)->get().triggered = false;
-                    ec.get_entity_component<ecs::components::engine::hitbox>(e)->get().triggered = false;
-                    return;
-                }
-                return;
-            }
-        });
-        box.triggered = false;
-        life.value -= 1;
-
-        if (life.value <= 0) {
-            std::ranges::for_each(ec.get_entities(), [&](ecs::entity other) {
-                if (e == other) {
-                    return;
-                }
-                if (ec.get_entity_component<components::score>(other) && ec.get_entity_component<components::enemy>(e)) {
-                    ec.get_entity_component<components::score>(other)->get().value = ec.get_entity_component<components::score>(other)->get().value + ec.get_entity_component<components::enemy>(e)->get().points;
-                }
-            });
             ec.erase_entity(e);
         }
     }
