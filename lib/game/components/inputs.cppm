@@ -3,7 +3,7 @@ module;
 
 #include <functional>
 #endif
-export module game:components.input;
+export module game:components.inputs;
 
 #if __cpp_lib_modules >= 202207L
 import std;
@@ -14,10 +14,9 @@ using namespace ecs::abstractions;
 
 export namespace game::components {
     struct input {
-        bool has_focus = false;
-        std::string content;
         ecs::entity display;
-        ecs::entity text;
-
+        gui::text &text;
+        std::string content = "";
+        bool has_focus = false;
     };
 }

@@ -172,9 +172,31 @@ export namespace game::scenes {
                 // test input
                 auto input_text = _game.create_entity();
                 _game.emplace_component<ecs::components::position>(input_text, 100.0f, 100.0f);
+                auto text = _game.display.factory->make_element("", _game.asset_manager.get("arial"), 50);
+                auto &input = _game.emplace_component<components::input>(input_text, _game, *text);
+                _game.emplace_component<components::button>(input_text, _game, abstractions::vector<float>{200, 50}, [&input](){
+                    input.has_focus = true;
+                });
+                _game.emplace_component<ecs::components::gui::drawable>(input_text, ecs::components::gui::drawable{_game,
+                    std::container<ecs::components::gui::drawable::elements_container>::make({
+                        {static_cast<ecs::entity>(_game), _game.display.factory->make_element({200, 50}, abstractions::gui::color::blue)},
+                        {static_cast<ecs::entity>(_game), std::move(text)}
+                    })
+                });
                 // set has_focus to true to test input
-                _game.emplace_component<components::input>(input_text, true, "", _game, _game.create_entity());
-
+                auto input_text2 = _game.create_entity();
+                _game.emplace_component<ecs::components::position>(input_text2, 100.0f, 200.0f);
+                auto text2 = _game.display.factory->make_element("", _game.asset_manager.get("arial"), 50);
+                auto &input2 = _game.emplace_component<components::input>(input_text2, _game, *text2);
+                _game.emplace_component<components::button>(input_text2, _game, abstractions::vector<float>{200, 50}, [&input2](){
+                    input2.has_focus = true;
+                });
+                _game.emplace_component<ecs::components::gui::drawable>(input_text2, ecs::components::gui::drawable{_game,
+                    std::container<ecs::components::gui::drawable::elements_container>::make({
+                        {static_cast<ecs::entity>(_game), _game.display.factory->make_element({200, 50}, abstractions::gui::color::blue)},
+                        {static_cast<ecs::entity>(_game), std::move(text2)}
+                    })
+                });
             }
 
         private:
