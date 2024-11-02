@@ -1,92 +1,94 @@
 # R-Type
 
-## Introduction Générale
+## General Introduction
 
-Le projet R-Type est un jeu multijoueur en réseau inspiré du célèbre jeu de type shoot'em up. L'objectif principal de cette documentation est de détailler la conception et l'implémentation du système réseau utilisé dans le projet, en expliquant les choix technologiques, les mécanismes de communication, et la structure des données échangées. Cette documentation vise à fournir un aperçu complet du fonctionnement du réseau, de la création des paquets à leur transmission, tout en explorant les défis et les solutions mis en œuvre pour garantir une expérience de jeu fluide et réactive.
+The R-Type project is a multiplayer network game inspired by the classic shoot'em up genre. The main objective of this documentation is to detail the design and implementation of the network system used in the project, explaining the technological choices, communication mechanisms, and data structure exchanges. This documentation aims to provide a comprehensive overview of how the network operates, from packet creation to transmission, while exploring the challenges and solutions implemented to ensure a smooth and responsive gaming experience.
 
-### Objectifs du Réseau
+### Network Objectives
 
-Le réseau doit répondre aux exigences suivantes :
-- **Latence Faible** : Assurer des échanges de données rapides pour maintenir la réactivité du jeu.
-- **Fiabilité** : Gérer efficacement la perte de paquets et garantir la continuité de la session de jeu.
-- **Scalabilité** : Permettre à plusieurs joueurs de se connecter simultanément tout en préservant la performance.
+The network must meet the following requirements:
+- **Low Latency**: Ensure fast data exchanges to maintain game responsiveness.
+- **Reliability**: Effectively manage packet loss and guarantee session continuity.
+- **Scalability**: Allow multiple players to connect simultaneously while maintaining performance.
 
-Cette documentation se veut être une ressource complète pour les développeurs qui souhaitent comprendre le fonctionnement interne du réseau, les raisons des choix technologiques effectués et les bonnes pratiques adoptées pour la transmission de données dans le projet R-Type.
+This documentation is intended as a comprehensive resource for developers who want to understand the internal workings of the network, the rationale behind the technological choices, and the best practices adopted for data transmission in the R-Type project.
 
 ## Inspiration
 
-Le développement du réseau du projet R-Type s'est fortement inspiré des principes établis par des jeux multijoueurs à succès, en particulier **Age of Empires**, reconnu pour sa solution ingénieuse basée sur un modèle **peer-to-peer**. L'architecture réseau d'Age of Empires a été conçue pour minimiser la latence et optimiser la synchronisation des joueurs, deux aspects critiques dans un jeu multijoueur en temps réel.
+The development of the R-Type network was heavily inspired by the principles established by successful multiplayer games, particularly **Age of Empires**, known for its clever **peer-to-peer** based solution. The network architecture of Age of Empires was designed to minimize latency and optimize player synchronization, two critical aspects in real-time multiplayer games.
 
-### Pourquoi s'inspirer du modèle Peer-to-Peer ?
+### Why Draw Inspiration from the Peer-to-Peer Model?
 
-Contrairement au modèle client-serveur classique, où un serveur central gère la majorité des calculs et des échanges de données, le modèle **peer-to-peer** offre plusieurs avantages :
-- **Réduction de la Latence** : Les échanges directs entre les pairs réduisent la latence, améliorant ainsi la réactivité du jeu.
-- **Répartition de la Charge** : Chaque joueur contribue à la transmission et au traitement des données, ce qui allège la charge sur un serveur unique et permet une meilleure scalabilité.
-- **Robustesse en Cas de Panne** : Le réseau peut être conçu pour tolérer la déconnexion d'un pair sans interrompre la session des autres joueurs, rendant l'expérience plus résiliente.
+Unlike the traditional client-server model, where a central server handles most of the computation and data exchange, the **peer-to-peer** model offers several advantages:
+- **Reduced Latency**: Direct exchanges between peers reduce latency, enhancing game responsiveness.
+- **Load Distribution**: Each player contributes to data transmission and processing, reducing the load on a single server and enabling better scalability.
+- **Resilience to Failure**: The network can be designed to tolerate the disconnection of a peer without disrupting the session for other players, making the experience more robust.
 
-### Influence d'Age of Empires
+### Influence of Age of Empires
 
-Le réseau d'**Age of Empires** repose sur une synchronisation déterministe où chaque pair exécute les mêmes actions de manière simultanée, assurant ainsi que tous les participants restent synchronisés. Ce concept est souvent appelé **simulation lockstep**. Dans le projet R-Type, des mécanismes similaires ont été envisagés pour garantir que chaque joueur possède une vue cohérente de l'état du jeu, tout en minimisant la latence perçue.
+The **Age of Empires** network relies on a deterministic synchronization where each peer executes the same actions simultaneously, ensuring all participants remain synchronized. This concept is often called **lockstep simulation**. In the R-Type project, similar mechanisms were considered to ensure that each player has a consistent view of the game state while minimizing perceived latency.
 
-### Implémentation des Idées Inspirées
+### Implementation of Inspired Ideas
 
-Pour le réseau de R-Type, l'implémentation s'appuie sur :
-- **Protocole de Communication en Peer-to-Peer** : Adaptation des techniques de diffusion des paquets entre les pairs pour synchroniser l'état du jeu.
-- **Synchronisation et Validation** : Chaque action initiée par un joueur est validée et propagée aux autres pairs pour assurer la cohérence du jeu.
-- **Gestion de la Tolérance aux Pannes** : Des mécanismes de récupération et de réorganisation du réseau en cas de déconnexion d'un pair pour que la partie puisse continuer sans interruption.
+For the R-Type network, the implementation relies on:
+- **Peer-to-Peer Communication Protocol**: Adapting packet distribution techniques between peers to synchronize game states.
+- **Synchronization and Validation**: Each action initiated by a player is validated and propagated to other peers to ensure game consistency.
+- **Failure Tolerance Management**: Mechanisms for network recovery and reorganization in case a peer disconnects, allowing the game to continue uninterrupted.
 
-Ces choix inspirés par **Age of Empires** permettent d'offrir une expérience multijoueur optimisée, répondant aux exigences de fluidité et de fiabilité d'un jeu en temps réel tel que R-Type.
+These choices inspired by **Age of Empires** enable an optimized multiplayer experience, meeting the demands of fluidity and reliability required for a real-time game like R-Type.
 
-## Choix Technologiques
+## Technological Choices
 
-L'intégration d'**Asio** et **Lz4** a été motivée par des études comparatives approfondies. Vous pouvez consulter les détails de ces études ci-dessous :
+The integration of **Asio** and **Lz4** was motivated by in-depth comparative studies. You can review the details of these studies below:
 
-- [Étude comparative sur Asio](./Etudes/Etude%20Comparative%20Asio.pdf) : Analyse des alternatives pour la gestion des communications réseau.
-- [Étude comparative sur Lz4](./Etudes/Etude%20Comparative%20Lib%20Compression.pdf) : Comparaison des algorithmes de compression et leur impact sur les performances réseau.
+- [Comparative Study on Asio](./Etudes/Etude%20Comparative%20Asio.pdf): Analysis of alternatives for network communication management.
+- [Comparative Study on Lz4](./Etudes/Etude%20Comparative%20Lib%20Compression.pdf): Comparison of compression algorithms and their impact on network performance.
 
-### Conclusion sur les Choix Technologiques
+### Conclusion on Technological Choices
 
-L'intégration d'**Asio** et **Lz4** dans le projet R-Type répond aux besoins critiques du réseau, à savoir la vitesse, la réactivité et l'efficacité. **Asio** offre une solution flexible et robuste pour gérer la communication réseau asynchrone, tandis que **Lz4** garantit que les données compressées peuvent être transmises rapidement sans compromettre la performance globale du système. Ces choix permettent de créer un réseau performant et résilient, capable de répondre aux exigences d'un jeu multijoueur compétitif et immersif.
+The integration of **Asio** and **Lz4** in the R-Type project addresses the critical needs of the network, namely speed, responsiveness, and efficiency. **Asio** provides a flexible and robust solution for managing asynchronous network communication, while **Lz4** ensures that compressed data can be transmitted quickly without compromising overall system performance. These choices create a performant and resilient network capable of meeting the demands of a competitive and immersive multiplayer game.
 
-### 1. Modèle de Communication
+## Network Architecture
 
-Le projet R-Type utilise une approche hybride où le **serveur principal** gère la coordination initiale des lobbys et des connexions, tandis que des éléments de communication **peer-to-peer** peuvent être intégrés pour des échanges optimisés entre les clients. Cela permet de bénéficier à la fois de la robustesse d'un serveur centralisé et de la rapidité des interactions directes entre les pairs.
+### 1. Communication Model
 
-#### Exemple de Lancement d'une Partie
-![Lancement de la Partie](./images/img_3.png)
+The R-Type project uses a hybrid approach where the **main server** handles the initial coordination of lobbies and connections, while **peer-to-peer** communication elements can be integrated for optimized client-to-client exchanges. This allows the project to benefit from the robustness of a centralized server and the speed of direct peer interactions.
 
-Lorsqu'une partie est lancée :
-- Chaque client envoie une requête de ping au serveur principal pour évaluer la latence.
-- Le serveur choisit le client ayant le meilleur ping pour être l'hôte de la partie, garantissant ainsi une latence minimale pour la majorité des participants.
-- Les requêtes `GAME_LAUNCH` sont envoyées aux autres clients pour synchroniser le début de la partie.
+#### Example of Game Launch
+![Game Launch](./images/img_3.png)
 
-### 2. Protocole de Gestion des Lobbys
+When a game is launched:
+- Each client sends a ping request to the main server to assess latency.
+- The server chooses the client with the best ping to host the game, ensuring minimal latency for most participants.
+- `GAME_LAUNCH` requests are sent to other clients to synchronize the game start.
 
-La gestion des lobbys se déroule en trois étapes principales :
-1. **Création du Lobby** : Un client envoie une requête au serveur principal pour créer un lobby. Le serveur génère un `LOBBY_ID` unique qui est retourné au client initiateur.
-2. **Rejoindre un Lobby** : Les autres clients utilisent le `LOBBY_ID` pour envoyer une requête `join_lobby` au serveur et rejoindre la même instance.
-3. **Synchronisation des Joueurs** : Une fois tous les joueurs connectés, le lobby est synchronisé et prêt pour le lancement de la partie.
+### 2. Lobby Management Protocol
 
-![Protocole de Lobby](./images/img_2.png)
+The lobby management process consists of three main steps:
+1. **Creating a Lobby**: A client sends a request to the main server to create a lobby. The server generates a unique `LOBBY_ID`, which is returned to the initiating client.
+2. **Joining a Lobby**: Other clients use the `LOBBY_ID` to send a `join_lobby` request to the server and join the same instance.
+3. **Player Synchronization**: Once all players are connected, the lobby is synchronized and ready for game launch.
 
-### 3. Protocole de Base entre le Client et le Serveur
+![Lobby Protocol](./images/img_2.png)
 
-Le protocole de base gère l'authentification et les interactions standard, telles que la création de lobbys et la mise à jour des états des joueurs. Chaque interaction entre le client et le serveur est confirmée par un accusé de réception (`ACK`).
+### 3. Basic Client-Server Protocol
 
-![Protocole Client-Serveur](./images/img.png)
+The basic protocol handles authentication and standard interactions such as lobby creation and player state updates. Each interaction between the client and server is confirmed with an acknowledgment (`ACK`).
 
-### 4. Protocole de la Boîte de Discussion
+![Client-Server Protocol](./images/img.png)
 
-Le jeu intègre un protocole de chat permettant aux joueurs de communiquer pendant les parties. Les messages sont compressés pour optimiser la bande passante et envoyés au serveur principal, qui les distribue ensuite à tous les clients du lobby. Chaque client décompresse et affiche les messages reçus.
+### 4. Chat Box Protocol
 
-![Protocole de Chat](./images/img_1.png)
+The game includes a chat protocol that allows players to communicate during matches. Messages are compressed to optimize bandwidth and sent to the main server, which then distributes them to all clients in the lobby. Each client decompresses and displays the received messages.
 
-#### Étapes du Protocole de Chat :
-1. Le client envoie un message compressé au serveur principal.
-2. Le serveur ajoute le message à l'historique du chat compressé.
-3. Le serveur distribue le message compressé à tous les clients du lobby.
-4. Chaque client décompresse le message et l'affiche dans l'interface utilisateur.
+![Chat Protocol](./images/img_1.png)
+
+#### Chat Protocol Steps:
+1. The client sends a compressed message to the main server.
+2. The server adds the message to the compressed chat history.
+3. The server distributes the compressed message to all clients in the lobby.
+4. Each client decompresses the message and displays it in the user interface.
 
 ### Conclusion
 
-Cette architecture réseau, qui combine des aspects client/serveur et peer-to-peer, permet de maintenir une expérience de jeu fluide et réactive. Le choix d'utiliser un serveur principal pour la coordination initiale et la gestion des lobbys, tout en permettant des communications directes entre pairs lorsque cela est possible, assure une latence réduite et une synchronisation optimale des joueurs.
+This network architecture, which combines client-server and peer-to-peer aspects, ensures a smooth and responsive gaming experience. Choosing to use a main server for initial coordination and lobby management while allowing direct peer communications when possible ensures reduced latency and optimal player synchronization.
