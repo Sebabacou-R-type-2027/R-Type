@@ -161,6 +161,173 @@ export namespace game::scenes {
             }
     };
 
+        struct multiplayer_menu : public ecs::scene {
+        constexpr multiplayer_menu(game &game) noexcept
+            : ecs::scene(game), _game(game)
+        {}
+
+        protected:
+            void create_entities() noexcept
+            {
+                initUI();
+                /*
+                export namespace game::components {
+                    struct input {
+                        bool has_focus = false;
+                        std::string content;
+                        ecs::entity display;
+                        ecs::entity text;
+
+                    };
+                }
+                                */
+                // test input
+                auto input_text = _game.create_entity();
+                _game.emplace_component<ecs::components::position>(input_text, 100.0f, 100.0f);
+                auto text = _game.display.factory->make_element("", _game.asset_manager.get("arial"), 50);
+                auto &input = _game.emplace_component<components::input>(input_text, _game, *text);
+                _game.emplace_component<components::button>(input_text, _game, abstractions::vector<float>{200, 50}, [&input](){
+                    input.has_focus = true;
+                });
+                _game.emplace_component<ecs::components::gui::drawable>(input_text, ecs::components::gui::drawable{_game,
+                    std::container<ecs::components::gui::drawable::elements_container>::make({
+                        {static_cast<ecs::entity>(_game), _game.display.factory->make_element({200, 50}, abstractions::gui::color::blue)},
+                        {static_cast<ecs::entity>(_game), std::move(text)}
+                    })
+                });
+                // set has_focus to true to test input
+                auto input_text2 = _game.create_entity();
+                _game.emplace_component<ecs::components::position>(input_text2, 100.0f, 200.0f);
+                auto text2 = _game.display.factory->make_element("", _game.asset_manager.get("arial"), 50);
+                auto &input2 = _game.emplace_component<components::input>(input_text2, _game, *text2);
+                _game.emplace_component<components::button>(input_text2, _game, abstractions::vector<float>{200, 50}, [&input2](){
+                    input2.has_focus = true;
+                });
+                _game.emplace_component<ecs::components::gui::drawable>(input_text2, ecs::components::gui::drawable{_game,
+                    std::container<ecs::components::gui::drawable::elements_container>::make({
+                        {static_cast<ecs::entity>(_game), _game.display.factory->make_element({200, 50}, abstractions::gui::color::blue)},
+                        {static_cast<ecs::entity>(_game), std::move(text2)}
+                    })
+                });
+            }
+
+        private:
+            game &_game;
+
+            void initUI() {
+                float width = 450.0f;
+                float height = 600.0f;
+                ecs::abstractions::gui::color fillColor = ecs::abstractions::gui::color(100, 100, 100, 255 * 0.7);
+                ecs::abstractions::gui::color outlineColor = ecs::abstractions::gui::color::blue;
+                float buttonWidth = 400.0f;
+                float buttonHeight = 50.0f;
+
+                // Title
+                create_centered_text("Multiplayer", (_game.display.window->get_size().y - height) / 2, ecs::abstractions::gui::color::white, 48);
+
+                // Username Text
+                create_text({(_game.display.window->get_size().x - 400.0f) / 2, (_game.display.window->get_size().y - 40.0f) / 2 - 180.0f}, "Username :", ecs::abstractions::gui::color(255, 255, 255, 255 * 0.9), 24);
+
+                // Input rectangle for Username
+                create_rectangle({(_game.display.window->get_size().x - 400.0f) / 2, (_game.display.window->get_size().y - 40.0f) / 2 - 140.0f}, {400.0f, 40.0f}, ecs::abstractions::gui::color(30, 30, 30, 255 * 0.8), ecs::abstractions::gui::color::black);
+
+                // Password Text
+                create_text({(_game.display.window->get_size().x - 400.0f) / 2, (_game.display.window->get_size().y - 40.0f) / 2 - 80.0f}, "Password :", ecs::abstractions::gui::color(255, 255, 255, 255 * 0.9), 24);
+
+                // Input rectangle for Password
+                create_rectangle({(_game.display.window->get_size().x - 400.0f) / 2, (_game.display.window->get_size().y - 40.0f) / 2 - 40.0f}, {400.0f, 40.0f}, ecs::abstractions::gui::color(30, 30, 30, 255 * 0.8), ecs::abstractions::gui::color::black);
+
+                // Server Address Text
+                create_text({(_game.display.window->get_size().x - 400.0f) / 2, (_game.display.window->get_size().y - 40.0f) / 2 + 20.0f}, "Server Address :", ecs::abstractions::gui::color(255, 255, 255, 255 * 0.9), 24);
+
+                // Input rectangle for Server Address
+                create_rectangle({(_game.display.window->get_size().x - 400.0f) / 2, (_game.display.window->get_size().y - 40.0f) / 2 + 60.0f}, {400.0f, 40.0f}, ecs::abstractions::gui::color(30, 30, 30, 255 * 0.8), ecs::abstractions::gui::color::black);
+
+                // Port Text
+                create_text({(_game.display.window->get_size().x - 400.0f) / 2, (_game.display.window->get_size().y - 40.0f) / 2 + 120.0f}, "Port :", ecs::abstractions::gui::color(255, 255, 255, 255 * 0.9), 24);
+
+                // Input rectangle for Port
+                create_rectangle({(_game.display.window->get_size().x - 400.0f) / 2, (_game.display.window->get_size().y - 40.0f) / 2 + 160.0f}, {400.0f, 40.0f}, ecs::abstractions::gui::color(30, 30, 30, 255 * 0.8), ecs::abstractions::gui::color::black);
+
+
+                // Connect Button
+                create_centered_button("Connect", (_game.display.window->get_size().y - height) / 2 + height - buttonHeight - 20.0f, 24, ecs::abstractions::gui::color(14, 94, 255, 255), [&game = _game](){
+                    game.begin_scene(std::make_unique<game_scene>(game));
+                });
+
+                // Background rectangle
+                create_rectangle({(_game.display.window->get_size().x - width) / 2, (_game.display.window->get_size().y - height) / 2}, {width, height}, fillColor, outlineColor);
+            }
+
+            int create_centered_button(const std::string &label, float yPos, int fontSize, ecs::abstractions::gui::color button_color, std::function<void()> action) noexcept
+            {
+                ecs::abstractions::vector<float> window_size = _game.display.window->get_size();
+                auto text = _game.display.factory->make_element(label, _game.asset_manager.get("arial"), fontSize);
+                float text_top = text->bounds(true).y;
+                float button_height = 50.0f;
+
+                ecs::abstractions::vector<float> text_size = {text->bounds(true).width, text->bounds(true).height};
+                create_text({(window_size.x - text_size.x) / 2, yPos + text_top}, label, ecs::abstractions::gui::color::white, fontSize);
+
+                ecs::abstractions::vector<float> button_size = {text_size.x + 40, button_height};
+                create_clickable_rectangle({(window_size.x - button_size.x) / 2, yPos}, button_size, button_color, action);
+
+                return button_size.y;
+            }
+
+            void create_rectangle(ecs::abstractions::vector<float> position, ecs::abstractions::vector<float> size, ecs::abstractions::gui::color color, ecs::abstractions::gui::color outlineColor = ecs::abstractions::gui::color::blue) noexcept
+            {
+                auto rectangle = _game.display.factory->make_element(size, color);
+                rectangle->set_outline_color(outlineColor);
+                rectangle->set_outline_thickness(2.0f);
+                rectangle->position(position);
+
+                auto drawable = _game.create_entity();
+                _game.emplace_component<ecs::components::gui::drawable>(drawable, ecs::components::gui::drawable{_game,
+                    std::container<ecs::components::gui::drawable::elements_container>::make({
+                        {static_cast<ecs::entity>(_game), std::move(rectangle)}
+                    })
+                });
+                _entities.push_back(drawable);
+
+            }
+
+            void create_text(ecs::abstractions::vector<float> position, std::string text, ecs::abstractions::gui::color color, int size = 24) noexcept
+            {
+                auto text_entity = _game.create_entity();
+                _game.emplace_component<ecs::components::position>(text_entity, position.x, position.y);
+                _game.emplace_component<ecs::components::gui::drawable>(text_entity, ecs::components::gui::drawable{_game,
+                    std::container<ecs::components::gui::drawable::elements_container>::make({
+                        {static_cast<ecs::entity>(_game), _game.display.factory->make_element(text, _game.asset_manager.get("arial"), size, color)}
+                    })
+                });
+                _entities.push_back(text_entity);
+            }
+
+            void create_centered_text(std::string label, float yPos, ecs::abstractions::gui::color color, int fontSize = 24) noexcept
+            {
+                ecs::abstractions::vector<float> window_size = _game.display.window->get_size();
+                auto text = _game.display.factory->make_element(label, _game.asset_manager.get("arial"), fontSize);
+                float text_top = text->bounds(true).y;
+
+                ecs::abstractions::vector<float> text_size = {text->bounds(true).width, text->bounds(true).height};
+                create_text({(window_size.x - text_size.x) / 2, yPos + text_top}, label, color, fontSize);
+            }
+
+            void create_clickable_rectangle(ecs::abstractions::vector<float> position, ecs::abstractions::vector<float> size, ecs::abstractions::gui::color color, std::function<void()> action) noexcept
+            {
+                auto rectangle = _game.create_entity();
+                _game.emplace_component<ecs::components::position>(rectangle, position.x, position.y);
+                _game.emplace_component<ecs::components::gui::drawable>(rectangle, ecs::components::gui::drawable{_game,
+                    std::container<ecs::components::gui::drawable::elements_container>::make({
+                        {static_cast<ecs::entity>(_game), _game.display.factory->make_element(size, color)}
+                    })
+                });
+                _game.emplace_component<components::button>(rectangle, _game, size, action);
+                _entities.push_back(rectangle);
+            }
+    };
+
     struct menu : public ecs::scene {
         constexpr menu(game &game) noexcept
             : ecs::scene(game), _game(game)
@@ -185,7 +352,7 @@ export namespace game::scenes {
                 start_y += button_height + spacing;
 
                 button_height = create_centered_button("Multiplayer", start_y, fontSize, button_color, [&game = _game](){
-                    game.begin_scene(std::make_unique<game_scene>(game));
+                    game.begin_scene(std::make_unique<multiplayer_menu>(game));
                 });
                 start_y += button_height + spacing;
 

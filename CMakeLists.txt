@@ -1,15 +1,11 @@
 cmake_minimum_required(VERSION 3.30 FATAL_ERROR)
 
-project(R-Type)
+project(R-Type LANGUAGES CXX)
 
 include(CTest)
 enable_testing()
 
 find_package(asio CONFIG REQUIRED)
-find_package(SFML 2.5 COMPONENTS graphics window system audio CONFIG REQUIRED)
-find_package(OpenAL REQUIRED)
-find_package(FLAC REQUIRED)
-find_package(Vorbis REQUIRED)
 
 # `import std;` support
 if(${CMAKE_CXX_STANDARD} IN_LIST CMAKE_CXX_COMPILER_IMPORT_STD)

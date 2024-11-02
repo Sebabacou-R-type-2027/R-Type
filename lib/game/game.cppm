@@ -8,10 +8,12 @@ export module game:game;
 export import :components.buttons;
 export import :components.projectiles;
 export import :components.enemies;
+export import :components.inputs;
 export import :components.stats;
 export import :systems.buttons;
 export import :systems.projectiles;
 export import :systems.enemies;
+export import :systems.inputs;
 export import :systems.stats;
 
 #if __cpp_lib_modules >= 202207L
@@ -54,6 +56,8 @@ export namespace game {
 
         constexpr void register_systems() noexcept
         {
+            this->register_system<components::input>(handle_text_input);
+            this->register_system<components::input, components::button>(reset_focus);
             this->register_system<const projectile>(cull_projectiles);
             this->register_system<projectile_launcher, const ecs::components::position>(launch_projectile);
             this->register_system<projectile_launcher_ownership, const ecs::components::position>(launch_projectile_ownership);
