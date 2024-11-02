@@ -13,10 +13,18 @@ export namespace game::components {
     struct score {
         int value;
         ecs::entity game;
+
+        score(int value, ecs::entity game)
+            : value(value), game(game)
+        {}
     };
 
     struct health {
         int value;
         ecs::entity game;
+    };
+
+    struct id {
+        int value;
     };
 }
