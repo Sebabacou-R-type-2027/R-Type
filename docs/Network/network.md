@@ -53,7 +53,7 @@ L'intégration d'**Asio** et **Lz4** dans le projet R-Type répond aux besoins c
 Le projet R-Type utilise une approche hybride où le **serveur principal** gère la coordination initiale des lobbys et des connexions, tandis que des éléments de communication **peer-to-peer** peuvent être intégrés pour des échanges optimisés entre les clients. Cela permet de bénéficier à la fois de la robustesse d'un serveur centralisé et de la rapidité des interactions directes entre les pairs.
 
 #### Exemple de Lancement d'une Partie
-![Lancement de la Partie](./images/img.png)
+![Lancement de la Partie](./images/img_3.png)
 
 Lorsqu'une partie est lancée :
 - Chaque client envoie une requête de ping au serveur principal pour évaluer la latence.
@@ -67,19 +67,19 @@ La gestion des lobbys se déroule en trois étapes principales :
 2. **Rejoindre un Lobby** : Les autres clients utilisent le `LOBBY_ID` pour envoyer une requête `join_lobby` au serveur et rejoindre la même instance.
 3. **Synchronisation des Joueurs** : Une fois tous les joueurs connectés, le lobby est synchronisé et prêt pour le lancement de la partie.
 
-![Protocole de Lobby](./images/img_1.png)
+![Protocole de Lobby](./images/img_2.png)
 
 ### 3. Protocole de Base entre le Client et le Serveur
 
 Le protocole de base gère l'authentification et les interactions standard, telles que la création de lobbys et la mise à jour des états des joueurs. Chaque interaction entre le client et le serveur est confirmée par un accusé de réception (`ACK`).
 
-![Protocole Client-Serveur](./images/img_2.png)
+![Protocole Client-Serveur](./images/img.png)
 
 ### 4. Protocole de la Boîte de Discussion
 
 Le jeu intègre un protocole de chat permettant aux joueurs de communiquer pendant les parties. Les messages sont compressés pour optimiser la bande passante et envoyés au serveur principal, qui les distribue ensuite à tous les clients du lobby. Chaque client décompresse et affiche les messages reçus.
 
-![Protocole de Chat](./images/img_3.png)
+![Protocole de Chat](./images/img_1.png)
 
 #### Étapes du Protocole de Chat :
 1. Le client envoie un message compressé au serveur principal.
