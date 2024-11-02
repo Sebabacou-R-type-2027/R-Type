@@ -55,5 +55,9 @@ export namespace game::systems {
             }
             ec.erase_entity(e);
         }
+        if (auto enemy = ec.get_entity_component<components::enemy>(*box.triggered_by)) {
+            life.value -= enemy->get().damage;
+            ec.erase_entity(e);
+        }
     }
 }

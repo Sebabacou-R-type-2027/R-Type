@@ -41,6 +41,7 @@ export namespace game::scenes {
                 _game.emplace_component<ecs::components::engine::controllable>(player, _game, true, 10.0f);
                 _game.emplace_component<ecs::components::engine::hitbox>(player, rectangle<float>{50.0f, 50.0f, 34.0f, 36.0f});
                 _game.emplace_component<components::score>(player, 0, _game);
+                _game.emplace_component<components::health>(player, 1, _game);
                 _game.add_component(player, components::projectile_launcher_ownership{100ms, std::chrono::steady_clock::now(), _game, false});
                 auto label = _game.display.factory->make_element("Player", _game.asset_manager.get("arial"), 12);
                 label->set_origin({label->bounds(true).width / 2, label->bounds(true).height / 2});
