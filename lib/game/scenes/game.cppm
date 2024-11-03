@@ -23,15 +23,16 @@ export namespace game::scenes {
             {
                 _entities.push_back(create_player());
                 // _entities.push_back(create_fire_button(*_game.get_entity_component<projectile_launcher>(_entities.back())));
-                std::ranges::for_each(_entities, [this](ecs::entity e) {
-                    if (auto launcher = _game.get_entity_component<components::score>(e)) {
-                        _entities.push_back(spawn_boss(e, {1000.0f, 500.0f}));
-                        _entities.push_back(spawn_enemy_chaser(e, {500.0f, 500.0f}));
-                    }
-                });
+                // std::ranges::for_each(_entities, [this](ecs::entity e) {
+                //     if (auto launcher = _game.get_entity_component<components::score>(e)) {
+                //         _entities.push_back(spawn_boss(e, {1000.0f, 500.0f}));
+                //         _entities.push_back(spawn_enemy_chaser(e, {500.0f, 500.0f}));
+                //     }
+                // });
                 // _entities.push_back(spawn_enemy({100.0f, 100.0f}));
-                // _entities.push_back(spawn_enemy_spawner({300.0f, 300.0f}));
+                _entities.push_back(spawn_enemy_spawner({300.0f, 300.0f}));
                 // _entities.push_back(spawn_enemy_shooter({400.0f, 400.0f}));
+                // _entities.push_back(spawn_enemy_shooter({500.0f, 400.0f}));
             }
 
             private:
@@ -114,7 +115,7 @@ export namespace game::scenes {
                 _game.add_component(e, health{1, _game});
                 _game.add_component(e, ecs::components::engine::hitbox{rectangle<float>{position.x, position.y, 34.0f, 36.0f}});
                 _game.add_component(e, ecs::components::engine::velocity{10.0f, 0.0f});
-                _game.add_component(e, enemy_loop_movement{0.0f, 2000.0f, 200.0f, 800.0f, 1.0f, 0.0f, 100.0f, 2.0f});
+                _game.add_component(e, enemy_loop_movement{0.0f, 2000.0f, 200.0f, 800.0f, 1.0f, 0.0f, 100.0f, 2.0f, _game});
                 _game.emplace_component<ecs::components::gui::drawable>(e, ecs::components::gui::drawable{_game,
                     std::container<ecs::components::gui::drawable::elements_container>::make({
                         {static_cast<ecs::entity>(_game), _game.display.factory->make_element(
@@ -198,7 +199,7 @@ export namespace game::scenes {
                 _game.add_component(e, position);
                 _game.emplace_component<enemy>(e, 0, 500, std::chrono::steady_clock::now());
                 _game.emplace_component<health>(e, 3, _game);
-                _game.emplace_component<enemy_spawner>(e, 2s, 5ul, _game);
+                _game.emplace_component<enemy_spawner>(e, 2s, 5.0f, _game);
                 _game.emplace_component<ecs::components::engine::hitbox>(e, rectangle<float>{position.x, position.y, 65.0f, 66.0f});
                 _game.emplace_component<ecs::components::engine::velocity>(e);
                 _game.emplace_component<ecs::components::gui::drawable>(e, ecs::components::gui::drawable{_game,

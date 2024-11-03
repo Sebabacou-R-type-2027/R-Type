@@ -1,4 +1,4 @@
-export module game:scenes.menus.lobby;
+export module game:scenes.menus.game_over;
 import :game;
 
 import std;
@@ -6,8 +6,8 @@ import ecs;
 import utils;
 
 export namespace game::scenes {
-    struct lobby_menu : public ecs::scene {
-        constexpr lobby_menu(game &game) noexcept
+    struct Game_over_menu : public ecs::scene {
+        constexpr Game_over_menu(game &game) noexcept
             : ecs::scene(game), _game(game)
         {
         }
@@ -29,7 +29,7 @@ export namespace game::scenes {
 
             void initUI() {
                 float width = 500.0f;
-                float height = 400.0f;
+                float height = 350.0f;
 
                 // Title
                 /**
@@ -37,65 +37,37 @@ export namespace game::scenes {
 
                     * This function is used to create the UI of the scene.
                  */
-                create_centered_text("Lobby", (_game.display.window->get_size().y - height) / 2, ecs::abstractions::gui::color::white, 48);
+                create_centered_text("Game over", (_game.display.window->get_size().y - height) / 2, ecs::abstractions::gui::color::white, 48);
 
-                auto join_lobby_input = _game.create_entity();
-                _game.emplace_component<ecs::components::position>(join_lobby_input, (_game.display.window->get_size().x - 400.0f) / 2, (_game.display.window->get_size().y - 40.0f) / 2 - 20.0f);
-                auto join_lobby_text = _game.display.factory->make_element("", _game.asset_manager.get("arial"), 24);
-                auto &join_lobby = _game.emplace_component<components::input>(join_lobby_input, _game, *join_lobby_text);
-                _game.emplace_component<components::button>(join_lobby_input, _game, abstractions::vector<float>{400, 40}, [&join_lobby](){
-                    join_lobby.has_focus = true;
+                auto join_Game_over_input = _game.create_entity();
+                _game.emplace_component<ecs::components::position>(join_Game_over_input, (_game.display.window->get_size().x - 400.0f) / 2, (_game.display.window->get_size().y - 40.0f) / 2 - 20.0f);
+                auto join_Game_over_text = _game.display.factory->make_element("", _game.asset_manager.get("arial"), 24);
+                auto &join_Game_over = _game.emplace_component<components::input>(join_Game_over_input, _game, *join_Game_over_text);
+                _game.emplace_component<components::button>(join_Game_over_input, _game, abstractions::vector<float>{400, 40}, [&join_Game_over](){
+                    join_Game_over.has_focus = true;
                 });
-                _game.emplace_component<ecs::components::gui::drawable>(join_lobby_input, ecs::components::gui::drawable{_game,
+                _game.emplace_component<ecs::components::gui::drawable>(join_Game_over_input, ecs::components::gui::drawable{_game,
                     std::container<ecs::components::gui::drawable::elements_container>::make({
                         {static_cast<ecs::entity>(_game), _game.display.factory->make_element({400, 40}, ecs::abstractions::gui::color::transparent)},
-                        {static_cast<ecs::entity>(_game), std::move(join_lobby_text)}
+                        {static_cast<ecs::entity>(_game), std::move(join_Game_over_text)}
                     })
                 });
 
-                _entities.push_back(join_lobby_input);
-
-                // Join lobby code text
-                create_text({(_game.display.window->get_size().x - 400.0f) / 2, (_game.display.window->get_size().y - 40.0f) / 2 - 60.0f}, "Join Lobby Code :", ecs::abstractions::gui::color(255, 255, 255, 255 * 0.9), 24);
-                // Rectangle for Join lobby code
-                create_rectangle({(_game.display.window->get_size().x - 400.0f) / 2, (_game.display.window->get_size().y - 40.0f) / 2 - 20.0f}, {400.0f, 40.0f}, ecs::abstractions::gui::color(30, 30, 30, 255 * 0.8), ecs::abstractions::gui::color::black);
-                // Join Lobby Button
-                create_button("Join Lobby", {(_game.display.window->get_size().x - 400.0f) / 2, (_game.display.window->get_size().y - 40.0f) / 2 + 40.0f}, {400, 40}, ecs::abstractions::gui::color(14, 94, 255, 255),
-                    [&](){
-                        auto network = _game.get_entity_component<components::network>(_game);
-                        network->get().network->send_message("join_lobby " + join_lobby.content);
-                    });
-
-                create_button("Start Game", {(_game.display.window->get_size().x - 400.0f) / 2, (_game.display.window->get_size().y - 40.0f) / 2 + 100.0f}, {400, 40}, ecs::abstractions::gui::color(14, 94, 255, 255),
-                    [&](){
-                        auto network = _game.get_entity_component<components::network>(_game);
-                        network->get().network->send_message("start");
-                    });
-
-                // Create Lobby Button
-                auto text = _game.display.factory->make_element("Create Lobby", _game.asset_manager.get("arial"), 24);
+                _entities.push_back(join_Game_over_input);
+                auto text = _game.display.factory->make_element("Create Game_over", _game.asset_manager.get("arial"), 24);
                 ecs::abstractions::vector<float> text_size = {text->bounds(true).width, text->bounds(true).height};
                 float button_height = 50.0f;
                 ecs::abstractions::vector<float> button_size = {text_size.x + 40, button_height};
-
-                create_button("Create Lobby", {(_game.display.window->get_size().x) / 2.0f - button_size.x - 20, (_game.display.window->get_size().y - height - 20.0f) / 2 + height - 50.0f}, 24, ecs::abstractions::gui::color(14, 94, 255, 255),
-                    [&](){
-                        auto network = _game.get_entity_component<components::network>(_game);
-                        network->get().network->send_message("create_lobby");
-//                        std::cout << "Create Lobby" << std::endl;
-                    });
 
                 // Join MatchMaking Button
                 auto text2 = _game.display.factory->make_element(" Join Match ", _game.asset_manager.get("arial"), 24);
                 ecs::abstractions::vector<float> text_size2 = {text2->bounds(true).width, text2->bounds(true).height};
                 ecs::abstractions::vector<float> button_size2 = {text_size2.x + 40, button_height};
 
-                create_button(" Join Match ", {(_game.display.window->get_size().x) / 2.0f + 20, (_game.display.window->get_size().y - height - 20.0f) / 2 + height - 50.0f}, 24, ecs::abstractions::gui::color(14, 94, 255, 255),
+                create_button("Back to menu", {(_game.display.window->get_size().x) / 2.0f + 20, (_game.display.window->get_size().y - height - 20.0f) / 2 + height - 50.0f}, 24, ecs::abstractions::gui::color(14, 94, 255, 255),
                     [&](){
-                        auto settings = _game.get_entity_component<components::settings>(_game);
-                        auto network = _game.get_entity_component<components::network>(_game);
-                        network->get().network->send_message("matchmaking");
-//                        std::cout << "Join Matchmaking with Username: " << settings->get().username << std::endl << "Password: " << settings->get().password << std::endl << "Server Address: " << settings->get().server_address << std::endl << "Port: " << settings->get().port << std::endl;
+                        // _game.begin_scene(std::make_unique<menu>(_game));
+
                     });
 
                 // background rectangle

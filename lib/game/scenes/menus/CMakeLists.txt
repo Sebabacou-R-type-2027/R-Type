@@ -3,4 +3,5 @@ target_sources(game PUBLIC
         FILES main.cppm
             lobby.cppm
             multiplayer.cppm
+            game_over.cppm
 )
