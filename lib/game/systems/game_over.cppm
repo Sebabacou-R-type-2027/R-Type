@@ -17,13 +17,13 @@ using namespace std::chrono_literals;
 
 export namespace game::systems {
 
-    void game_over(ecs::entity_container &ec, game &game)
-    {
-        std::ranges::for_each(ec.get_entities(), [&ec, &game](auto e){
-            if (auto stats = ec.get_entity_component<components::score>(e)) {
-                return;
-            }
-            game.begin_scene(std::make_unique<Game_over_menu>(game));
-        });
-    }
+    // void game_over(ecs::entity_container &ec, game &game)
+    // {
+    //     std::ranges::for_each(ec.get_entities(), [&ec, &game](auto e){
+    //         if (auto stats = ec.get_entity_component<components::score>(e)) {
+    //             return;
+    //         }
+    //         game.begin_scene(std::make_unique<Game_over_menu>(game));
+    //     });
+    // }
 }

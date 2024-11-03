@@ -54,7 +54,7 @@ export namespace game::systems {
             return;
         }
         if (auto projectile = ec.get_entity_component<components::projectile>(*box.triggered_by)) {
-            if (projectile->get().owner == e) {
+            if (projectile->get().owner == e || ec.get_entity_component<components::enemy>(e)) {
                 box.triggered_by = std::nullopt;
                 return;
             }

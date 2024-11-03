@@ -92,7 +92,6 @@ export namespace game {
             this->register_system<boss, ecs::components::position>(handle_boss_pattern);
             this->register_system<button, const ecs::components::position>(press_button);
             this->register_system<health, ecs::components::engine::hitbox>(update_life);
-            this->register_system<>(game_over);
             this->register_gui_systems();
             this->register_system<components::settings, const ecs::components::gui::display>(shader_background);
             this->register_engine_systems();

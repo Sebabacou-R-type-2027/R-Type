@@ -89,16 +89,31 @@ export namespace game::systems {
 
         spawner.last_update = now;
 
-        for (std::size_t i = 0; i < spawner.max_enemies; ++i) {
+        for (; spawner.actual_enemies < spawner.max_enemies; ++spawner.actual_enemies) {
             const ecs::components::gui::display &display =
                 *ec.get_entity_component<const ecs::components::gui::display>(spawner.game);
             const ecs::components::gui::asset_manager &asset_manager = *ec.get_entity_component<const ecs::components::gui::asset_manager>(spawner.game);
+            
             auto enemy = ec.create_entity();
-            ec.add_component(enemy, ecs::components::position{position.x + i * 20.0f, position.y});
+
+            // Setting initial position with a unique phase for each enemy to create a snake effect
+            float phase_offset = spawner.actual_enemies * 0.5f;  // Adjust phase increment as needed for spacing
+            ec.add_component(enemy, ecs::components::position{
+                position.x + spawner.actual_enemies * 20.0f, 
+                position.y + std::sin(phase_offset) * 10.0f  // Initial y offset
+            });
+            
+            // Set velocity in the x direction and a sinusoidal movement in the y direction
             ec.add_component(enemy, ecs::components::engine::velocity{-10.0f, 0.0f});
+            
             ec.add_component(enemy, components::health{1, spawner.game});
             ec.add_component(enemy, ecs::components::engine::hitbox{ecs::abstractions::rectangle<float>{position.x, position.y, 34.0f, 36.0f}});
-            ec.add_component(enemy, components::enemy_loop_movement{0.0f, 2000.0f, 200.0f, 800.0f, 1.0f, 0.0f, 100.0f, 2.0f, spawner.game});
+
+            // Set up snake-like movement component with oscillation properties
+            ec.add_component(enemy, components::enemy_loop_movement{
+                0.0f, 2000.0f, 200.0f, 800.0f, 1.0f, phase_offset, 100.0f, 2.0f, spawner.game
+            });
+
             ec.emplace_component<ecs::components::gui::drawable>(enemy, ecs::components::gui::drawable{spawner.game,
                 std::container<ecs::components::gui::drawable::elements_container>::make({
                     {static_cast<ecs::entity>(spawner.game), display.factory->make_element(
@@ -214,10 +229,11 @@ export namespace game::systems {
     {
         auto life = ec.get_entity_component<components::health>(e);
 
+        std::cout << life->get().value << std::endl;
         if (life->get().value >= 250) {
             pattern_1(e, ec, boss, position);
         }
-        if (life->get().value < 200 && life->get().value >= 100) {
+        if (life->get().value < 250 && life->get().value >= 100) {
             pattern_2(e, ec, boss, position);
         }
         if (life->get().value < 100 && life->get().value > 0) {
