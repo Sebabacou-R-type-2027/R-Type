@@ -8,9 +8,15 @@ export module game:game;
 export import :components.buttons;
 export import :components.projectiles;
 export import :components.enemies;
+export import :components.inputs;
+export import :components.settings;
+export import :components.stats;
 export import :systems.buttons;
 export import :systems.projectiles;
 export import :systems.enemies;
+export import :systems.inputs;
+export import :systems.shader_background;
+export import :systems.stats;
 
 #if __cpp_lib_modules >= 202207L
 import std;
@@ -52,14 +58,20 @@ export namespace game {
 
         constexpr void register_systems() noexcept
         {
+            this->register_system<components::input>(handle_text_input);
+            this->register_system<components::input, components::button>(reset_focus);
             this->register_system<const projectile>(cull_projectiles);
             this->register_system<projectile_launcher, const ecs::components::position>(launch_projectile);
-            this->register_system<enemy_shooter, const ecs::components::position>(move_enemy_shooter);
+            this->register_system<projectile_launcher_ownership, const ecs::components::position>(launch_projectile_ownership);
+            this->register_system<enemy_shooter, ecs::components::position, ecs::components::engine::velocity>(move_enemy_shooter);
             this->register_system<enemy_loop_movement, ecs::components::position>(move_enemy_loop);
             this->register_system<enemy_chaser, ecs::components::position>(move_enemy_chaser);
             this->register_system<enemy_spawner, ecs::components::position>(handle_enemy_spawner);
             this->register_system<button, const ecs::components::position>(press_button);
+            this->register_system<health, ecs::components::engine::hitbox>(update_life);
+            this->register_system<score>(update_score);
             this->register_gui_systems();
+            this->register_system<components::settings, const ecs::components::gui::display>(shader_background);
             this->register_engine_systems();
         }
 
