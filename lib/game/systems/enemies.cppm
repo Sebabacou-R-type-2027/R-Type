@@ -96,11 +96,11 @@ export namespace game::systems {
             const ecs::components::gui::display &display =
                 *ec.get_entity_component<const ecs::components::gui::display>(spawner.game);
             const ecs::components::gui::asset_manager &asset_manager = *ec.get_entity_component<const ecs::components::gui::asset_manager>(spawner.game);
-            
+
             auto enemy = ec.create_entity();
             float phase_offset = phase_base - (spawner.actual_enemies * 0.5f);
             ec.add_component(enemy, ecs::components::position{
-                position.x + spawner.actual_enemies * 20.0f, 
+                position.x + spawner.actual_enemies * 20.0f,
                 position.y + std::sin(phase_offset) * 10.0f
             });
             ec.add_component(enemy, components::enemy{1, 250, std::chrono::steady_clock::now()});
@@ -248,7 +248,7 @@ export namespace game::systems {
     void move_enemy_loop(ecs::entity_container &ec, game::components::enemy_loop_movement &loop_mvt, ecs::components::position &position)
     {
         auto windowSize = ec.get_entity_component<ecs::components::gui::display>(loop_mvt.game)->get().window->get_size();
-    
+
         loop_mvt.speed *= -1.0f;
 
         float delta_seconds = 0.05f;
