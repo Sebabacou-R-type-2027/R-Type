@@ -6,4 +6,6 @@ target_sources(game PUBLIC
             stats.cppm
             inputs.cppm
             settings.cppm
+            map_editor.cppm
+            spawn_waves.cppm
 )
