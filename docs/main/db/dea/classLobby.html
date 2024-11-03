@@ -94,6 +94,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a95a79a2983d7d26393b5e85b5076ab47"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee4266fd5091de3f741e54f92296ed98"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dea/classLobby.html#aee4266fd5091de3f741e54f92296ed98">mark_unready</a> (const <a class="el" href="../../dc/d8d/classserver_1_1client.html">server::client</a> &amp;cli)</td></tr>
 <tr class="separator:aee4266fd5091de3f741e54f92296ed98"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3dea8083acbfb8988f41dc191dc02ba8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dea/classLobby.html#a3dea8083acbfb8988f41dc191dc02ba8">set_client_ready</a> (const <a class="el" href="../../dc/d8d/classserver_1_1client.html">server::client</a> &amp;cli, bool ready)</td></tr>
+<tr class="separator:a3dea8083acbfb8988f41dc191dc02ba8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afe5dcc389ddbbf1b6e0dfd105cb19540"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dea/classLobby.html#afe5dcc389ddbbf1b6e0dfd105cb19540">is_everyone_ready</a> () const</td></tr>
 <tr class="separator:afe5dcc389ddbbf1b6e0dfd105cb19540"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae42afdbca0ce047078fc32594b38d12a"><td class="memItemLeft" align="right" valign="top"><a class="elRef" href="https://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; <a class="el" href="../../dc/d8d/classserver_1_1client.html">server::client</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dea/classLobby.html#ae42afdbca0ce047078fc32594b38d12a">get_clients</a> () const</td></tr>
@@ -114,6 +116,11 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a45aa046b230e561d0524b815663bba9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad116284eb845a9d4bc18c8327b37afa7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dea/classLobby.html#ad116284eb845a9d4bc18c8327b37afa7">is_lobby_id</a> (int id) const</td></tr>
 <tr class="separator:ad116284eb845a9d4bc18c8327b37afa7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a29be8512b9a0513d9be61c704e4c01e4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dea/classLobby.html#a29be8512b9a0513d9be61c704e4c01e4">handle_chat_message</a> (const <a class="elRef" href="https://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> &amp;message, const <a class="el" href="../../dc/d8d/classserver_1_1client.html">server::client</a> &amp;cli, <a class="elRef" href="https://en.cppreference.com/w/cpp/types/size_t.html">std::size_t</a> bytes_recv)</td></tr>
+<tr class="memdesc:a29be8512b9a0513d9be61c704e4c01e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handle chat message.  <br /></td></tr>
+<tr class="separator:a29be8512b9a0513d9be61c704e4c01e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac0df57270d013c7f8d65a61add034f0b"><td class="memItemLeft" align="right" valign="top"><a class="elRef" href="https://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; <a class="elRef" href="https://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dea/classLobby.html#ac0df57270d013c7f8d65a61add034f0b">get_chat_history</a> ()</td></tr>
+<tr class="separator:ac0df57270d013c7f8d65a61add034f0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a8071327715a87c9fa1ed2bf3fec98793" name="a8071327715a87c9fa1ed2bf3fec98793"></a>
@@ -196,6 +203,23 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="ac0df57270d013c7f8d65a61add034f0b" name="ac0df57270d013c7f8d65a61add034f0b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0df57270d013c7f8d65a61add034f0b">&#9670;&#160;</a></span>get_chat_history()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="elRef" href="https://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; <a class="elRef" href="https://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> &gt; &amp; Lobby::get_chat_history </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ae42afdbca0ce047078fc32594b38d12a" name="ae42afdbca0ce047078fc32594b38d12a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae42afdbca0ce047078fc32594b38d12a">&#9670;&#160;</a></span>get_clients()</h2>
 
@@ -244,6 +268,48 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a29be8512b9a0513d9be61c704e4c01e4" name="a29be8512b9a0513d9be61c704e4c01e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a29be8512b9a0513d9be61c704e4c01e4">&#9670;&#160;</a></span>handle_chat_message()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Lobby::handle_chat_message </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="elRef" href="https://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> &amp;&#160;</td>
+          <td class="paramname"><em>message</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="../../dc/d8d/classserver_1_1client.html">server::client</a> &amp;&#160;</td>
+          <td class="paramname"><em>cli</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="elRef" href="https://en.cppreference.com/w/cpp/types/size_t.html">std::size_t</a>&#160;</td>
+          <td class="paramname"><em>bytes_recv</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Handle chat message. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">message</td><td>The message containing the chat message </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -414,6 +480,34 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a3dea8083acbfb8988f41dc191dc02ba8" name="a3dea8083acbfb8988f41dc191dc02ba8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3dea8083acbfb8988f41dc191dc02ba8">&#9670;&#160;</a></span>set_client_ready()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Lobby::set_client_ready </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="../../dc/d8d/classserver_1_1client.html">server::client</a> &amp;&#160;</td>
+          <td class="paramname"><em>cli</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>ready</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a57c0ab8bbe500e7e407ae3562821caf3" name="a57c0ab8bbe500e7e407ae3562821caf3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a57c0ab8bbe500e7e407ae3562821caf3">&#9670;&#160;</a></span>set_host()</h2>
 
@@ -433,8 +527,8 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>server/<a class="el" href="../../df/d04/Lobby_8hpp_source.html">Lobby.hpp</a></li>
-<li>server/<a class="el" href="../../d8/d7c/Lobby_8cpp.html">Lobby.cpp</a></li>
+<li>server/lobby/<a class="el" href="../../df/d04/Lobby_8hpp_source.html">Lobby.hpp</a></li>
+<li>server/lobby/<a class="el" href="../../d8/d7c/Lobby_8cpp.html">Lobby.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

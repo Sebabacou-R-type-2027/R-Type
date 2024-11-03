@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.6"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>R-Type: server/Lobby.hpp File Reference</title>
+<title>R-Type: server/lobby/Lobby.hpp File Reference</title>
 <link href="../../tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../../jquery.js"></script>
 <script type="text/javascript" src="../../dynsections.js"></script>
@@ -71,7 +71,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="../../dir_075bb3ff235063c77951cd176d15a741.html">server</a></li>  </ul>
+<li class="navelem"><a class="el" href="../../dir_075bb3ff235063c77951cd176d15a741.html">server</a></li><li class="navelem"><a class="el" href="../../dir_094248d161de6b1e8f7da6291ff2ab2e.html">lobby</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -85,34 +85,40 @@ $(function() {
 <code>#include &lt;<a class="elRef" href="https://en.cppreference.com/w/cpp/header/string.html">string</a>&gt;</code><br />
 <code>#include &lt;<a class="elRef" href="https://en.cppreference.com/w/cpp/header/utility.html">utility</a>&gt;</code><br />
 <code>#include &lt;asio.hpp&gt;</code><br />
-<code>#include &quot;<a class="el" href="../../d2/dfe/client_8hpp_source.html">client/client.hpp</a>&quot;</code><br />
+<code>#include &lt;<a class="elRef" href="https://en.cppreference.com/w/cpp/header/unordered_map.html">unordered_map</a>&gt;</code><br />
+<code>#include &lt;<a class="elRef" href="https://en.cppreference.com/w/cpp/header/iomanip.html">iomanip</a>&gt;</code><br />
+<code>#include &quot;<a class="el" href="../../d2/dfe/client_8hpp_source.html">client.hpp</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for Lobby.hpp:</div>
 <div class="dyncontent">
-<div class="center"><img src="../../d5/dcf/Lobby_8hpp__incl.png" border="0" usemap="#aserver_2Lobby_8hpp" alt=""/></div>
-<map name="aserver_2Lobby_8hpp" id="aserver_2Lobby_8hpp">
-<area shape="rect" title=" " alt="" coords="170,5,302,31"/>
+<div class="center"><img src="../../d5/dcf/Lobby_8hpp__incl.png" border="0" usemap="#aserver_2lobby_2Lobby_8hpp" alt=""/></div>
+<map name="aserver_2lobby_2Lobby_8hpp" id="aserver_2lobby_2Lobby_8hpp">
+<area shape="rect" title=" " alt="" coords="215,5,387,31"/>
 <area shape="rect" target="_parent" href="https://en.cppreference.com/w/cpp/header/iostream.html" title=" " alt="" coords="5,79,85,104"/>
 <area shape="rect" target="_parent" href="https://en.cppreference.com/w/cpp/header/vector.html" title=" " alt="" coords="110,79,173,104"/>
-<area shape="rect" target="_parent" href="https://en.cppreference.com/w/cpp/header/string.html" title=" " alt="" coords="152,152,211,177"/>
-<area shape="rect" target="_parent" href="https://en.cppreference.com/w/cpp/header/utility.html" title=" " alt="" coords="235,152,295,177"/>
-<area shape="rect" title=" " alt="" coords="451,79,528,104"/>
-<area shape="rect" href="../../d2/dfe/client_8hpp.html" title="file with the declaration of Client class" alt="" coords="299,79,426,104"/>
-<area shape="rect" target="_parent" href="https://en.cppreference.com/w/cpp/header/exception.html" title=" " alt="" coords="319,152,406,177"/>
-<area shape="rect" target="_parent" href="https://en.cppreference.com/w/cpp/header/cstdint.html" title=" " alt="" coords="431,152,497,177"/>
-<area shape="rect" title=" " alt="" coords="522,152,643,177"/>
+<area shape="rect" target="_parent" href="https://en.cppreference.com/w/cpp/header/string.html" title=" " alt="" coords="148,152,207,177"/>
+<area shape="rect" target="_parent" href="https://en.cppreference.com/w/cpp/header/utility.html" title=" " alt="" coords="231,152,291,177"/>
+<area shape="rect" title=" " alt="" coords="411,79,488,104"/>
+<area shape="rect" target="_parent" href="https://en.cppreference.com/w/cpp/header/unordered_map.html" title=" " alt="" coords="513,79,637,104"/>
+<area shape="rect" target="_parent" href="https://en.cppreference.com/w/cpp/header/iomanip.html" title=" " alt="" coords="661,79,736,104"/>
+<area shape="rect" href="../../d2/dfe/client_8hpp.html" title="file with the declaration of Client class" alt="" coords="299,79,386,104"/>
+<area shape="rect" target="_parent" href="https://en.cppreference.com/w/cpp/header/exception.html" title=" " alt="" coords="315,152,402,177"/>
+<area shape="rect" target="_parent" href="https://en.cppreference.com/w/cpp/header/cstdint.html" title=" " alt="" coords="427,152,493,177"/>
+<area shape="rect" title=" " alt="" coords="518,152,639,177"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
 This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
-<div class="center"><img src="../../d0/dd2/Lobby_8hpp__dep__incl.png" border="0" usemap="#aserver_2Lobby_8hppdep" alt=""/></div>
-<map name="aserver_2Lobby_8hppdep" id="aserver_2Lobby_8hppdep">
-<area shape="rect" title=" " alt="" coords="90,5,222,31"/>
-<area shape="rect" href="../../d8/d7c/Lobby_8cpp.html" title=" " alt="" coords="5,79,136,104"/>
-<area shape="rect" href="../../da/d25/UdpServer_8hpp.html" title=" " alt="" coords="160,79,323,104"/>
-<area shape="rect" href="../../dc/d31/UdpServer_8cpp.html" title=" " alt="" coords="77,152,238,177"/>
-<area shape="rect" href="../../d6/d7a/server_2main_8cpp.html" title=" " alt="" coords="262,152,389,177"/>
+<div class="center"><img src="../../d0/dd2/Lobby_8hpp__dep__incl.png" border="0" usemap="#aserver_2lobby_2Lobby_8hppdep" alt=""/></div>
+<map name="aserver_2lobby_2Lobby_8hppdep" id="aserver_2lobby_2Lobby_8hppdep">
+<area shape="rect" title=" " alt="" coords="143,5,315,31"/>
+<area shape="rect" href="../../da/d25/UdpServer_8hpp.html" title=" " alt="" coords="89,174,251,199"/>
+<area shape="rect" href="../../d8/d7c/Lobby_8cpp.html" title=" " alt="" coords="143,86,314,111"/>
+<area shape="rect" href="../../dc/d3e/MatchmakingSystem_8hpp.html" title=" " alt="" coords="338,79,530,119"/>
+<area shape="rect" href="../../dc/d31/UdpServer_8cpp.html" title=" " alt="" coords="5,255,167,280"/>
+<area shape="rect" href="../../d6/d7a/server_2main_8cpp.html" title=" " alt="" coords="191,255,317,280"/>
+<area shape="rect" href="../../d7/dbb/MatchmakingSystem_8cpp.html" title=" " alt="" coords="339,167,529,207"/>
 </map>
 </div>
 </div>

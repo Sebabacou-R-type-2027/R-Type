@@ -74,13 +74,13 @@ $(function() {
   <div class="headertitle"><div class="title">RFC: R-Type Protocol Documentation </div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h1><a class="anchor" id="autotoc_md28"></a>
+<div class="textblock"><h1><a class="anchor" id="autotoc_md57"></a>
 1. Introduction</h1>
 <p>This document defines the structure and types of packets used in the <b>R-Type</b> protocol. This protocol is designed for efficient data transmission in a network environment, where each packet consists of a size, an identifier, a type, and data.</p>
-<h1><a class="anchor" id="autotoc_md29"></a>
+<h1><a class="anchor" id="autotoc_md58"></a>
 2. Structure of a Packet</h1>
 <p>Each packet is structured to include four main fields: <b>SIZE</b>, <b>ID</b>, <b>TYPE</b>, and <b>DATA</b>. These fields define the size of the contained data, the identification of the packet, its type, and the data itself.</p>
-<h2><a class="anchor" id="autotoc_md30"></a>
+<h2><a class="anchor" id="autotoc_md59"></a>
 2.1 Packet Format</h2>
 <p>The following table describes the structure of a packet in the <b>PACKET</b> protocol:</p>
 <table class="markdownTable">
@@ -96,7 +96,7 @@ $(function() {
 <td class="markdownTableBodyNone">DATA   </td><td class="markdownTableBodyNone">Variable (SIZE)   </td><td class="markdownTableBodyNone">The content of the packet, the length of which is defined by the SIZE field.   </td></tr>
 </table>
 <p>The <b>SIZE</b>, <b>ID</b>, <b>TYPE</b>, and <b>DATA</b> fields are mandatory for every packet. The total length of the packet varies depending on the size of the data, as indicated by the <b>SIZE</b> field.</p>
-<h2><a class="anchor" id="autotoc_md31"></a>
+<h2><a class="anchor" id="autotoc_md60"></a>
 2.2 Size Field (SIZE)</h2>
 <ul>
 <li>The <b>SIZE</b> field indicates the size of the data in the <b>DATA</b> field.</li>
@@ -107,20 +107,20 @@ $(function() {
 </blockquote>
 </li>
 </ul>
-<h2><a class="anchor" id="autotoc_md32"></a>
+<h2><a class="anchor" id="autotoc_md61"></a>
 2.3 Identification Field (ID)</h2>
 <ul>
 <li>The <b>ID</b> field uniquely identifies each packet.</li>
 <li>This field is encoded in 1 or 2 bytes depending on the context.</li>
 <li>The packets sent can be distinguished by their <b>ID</b>, which is crucial for reconstructing or analyzing data over the network.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md33"></a>
+<h2><a class="anchor" id="autotoc_md62"></a>
 2.4 Type Field (TYPE)</h2>
 <ul>
 <li>The <b>TYPE</b> field is a single byte that identifies the nature of the data in the packet.</li>
 <li>The type allows packets to be categorized for better management and interpretation on the receiver's side.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md34"></a>
+<h1><a class="anchor" id="autotoc_md63"></a>
 3. Types of Packets</h1>
 <p>The <b>TYPE</b> field in the packet differentiates between various packet types used in the protocol. Below is a list of defined packet types:</p>
 <table class="markdownTable">
@@ -133,9 +133,9 @@ $(function() {
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">...   </td><td class="markdownTableBodyNone">...   </td></tr>
 </table>
-<h1><a class="anchor" id="autotoc_md35"></a>
+<h1><a class="anchor" id="autotoc_md64"></a>
 4. Packet Handling</h1>
-<h2><a class="anchor" id="autotoc_md36"></a>
+<h2><a class="anchor" id="autotoc_md65"></a>
 4.1 Transmission</h2>
 <p>When transmitting a packet, the sender must:</p><ol type="1">
 <li>Define the correct <b>SIZE</b> field based on the size of the data.</li>
@@ -143,7 +143,7 @@ $(function() {
 <li>Assign the <b>TYPE</b> field based on the nature of the data or request.</li>
 <li>Transmit the packet, including the <b>DATA</b> field with the length corresponding to the <b>SIZE</b> field.</li>
 </ol>
-<h2><a class="anchor" id="autotoc_md37"></a>
+<h2><a class="anchor" id="autotoc_md66"></a>
 4.2 Reception</h2>
 <p>The receiver must:</p><ol type="1">
 <li>Read the <b>SIZE</b> field to determine the length of the data.</li>
@@ -151,14 +151,14 @@ $(function() {
 <li>Process the <b>DATA</b> field based on the type of packet received.</li>
 <li>Respond to the sender as needed, such as sending an acknowledgment or processing the data.</li>
 </ol>
-<h1><a class="anchor" id="autotoc_md38"></a>
+<h1><a class="anchor" id="autotoc_md67"></a>
 5. Error Handling</h1>
 <p>The protocol accounts for several error scenarios that may occur during packet transmission or reception:</p><ul>
 <li><b>Invalid Size</b>: If the <b>SIZE</b> field does not match the length of the received data, an <b>ERROR_PACKET</b> is returned.</li>
 <li><b>Unknown Type</b>: If the <b>TYPE</b> field contains an unrecognized value, an <b>ERROR_PACKET</b> is sent with a description of the error.</li>
 <li><b>Timeouts</b>: If a response to a <b>PING_PACKET</b> is not received, a reconnection attempt can be initiated, or an <b>ERROR_PACKET</b> can be generated.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md39"></a>
+<h1><a class="anchor" id="autotoc_md68"></a>
 6. Conclusion</h1>
 <p>This packet protocol provides a flexible and lightweight structure for transmitting data while ensuring the integrity of transmissions through well-defined size, type, and identification fields. The packet types allow for efficient communication management, whether for regular data, acknowledgments, or connectivity tests. </p>
 </div></div><!-- contents -->

@@ -1,10 +1,13 @@
 <map id="server/client/ClientSaver.hpp" name="server/client/ClientSaver.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="76,5,285,31"/>
-<area shape="rect" id="node2" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/fstream.html" title=" " alt="" coords="92,79,165,104"/>
-<area shape="rect" id="node3" href="$d2/dfe/client_8hpp.html" title="file with the declaration of Client class" alt="" coords="189,79,276,104"/>
-<area shape="rect" id="node4" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/exception.html" title=" " alt="" coords="5,152,92,177"/>
-<area shape="rect" id="node5" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/string.html" title=" " alt="" coords="117,152,175,177"/>
-<area shape="rect" id="node6" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/cstdint.html" title=" " alt="" coords="199,152,266,177"/>
-<area shape="rect" id="node7" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/utility.html" title=" " alt="" coords="291,152,351,177"/>
-<area shape="rect" id="node8" title=" " alt="" coords="375,152,496,177"/>
+<area shape="rect" id="node1" title=" " alt="" coords="128,5,337,31"/>
+<area shape="rect" id="node2" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/fstream.html" title=" " alt="" coords="5,79,79,104"/>
+<area shape="rect" id="node3" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/vector.html" title=" " alt="" coords="103,79,165,104"/>
+<area shape="rect" id="node4" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/algorithm.html" title=" " alt="" coords="190,79,275,104"/>
+<area shape="rect" id="node5" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/map.html" title=" " alt="" coords="299,79,350,104"/>
+<area shape="rect" id="node6" href="$d2/dfe/client_8hpp.html" title="file with the declaration of Client class" alt="" coords="375,79,461,104"/>
+<area shape="rect" id="node7" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/exception.html" title=" " alt="" coords="191,152,277,177"/>
+<area shape="rect" id="node8" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/string.html" title=" " alt="" coords="302,152,361,177"/>
+<area shape="rect" id="node9" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/cstdint.html" title=" " alt="" coords="385,152,451,177"/>
+<area shape="rect" id="node10" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/utility.html" title=" " alt="" coords="476,152,536,177"/>
+<area shape="rect" id="node11" title=" " alt="" coords="560,152,681,177"/>
 </map>

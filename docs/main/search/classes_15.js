@@ -8,6 +8,8 @@ var searchData=
   ['variant_5falternative_5ft_5',['variant_alternative_t',['https://en.cppreference.com/w/cpp/utility/variant/variant_alternative.html',1,'std']]],
   ['variant_5fsize_6',['variant_size',['https://en.cppreference.com/w/cpp/utility/variant/variant_size.html',1,'std']]],
   ['vector_7',['vector',['https://en.cppreference.com/w/cpp/container/vector.html',1,'std::pmr::vector'],['https://en.cppreference.com/w/cpp/container/vector.html',1,'std::vector&lt; T &gt;']]],
-  ['vector_3c_20server_3a_3aclient_20_3e_8',['vector&lt; server::client &gt;',['https://en.cppreference.com/w/cpp/container/vector.html',1,'std']]],
-  ['void_5ft_9',['void_t',['https://en.cppreference.com/w/cpp/types/void_t.html',1,'std']]]
+  ['vector_3c_20lobby_20_3e_8',['vector&lt; Lobby &gt;',['https://en.cppreference.com/w/cpp/container/vector.html',1,'std']]],
+  ['vector_3c_20server_3a_3aclient_20_3e_9',['vector&lt; server::client &gt;',['https://en.cppreference.com/w/cpp/container/vector.html',1,'std']]],
+  ['vector_3c_20std_3a_3astring_20_3e_10',['vector&lt; std::string &gt;',['https://en.cppreference.com/w/cpp/container/vector.html',1,'std']]],
+  ['void_5ft_11',['void_t',['https://en.cppreference.com/w/cpp/types/void_t.html',1,'std']]]
 ];

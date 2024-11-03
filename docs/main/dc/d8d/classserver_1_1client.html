@@ -146,6 +146,11 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a6c63551ace792f5a19208bb46da6c073"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d8d/classserver_1_1client.html#a6c63551ace792f5a19208bb46da6c073">set_ready</a> (bool ready)</td></tr>
 <tr class="memdesc:a6c63551ace792f5a19208bb46da6c073"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the client as ready.  <br /></td></tr>
 <tr class="separator:a6c63551ace792f5a19208bb46da6c073"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33fc6e400f7f17908ee37b1a0099cb8e"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d8d/classserver_1_1client.html#a33fc6e400f7f17908ee37b1a0099cb8e">get_best_score</a> () const</td></tr>
+<tr class="memdesc:a33fc6e400f7f17908ee37b1a0099cb8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the best score of the client.  <br /></td></tr>
+<tr class="separator:a33fc6e400f7f17908ee37b1a0099cb8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab05bb4ba73b270e899c6683c1699afaa"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d8d/classserver_1_1client.html#ab05bb4ba73b270e899c6683c1699afaa">new_score</a> (uint32_t score)</td></tr>
+<tr class="separator:ab05bb4ba73b270e899c6683c1699afaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a7557884971b5d429c8dc1c2455bd24"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d8d/classserver_1_1client.html#a2a7557884971b5d429c8dc1c2455bd24">is_ready</a> () const</td></tr>
 <tr class="memdesc:a2a7557884971b5d429c8dc1c2455bd24"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the client is ready.  <br /></td></tr>
 <tr class="separator:a2a7557884971b5d429c8dc1c2455bd24"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -162,6 +167,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a67ea9eea264937ac18c1d44b7b7c6acc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0601bd0d422a508c158fa54d866cfa5e"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d8d/classserver_1_1client.html#a0601bd0d422a508c158fa54d866cfa5e">get_latency</a> () const</td></tr>
 <tr class="separator:a0601bd0d422a508c158fa54d866cfa5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa883c03bdbfc9e4690d74174c8c02fec"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d8d/classserver_1_1client.html#aa883c03bdbfc9e4690d74174c8c02fec">set_lobby_id</a> (int lobby_id)</td></tr>
+<tr class="separator:aa883c03bdbfc9e4690d74174c8c02fec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5854183ba3a4b652217b4783f5ba0d14"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d8d/classserver_1_1client.html#a5854183ba3a4b652217b4783f5ba0d14">get_lobby_id</a> () const</td></tr>
+<tr class="separator:a5854183ba3a4b652217b4783f5ba0d14"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -269,6 +278,25 @@ Friends</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a33fc6e400f7f17908ee37b1a0099cb8e" name="a33fc6e400f7f17908ee37b1a0099cb8e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a33fc6e400f7f17908ee37b1a0099cb8e">&#9670;&#160;</a></span>get_best_score()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t server::client::get_best_score </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the best score of the client. </p>
+
+</div>
+</div>
 <a id="aaec77949f5f5fd581a0969b7220cc360" name="aaec77949f5f5fd581a0969b7220cc360"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aaec77949f5f5fd581a0969b7220cc360">&#9670;&#160;</a></span>get_endpoint()</h2>
 
@@ -354,6 +382,23 @@ Friends</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">long server::client::get_latency </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5854183ba3a4b652217b4783f5ba0d14" name="a5854183ba3a4b652217b4783f5ba0d14"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5854183ba3a4b652217b4783f5ba0d14">&#9670;&#160;</a></span>get_lobby_id()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int server::client::get_lobby_id </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -518,6 +563,24 @@ Friends</h2></td></tr>
 
 </div>
 </div>
+<a id="ab05bb4ba73b270e899c6683c1699afaa" name="ab05bb4ba73b270e899c6683c1699afaa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab05bb4ba73b270e899c6683c1699afaa">&#9670;&#160;</a></span>new_score()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool server::client::new_score </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>score</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a3bb4584346e8d4b4d19bdb7fe10a92a6" name="a3bb4584346e8d4b4d19bdb7fe10a92a6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3bb4584346e8d4b4d19bdb7fe10a92a6">&#9670;&#160;</a></span>operator=()</h2>
 
@@ -660,6 +723,24 @@ Friends</h2></td></tr>
           <td>(</td>
           <td class="paramtype">long&#160;</td>
           <td class="paramname"><em>latency</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa883c03bdbfc9e4690d74174c8c02fec" name="aa883c03bdbfc9e4690d74174c8c02fec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa883c03bdbfc9e4690d74174c8c02fec">&#9670;&#160;</a></span>set_lobby_id()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void server::client::set_lobby_id </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>lobby_id</em></td><td>)</td>
           <td></td>
         </tr>
       </table>

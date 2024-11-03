@@ -1,0 +1,18 @@
+<map id="server/matchmaking/MatchmakingSystem.hpp" name="server/matchmaking/MatchmakingSystem.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="117,5,309,45"/>
+<area shape="rect" id="node2" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/queue.html" title=" " alt="" coords="5,167,68,192"/>
+<area shape="rect" id="node3" href="$d2/dfe/client_8hpp.html" title="file with the declaration of Client class" alt="" coords="203,167,289,192"/>
+<area shape="rect" id="node9" href="$d3/d98/MatchmakingQueue_8hpp.html" title=" " alt="" coords="58,93,239,119"/>
+<area shape="rect" id="node11" href="$df/d04/Lobby_8hpp.html" title=" " alt="" coords="501,93,588,119"/>
+<area shape="rect" id="node4" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/exception.html" title=" " alt="" coords="101,240,188,265"/>
+<area shape="rect" id="node5" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/string.html" title=" " alt="" coords="627,240,686,265"/>
+<area shape="rect" id="node6" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/cstdint.html" title=" " alt="" coords="213,240,279,265"/>
+<area shape="rect" id="node7" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/utility.html" title=" " alt="" coords="800,240,860,265"/>
+<area shape="rect" id="node8" title=" " alt="" coords="304,240,425,265"/>
+<area shape="rect" id="node10" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/memory.html" title=" " alt="" coords="101,167,178,192"/>
+<area shape="rect" id="node12" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/iostream.html" title=" " alt="" coords="314,167,394,192"/>
+<area shape="rect" id="node13" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/vector.html" title=" " alt="" coords="419,167,481,192"/>
+<area shape="rect" id="node14" title=" " alt="" coords="506,167,583,192"/>
+<area shape="rect" id="node15" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/unordered_map.html" title=" " alt="" coords="608,167,732,192"/>
+<area shape="rect" id="node16" href="/home/runner/work/R-Type/R-Type/docs/doxygen/cppreference-doxygen-web.tag.xml$cpp/header/iomanip.html" title=" " alt="" coords="757,167,831,192"/>
+</map>

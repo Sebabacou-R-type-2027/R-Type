@@ -97,9 +97,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a02797d7f2f84b187c75d6d6e995e27d2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/d88/classUdpServer.html#a02797d7f2f84b187c75d6d6e995e27d2">handle_client_message</a> (const <a class="elRef" href="https://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> &amp;message, const asio::ip::udp::endpoint &amp;client_endpoint, <a class="elRef" href="https://en.cppreference.com/w/cpp/types/size_t.html">std::size_t</a> bytes_recv)</td></tr>
 <tr class="memdesc:a02797d7f2f84b187c75d6d6e995e27d2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gère un message reçu d'un client.  <br /></td></tr>
 <tr class="separator:a02797d7f2f84b187c75d6d6e995e27d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8855c47f7a77eb597a27f3f5ff1779fb"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="../../dc/d8d/classserver_1_1client.html">server::client</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/d88/classUdpServer.html#a8855c47f7a77eb597a27f3f5ff1779fb">get_client</a> (const asio::ip::udp::endpoint &amp;client_endpoint) const</td></tr>
-<tr class="memdesc:a8855c47f7a77eb597a27f3f5ff1779fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Récupère un client basé sur son endpoint.  <br /></td></tr>
-<tr class="separator:a8855c47f7a77eb597a27f3f5ff1779fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa317a89b0d65a95dc237ddf2b702024c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../dc/d8d/classserver_1_1client.html">server::client</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/d88/classUdpServer.html#aa317a89b0d65a95dc237ddf2b702024c">get_client</a> (const asio::ip::udp::endpoint &amp;client_endpoint)</td></tr>
+<tr class="memdesc:aa317a89b0d65a95dc237ddf2b702024c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Récupère un client basé sur son endpoint.  <br /></td></tr>
+<tr class="separator:aa317a89b0d65a95dc237ddf2b702024c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Implements a UDP server for handling client communication, lobby management, and host selection based on latency. </p>
@@ -163,18 +163,18 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a8855c47f7a77eb597a27f3f5ff1779fb" name="a8855c47f7a77eb597a27f3f5ff1779fb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8855c47f7a77eb597a27f3f5ff1779fb">&#9670;&#160;</a></span>get_client()</h2>
+<a id="aa317a89b0d65a95dc237ddf2b702024c" name="aa317a89b0d65a95dc237ddf2b702024c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa317a89b0d65a95dc237ddf2b702024c">&#9670;&#160;</a></span>get_client()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">const <a class="el" href="../../dc/d8d/classserver_1_1client.html">server::client</a> UdpServer::get_client </td>
+          <td class="memname"><a class="el" href="../../dc/d8d/classserver_1_1client.html">server::client</a> &amp; UdpServer::get_client </td>
           <td>(</td>
           <td class="paramtype">const asio::ip::udp::endpoint &amp;&#160;</td>
           <td class="paramname"><em>client_endpoint</em></td><td>)</td>
-          <td> const</td>
+          <td></td>
         </tr>
       </table>
 </div><div class="memdoc">

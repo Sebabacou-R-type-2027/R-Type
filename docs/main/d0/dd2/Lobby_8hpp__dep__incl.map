@@ -1,7 +1,9 @@
-<map id="server/Lobby.hpp" name="server/Lobby.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="90,5,222,31"/>
-<area shape="rect" id="node2" href="$d8/d7c/Lobby_8cpp.html" title=" " alt="" coords="5,79,136,104"/>
-<area shape="rect" id="node3" href="$da/d25/UdpServer_8hpp.html" title=" " alt="" coords="160,79,323,104"/>
-<area shape="rect" id="node4" href="$dc/d31/UdpServer_8cpp.html" title=" " alt="" coords="77,152,238,177"/>
-<area shape="rect" id="node5" href="$d6/d7a/server_2main_8cpp.html" title=" " alt="" coords="262,152,389,177"/>
+<map id="server/lobby/Lobby.hpp" name="server/lobby/Lobby.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="143,5,315,31"/>
+<area shape="rect" id="node2" href="$da/d25/UdpServer_8hpp.html" title=" " alt="" coords="89,174,251,199"/>
+<area shape="rect" id="node5" href="$d8/d7c/Lobby_8cpp.html" title=" " alt="" coords="143,86,314,111"/>
+<area shape="rect" id="node6" href="$dc/d3e/MatchmakingSystem_8hpp.html" title=" " alt="" coords="338,79,530,119"/>
+<area shape="rect" id="node3" href="$dc/d31/UdpServer_8cpp.html" title=" " alt="" coords="5,255,167,280"/>
+<area shape="rect" id="node4" href="$d6/d7a/server_2main_8cpp.html" title=" " alt="" coords="191,255,317,280"/>
+<area shape="rect" id="node7" href="$d7/dbb/MatchmakingSystem_8cpp.html" title=" " alt="" coords="339,167,529,207"/>
 </map>
