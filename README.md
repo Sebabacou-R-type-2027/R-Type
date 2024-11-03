@@ -53,8 +53,7 @@ and to build the project with MSVC on Windows, use the `release` preset.
 ```bash
 cmake --workflow --preset=release-llvm
 # Install the binaries
-cmake --install build --config Release
-```
+sudo cmake --install build --config Release
 
 This will configure, build, test and package the project using the selected preset.
 
