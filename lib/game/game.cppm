@@ -14,6 +14,7 @@ export import :systems.buttons;
 export import :systems.projectiles;
 export import :systems.enemies;
 export import :systems.inputs;
+export import :systems.shader_background;
 
 #if __cpp_lib_modules >= 202207L
 import std;
@@ -65,6 +66,9 @@ export namespace game {
             this->register_system<enemy_spawner, ecs::components::position>(handle_enemy_spawner);
             this->register_system<button, const ecs::components::position>(press_button);
             this->register_gui_systems();
+            this->register_system<components::settings, const ecs::components::gui::display>(shader_background);
+            // this->register_system<ecs::components::gui::display>(ecs::systems::gui::draw_shader_background);
+            this->register_system<ecs::components::gui::display>(ecs::systems::gui::clear);
             this->register_engine_systems();
         }
 
