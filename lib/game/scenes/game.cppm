@@ -1,5 +1,11 @@
+module;
+
+#include <nlohmann/json.hpp>
 export module game:scenes.game;
 import :game;
+import :systems.map_editor;
+import :components.map_editor;
+import :components.spawn_waves;
 
 import std;
 import ecs;
@@ -14,13 +20,6 @@ export namespace game::scenes {
         }
 
         protected:
-            /**
-                * @brief Create the entities
-
-                * This function is used to create the entities of the scene.
-
-                * @return The entities of the scene
-             */
             void create_entities() noexcept override
             {
                 _entities.push_back(create_player());
@@ -32,16 +31,36 @@ export namespace game::scenes {
                 });
             }
 
-            private:
-                game &_game;
+        private:
+            game &_game;
 
-            /**
-                * @brief Create the player
+            void init_waves(std::string_view path, int wave) noexcept
+            {
+                std::ifstream file(path.data());
+                if (!file.is_open())
+                    return;
+                json waves;
+                file >> waves;
+                for (auto &wave : waves) {
+                    std::vector<std::pair<std::string, ecs::abstractions::vector<float>>> mobs;
+                    for (auto &mob : wave)
+                    {
+                        ecs::components::position position{0.0f, 0.0f};
+                        position.x = mob["x"];
+                        position.y = mob["y"];
+                        _entities.push_back(spawn_enemy_shooter(position));
+                        std::cout << "Spawned enemy at " << position.x << ", " << position.y << std::endl;
 
-                * This function is used to create the player entity.
+                        // if (mob["type"] == "enemy") {
+                        //     spawn_enemy({mob["x"], mob["y"]});
+                        // }
+                        // else if (mob["type"] == "enemy_chaser") {
+                        //     spawn_enemy_chaser(_entities.back(), {mob["x"], mob["y"]});
+                        // }
+                    }
+                }
+            }
 
-                * @return The player entity
-             */
             ecs::entity create_player() noexcept
             {
                 auto player = _ec.create_entity();
@@ -65,45 +84,6 @@ export namespace game::scenes {
                 return player;
             }
 
-            /**
-                * @brief Create the fire button
-
-                * This function is used to create the fire button entity.
-
-                * @param launcher The projectile launcher component
-                * @return The fire button entity
-             */
-            ecs::entity create_fire_button(components::projectile_launcher &launcher) noexcept
-            {
-                auto button = _game.create_entity();
-                _game.emplace_component<ecs::components::position>(button, 230.f, 875.f);
-                _game.emplace_component<components::button>(button, _game, ecs::abstractions::vector<float>(100, 50),
-                        [&launcher](){ launcher.last_shot = std::chrono::steady_clock::time_point(0s); });
-                auto label = _game.display.factory->make_element(
-                    "Fire", _game.asset_manager.get("arial"), 48);
-                label->set_origin({label->bounds(true).width / 2, label->bounds(true).height / 2});
-                label->set_repositioning(ecs::abstractions::gui::drawable_element::reposition_center);
-                auto background = _game.display.factory->make_element({100, 50},
-                    ecs::abstractions::gui::color::cyan);
-                background->set_origin({background->bounds(true).width / 2, background->bounds(true).height / 2});
-                background->set_repositioning(ecs::abstractions::gui::drawable_element::reposition_center);
-                _game.emplace_component<ecs::components::gui::drawable>(button, ecs::components::gui::drawable{_game,
-                    std::container<ecs::components::gui::drawable::elements_container>::make({
-                        {static_cast<ecs::entity>(_game), std::move(background)},
-                        {static_cast<ecs::entity>(_game), std::move(label)}
-                    })
-                });
-                return button;
-            }
-
-            /**
-                * @brief Spawn an enemy
-
-                * This function is used to spawn an enemy entity.
-
-                * @param position The position of the enemy
-                * @return The enemy entity
-             */
             ecs::entity spawn_enemy(ecs::components::position position) noexcept
             {
                 auto e = _game.create_entity();
@@ -121,47 +101,10 @@ export namespace game::scenes {
                             dynamic_cast<const ecs::abstractions::gui::texture &>(_game.asset_manager.get("enemy")), {8, 1}, 10ms)}
                     })
                 });
+                std::cout << "Spawned enemy at " << position.x << ", " << position.y << std::endl;
                 return e;
             }
 
-            /**
-                * @brief Spawn a boss
-
-                * This function is used to spawn a boss entity.
-
-                * @param target The target entity
-                * @param position The position of the boss
-                * @return The boss entity
-             */
-            ecs::entity spawn_boss(ecs::entity target, ecs::components::position position) noexcept
-            {
-                auto e = _game.create_entity();
-                _game.add_component(e, position);
-                _game.add_component(e, enemy{1, 1000, std::chrono::steady_clock::now()});
-                _game.add_component(e, health{300, _game});
-                _game.add_component(e, boss{target, _game});
-                _game.add_component(e, ecs::components::engine::hitbox{rectangle<float>{position.x, position.y, 160.0f, 212.0f}});
-                _game.add_component(e, ecs::components::engine::velocity{0.0f, 0.0f});
-                _game.emplace_component<ecs::components::gui::drawable>(e, ecs::components::gui::drawable{_game,
-                    std::container<ecs::components::gui::drawable::elements_container>::make({
-                        {static_cast<ecs::entity>(_game), _game.display.factory->make_element(
-                            "Boss", _game.asset_manager.get("arial"), 12)},
-                        {static_cast<ecs::entity>(_game), _game.display.factory->make_element(
-                            dynamic_cast<const ecs::abstractions::gui::texture &>(_game.asset_manager.get("boss-phase")), {4, 1}, 50ms)}
-                    })
-                });
-                return e;
-            }
-
-            /**
-                * @brief Spawn an enemy chaser
-
-                * This function is used to spawn an enemy chaser entity.
-
-                * @param target The target entity
-                * @param position The position of the enemy chaser
-                * @return The enemy chaser entity
-             */
             ecs::entity spawn_enemy_chaser(ecs::entity target, ecs::components::position position) noexcept
             {
                 auto e = _game.create_entity();
@@ -182,21 +125,13 @@ export namespace game::scenes {
                 return e;
             }
 
-            /**
-                * @brief Spawn an enemy spawner
-
-                * This function is used to spawn an enemy spawner entity.
-
-                * @param position The position of the enemy spawner
-                * @return The enemy spawner entity
-             */
             ecs::entity spawn_enemy_spawner(ecs::components::position position) noexcept
             {
                 auto e = _game.create_entity();
                 _game.add_component(e, position);
                 _game.emplace_component<enemy>(e, 0, 500, std::chrono::steady_clock::now());
-                _game.emplace_component<health>(e, 1, _game);
-                _game.emplace_component<enemy_spawner>(e, 2s, 5.0f, _game);
+                _game.emplace_component<health>(e, 3, _game);
+                _game.emplace_component<enemy_spawner>(e, 2s, 5.f, _game);
                 _game.emplace_component<ecs::components::engine::hitbox>(e, rectangle<float>{position.x, position.y, 65.0f, 66.0f});
                 _game.emplace_component<ecs::components::engine::velocity>(e);
                 _game.emplace_component<ecs::components::gui::drawable>(e, ecs::components::gui::drawable{_game,
@@ -210,14 +145,6 @@ export namespace game::scenes {
                 return e;
             }
 
-            /**
-                * @brief Spawn an enemy shooter
-
-                * This function is used to spawn an enemy shooter entity.
-
-                * @param position The position of the enemy shooter
-                * @return The enemy shooter entity
-             */
             ecs::entity spawn_enemy_shooter(ecs::components::position position) noexcept
             {
                 auto e = _game.create_entity();
@@ -238,5 +165,5 @@ export namespace game::scenes {
                 });
                 return e;
             }
-    };
+        };
 }

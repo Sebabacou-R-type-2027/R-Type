@@ -17,4 +17,9 @@ endif()
 add_subdirectory(src)
 add_subdirectory(lib)
 
+install(EXPORT main DESTINATION lib/cmake/r-type
+    NAMESPACE rtype::
+    EXPORT_PACKAGE_DEPENDENCIES
+)
+
 include(CPack)

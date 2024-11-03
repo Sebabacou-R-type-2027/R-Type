@@ -1,10 +1,6 @@
-#if __cpp_lib_modules < 202207L
 module;
 
-#include <chrono>
-#include <memory>
 #include <nlohmann/json.hpp>
-#endif
 export module game:game;
 export import :components.buttons;
 export import :components.projectiles;

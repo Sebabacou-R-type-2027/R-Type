@@ -103,6 +103,7 @@ export namespace game::systems {
                 position.x + spawner.actual_enemies * 20.0f,
                 position.y + std::sin(phase_offset) * 10.0f
             });
+            ec.add_component(enemy, components::enemy{1, 250, std::chrono::steady_clock::now()});
             ec.add_component(enemy, ecs::components::engine::velocity{-10.0f, 0.0f});
             ec.add_component(enemy, components::health{1, spawner.game});
             ec.add_component(enemy, ecs::components::engine::hitbox{ecs::abstractions::rectangle<float>{position.x, position.y, 34.0f, 36.0f}});
@@ -225,7 +226,6 @@ export namespace game::systems {
     {
         auto life = ec.get_entity_component<components::health>(e);
 
-        std::cout << life->get().value << std::endl;
         if (life->get().value >= 250) {
             pattern_1(e, ec, boss, position);
         }
