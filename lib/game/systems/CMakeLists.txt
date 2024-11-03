@@ -6,6 +6,5 @@ target_sources(game PUBLIC
             stats.cppm
             inputs.cppm
             shader_background.cppm
-            game_over.cppm
             controllable_network.cppm
 )

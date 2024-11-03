@@ -1,5 +1,6 @@
 export module game:scenes.menus.lobby;
 import :game;
+import :scenes.game;
 
 import std;
 import ecs;
@@ -64,12 +65,18 @@ export namespace game::scenes {
                     [&](){
                         auto network = _game.get_entity_component<components::network>(_game);
                         network->get().client->send_message("join_lobby " + join_lobby.content);
+                        if (_game._is_ready) {
+                            _game.begin_scene(std::make_unique<game_scene>(_game));
+                        }
                     });
 
                 create_button("Start Game", {(_game.display.window->get_size().x - 400.0f) / 2, (_game.display.window->get_size().y - 40.0f) / 2 + 100.0f}, {400, 40}, ecs::abstractions::gui::color(14, 94, 255, 255),
                     [&](){
                         auto network = _game.get_entity_component<components::network>(_game);
                         network->get().client->send_message("start");
+                        if (_game._is_ready) {
+                            _game.begin_scene(std::make_unique<game_scene>(_game));
+                        }
                     });
 
                 // Create Lobby Button

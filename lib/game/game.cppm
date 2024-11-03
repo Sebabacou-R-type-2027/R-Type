@@ -12,7 +12,6 @@ export import :systems.enemies;
 export import :systems.inputs;
 export import :systems.shader_background;
 export import :systems.stats;
-export import :systems.game_over;
 export import :systems.controllable_network;
 
 import std;
@@ -107,6 +106,7 @@ export namespace game {
         }
 
         public:
+            bool _is_ready = false;
             ecs::components::gui::display &display;
             ecs::components::gui::asset_manager &asset_manager;
             std::chrono::steady_clock::duration tick_rate = 50ms;

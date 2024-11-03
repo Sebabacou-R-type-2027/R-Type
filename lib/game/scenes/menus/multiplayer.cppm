@@ -1,6 +1,7 @@
 export module game:scenes.menus.multiplayer;
 import :game;
 import :scenes.game;
+import :scenes.menus.lobby;
 
 import std;
 import ecs;
@@ -155,10 +156,14 @@ export namespace game::scenes {
                             return;
                         }
 
-                        _game.begin_scene(std::make_unique<game_scene>(_game));
+                        _game.begin_scene(std::make_unique<lobby_menu>(_game));
                     }
                 });
 
+                create_centered_button("Back to menu", (_game.display.window->get_size().y - height) / 2 + height - buttonHeight - 20.0f + buttonHeight + 20.0f, 24, ecs::abstractions::gui::color(14, 94, 255, 255),
+                [&](){
+                    _game.begin_scene(std::make_unique<lobby_menu>(_game));
+                });
                 // Background rectangle
                 create_rectangle({(_game.display.window->get_size().x - width) / 2, (_game.display.window->get_size().y - height) / 2}, {width, height}, fillColor, outlineColor);
             }

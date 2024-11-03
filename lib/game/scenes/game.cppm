@@ -204,7 +204,7 @@ export namespace game::scenes {
                 auto e = _game.create_entity();
                 _game.add_component(e, position);
                 _game.emplace_component<enemy>(e, 0, 500, std::chrono::steady_clock::now());
-                _game.emplace_component<health>(e, 3, _game);
+                _game.emplace_component<health>(e, 1, _game);
                 _game.emplace_component<enemy_spawner>(e, 2s, 5.0f, _game);
                 _game.emplace_component<ecs::components::engine::hitbox>(e, rectangle<float>{position.x, position.y, 65.0f, 66.0f});
                 _game.emplace_component<ecs::components::engine::velocity>(e);
