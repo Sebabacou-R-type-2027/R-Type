@@ -46,7 +46,8 @@ export namespace game::scenes {
                 _game.emplace_component<components::score>(player, 0, _game);
                 _game.emplace_component<components::health>(player, 1, _game);
                 _game.add_component(player, components::projectile_launcher_ownership{100ms, std::chrono::steady_clock::now(), _game, false});
-                _game.emplace_component<powerup_tripleshoot>(player, 1s, std::chrono::steady_clock::now(), _game, 5s, std::chrono::steady_clock::now());
+                //_game.emplace_component<powerup_tripleshoot>(player, 1s, std::chrono::steady_clock::now(), _game, 5s, std::chrono::steady_clock::now());
+                _game.emplace_component<powerup_curveshoot>(player, 1s, std::chrono::steady_clock::now(), _game, 5s, std::chrono::steady_clock::now());
 
 
 
