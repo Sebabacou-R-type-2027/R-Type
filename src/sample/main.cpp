@@ -9,14 +9,7 @@
 #if __cpp_lib_modules >= 202207L
 import std;
 #endif
-import ecs;
-import utils;
 import game;
-
-using namespace ecs;
-using namespace game::components;
-
-using namespace std::chrono_literals;
 
 int main()
 {
