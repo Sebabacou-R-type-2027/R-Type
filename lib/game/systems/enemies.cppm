@@ -1,18 +1,10 @@
-#if __cpp_lib_modules < 202207L
-module;
-
-#include <cmath>
-#include <chrono>
-#endif
 export module game:systems.enemies;
 import :components.enemies;
 import :components.projectiles;
 import :components.stats;
 import :systems.projectiles;
 
-#if __cpp_lib_modules >= 202207L
 import std;
-#endif
 import ecs;
 import utils;
 
@@ -115,7 +107,7 @@ export namespace game::systems {
                         dynamic_cast<const ecs::abstractions::gui::texture &>(asset_manager.get("enemy")), {8, 1}, 10ms)}
                 })
             });
-        }        
+        }
     }
 
     /**

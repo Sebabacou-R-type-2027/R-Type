@@ -1,5 +1,6 @@
 export module game:systems.shader_background;
 import :components.settings;
+
 import ecs;
 
 using namespace ecs;

@@ -10,9 +10,8 @@ find_package(asio CONFIG REQUIRED)
 # `import std;` support
 if(${CMAKE_CXX_STANDARD} IN_LIST CMAKE_CXX_COMPILER_IMPORT_STD)
     set(CMAKE_CXX_MODULE_STD ON)
-    add_compile_definitions(__cpp_lib_modules=202207L)
 else()
-    message(WARNING "Compiler does not support `import std;`")
+    message(FATAL_ERROR "Compiler does not support `import std;`")
 endif()
 
 add_executable(r-type_server)
