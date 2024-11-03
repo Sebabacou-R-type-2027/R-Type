@@ -30,4 +30,8 @@ export namespace game::components {
         std::chrono::steady_clock::time_point start;
     };
 
+
+    struct powerup_target {
+        ecs::entity game;
+    };
 }

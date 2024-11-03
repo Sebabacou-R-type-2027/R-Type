@@ -24,11 +24,17 @@ export namespace game::scenes {
             {
                 _entities.push_back(create_player());
                 // _entities.push_back(create_fire_button(*_game.get_entity_component<projectile_launcher>(_entities.back())));
-                _entities.push_back(spawn_enemy_chaser(_entities.back(), {500.0f, 500.0f}));
-                _entities.push_back(spawn_enemy({100.0f, 100.0f}));
+                std::ranges::for_each(_entities, [this](ecs::entity e) {
+                    if (auto launcher = _game.get_entity_component<components::score>(e)) {
+                        //_entities.push_back(spawn_boss(e, {1000.0f, 500.0f}));
+                        _entities.push_back(spawn_enemy_chaser(e, {500.0f, 500.0f}));
+                        _entities.push_back(spawn_powerup({650.0f, 650.0f}));
+                    }
+                });
+                // _entities.push_back(spawn_enemy({100.0f, 100.0f}));
                 // _entities.push_back(spawn_enemy_spawner({300.0f, 300.0f}));
                 // _entities.push_back(spawn_enemy_shooter({400.0f, 400.0f}));
-                _entities.push_back(spawn_powerup({500.0f, 500.0f}));
+                //_entities.push_back(spawn_powerup({500.0f, 500.0f}));
             }
 
         private:
@@ -107,6 +113,25 @@ export namespace game::scenes {
                 return e;
             }
 
+            ecs::entity spawn_boss(ecs::entity target, ecs::components::position position) noexcept
+            {
+                auto e = _game.create_entity();
+                _game.add_component(e, position);
+                _game.add_component(e, enemy{1, 1000, std::chrono::steady_clock::now()});
+                _game.add_component(e, health{100, _game});
+                _game.add_component(e, boss{target, _game});
+                _game.add_component(e, ecs::components::engine::hitbox{rectangle<float>{position.x, position.y, 160.0f, 212.0f}});
+                _game.add_component(e, ecs::components::engine::velocity{0.0f, 0.0f});
+                _game.emplace_component<ecs::components::gui::drawable>(e, ecs::components::gui::drawable{_game,
+                    std::container<ecs::components::gui::drawable::elements_container>::make({
+                        {static_cast<ecs::entity>(_game), _game.display.factory->make_element(
+                            "Boss", _game.asset_manager.get("arial"), 12)},
+                        {static_cast<ecs::entity>(_game), _game.display.factory->make_element(
+                            dynamic_cast<const ecs::abstractions::gui::texture &>(_game.asset_manager.get("boss-phase-1")), {4, 1}, 50ms)}
+                    })
+                });
+                return e;
+            }
             ecs::entity spawn_enemy_chaser(ecs::entity target, ecs::components::position position) noexcept
             {
                 auto e = _game.create_entity();
@@ -168,26 +193,27 @@ export namespace game::scenes {
                 return e;
             }
 
-            ecs::entity spawn_powerup(ecs::components::position position)
+            ecs::entity spawn_powerup(ecs::components::position position) noexcept
             {
                 auto powerup = _game.create_entity();
 
-                _game.add_component(powerup, ecs::components::position{position.x, position.y});
-                _game.add_component(powerup, ecs::components::engine::velocity{0.0f, 2.0f});
-                _game.add_component(powerup, ecs::components::engine::hitbox{rectangle<float>{position.x, position.y, 40.0f, 38.0f}});
+                _game.add_component(powerup, ecs::components::position{position.x + 250, position.y + 400});
+                _game.emplace_component<components::powerup_target>(powerup);
 
-                _game.emplace_component<components::health>(powerup, 1, _game);
+                _game.add_component(powerup, ecs::components::engine::hitbox{rectangle<float>{position.x, position.y, 40.0f, 38.0f}});
                 _game.add_component(powerup, enemy_loop_movement{0.0f, 2000.0f, 200.0f, 250.0f, 1.0f, 0.0f, 100.0f, 2.0f});
+                _game.add_component(powerup, ecs::components::engine::velocity{0.0f, 2.0f});
                 _game.emplace_component<ecs::components::gui::drawable>(powerup, ecs::components::gui::drawable{_game,
                     std::container<ecs::components::gui::drawable::elements_container>::make({
                         {static_cast<ecs::entity>(_game), _game.display.factory->make_element(
-                            "PowerupTriple", _game.asset_manager.get("arial"), 12)},
+                            "PowerUp", _game.asset_manager.get("arial"), 12)},
                         {static_cast<ecs::entity>(_game), _game.display.factory->make_element(
                             dynamic_cast<const ecs::abstractions::gui::texture &>(_game.asset_manager.get("powerup")))}
                     })
                 });
                 return powerup;
             }
+            // CHECKER SI RIEN NE COLISIONE AVEC LE POWERUP GENRE LE TEXTE OU QUELQUE CHOSE DU GENRE
     };
 
         struct multiplayer_menu : public ecs::scene {

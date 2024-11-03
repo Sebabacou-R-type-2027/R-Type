@@ -103,6 +103,28 @@ export namespace game::components {
     };
 
     /**
+        * @brief Component that defines the boss
+
+        * This component is used to define the boss. It contains the target entity and the game entity.
+     */
+    struct boss {
+        ecs::entity target;
+        ecs::entity game;
+        float speed = 5.0f;
+        bool moving_right = true;
+        std::chrono::steady_clock::time_point last_attack = std::chrono::steady_clock::time_point(0s);
+        components::projectile_launcher launcher{-1.0, 1s, std::chrono::steady_clock::now(), game};
+        components::projectile_launcher launcher_cross{-1.0, 1s, std::chrono::steady_clock::now(), game};
+        components::projectile_launcher launcher_spiral{-1.0, 1s, std::chrono::steady_clock::now(), game};
+        components::enemy_spawner spawner{2s, 5ul, game};
+        std::chrono::steady_clock::time_point last_spawn = std::chrono::steady_clock::time_point(0s);
+        float angle = 0.0f;
+
+
+        boss(ecs::entity target, ecs::entity game)
+            : target(target), game(game) {}
+    };
+    /**
         * @brief Component that defines the enemy loop movement
 
         * This component is used to define the enemy loop movement. It contains the min and max position on the x and y axis, the speed of the entity, the angle of the entity, the radius of the entity and the angular speed of the entity.

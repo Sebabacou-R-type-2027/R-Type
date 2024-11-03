@@ -8,6 +8,8 @@ export module game:systems.stats;
 import :components.stats;
 import :components.enemies;
 import :components.projectiles;
+import :components.powerup;
+
 
 #if __cpp_lib_modules >= 202207L
 import std;
@@ -43,6 +45,12 @@ export namespace game::systems {
         if (!box.triggered_by) {
             return;
         }
+        // FAIRE LE SYSTEME AVEC LE COMPONENT MARQUEUR
+        //if (auto <components::health>(*box.trig)player = ec.get_entity_component<components::score>(*box.triggered_by)) {
+            // if (ec.get_entity_component<components::composant_vide>(*box.triggered_by)) {}
+            //ec.erase_entity(e);
+            //std::cout <<"COUCOU" << std::endl;
+        //}
         if (auto projectile = ec.get_entity_component<components::projectile>(*box.triggered_by)) {
             if (projectile->get().owner == e) {
                 box.triggered_by = std::nullopt;
@@ -53,11 +61,15 @@ export namespace game::systems {
             if (ec.get_entity_component<components::enemy>(e) && score) {
                 score->get().value += ec.get_entity_component<components::enemy>(e)->get().points;
             }
-            ec.erase_entity(e);
+            if (life.value <= 0) {
+                ec.erase_entity(e);
+            }
         }
         if (auto enemy = ec.get_entity_component<components::enemy>(*box.triggered_by)) {
             life.value -= enemy->get().damage;
-            ec.erase_entity(e);
+            if (life.value <= 0) {
+                ec.erase_entity(e);
+            }
         }
     }
 }

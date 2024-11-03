@@ -8,6 +8,7 @@ export module game:systems.powerup;
 import :components.projectiles;
 import :components.powerup;
 import :components.enemies;
+import :components.stats;
 
 #if __cpp_lib_modules >= 202207L
 import std;
@@ -106,6 +107,20 @@ export namespace game::systems {
                     dynamic_cast<const ecs::abstractions::gui::texture &>(asset_manager.get("bullet_heal")))}
             })
         );
+    }
+
+    void powerup_collision(ecs::entity e, ecs::entity_container &ec, components::powerup_target& powerup_target, ecs::components::engine::hitbox &box)
+    {
+        if (!box.triggered_by) {
+            return;
+        }
+        if (auto player_opt = ec.get_entity_component<components::score>(*box.triggered_by)) {
+            std::cout << "ALEXISSSSS" << std::endl;
+            std::cout << "JULL" << std::endl;
+
+            //ec.erase_entity(e);
+            ec.emplace_component<components::powerup_tripleshoot>(*box.triggered_by, 1s, std::chrono::steady_clock::now(), powerup_target.game, 10s, std::chrono::steady_clock::now());
+        }
     }
 
 }

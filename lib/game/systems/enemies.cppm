@@ -8,6 +8,7 @@ export module game:systems.enemies;
 import :components.enemies;
 import :components.projectiles;
 import :components.stats;
+import :systems.projectiles;
 
 #if __cpp_lib_modules >= 202207L
 import std;
@@ -18,6 +19,16 @@ import utils;
 using namespace std::chrono_literals;
 
 export namespace game::systems {
+
+    /**
+        * @brief Move the enemy chaser
+
+        * This function is used to move the enemy chaser entity with the given position and target.
+
+        * @param ec The entity container
+        * @param chaser The enemy chaser component
+        * @param position The position of the enemy chaser
+    */
     void move_enemy_chaser(ecs::entity_container &ec, game::components::enemy_chaser &chaser, ecs::components::position& position)
     {
         auto target_position = ec.get_entity_component<ecs::components::position>(chaser._target);
@@ -86,34 +97,106 @@ export namespace game::systems {
 
         spawner.last_update = now;
 
-        auto entities = ec.get_entities();
-        std::size_t count = std::count_if(entities.begin(), entities.end(), [spawner = e, &ec](auto e){
-            auto owned = ec.get_entity_component<components::enemy_ownership>(e).transform([spawner](components::enemy_ownership &enemy){
-                return enemy.owner == spawner;
+        for (std::size_t i = 0; i < spawner.max_enemies; ++i) {
+            const ecs::components::gui::display &display =
+                *ec.get_entity_component<const ecs::components::gui::display>(spawner.game);
+            const ecs::components::gui::asset_manager &asset_manager = *ec.get_entity_component<const ecs::components::gui::asset_manager>(spawner.game);
+            auto enemy = ec.create_entity();
+            ec.add_component(enemy, ecs::components::position{position.x + i * 20.0f, position.y});
+            ec.add_component(enemy, ecs::components::engine::velocity{-10.0f, 0.0f});
+            ec.add_component(enemy, components::health{1, spawner.game});
+            ec.add_component(enemy, ecs::components::engine::hitbox{ecs::abstractions::rectangle<float>{position.x, position.y, 34.0f, 36.0f}});
+            ec.add_component(enemy, components::enemy_loop_movement{0.0f, 2000.0f, 200.0f, 800.0f, 1.0f, 0.0f, 100.0f, 2.0f});
+            ec.emplace_component<ecs::components::gui::drawable>(enemy, ecs::components::gui::drawable{spawner.game,
+                std::container<ecs::components::gui::drawable::elements_container>::make({
+                    {static_cast<ecs::entity>(spawner.game), display.factory->make_element(
+                        "Enemy", asset_manager.get("arial"), 12)},
+                    {static_cast<ecs::entity>(spawner.game), display.factory->make_element(
+                        dynamic_cast<const ecs::abstractions::gui::texture &>(asset_manager.get("enemy")), {8, 1}, 10ms)}
+                })
             });
-            return owned.has_value() && owned.value();
-        });
+        }        
+    }
 
-        if (count >= spawner.max_enemies)
-            return;
-        
-        const ecs::components::gui::display &display =
-            *ec.get_entity_component<const ecs::components::gui::display>(spawner.game);
-        const ecs::components::gui::asset_manager &asset_manager = *ec.get_entity_component<const ecs::components::gui::asset_manager>(spawner.game);
-        auto enemy = ec.create_entity();
-        ec.add_component(enemy, ecs::components::position{position.x, position.y});
-        ec.add_component(enemy, ecs::components::engine::velocity{-10.0f, 0.0f});
-        ec.add_component(enemy, components::health{1, spawner.game});
-        ec.add_component(enemy, ecs::components::engine::hitbox{ecs::abstractions::rectangle<float>{position.x, position.y, 34.0f, 36.0f}});
-        ec.add_component(enemy, components::enemy_loop_movement{0.0f, 2000.0f, 200.0f, 800.0f, 1.0f, 0.0f, 100.0f, 2.0f});
-        ec.emplace_component<ecs::components::gui::drawable>(enemy, ecs::components::gui::drawable{spawner.game,
-            std::container<ecs::components::gui::drawable::elements_container>::make({
-                {static_cast<ecs::entity>(spawner.game), display.factory->make_element(
-                    "Enemy", asset_manager.get("arial"), 12)},
-                {static_cast<ecs::entity>(spawner.game), display.factory->make_element(
-                    dynamic_cast<const ecs::abstractions::gui::texture &>(asset_manager.get("enemy")), {8, 1}, 10ms)}
-            })
-        });
+    void pattern_1(ecs::entity e, ecs::entity_container &ec, components::boss &boss, ecs::components::position &position)
+    {
+        position.y += 0.5f;
+
+        if (position.y > 800.0f || position.y < 200.0f)
+            boss.moving_right = !boss.moving_right;
+
+        if (boss.moving_right)
+            position.y += boss.speed;
+        else
+            position.y -= boss.speed;
+
+        if (std::chrono::steady_clock::now() - boss.last_attack > 500ms) {
+            std::cout << "Launching projectiles" << std::endl;
+            boss.last_attack = std::chrono::steady_clock::now();
+            launch_projectile(e, ec, boss.launcher, position);
+        }
+    }
+
+    void pattern_2(ecs::entity e, ecs::entity_container &ec, components::boss &boss, ecs::components::position &position)
+    {
+        position.y += 0.5f;
+        if (position.y > 800.0f || position.y < 200.0f)
+            boss.moving_right = !boss.moving_right;
+
+        if (boss.moving_right)
+            position.y += boss.speed * 2;
+        else
+            position.y -= boss.speed * 2;
+
+        if (std::chrono::steady_clock::now() - boss.last_attack > 1.5s) {
+            boss.last_attack = std::chrono::steady_clock::now();
+            launch_many_projectiles(e, ec, boss.launcher, position);
+            launch_cross_projectiles(e, ec, boss.launcher_cross, position);
+        }
+    }
+
+    void pattern_3(ecs::entity e, ecs::entity_container &ec, components::boss &boss, ecs::components::position &position) {
+        position.x += boss.moving_right ? boss.speed * 1.5f : -boss.speed * 1.5f;
+        position.y += std::sin(boss.angle) * 1.0f;
+        boss.angle += 0.1f;
+
+        if (std::chrono::steady_clock::now() - boss.last_attack > 1s) {
+            boss.last_attack = std::chrono::steady_clock::now();
+            launch_spiral_projectiles(e, ec, boss.launcher_spiral, position);
+        }
+
+        auto target_position = ec.get_entity_component<ecs::components::position>(boss.target);
+        if (target_position && std::abs(position.x - target_position->get().x) < 50.0f) {
+            position.x += (target_position->get().x > position.x ? 1 : -1) * boss.speed;
+            position.y += (target_position->get().y > position.y ? 1 : -1) * boss.speed;
+        }
+    }
+
+
+    /**
+        * @brief Handle the boss pattern
+
+        * This function is used to handle the boss entity. It will move the boss entity towards the target entity.
+
+        * @param e The entity of the boss
+        * @param ec The entity container
+        * @param boss The boss component
+        * @param position The position of the boss
+     */
+    void handle_boss_pattern(ecs::entity e, ecs::entity_container &ec, components::boss &boss, ecs::components::position& position)
+    {
+        auto life = ec.get_entity_component<components::health>(e);
+
+        if (life->get().value >= 100) {
+            pattern_1(e, ec, boss, position);
+        }
+        if (life->get().value < 75 && life->get().value >= 50) {
+            pattern_2(e, ec, boss, position);
+        }
+        if (life->get().value < 50 && life->get().value > 0) {
+            pattern_3(e, ec, boss, position);
+        }
+
     }
     /**
         * @brief Move the enemy
