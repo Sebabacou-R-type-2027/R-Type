@@ -81,6 +81,7 @@ export namespace game::systems {
         * @param spawner The enemy spawner component
         * @param position The position of the enemy spawner
      */
+
     void handle_enemy_spawner(ecs::entity e, ecs::entity_container &ec, components::enemy_spawner &spawner, ecs::components::position& position)
     {
         const auto now = std::chrono::steady_clock::now();
@@ -89,31 +90,25 @@ export namespace game::systems {
 
         spawner.last_update = now;
 
+        float phase_base = spawner.max_enemies * 0.5f;
+
         for (; spawner.actual_enemies < spawner.max_enemies; ++spawner.actual_enemies) {
             const ecs::components::gui::display &display =
                 *ec.get_entity_component<const ecs::components::gui::display>(spawner.game);
             const ecs::components::gui::asset_manager &asset_manager = *ec.get_entity_component<const ecs::components::gui::asset_manager>(spawner.game);
             
             auto enemy = ec.create_entity();
-
-            // Setting initial position with a unique phase for each enemy to create a snake effect
-            float phase_offset = spawner.actual_enemies * 0.5f;  // Adjust phase increment as needed for spacing
+            float phase_offset = phase_base - (spawner.actual_enemies * 0.5f);
             ec.add_component(enemy, ecs::components::position{
                 position.x + spawner.actual_enemies * 20.0f, 
-                position.y + std::sin(phase_offset) * 10.0f  // Initial y offset
+                position.y + std::sin(phase_offset) * 10.0f
             });
-            
-            // Set velocity in the x direction and a sinusoidal movement in the y direction
             ec.add_component(enemy, ecs::components::engine::velocity{-10.0f, 0.0f});
-            
             ec.add_component(enemy, components::health{1, spawner.game});
             ec.add_component(enemy, ecs::components::engine::hitbox{ecs::abstractions::rectangle<float>{position.x, position.y, 34.0f, 36.0f}});
-
-            // Set up snake-like movement component with oscillation properties
             ec.add_component(enemy, components::enemy_loop_movement{
                 0.0f, 2000.0f, 200.0f, 800.0f, 1.0f, phase_offset, 100.0f, 2.0f, spawner.game
             });
-
             ec.emplace_component<ecs::components::gui::drawable>(enemy, ecs::components::gui::drawable{spawner.game,
                 std::container<ecs::components::gui::drawable::elements_container>::make({
                     {static_cast<ecs::entity>(spawner.game), display.factory->make_element(
@@ -124,6 +119,7 @@ export namespace game::systems {
             });
         }
     }
+
 
     /**
         * @brief Launch a projectile
