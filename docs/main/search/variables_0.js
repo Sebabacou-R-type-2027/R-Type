@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['_5fcommandstodo_5401',['_commandsToDo',['../dc/d87/classclient_1_1Client.html#a69fd44828a804657cb89cad57a0e3513',1,'client::Client']]]
+  ['alignment_5fof_5fv_0',['alignment_of_v',['https://en.cppreference.com/w/cpp/types/alignment_of.html',1,'std::alignment_of_v()'],['https://en.cppreference.com/w/cpp/experimental/type_trait_variable_templates.html',1,'std::experimental::alignment_of_v()']]],
+  ['available_1',['available',['https://en.cppreference.com/w/cpp/experimental/fs/space_info.html',1,'std::experimental::filesystem::space_info::available()'],['https://en.cppreference.com/w/cpp/filesystem/space_info.html',1,'std::filesystem::space_info::available()']]]
 ];

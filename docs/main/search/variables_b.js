@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['onclick_5534',['onClick',['../dc/d14/structecs_1_1Button.html#a3b51febebe29a01efd1c6f4156953793',1,'ecs::Button::onClick()'],['../d8/d3c/structecs_1_1TextBox.html#afda19ed2d5df6f4c3795af762325d8cb',1,'ecs::TextBox::onClick()']]]
+  ['quot_0',['quot',['https://en.cppreference.com/w/cpp/numeric/math/div.html',1,'std::div_t::quot()'],['https://en.cppreference.com/w/cpp/numeric/math/div.html',1,'std::imaxdiv_t::quot()'],['https://en.cppreference.com/w/cpp/numeric/math/div.html',1,'std::ldiv_t::quot()'],['https://en.cppreference.com/w/cpp/numeric/math/div.html',1,'std::lldiv_t::quot()']]]
 ];

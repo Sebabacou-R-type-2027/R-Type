@@ -1,7 +1,0 @@
-<map id="share/packet/packet_type/PacketACK.hpp" name="share/packet/packet_type/PacketACK.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="276,5,435,47"/>
-<area shape="rect" id="node2" href="$dc/d4f/Client_8cpp.html" title=" " alt="" coords="5,95,159,136"/>
-<area shape="rect" id="node3" href="$dc/d31/UdpServer_8cpp.html" title=" " alt="" coords="183,102,344,129"/>
-<area shape="rect" id="node4" href="$d3/d14/PacketACK_8cpp.html" title=" " alt="" coords="368,95,527,136"/>
-<area shape="rect" id="node5" href="$db/d34/PacketFactory_8cpp.html" title=" " alt="" coords="551,102,773,129"/>
-</map>
