@@ -3,6 +3,7 @@ import :game;
 import :scenes.game;
 import :scenes.menus.lobby;
 import :scenes.menus.multiplayer;
+import :scenes.menus.map_editor;
 
 import std;
 import ecs;
@@ -50,7 +51,7 @@ export namespace game::scenes {
                 start_y += button_height + spacing;
 
                 button_height = create_centered_button("Map Editor", start_y, fontSize, button_color, [&game = _game](){
-                    game.begin_scene(std::make_unique<game_scene>(game));
+                    game.begin_scene(std::make_unique<map_editor>(game));
                 });
                 start_y += button_height + spacing;
 

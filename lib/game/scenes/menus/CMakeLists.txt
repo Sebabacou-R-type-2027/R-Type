@@ -4,4 +4,5 @@ target_sources(game
             lobby.cppm
             multiplayer.cppm
             game_over.cppm
+            map_editor.cppm
 )
