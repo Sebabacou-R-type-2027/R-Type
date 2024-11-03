@@ -61,6 +61,36 @@ export namespace game::scenes {
                 }
             }
 
+
+            /**
+                * @brief Spawn a boss
+
+                * This function is used to spawn a boss entity.
+
+                * @param target The target entity
+                * @param position The position of the boss
+                * @return The boss entity
+             */
+            ecs::entity spawn_boss(ecs::entity target, ecs::components::position position) noexcept
+            {
+                auto e = _game.create_entity();
+                _game.add_component(e, position);
+                _game.add_component(e, enemy{1, 1000, std::chrono::steady_clock::now()});
+                _game.add_component(e, health{300, _game});
+                _game.add_component(e, boss{target, _game});
+                _game.add_component(e, ecs::components::engine::hitbox{rectangle<float>{position.x, position.y, 160.0f, 212.0f}});
+                _game.add_component(e, ecs::components::engine::velocity{0.0f, 0.0f});
+                _game.emplace_component<ecs::components::gui::drawable>(e, ecs::components::gui::drawable{_game,
+                    std::container<ecs::components::gui::drawable::elements_container>::make({
+                        {static_cast<ecs::entity>(_game), _game.display.factory->make_element(
+                            "Boss", _game.asset_manager.get("arial"), 12)},
+                        {static_cast<ecs::entity>(_game), _game.display.factory->make_element(
+                            dynamic_cast<const ecs::abstractions::gui::texture &>(_game.asset_manager.get("boss-phase")), {4, 1}, 50ms)}
+                    })
+                });
+                return e;
+            }
+
             ecs::entity create_player() noexcept
             {
                 auto player = _ec.create_entity();
