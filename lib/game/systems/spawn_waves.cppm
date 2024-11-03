@@ -54,7 +54,7 @@ export namespace game::systems {
                 {static_cast<ecs::entity>(waves.game), ec.get_entity_component<ecs::components::gui::display>(waves.game)->get().factory->make_element(
                     "Shooter", ec.get_entity_component<ecs::components::gui::asset_manager>(waves.game)->get().get("arial"), 12)},
                 {static_cast<ecs::entity>(waves.game), ec.get_entity_component<ecs::components::gui::display>(waves.game)->get().factory->make_element(
-                    dynamic_cast<const ecs::abstractions::gui::texture &>(ec.get_entity_component<ecs::components::gui::asset_manager>(waves.game)->get().get("enemy_shooter")), {8, 1}, 10ms)}
+                    dynamic_cast<const ecs::abstractions::gui::texture &>(ec.get_entity_component<ecs::components::gui::asset_manager>(waves.game)->get().get("enemy_shooter")), {3, 1}, 10ms)}
             })
         });
     }
@@ -73,7 +73,7 @@ export namespace game::systems {
                 {static_cast<ecs::entity>(waves.game), ec.get_entity_component<ecs::components::gui::display>(waves.game)->get().factory->make_element(
                     "Spawner", ec.get_entity_component<ecs::components::gui::asset_manager>(waves.game)->get().get("arial"), 12)},
                 {static_cast<ecs::entity>(waves.game), ec.get_entity_component<ecs::components::gui::display>(waves.game)->get().factory->make_element(
-                    dynamic_cast<const ecs::abstractions::gui::texture &>(ec.get_entity_component<ecs::components::gui::asset_manager>(waves.game)->get().get("enemy_spawner")), {8, 1}, 10ms)}
+                    dynamic_cast<const ecs::abstractions::gui::texture &>(ec.get_entity_component<ecs::components::gui::asset_manager>(waves.game)->get().get("enemy_spawner")), {5, 1}, 10ms)}
             })
         });
     }

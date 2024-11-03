@@ -49,9 +49,9 @@ export namespace game::systems {
                 else if (mob.first == "enemy_shooter")
                     animation = display.factory->make_element(dynamic_cast<const ecs::abstractions::gui::texture &>(asset_manager.get("enemy_shooter")), {3, 1});
                 else if (mob.first == "enemy_spawner")
-                    animation = display.factory->make_element(dynamic_cast<const ecs::abstractions::gui::texture &>(asset_manager.get("enemy_spawner")), {3, 1});
-                else if (mob.first == "boss")
-                    animation = display.factory->make_element(dynamic_cast<const ecs::abstractions::gui::texture &>(asset_manager.get("boss-phase")), {3, 1});
+                    animation = display.factory->make_element(dynamic_cast<const ecs::abstractions::gui::texture &>(asset_manager.get("enemy_spawner")), {5, 1});
+                else if (mob.first == "boss-phase")
+                    animation = display.factory->make_element(dynamic_cast<const ecs::abstractions::gui::texture &>(asset_manager.get("boss-phase")), {4, 1});
 
                 animation->position({mob.second.x, mob.second.y});
                 animation.get()->update(std::chrono::steady_clock::now().time_since_epoch());
