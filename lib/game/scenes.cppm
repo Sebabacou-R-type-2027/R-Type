@@ -570,7 +570,9 @@ struct lobby_menu : public ecs::scene {
                 start_y += button_height + spacing;
 
                 button_height = create_centered_button("Game Options (ON/OFF Shader)", start_y, fontSize, button_color, [&game = _game](){
-                    game.begin_scene(std::make_unique<game_scene>(game));
+                    auto settings = game.get_entity_component<components::settings>(game);
+                    settings->get().isShaderEnabled = !settings->get().isShaderEnabled;
+                    std::cout << "Shader is now " << (settings->get().isShaderEnabled ? "enabled" : "disabled") << std::endl;
                 });
                 start_y += button_height + spacing;
 
