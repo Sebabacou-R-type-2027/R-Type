@@ -222,13 +222,13 @@ export namespace game::systems {
     {
         auto life = ec.get_entity_component<components::health>(e);
 
-        if (life->get().value >= 100) {
+        if (life->get().value >= 250) {
             pattern_1(e, ec, boss, position);
         }
-        if (life->get().value < 75 && life->get().value >= 50) {
+        if (life->get().value < 200 && life->get().value >= 100) {
             pattern_2(e, ec, boss, position);
         }
-        if (life->get().value < 50 && life->get().value > 0) {
+        if (life->get().value < 100 && life->get().value > 0) {
             pattern_3(e, ec, boss, position);
         }
 

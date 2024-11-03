@@ -149,7 +149,7 @@ export namespace game::scenes {
                 auto e = _game.create_entity();
                 _game.add_component(e, position);
                 _game.add_component(e, enemy{1, 1000, std::chrono::steady_clock::now()});
-                _game.add_component(e, health{100, _game});
+                _game.add_component(e, health{300, _game});
                 _game.add_component(e, boss{target, _game});
                 _game.add_component(e, ecs::components::engine::hitbox{rectangle<float>{position.x, position.y, 160.0f, 212.0f}});
                 _game.add_component(e, ecs::components::engine::velocity{0.0f, 0.0f});
