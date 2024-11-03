@@ -45,6 +45,7 @@ class PacketFactory {
             ACK = 1,
             CMD = 2,
             CMDP = 3,
+            MSG = 4,
         };
 
         /// \brief Create a packet

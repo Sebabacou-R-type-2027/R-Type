@@ -123,6 +123,21 @@ namespace server {
         return os;
     }
 
+    uint32_t client::get_best_score() const {
+        return this->best_score_;
+    }
+
+    bool client::new_score(uint32_t score) {
+        if (score > this->best_score_) {
+            server::ClientSaver cs("clients.csv");
+
+            this->best_score_ = score;
+            cs.change_field(this->id_, "BestScore", std::to_string(score));
+            return true;
+        }
+        return false;
+    }
+
     bool operator==(const client& cli1, const client& cli2) {
         return cli1.get_id() == cli2.get_id();
     }
@@ -145,5 +160,13 @@ namespace server {
 
     long client::get_latency() const {
         return latency_;
+    }
+
+    void client::set_lobby_id(int lobby_id) {
+        lobby_id_ = lobby_id;
+    }
+
+    int client::get_lobby_id() const {
+        return lobby_id_;
     }
 }
