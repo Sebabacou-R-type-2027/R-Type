@@ -12,6 +12,7 @@ import std;
 #endif
 import ecs;
 import utils;
+import Client;
 
 export namespace game::systems {
     void launch_projectile(ecs::entity e, ecs::entity_container &ec, components::projectile_launcher& launcher, const ecs::components::position& position)
@@ -58,6 +59,12 @@ export namespace game::systems {
         if (!display.window->is_open())
             return;
         if (display.window->is_input_active(ecs::abstractions::gui::inputs::space)) {
+//            if (network_.is_connected()) {
+//                network_.send_message("CMDP|0");
+//            }
+//            for (auto it = network_._commandsToDo.begin(); it != network_._commandsToDo.end(); ) {
+//                std::cout << "P:" << it->first << " CM:" << it->second << std::endl;
+//            }
             if (!launcher.shot) {
                 launcher.shot = true;
                 auto projectile = ec.create_entity();
@@ -79,6 +86,7 @@ export namespace game::systems {
             }
         }
     }
+
     void cull_projectiles(ecs::entity e, ecs::entity_container &ec, const components::projectile &projectile) {
         auto now = std::chrono::steady_clock::now();
         if (now - projectile.birth > projectile.lifetime)

@@ -23,7 +23,11 @@ export namespace game::scenes {
         protected:
             void create_entities() noexcept override
             {
-                _entities.push_back(create_player());
+                auto network = _game.get_entity_component<components::network>(_game);
+
+                for (int i = 0; i - 1 != network->get().client->number_of_players_; i++) {
+                    _entities.push_back(create_player(100, 150 * (i + 1)));
+                }
                 // _entities.push_back(create_fire_button(*_game.get_entity_component<projectile_launcher>(_entities.back())));
                 _entities.push_back(spawn_enemy_chaser(_entities.back(), {500.0f, 500.0f}));
                 _entities.push_back(spawn_enemy({100.0f, 100.0f}));
@@ -34,13 +38,13 @@ export namespace game::scenes {
             private:
                 game &_game;
 
-            ecs::entity create_player() noexcept
+            ecs::entity create_player(float x, float y) noexcept
             {
                 auto player = _ec.create_entity();
-                _game.emplace_component<ecs::components::position>(player, 50.0f, 50.0f);
+                _game.emplace_component<ecs::components::position>(player, x, y);
                 _game.emplace_component<ecs::components::engine::velocity>(player, 0.0f, 0.0f);
                 _game.emplace_component<ecs::components::engine::controllable>(player, _game, true, 10.0f);
-                _game.emplace_component<ecs::components::engine::hitbox>(player, rectangle<float>{50.0f, 50.0f, 34.0f, 36.0f});
+                _game.emplace_component<ecs::components::engine::hitbox>(player, rectangle<float>{x, x, 34.0f, 36.0f});
                 _game.emplace_component<components::score>(player, 0, _game);
                 _game.emplace_component<components::health>(player, 1, _game);
                 _game.add_component(player, components::projectile_launcher_ownership{100ms, std::chrono::steady_clock::now(), _game, false});
@@ -163,7 +167,7 @@ export namespace game::scenes {
     };
 
         struct multiplayer_menu : public ecs::scene {
-        constexpr multiplayer_menu(game &game) noexcept // TODO : pass the Client object
+        constexpr multiplayer_menu(game &game) noexcept
             : ecs::scene(game), _game(game)
         {}
 
@@ -276,17 +280,27 @@ export namespace game::scenes {
                 // Input rectangle for Port
                 create_rectangle({(_game.display.window->get_size().x - 400.0f) / 2, (_game.display.window->get_size().y - 40.0f) / 2 + 160.0f}, {400.0f, 40.0f}, ecs::abstractions::gui::color(30, 30, 30, 255 * 0.8), ecs::abstractions::gui::color::black);
 
-
                 // Connect Button
                 create_centered_button("Connect", (_game.display.window->get_size().y - height) / 2 + height - buttonHeight - 20.0f, 24, ecs::abstractions::gui::color(14, 94, 255, 255),
                 [this, &username, &password, &server_address, &port]() {
                     auto settings = _game.get_entity_component<components::settings>(_game);
+                    auto network = _game.get_entity_component<components::network>(_game);
 
                     if (settings) { // TODO : Interact with the Client object
                         settings->get().username = username.content;
                         settings->get().password = password.content;
                         settings->get().server_address = server_address.content;
                         settings->get().port = port.content;
+
+                        try {
+                              network->get().client->connect(settings->get().server_address, std::stoi(settings->get().port));
+//                              network.send_message("login " + settings->get().username + " " + settings->get().password);
+                              network->get().client->send_message("login " + settings->get().username + " " + settings->get().password);
+
+//                            _game.network_.connect(settings->get().server_address, std::stoi(settings->get().port));
+//                            _game.network_.send_message("login " + settings->get().username + " " + settings->get().password);
+                        } catch (const std::exception &e) {
+                        }
 
                         _game.begin_scene(std::make_unique<game_scene>(_game));
                     }
@@ -367,7 +381,7 @@ export namespace game::scenes {
 
 
 struct lobby_menu : public ecs::scene {
-        constexpr lobby_menu(game &game) noexcept // TODO : pass the Client object
+        constexpr lobby_menu(game &game) noexcept
             : ecs::scene(game), _game(game)
         {
         }
@@ -382,7 +396,7 @@ struct lobby_menu : public ecs::scene {
 
             void initUI() {
                 float width = 500.0f;
-                float height = 350.0f;
+                float height = 400.0f;
 
                 // Title
                 create_centered_text("Lobby", (_game.display.window->get_size().y - height) / 2, ecs::abstractions::gui::color::white, 48);
@@ -401,6 +415,16 @@ struct lobby_menu : public ecs::scene {
                     })
                 });
 
+                create_rectangle({(_game.display.window->get_size().x - width) / 2, (_game.display.window->get_size().y - height) / 2}, {width, height}, ecs::abstractions::gui::color(100, 100, 100, 255 * 0.7), ecs::abstractions::gui::color::blue);
+
+                // Start Button
+                create_button("Start", {(_game.display.window->get_size().x - 400.0f) / 2, (_game.display.window->get_size().y - 40.0f) / 2 + 100.0f}, {400, 40}, ecs::abstractions::gui::color(14, 94, 255, 255),
+                    [&](){ // TODO : interact with the Client object
+                        auto network = _game.get_entity_component<components::network>(_game);
+
+                        network->get().client->send_message("start");
+                    });
+
                 _entities.push_back(join_lobby_input);
 
                 // Join lobby code text
@@ -410,7 +434,12 @@ struct lobby_menu : public ecs::scene {
                 // Join Lobby Button
                 create_button("Join Lobby", {(_game.display.window->get_size().x - 400.0f) / 2, (_game.display.window->get_size().y - 40.0f) / 2 + 40.0f}, {400, 40}, ecs::abstractions::gui::color(14, 94, 255, 255),
                     [&](){
+                        auto network = _game.get_entity_component<components::network>(_game);
+
                         std::cout << "Join Lobby Code: " << join_lobby.content << std::endl; // TODO : Interact with the Client object
+//                        _game.network_.send_message("join_lobby " + join_lobby.content);
+                        network->get().client->send_message("join_lobby " + join_lobby.content);
+
                     });
                 // Create Lobby Button
                 auto text = _game.display.factory->make_element("Create Lobby", _game.asset_manager.get("arial"), 24);
@@ -420,7 +449,11 @@ struct lobby_menu : public ecs::scene {
 
                 create_button("Create Lobby", {(_game.display.window->get_size().x) / 2.0f - button_size.x - 20, (_game.display.window->get_size().y - height - 20.0f) / 2 + height - 50.0f}, 24, ecs::abstractions::gui::color(14, 94, 255, 255),
                     [&](){
+                        auto network = _game.get_entity_component<components::network>(_game);
+
                         std::cout << "Create Lobby" << std::endl; // TODO : Interact with the Client object
+//                        _game.network_.send_message("create_lobby");
+                        network->get().client->send_message("create_lobby");
                     });
 
                 // Join MatchMaking Button
@@ -431,7 +464,11 @@ struct lobby_menu : public ecs::scene {
                 create_button(" Join Match ", {(_game.display.window->get_size().x) / 2.0f + 20, (_game.display.window->get_size().y - height - 20.0f) / 2 + height - 50.0f}, 24, ecs::abstractions::gui::color(14, 94, 255, 255),
                     [&](){
                         auto settings = _game.get_entity_component<components::settings>(_game);
+                        auto network = _game.get_entity_component<components::network>(_game);
+
                         std::cout << "Join Matchmaking with Username: " << settings->get().username << std::endl << "Password: " << settings->get().password << std::endl << "Server Address: " << settings->get().server_address << std::endl << "Port: " << settings->get().port << std::endl;
+//                        _game.network_.send_message("matchmaking");
+                        network->get().client->send_message("matchmaking");
                     }); // TODO : Interact with the Client object
 
                 // background rectangle
@@ -537,7 +574,7 @@ struct lobby_menu : public ecs::scene {
     };
 
     struct menu : public ecs::scene {
-        constexpr menu(game &game) noexcept // TODO : pass the Client object
+        constexpr menu(game &game) noexcept
             : ecs::scene(game), _game(game)
         {
             _game.emplace_component<components::settings>(_game, "username", "password", "server_address", "port", true);
@@ -562,12 +599,12 @@ struct lobby_menu : public ecs::scene {
                 start_y += button_height + spacing;
 
                 button_height = create_centered_button("Multiplayer", start_y, fontSize, button_color, [&game = _game](){
-                    game.begin_scene(std::make_unique<multiplayer_menu>(game)); // TODO : pass the Client object
+                    game.begin_scene(std::make_unique<multiplayer_menu>(game));
                 });
                 start_y += button_height + spacing;
 
                 button_height = create_centered_button("Lobby", start_y, fontSize, button_color, [&game = _game](){
-                    game.begin_scene(std::make_unique<lobby_menu>(game)); // TODO : pass the Client object
+                    game.begin_scene(std::make_unique<lobby_menu>(game));
                 });
                 start_y += button_height + spacing;
 

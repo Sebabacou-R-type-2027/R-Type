@@ -81,6 +81,9 @@ export class Client {
             connected_ = true;
         }
 
+        bool is_connected() const {
+            return connected_;
+        }
 
         void send_packet(Packet& packet) const {
             packet.format_data();

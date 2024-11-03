@@ -10,6 +10,7 @@ export import :components.projectiles;
 export import :components.enemies;
 export import :components.inputs;
 export import :components.settings;
+export import :components.network;
 export import :components.stats;
 export import :systems.buttons;
 export import :systems.projectiles;
@@ -31,9 +32,8 @@ export namespace game {
 
     class game : public ecs::registry {
         ecs::entity _game;
-        Client &network_;
 
-        constexpr ecs::entity init_game(ecs::entity e) noexcept
+        ecs::entity init_game(ecs::entity e, std::shared_ptr<Client> client) noexcept
         {
             this->emplace_component<ecs::components::gui::display>(e,
                 std::make_unique<ecs::implementations::gui::SFML::window>(
@@ -41,6 +41,7 @@ export namespace game {
                     "R-Type"),
                 std::make_unique<ecs::implementations::gui::SFML::element_factory>());
             this->emplace_component<ecs::components::gui::animation_clock>(e);
+            this->emplace_component<components::network>(e, client);
             auto &asset_manager = this->emplace_component<ecs::components::gui::asset_manager>(e,
                 std::make_unique<ecs::implementations::gui::SFML::asset_loader>());
             load_assets(asset_manager);
@@ -82,11 +83,10 @@ export namespace game {
             ecs::components::gui::asset_manager &asset_manager;
             std::chrono::steady_clock::duration tick_rate = 50ms;
 
-            game(Client &network) noexcept
-                : _game(init_game(this->create_entity())),
+            game(std::shared_ptr<Client> client)
+                : _game(init_game(this->create_entity(), client)),
                 asset_manager(*this->get_entity_component<ecs::components::gui::asset_manager>(_game)),
-                display(*this->get_entity_component<ecs::components::gui::display>(_game)),
-                network_(network)
+                display(*this->get_entity_component<ecs::components::gui::display>(_game))k
             {
                 register_systems();
             }
