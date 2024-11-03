@@ -15,6 +15,17 @@ import ecs;
 import utils;
 
 export namespace game::systems {
+
+    /**
+        * @brief Launch a projectile
+
+        * This function is used to launch a projectile from the given entity.
+
+        * @param e The entity that launches the projectile
+        * @param ec The entity container
+        * @param launcher The projectile launcher component
+        * @param position The position of the entity
+     */
     void launch_projectile(ecs::entity e, ecs::entity_container &ec, components::projectile_launcher& launcher, const ecs::components::position& position)
     {
         auto now = std::chrono::steady_clock::now();
@@ -42,6 +53,16 @@ export namespace game::systems {
         });
     }
 
+    /**
+        * @brief Launch many projectiles
+
+        * This function is used to launch many projectiles from the given entity.
+
+        * @param e The entity that launches the projectiles
+        * @param ec The entity container
+        * @param launcher The projectile launcher component
+        * @param position The position of the entity
+     */
     void launch_many_projectiles(ecs::entity e, ecs::entity_container &ec, components::projectile_launcher &launcher, const ecs::components::position &position)
     {
         auto now = std::chrono::steady_clock::now();
@@ -50,7 +71,7 @@ export namespace game::systems {
 
         launcher.last_shot = now;
 
-        int num_projectiles = 10;
+        int num_projectiles = 15;
         float angle_step = 20.0f;
         float initial_angle = -((num_projectiles - 1) / 2.0f) * angle_step;
 
@@ -81,6 +102,16 @@ export namespace game::systems {
         }
     }
 
+    /**
+        * @brief Launch cross projectiles
+
+        * This function is used to launch cross projectiles from the given entity.
+
+        * @param e The entity that launches the projectiles
+        * @param ec The entity container
+        * @param launcher The projectile launcher component
+        * @param position The position of the entity
+     */
     void launch_cross_projectiles(ecs::entity e, ecs::entity_container &ec, components::projectile_launcher &launcher, const ecs::components::position &position)
     {
         auto now = std::chrono::steady_clock::now();
@@ -118,6 +149,16 @@ export namespace game::systems {
         }
     }
 
+    /**
+        * @brief Launch spiral projectiles
+
+        * This function is used to launch spiral projectiles from the given entity.
+
+        * @param e The entity that launches the projectiles
+        * @param ec The entity container
+        * @param launcher The projectile launcher component
+        * @param position The position of the entity
+     */
     void launch_spiral_projectiles(ecs::entity e, ecs::entity_container &ec, components::projectile_launcher &launcher, const ecs::components::position &position)
     {
         auto now = std::chrono::steady_clock::now();
@@ -129,7 +170,7 @@ export namespace game::systems {
         const ecs::components::gui::asset_manager &asset_manager = *ec.get_entity_component<const ecs::components::gui::asset_manager>(launcher.game);
         const ecs::components::gui::display &display = *ec.get_entity_component<const ecs::components::gui::display>(launcher.game);
 
-        int num_projectiles = 30;
+        int num_projectiles = 40;
         float spiral_radius = 40.0f;
         float spiral_increment = 2.0f;
         float angle_increment = 15.0f;
@@ -159,6 +200,16 @@ export namespace game::systems {
         }
     }
 
+    /**
+        * @brief Launch a projectile with ownership
+
+        * This function is used to launch a projectile from the given entity with ownership.
+
+        * @param e The entity that launches the projectile
+        * @param ec The entity container
+        * @param launcher The projectile launcher ownership component
+        * @param position The position of the entity
+     */
     void launch_projectile_ownership(ecs::entity e, ecs::entity_container &ec, components::projectile_launcher_ownership& launcher, const ecs::components::position& position)
     {
         auto now = std::chrono::steady_clock::now();
@@ -196,6 +247,16 @@ export namespace game::systems {
             }
         }
     }
+
+    /**
+        * @brief Cull projectiles
+
+        * This function is used to cull projectiles that have reached their lifetime.
+
+        * @param e The entity of the projectile
+        * @param ec The entity container
+        * @param projectile The projectile component
+     */
     void cull_projectiles(ecs::entity e, ecs::entity_container &ec, const components::projectile &projectile) {
         auto now = std::chrono::steady_clock::now();
         if (now - projectile.birth > projectile.lifetime)

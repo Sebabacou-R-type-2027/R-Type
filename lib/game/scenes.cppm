@@ -21,6 +21,13 @@ export namespace game::scenes {
             }
 
         protected:
+            /**
+                * @brief Create the entities
+
+                * This function is used to create the entities of the scene.
+
+                * @return The entities of the scene
+             */
             void create_entities() noexcept override
             {
                 _entities.push_back(create_player());
@@ -39,6 +46,13 @@ export namespace game::scenes {
             private:
                 game &_game;
 
+            /**
+                * @brief Create the player
+
+                * This function is used to create the player entity.
+
+                * @return The player entity
+             */
             ecs::entity create_player() noexcept
             {
                 auto player = _ec.create_entity();
@@ -62,29 +76,45 @@ export namespace game::scenes {
                 return player;
             }
 
-                ecs::entity create_fire_button(components::projectile_launcher &launcher) noexcept
-                {
-                    auto button = _game.create_entity();
-                    _game.emplace_component<ecs::components::position>(button, 230.f, 875.f);
-                    _game.emplace_component<components::button>(button, _game, ecs::abstractions::vector<float>(100, 50),
-                            [&launcher](){ launcher.last_shot = std::chrono::steady_clock::time_point(0s); });
-                    auto label = _game.display.factory->make_element(
-                        "Fire", _game.asset_manager.get("arial"), 48);
-                    label->set_origin({label->bounds(true).width / 2, label->bounds(true).height / 2});
-                    label->set_repositioning(ecs::abstractions::gui::drawable_element::reposition_center);
-                    auto background = _game.display.factory->make_element({100, 50},
-                        ecs::abstractions::gui::color::cyan);
-                    background->set_origin({background->bounds(true).width / 2, background->bounds(true).height / 2});
-                    background->set_repositioning(ecs::abstractions::gui::drawable_element::reposition_center);
-                    _game.emplace_component<ecs::components::gui::drawable>(button, ecs::components::gui::drawable{_game,
-                        std::container<ecs::components::gui::drawable::elements_container>::make({
-                            {static_cast<ecs::entity>(_game), std::move(background)},
-                            {static_cast<ecs::entity>(_game), std::move(label)}
-                        })
-                    });
-                    return button;
-                }
+            /**
+                * @brief Create the fire button
 
+                * This function is used to create the fire button entity.
+
+                * @param launcher The projectile launcher component
+                * @return The fire button entity
+             */
+            ecs::entity create_fire_button(components::projectile_launcher &launcher) noexcept
+            {
+                auto button = _game.create_entity();
+                _game.emplace_component<ecs::components::position>(button, 230.f, 875.f);
+                _game.emplace_component<components::button>(button, _game, ecs::abstractions::vector<float>(100, 50),
+                        [&launcher](){ launcher.last_shot = std::chrono::steady_clock::time_point(0s); });
+                auto label = _game.display.factory->make_element(
+                    "Fire", _game.asset_manager.get("arial"), 48);
+                label->set_origin({label->bounds(true).width / 2, label->bounds(true).height / 2});
+                label->set_repositioning(ecs::abstractions::gui::drawable_element::reposition_center);
+                auto background = _game.display.factory->make_element({100, 50},
+                    ecs::abstractions::gui::color::cyan);
+                background->set_origin({background->bounds(true).width / 2, background->bounds(true).height / 2});
+                background->set_repositioning(ecs::abstractions::gui::drawable_element::reposition_center);
+                _game.emplace_component<ecs::components::gui::drawable>(button, ecs::components::gui::drawable{_game,
+                    std::container<ecs::components::gui::drawable::elements_container>::make({
+                        {static_cast<ecs::entity>(_game), std::move(background)},
+                        {static_cast<ecs::entity>(_game), std::move(label)}
+                    })
+                });
+                return button;
+            }
+
+            /**
+                * @brief Spawn an enemy
+
+                * This function is used to spawn an enemy entity.
+
+                * @param position The position of the enemy
+                * @return The enemy entity
+             */
             ecs::entity spawn_enemy(ecs::components::position position) noexcept
             {
                 auto e = _game.create_entity();
@@ -105,6 +135,15 @@ export namespace game::scenes {
                 return e;
             }
 
+            /**
+                * @brief Spawn a boss
+
+                * This function is used to spawn a boss entity.
+
+                * @param target The target entity
+                * @param position The position of the boss
+                * @return The boss entity
+             */
             ecs::entity spawn_boss(ecs::entity target, ecs::components::position position) noexcept
             {
                 auto e = _game.create_entity();
@@ -124,6 +163,16 @@ export namespace game::scenes {
                 });
                 return e;
             }
+
+            /**
+                * @brief Spawn an enemy chaser
+
+                * This function is used to spawn an enemy chaser entity.
+
+                * @param target The target entity
+                * @param position The position of the enemy chaser
+                * @return The enemy chaser entity
+             */
             ecs::entity spawn_enemy_chaser(ecs::entity target, ecs::components::position position) noexcept
             {
                 auto e = _game.create_entity();
@@ -144,6 +193,14 @@ export namespace game::scenes {
                 return e;
             }
 
+            /**
+                * @brief Spawn an enemy spawner
+
+                * This function is used to spawn an enemy spawner entity.
+
+                * @param position The position of the enemy spawner
+                * @return The enemy spawner entity
+             */
             ecs::entity spawn_enemy_spawner(ecs::components::position position) noexcept
             {
                 auto e = _game.create_entity();
@@ -164,6 +221,14 @@ export namespace game::scenes {
                 return e;
             }
 
+            /**
+                * @brief Spawn an enemy shooter
+
+                * This function is used to spawn an enemy shooter entity.
+
+                * @param position The position of the enemy shooter
+                * @return The enemy shooter entity
+             */
             ecs::entity spawn_enemy_shooter(ecs::components::position position) noexcept
             {
                 auto e = _game.create_entity();
@@ -192,6 +257,13 @@ export namespace game::scenes {
         {}
 
         protected:
+            /**
+                * @brief Create the entities
+
+                * This function is used to create the entities of the scene.
+
+                * @return The entities of the scene
+             */
             void create_entities() noexcept
             {
                 initUI();
@@ -200,6 +272,11 @@ export namespace game::scenes {
         private:
             game &_game;
 
+            /**
+                * @brief Initialize the UI
+
+                * This function is used to initialize the UI of the scene.
+             */
             void initUI() {
                 float width = 450.0f;
                 float height = 600.0f;
@@ -320,6 +397,18 @@ export namespace game::scenes {
                 create_rectangle({(_game.display.window->get_size().x - width) / 2, (_game.display.window->get_size().y - height) / 2}, {width, height}, fillColor, outlineColor);
             }
 
+            /**
+                * @brief Create a centered button
+
+                * This function is used to create a centered button.
+
+                * @param label The label of the button
+                * @param yPos The y position of the button
+                * @param fontSize The font size of the button
+                * @param button_color The color of the button
+                * @param action The action of the button
+                * @return The height of the button
+             */
             int create_centered_button(const std::string &label, float yPos, int fontSize, ecs::abstractions::gui::color button_color, std::function<void()> action) noexcept
             {
                 ecs::abstractions::vector<float> window_size = _game.display.window->get_size();
@@ -336,6 +425,16 @@ export namespace game::scenes {
                 return button_size.y;
             }
 
+            /**
+                * @brief Create a rectangle
+
+                * This function is used to create a rectangle.
+
+                * @param position The position of the rectangle
+                * @param size The size of the rectangle
+                * @param color The color of the rectangle
+                * @param outlineColor The outline color of the rectangle
+             */
             void create_rectangle(ecs::abstractions::vector<float> position, ecs::abstractions::vector<float> size, ecs::abstractions::gui::color color, ecs::abstractions::gui::color outlineColor = ecs::abstractions::gui::color::blue) noexcept
             {
                 auto rectangle = _game.display.factory->make_element(size, color);
@@ -353,6 +452,16 @@ export namespace game::scenes {
 
             }
 
+            /**
+                * @brief Create text
+
+                * This function is used to create text.
+
+                * @param position The position of the text
+                * @param text The text
+                * @param color The color of the text
+                * @param size The size of the text
+             */
             void create_text(ecs::abstractions::vector<float> position, std::string text, ecs::abstractions::gui::color color, int size = 24) noexcept
             {
                 auto text_entity = _game.create_entity();
@@ -365,6 +474,16 @@ export namespace game::scenes {
                 _entities.push_back(text_entity);
             }
 
+            /**
+                * @brief Create a centered text
+
+                * This function is used to create a centered text.
+
+                * @param label The label of the text
+                * @param yPos The y position of the text
+                * @param color The color of the text
+                * @param fontSize The font size of the text
+             */
             void create_centered_text(std::string label, float yPos, ecs::abstractions::gui::color color, int fontSize = 24) noexcept
             {
                 ecs::abstractions::vector<float> window_size = _game.display.window->get_size();
@@ -375,6 +494,17 @@ export namespace game::scenes {
                 create_text({(window_size.x - text_size.x) / 2, yPos + text_top}, label, color, fontSize);
             }
 
+            /**
+                * @brief Create a button
+
+                * This function is used to create a button.
+
+                * @param label The label of the button
+                * @param position The position of the button
+                * @param size The size of the button
+                * @param color The color of the button
+                * @param action The action of the button
+             */
             void create_clickable_rectangle(ecs::abstractions::vector<float> position, ecs::abstractions::vector<float> size, ecs::abstractions::gui::color color, std::function<void()> action) noexcept
             {
                 auto rectangle = _game.create_entity();
@@ -396,6 +526,13 @@ struct lobby_menu : public ecs::scene {
         {
         }
         protected:
+            /**
+                * @brief Create the entities
+
+                * This function is used to create the entities of the scene.
+
+                * @return The entities of the scene
+             */
             void create_entities() noexcept
             {
                 initUI();
@@ -409,6 +546,11 @@ struct lobby_menu : public ecs::scene {
                 float height = 350.0f;
 
                 // Title
+                /**
+                    * @brief Create the UI
+
+                    * This function is used to create the UI of the scene.
+                 */
                 create_centered_text("Lobby", (_game.display.window->get_size().y - height) / 2, ecs::abstractions::gui::color::white, 48);
 
                 auto join_lobby_input = _game.create_entity();

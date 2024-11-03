@@ -20,6 +20,14 @@ using namespace std::chrono_literals;
 
 export namespace game::systems {
 
+    /**
+        * @brief Update the score
+
+        * This function is used to update the score of the game.
+
+        * @param ec The entity container
+        * @param score The score component
+     */
     void update_score(ecs::entity_container &ec, components::score &score)
     {
         if (!ec.get_entity_component<components::score>(score.game)) {
@@ -38,6 +46,16 @@ export namespace game::systems {
         });
     }
 
+    /**
+        * @brief Update the life
+
+        * This function is used to update the life of the entity.
+
+        * @param e The entity
+        * @param ec The entity container
+        * @param life The health component
+        * @param box The hitbox component
+     */
     void update_life(ecs::entity e, ecs::entity_container &ec, components::health &life, ecs::components::engine::hitbox &box)
     {
         if (!box.triggered_by) {

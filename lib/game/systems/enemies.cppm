@@ -118,11 +118,22 @@ export namespace game::systems {
         }        
     }
 
+    /**
+        * @brief Launch a projectile
+
+        * This function is used to launch a projectile from the given entity.
+
+        * @param e The entity that launches the projectile
+        * @param ec The entity container
+        * @param launcher The projectile launcher component
+        * @param position The position of the entity
+     */
     void pattern_1(ecs::entity e, ecs::entity_container &ec, components::boss &boss, ecs::components::position &position)
     {
+        auto windowSize = ec.get_entity_component<ecs::components::gui::display>(boss.game)->get().window->get_size();
         position.y += 0.5f;
 
-        if (position.y > 800.0f || position.y < 200.0f)
+        if (position.y > windowSize.y - 200.0f || position.y < 200.0f)
             boss.moving_right = !boss.moving_right;
 
         if (boss.moving_right)
@@ -131,16 +142,26 @@ export namespace game::systems {
             position.y -= boss.speed;
 
         if (std::chrono::steady_clock::now() - boss.last_attack > 500ms) {
-            std::cout << "Launching projectiles" << std::endl;
             boss.last_attack = std::chrono::steady_clock::now();
             launch_projectile(e, ec, boss.launcher, position);
         }
     }
 
+    /**
+        * @brief Launch many projectiles
+
+        * This function is used to launch many projectiles from the given entity.
+
+        * @param e The entity that launches the projectiles
+        * @param ec The entity container
+        * @param launcher The projectile launcher component
+        * @param position The position of the entity
+     */
     void pattern_2(ecs::entity e, ecs::entity_container &ec, components::boss &boss, ecs::components::position &position)
     {
+        auto windowSize = ec.get_entity_component<ecs::components::gui::display>(boss.game)->get().window->get_size();
         position.y += 0.5f;
-        if (position.y > 800.0f || position.y < 200.0f)
+        if (position.y > windowSize.y - 200.0f || position.y < 200.0f)
             boss.moving_right = !boss.moving_right;
 
         if (boss.moving_right)
@@ -155,11 +176,26 @@ export namespace game::systems {
         }
     }
 
-    void pattern_3(ecs::entity e, ecs::entity_container &ec, components::boss &boss, ecs::components::position &position) {
+    /**
+        * @brief Launch cross projectiles
+
+        * This function is used to launch cross projectiles from the given entity.
+
+        * @param e The entity that launches the projectiles
+        * @param ec The entity container
+        * @param launcher The projectile launcher component
+        * @param position The position of the entity
+     */
+    void pattern_3(ecs::entity e, ecs::entity_container &ec, components::boss &boss, ecs::components::position &position)
+    {
+        auto windowSize = ec.get_entity_component<ecs::components::gui::display>(boss.game)->get().window->get_size();
+
         position.x += boss.moving_right ? boss.speed * 1.5f : -boss.speed * 1.5f;
         position.y += std::sin(boss.angle) * 1.0f;
         boss.angle += 0.1f;
 
+        if (position.x > windowSize.x - 200.0f || position.x < 200.0f)
+            boss.moving_right = !boss.moving_right;
         if (std::chrono::steady_clock::now() - boss.last_attack > 1s) {
             boss.last_attack = std::chrono::steady_clock::now();
             launch_spiral_projectiles(e, ec, boss.launcher_spiral, position);
@@ -171,7 +207,6 @@ export namespace game::systems {
             position.y += (target_position->get().y > position.y ? 1 : -1) * boss.speed;
         }
     }
-
 
     /**
         * @brief Handle the boss pattern

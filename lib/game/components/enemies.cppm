@@ -116,7 +116,7 @@ export namespace game::components {
         components::projectile_launcher launcher{-1.0, 1s, std::chrono::steady_clock::now(), game};
         components::projectile_launcher launcher_cross{-1.0, 1s, std::chrono::steady_clock::now(), game};
         components::projectile_launcher launcher_spiral{-1.0, 1s, std::chrono::steady_clock::now(), game};
-        components::enemy_spawner spawner{2s, 5ul, game};
+        components::enemy_chaser chaser{target, 5.0f};
         std::chrono::steady_clock::time_point last_spawn = std::chrono::steady_clock::time_point(0s);
         float angle = 0.0f;
 

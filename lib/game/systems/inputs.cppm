@@ -59,6 +59,15 @@ static const std::unordered_map<ecs::abstractions::gui::inputs, char> characters
 };
 
 export namespace game::systems {
+    
+    /**
+        * @brief Handle text input
+        * 
+        * This function is used to handle the text input.
+        * 
+        * @param ec The entity container
+        * @param input The input component
+     */
     void handle_text_input(ecs::entity_container &ec, components::input &input) noexcept
     {
         auto display = ec.get_entity(input.display).and_then([&ec](auto e){
@@ -78,6 +87,16 @@ export namespace game::systems {
         input.text.set_text(input.content);
     }
 
+    /**
+        * @brief Reset focus
+        * 
+        * This function is used to reset the focus of the input component.
+        * 
+        * @param e The entity
+        * @param ec The entity container
+        * @param input The input component
+        * @param button The button component
+     */
     void reset_focus(ecs::entity e, ecs::entity_container &ec,
         components::input &input, components::button &button) noexcept
     {
