@@ -96,7 +96,7 @@ export namespace game::systems {
 
         if (count >= spawner.max_enemies)
             return;
-        
+
         const ecs::components::gui::display &display =
             *ec.get_entity_component<const ecs::components::gui::display>(spawner.game);
         const ecs::components::gui::asset_manager &asset_manager = *ec.get_entity_component<const ecs::components::gui::asset_manager>(spawner.game);
