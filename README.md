@@ -2,7 +2,7 @@
 
 ## Description
 
-This project is a remake of the R-Type game, a shoot'em up game where the player controls a spaceship and has to destroy enemies and obstacles.
+This project is a remake of the R-Type game, a horizontal scrolling shoot'em up game where the player controls a spaceship and has to destroy enemies and obstacles.
 
 This implementation includes new features like networking and multipleyr co-op mode.
 
@@ -12,47 +12,59 @@ This implementation includes new features like networking and multipleyr co-op m
 
 To build the project from source, you will need to have the following dependencies installed on your system:
 
-- C++17 compiler
-- CMake
-- Ninja
-- vcpkg (see [Installation tutorial](https://learn.microsoft.com/en-us/vcpkg/get_started/get-started?pivots=shell-bash) up to step 2.1)
+#### Linux
+
+- Clang & libc++ (LLVM version 18 minimum)
+- CMake 3.30 or later
+- Ninja 1.11 or later
 - Extra SFML build dependencies on Linux (see [SFML documentation](https://www.sfml-dev.org/tutorials/2.6/compile-with-cmake.php#installing-dependencies))
 
-First, clone the repository:
+#### Windows
+
+- Visual Studio 2022 (with MSVC 14.35 minimum)
+- CMake 3.30 or later
+- Ninja 1.11 or later
+
+#### Build instructions
+
+First, clone the repository and it's submodules:
 
 ```bash
-git clone https://github.com/Sebabacou-R-type-2027/R-Type.git
+git clone https://github.com/Sebabacou-R-type-2027/R-Type.git --recurse-submodules
 cd R-Type
 ```
 
-Then, select one of the available CMake presets (excluding `base`):
+Then, run the corresponding cmake workflow:
 
 ```bash
-cmake --list-presets
-Available configure presets:
+cmake --workflow --list-presets
+Available workflow presets:
 
-  "base"
-  "default" - Default
-  "release" - Release
-  "ci"      - CI
+  "default"
+  "default-llvm"
+  "release"
+  "release-llvm"
 ```
 
-Finally install the dependencies, configure, build and test the project (in release mode, for example):
+Choose the appropriate preset for your system and build toolchain.
+For example, to build the project with Clang and libc++ on Linux, use the `release-llvm` preset,
+and to build the project with MSVC on Windows, use the `release` preset.
 
 ```bash
-vcpkg install
-cmake --preset release
-cmake --build --preset release
-ctest --preset release
+cmake --workflow --preset=release-llvm
+# Install the binaries
+sudo cmake --install build --config Release
 ```
+
+This will configure, build, test and package the project using the selected preset.
 
 ## Running the game
 
-## Requirements
+### Requirements
 
 Before running the game, ensure that you have installed all the required libraries and compiled the project. Once the compilation is successful, follow the instructions below to launch the server and client.
 
-## How to Launch the Game
+### How to Launch the Game
 
 1. **Open two terminals** and navigate to the same directory (repository) where the executables are located.
 
@@ -68,7 +80,7 @@ Before running the game, ensure that you have installed all the required librari
 
    This command connects the client to the server running on `127.0.0.1` (localhost) at port `8080`.
 
-4. The game will launch, but you will need to return to the **client terminal**. A prompt will appear: 
+4. The game will launch, but you will need to return to the **client terminal**. A prompt will appear:
 
    `$> `
 
