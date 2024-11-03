@@ -1,14 +1,7 @@
-#if __cpp_lib_modules < 202207L
-module;
-
-#include <chrono>
-#endif
-export module game:components.enemies; 
+export module game:components.enemies;
 import :components.projectiles;
 
-#if __cpp_lib_modules >= 202207L
 import std;
-#endif
 import ecs;
 
 using namespace std::chrono_literals;
@@ -29,7 +22,7 @@ export namespace game::components {
 
             * @param damage Damage of the entity
             * @param point Score of the entity
-        
+
          */
         enemy(int damage, int point, std::chrono::steady_clock::time_point birth)
             : damage(damage), points(point), birth(birth)
@@ -103,6 +96,28 @@ export namespace game::components {
     };
 
     /**
+        * @brief Component that defines the boss
+
+        * This component is used to define the boss. It contains the target entity and the game entity.
+     */
+    struct boss {
+        ecs::entity target;
+        ecs::entity game;
+        float speed = 5.0f;
+        bool moving_right = true;
+        std::chrono::steady_clock::time_point last_attack = std::chrono::steady_clock::time_point(0s);
+        components::projectile_launcher launcher{-1.0, 1s, std::chrono::steady_clock::now(), game};
+        components::projectile_launcher launcher_cross{-1.0, 1s, std::chrono::steady_clock::now(), game};
+        components::projectile_launcher launcher_spiral{-1.0, 1s, std::chrono::steady_clock::now(), game};
+        components::enemy_chaser chaser{target, 5.0f};
+        std::chrono::steady_clock::time_point last_spawn = std::chrono::steady_clock::time_point(0s);
+        float angle = 0.0f;
+
+
+        boss(ecs::entity target, ecs::entity game)
+            : target(target), game(game) {}
+    };
+    /**
         * @brief Component that defines the enemy loop movement
 
         * This component is used to define the enemy loop movement. It contains the min and max position on the x and y axis, the speed of the entity, the angle of the entity, the radius of the entity and the angular speed of the entity.
@@ -114,6 +129,7 @@ export namespace game::components {
         float angle; ///< Angle of the entity
         float radius; ///< Radius of the entity
         float angular_speed; ///< Angular speed of the entity
+        ecs::entity game;
 
         /**
             * @brief Constructor of the enemy loop movement component
@@ -127,9 +143,8 @@ export namespace game::components {
             * @param radius Radius of the entity
             * @param angular_speed Angular speed of the entity
          */
-        enemy_loop_movement(float min_x, float max_x, float min_y, float max_y, float speed, float angle, float radius, float angular_speed)
-            : min_x(min_x), max_x(max_x), min_y(min_y), max_y(max_y), speed(speed), angle(angle), radius(radius), angular_speed(angular_speed) {}
+        enemy_loop_movement(float min_x, float max_x, float min_y, float max_y, float speed, float angle, float radius, float angular_speed, ecs::entity game)
+            : min_x(min_x), max_x(max_x), min_y(min_y), max_y(max_y), speed(speed), angle(angle), radius(radius), angular_speed(angular_speed), game(game) {}
     };
-        
         
 }

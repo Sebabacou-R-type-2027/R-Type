@@ -26,6 +26,7 @@ UdpServer::UdpServer(asio::io_context& io_context, short port)
       	{"matchmaking", [this](const std::string& message) { add_client_to_matchmaking(message); }},
         {"score", [this](const std::string& message) { get_best_score_cli(message); }},
         {"new_score", [this](const std::string& message) {  new_score_cli(message); }},
+      	{"matchmaking", [this](const std::string& message) { add_client_to_matchmaking(message); }},
       	{"GET_CHAT", [this](const std::string& message) { messages_to_players_lobby(message); }}
     };
     message_id_counter_ = 0;

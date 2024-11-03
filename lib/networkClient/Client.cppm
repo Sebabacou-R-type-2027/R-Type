@@ -5,6 +5,8 @@ module;
 #include <memory>
 #include <string>
 #include <map>
+#include <regex> // Ajout pour std::regex
+#include <iomanip> // Ajout pour std::put_time
 #endif
 
 #include "Packet.hpp"

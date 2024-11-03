@@ -1,20 +1,4 @@
-#if __cpp_lib_modules < 202207L
-module;
-#include <algorithm>
-#include <chrono>
-#include <functional>
-#include <iostream>
-#include <thread>
-#endif
-
-#include <asio.hpp>
-
-#if __cpp_lib_modules >= 202207L
 import std;
-#endif
-
-import ecs;
-import utils;
 import game;
 import Client;
 

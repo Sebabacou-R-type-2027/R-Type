@@ -8,7 +8,7 @@
 #include <queue>
 #include "client.hpp"
 #include "MatchmakingQueue.hpp"
-#include "lobby/Lobby.hpp"
+#include "Lobby.hpp"
 
 class MatchmakingSystem {
     public:

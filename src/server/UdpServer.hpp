@@ -11,11 +11,11 @@
 #include <vector>
 #include <lz4.h>
 
-#include "lobby/Lobby.hpp"
-#include "matchmaking/MatchmakingSystem.hpp"
-#include "matchmaking/MatchmakingQueue.hpp"
-#include "client/client.hpp"
-#include "client/ClientSaver.hpp"
+#include "Lobby.hpp"
+#include "MatchmakingSystem.hpp"
+#include "MatchmakingQueue.hpp"
+#include "client.hpp"
+#include "ClientSaver.hpp"
 #include "Packet.hpp"
 #include "PacketPing.hpp"
 #include "PacketFactory.hpp"

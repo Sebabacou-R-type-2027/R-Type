@@ -11,7 +11,7 @@
 #include <asio.hpp>
 #include <unordered_map>
 #include <iomanip>
-#include "client/client.hpp"
+#include "client.hpp"
 
 class Lobby {
     public:
