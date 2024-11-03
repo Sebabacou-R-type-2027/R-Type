@@ -10,4 +10,6 @@ target_sources(packet
 
 add_subdirectory(packet_type)
 
+find_package(asio CONFIG REQUIRED)
+
 target_link_libraries(packet PRIVATE asio::asio)

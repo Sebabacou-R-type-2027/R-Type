@@ -2,9 +2,7 @@ export module game:systems.inputs;
 import :components.buttons;
 import :components.inputs;
 
-#if __cpp_lib_modules >= 202207L
 import std;
-#endif
 import ecs;
 import utils;
 
@@ -59,12 +57,12 @@ static const std::unordered_map<ecs::abstractions::gui::inputs, char> characters
 };
 
 export namespace game::systems {
-    
+
     /**
         * @brief Handle text input
-        * 
+        *
         * This function is used to handle the text input.
-        * 
+        *
         * @param ec The entity container
         * @param input The input component
      */
@@ -89,9 +87,9 @@ export namespace game::systems {
 
     /**
         * @brief Reset focus
-        * 
+        *
         * This function is used to reset the focus of the input component.
-        * 
+        *
         * @param e The entity
         * @param ec The entity container
         * @param input The input component

@@ -1,13 +1,6 @@
-#if __cpp_lib_modules < 202207L
-module;
-
-#include <chrono>
-#endif
 export module game:components.projectiles;
 
-#if __cpp_lib_modules >= 202207L
 import std;
-#endif
 import ecs;
 
 export namespace game::components {

@@ -1,14 +1,7 @@
-#if __cpp_lib_modules < 202207L
-module;
-
-#include <chrono>
-#endif
-export module game:components.enemies; 
+export module game:components.enemies;
 import :components.projectiles;
 
-#if __cpp_lib_modules >= 202207L
 import std;
-#endif
 import ecs;
 
 using namespace std::chrono_literals;
@@ -29,7 +22,7 @@ export namespace game::components {
 
             * @param damage Damage of the entity
             * @param point Score of the entity
-        
+
          */
         enemy(int damage, int point, std::chrono::steady_clock::time_point birth)
             : damage(damage), points(point), birth(birth)
