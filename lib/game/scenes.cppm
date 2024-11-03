@@ -46,8 +46,8 @@ export namespace game::scenes {
                 _game.emplace_component<components::score>(player, 0, _game);
                 _game.emplace_component<components::health>(player, 1, _game);
                 _game.add_component(player, components::projectile_launcher_ownership{100ms, std::chrono::steady_clock::now(), _game, false});
-                //_game.emplace_component<powerup_tripleshoot>(player, 1s, std::chrono::steady_clock::now(), _game, 5s, std::chrono::steady_clock::now());
-                _game.emplace_component<powerup_curveshoot>(player, 1s, std::chrono::steady_clock::now(), _game, 5s, std::chrono::steady_clock::now());
+                _game.emplace_component<powerup_tripleshoot>(player, 1s, std::chrono::steady_clock::now(), _game, 10s, std::chrono::steady_clock::now());
+                //_game.emplace_component<powerup_curveshoot>(player, 1s, std::chrono::steady_clock::now(), _game, 5s, std::chrono::steady_clock::now());
 
 
 
@@ -174,8 +174,10 @@ export namespace game::scenes {
 
                 _game.add_component(powerup, ecs::components::position{position.x, position.y});
                 _game.add_component(powerup, ecs::components::engine::velocity{0.0f, 2.0f});
-                _game.add_component(powerup, enemy_loop_movement{0.0f, 2000.0f, 200.0f, 250.0f, 1.0f, 0.0f, 100.0f, 2.0f});
+                _game.add_component(powerup, ecs::components::engine::hitbox{rectangle<float>{position.x, position.y, 40.0f, 38.0f}});
 
+                _game.emplace_component<components::health>(powerup, 1, _game);
+                _game.add_component(powerup, enemy_loop_movement{0.0f, 2000.0f, 200.0f, 250.0f, 1.0f, 0.0f, 100.0f, 2.0f});
                 _game.emplace_component<ecs::components::gui::drawable>(powerup, ecs::components::gui::drawable{_game,
                     std::container<ecs::components::gui::drawable::elements_container>::make({
                         {static_cast<ecs::entity>(_game), _game.display.factory->make_element(
