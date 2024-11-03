@@ -1,5 +1,7 @@
 export module game:scenes.menus.game_over;
 import :game;
+import :scenes.game;
+import :scenes.menus.main;
 
 import std;
 import ecs;
@@ -39,35 +41,24 @@ export namespace game::scenes {
                  */
                 create_centered_text("Game over", (_game.display.window->get_size().y - height) / 2, ecs::abstractions::gui::color::white, 48);
 
-                auto join_Game_over_input = _game.create_entity();
-                _game.emplace_component<ecs::components::position>(join_Game_over_input, (_game.display.window->get_size().x - 400.0f) / 2, (_game.display.window->get_size().y - 40.0f) / 2 - 20.0f);
+                auto Game_over_input = _game.create_entity();
+                _game.emplace_component<ecs::components::position>(Game_over_input, (_game.display.window->get_size().x - 400.0f) / 2, (_game.display.window->get_size().y - 40.0f) / 2 - 20.0f);
                 auto join_Game_over_text = _game.display.factory->make_element("", _game.asset_manager.get("arial"), 24);
-                auto &join_Game_over = _game.emplace_component<components::input>(join_Game_over_input, _game, *join_Game_over_text);
-                _game.emplace_component<components::button>(join_Game_over_input, _game, abstractions::vector<float>{400, 40}, [&join_Game_over](){
+                auto &join_Game_over = _game.emplace_component<components::input>(Game_over_input, _game, *join_Game_over_text);
+                _game.emplace_component<components::button>(Game_over_input, _game, abstractions::vector<float>{400, 40}, [&join_Game_over](){
                     join_Game_over.has_focus = true;
                 });
-                _game.emplace_component<ecs::components::gui::drawable>(join_Game_over_input, ecs::components::gui::drawable{_game,
+                _game.emplace_component<ecs::components::gui::drawable>(Game_over_input, ecs::components::gui::drawable{_game,
                     std::container<ecs::components::gui::drawable::elements_container>::make({
                         {static_cast<ecs::entity>(_game), _game.display.factory->make_element({400, 40}, ecs::abstractions::gui::color::transparent)},
                         {static_cast<ecs::entity>(_game), std::move(join_Game_over_text)}
                     })
                 });
 
-                _entities.push_back(join_Game_over_input);
-                auto text = _game.display.factory->make_element("Create Game_over", _game.asset_manager.get("arial"), 24);
-                ecs::abstractions::vector<float> text_size = {text->bounds(true).width, text->bounds(true).height};
-                float button_height = 50.0f;
-                ecs::abstractions::vector<float> button_size = {text_size.x + 40, button_height};
-
-                // Join MatchMaking Button
-                auto text2 = _game.display.factory->make_element(" Join Match ", _game.asset_manager.get("arial"), 24);
-                ecs::abstractions::vector<float> text_size2 = {text2->bounds(true).width, text2->bounds(true).height};
-                ecs::abstractions::vector<float> button_size2 = {text_size2.x + 40, button_height};
-
+                _entities.push_back(Game_over_input);
                 create_button("Back to menu", {(_game.display.window->get_size().x) / 2.0f + 20, (_game.display.window->get_size().y - height - 20.0f) / 2 + height - 50.0f}, 24, ecs::abstractions::gui::color(14, 94, 255, 255),
                     [&](){
-                        // _game.begin_scene(std::make_unique<menu>(_game));
-
+                        _game.begin_scene(std::make_unique<menu>(_game));
                     });
 
                 // background rectangle

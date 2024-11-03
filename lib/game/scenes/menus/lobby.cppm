@@ -1,5 +1,6 @@
 export module game:scenes.menus.lobby;
 import :game;
+import :scenes.game;
 
 import std;
 import ecs;
@@ -63,6 +64,9 @@ export namespace game::scenes {
                 create_button("Join Lobby", {(_game.display.window->get_size().x - 400.0f) / 2, (_game.display.window->get_size().y - 40.0f) / 2 + 40.0f}, {400, 40}, ecs::abstractions::gui::color(14, 94, 255, 255),
                     [&](){
                         std::cout << "Join Lobby Code: " << join_lobby.content << std::endl;
+                        if (_game._is_ready) {
+                            _game.begin_scene(std::make_unique<game_scene>(_game));
+                        }
                     });
                 // Create Lobby Button
                 auto text = _game.display.factory->make_element("Create Lobby", _game.asset_manager.get("arial"), 24);
@@ -84,6 +88,9 @@ export namespace game::scenes {
                     [&](){
                         auto settings = _game.get_entity_component<components::settings>(_game);
                         std::cout << "Join Matchmaking with Username: " << settings->get().username << std::endl << "Password: " << settings->get().password << std::endl << "Server Address: " << settings->get().server_address << std::endl << "Port: " << settings->get().port << std::endl;
+                        if (_game._is_ready) {
+                            _game.begin_scene(std::make_unique<game_scene>(_game));
+                        }
                     });
 
                 // background rectangle
