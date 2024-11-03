@@ -1,5 +1,4 @@
 #if __cpp_lib_modules < 202207L
-module;
 #include <algorithm>
 #include <chrono>
 #include <functional>

@@ -146,7 +146,10 @@ export namespace game::scenes {
                         settings->get().port = port.content;
                         auto network = _game.get_entity_component<components::network>(_game);
                         try {
-                            network->get().network->connect(settings->get().server_address, settings->get().port);
+                            network->get().client->connect(settings->get().server_address, std::stoi(settings->get().port));
+                            network->get().client->send_message("login " + settings->get().username + " " + settings->get().password);
+
+
                         } catch (const std::exception &e) {
                             std::cerr << e.what() << std::endl;
                             return;

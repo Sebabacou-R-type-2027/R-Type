@@ -63,13 +63,13 @@ export namespace game::scenes {
                 create_button("Join Lobby", {(_game.display.window->get_size().x - 400.0f) / 2, (_game.display.window->get_size().y - 40.0f) / 2 + 40.0f}, {400, 40}, ecs::abstractions::gui::color(14, 94, 255, 255),
                     [&](){
                         auto network = _game.get_entity_component<components::network>(_game);
-                        network->get().network->send_message("join_lobby " + join_lobby.content);
+                        network->get().client->send_message("join_lobby " + join_lobby.content);
                     });
 
                 create_button("Start Game", {(_game.display.window->get_size().x - 400.0f) / 2, (_game.display.window->get_size().y - 40.0f) / 2 + 100.0f}, {400, 40}, ecs::abstractions::gui::color(14, 94, 255, 255),
                     [&](){
                         auto network = _game.get_entity_component<components::network>(_game);
-                        network->get().network->send_message("start");
+                        network->get().client->send_message("start");
                     });
 
                 // Create Lobby Button
@@ -81,7 +81,7 @@ export namespace game::scenes {
                 create_button("Create Lobby", {(_game.display.window->get_size().x) / 2.0f - button_size.x - 20, (_game.display.window->get_size().y - height - 20.0f) / 2 + height - 50.0f}, 24, ecs::abstractions::gui::color(14, 94, 255, 255),
                     [&](){
                         auto network = _game.get_entity_component<components::network>(_game);
-                        network->get().network->send_message("create_lobby");
+                        network->get().client->send_message("create_lobby");
 //                        std::cout << "Create Lobby" << std::endl;
                     });
 
@@ -94,7 +94,7 @@ export namespace game::scenes {
                     [&](){
                         auto settings = _game.get_entity_component<components::settings>(_game);
                         auto network = _game.get_entity_component<components::network>(_game);
-                        network->get().network->send_message("matchmaking");
+                        network->get().client->send_message("matchmaking");
 //                        std::cout << "Join Matchmaking with Username: " << settings->get().username << std::endl << "Password: " << settings->get().password << std::endl << "Server Address: " << settings->get().server_address << std::endl << "Port: " << settings->get().port << std::endl;
                     });
 

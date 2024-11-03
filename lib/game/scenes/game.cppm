@@ -21,7 +21,12 @@ export namespace game::scenes {
              */
             void create_entities() noexcept override
             {
-                _entities.push_back(create_player());
+                auto network = _game.get_entity_component<components::network>(_game);
+
+                for (int i = 0; i - 1 != network->get().client->number_of_players_; i++) {
+                    _entities.push_back(create_player(100, 150 * (i + 1), i));
+                }
+//                _entities.push_back(create_player());
                 // _entities.push_back(create_fire_button(*_game.get_entity_component<projectile_launcher>(_entities.back())));
                 // std::ranges::for_each(_entities, [this](ecs::entity e) {
                 //     if (auto launcher = _game.get_entity_component<components::score>(e)) {
@@ -45,13 +50,13 @@ export namespace game::scenes {
 
                 * @return The player entity
              */
-            ecs::entity create_player() noexcept
+            ecs::entity create_player(float x, float y, int network_id) noexcept
             {
                 auto player = _ec.create_entity();
-                _game.emplace_component<ecs::components::position>(player, 50.0f, 50.0f);
+                _game.emplace_component<ecs::components::position>(player, x, y);
                 _game.emplace_component<ecs::components::engine::velocity>(player, 0.0f, 0.0f);
-                _game.emplace_component<ecs::components::engine::controllable>(player, _game, true, 10.0f);
-                _game.emplace_component<ecs::components::engine::hitbox>(player, rectangle<float>{50.0f, 50.0f, 34.0f, 36.0f});
+                _game.emplace_component<ecs::components::engine::controllable>(player, _game, true, 10.0f, network_id);
+                _game.emplace_component<ecs::components::engine::hitbox>(player, rectangle<float>{x, y, 34.0f, 36.0f});
                 _game.emplace_component<components::score>(player, 0, _game);
                 _game.emplace_component<components::health>(player, 1, _game);
                 _game.add_component(player, components::projectile_launcher_ownership{100ms, std::chrono::steady_clock::now(), _game, false});
