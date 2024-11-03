@@ -3,6 +3,7 @@ module;
 
 #include <chrono>
 #include <memory>
+#include <nlohmann/json.hpp>
 #endif
 export module game:game;
 export import :components.buttons;
@@ -11,12 +12,17 @@ export import :components.enemies;
 export import :components.inputs;
 export import :components.settings;
 export import :components.stats;
+export import :components.map_editor;
+export import :components.spawn_waves;
 export import :systems.buttons;
 export import :systems.projectiles;
 export import :systems.enemies;
 export import :systems.inputs;
 export import :systems.shader_background;
 export import :systems.stats;
+export import :systems.map_editor;
+export import :systems.spawn_waves;
+
 
 #if __cpp_lib_modules >= 202207L
 import std;
@@ -58,6 +64,7 @@ export namespace game {
 
         constexpr void register_systems() noexcept
         {
+            this->register_system<spawn_waves>(spawn_waves_mobs);
             this->register_system<components::input>(handle_text_input);
             this->register_system<components::input, components::button>(reset_focus);
             this->register_system<const projectile>(cull_projectiles);
@@ -71,6 +78,7 @@ export namespace game {
             this->register_system<health, ecs::components::engine::hitbox>(update_life);
             this->register_system<score>(update_score);
             this->register_gui_systems();
+            this->register_system<components::map_editor, const ecs::components::gui::display>(handle_map_editor);
             this->register_system<components::settings, const ecs::components::gui::display>(shader_background);
             this->register_engine_systems();
         }
