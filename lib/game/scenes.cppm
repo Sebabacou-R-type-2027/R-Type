@@ -43,7 +43,8 @@ export namespace game::scenes {
 
 
                 _game.add_component<projectile_launcher>(player, {1s, std::chrono::steady_clock::now(), _game});
-                _game.emplace_component<powerup_tripleshoot>(player, 1s, std::chrono::steady_clock::now(), _game, 5s, std::chrono::steady_clock::now());
+                //_game.emplace_component<powerup_tripleshoot>(player, 1s, std::chrono::steady_clock::now(), _game, 5s, std::chrono::steady_clock::now());
+                _game.emplace_component<powerup_curveshoot>(player, 1s, std::chrono::steady_clock::now(), _game, 5s, std::chrono::steady_clock::now());
 
 
 

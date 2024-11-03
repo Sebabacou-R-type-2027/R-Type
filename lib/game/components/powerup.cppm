@@ -15,10 +15,19 @@ import ecs;
 export namespace game::components {
 
     struct powerup_tripleshoot {
-        const std::chrono::steady_clock::duration cooldown;
+        std::chrono::steady_clock::duration cooldown;
         std::chrono::steady_clock::time_point last_shot;
         ecs::entity game;
-        const std::chrono::steady_clock::duration duration;
+        std::chrono::steady_clock::duration duration;
         std::chrono::steady_clock::time_point start;
     };
+
+    struct powerup_curveshoot {
+        std::chrono::steady_clock::duration cooldown;
+        std::chrono::steady_clock::time_point last_shot;
+        ecs::entity game;
+        std::chrono::steady_clock::duration duration;
+        std::chrono::steady_clock::time_point start;
+    };
+
 }

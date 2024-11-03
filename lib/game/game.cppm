@@ -51,6 +51,7 @@ export namespace game {
             asset_manager.load("enemy_shooter", "assets/r-typesheet26.gif", "texture");
             asset_manager.load("bullet", "assets/Bullets/01.png", "texture");
             asset_manager.load("powerup", "assets/Power-Up/power1.png", "texture");
+            asset_manager.load("bullet_heal", "assets/Bullets/projectile_heal.png", "texture");
         }
 
         constexpr void register_systems() noexcept
@@ -62,6 +63,7 @@ export namespace game {
             this->register_system<enemy_chaser, ecs::components::position>(move_enemy_chaser);
             this->register_system<enemy_spawner, ecs::components::position>(handle_enemy_spawner);
             this->register_system<powerup_tripleshoot, ecs::components::position>(triple_shoot_bonus);
+            this->register_system<powerup_curveshoot, ecs::components::position>(heal_shoot_bonus);
             this->register_system<button, const ecs::components::position>(press_button);
             this->register_gui_systems();
             this->register_engine_systems();
