@@ -106,7 +106,7 @@ export namespace game::systems {
             ec.add_component(enemy, ecs::components::engine::velocity{-10.0f, 0.0f});
             ec.add_component(enemy, components::health{1, spawner.game});
             ec.add_component(enemy, ecs::components::engine::hitbox{ecs::abstractions::rectangle<float>{position.x, position.y, 34.0f, 36.0f}});
-            ec.add_component(enemy, components::enemy_loop_movement{0.0f, 2000.0f, 200.0f, 800.0f, 1.0f, 0.0f, 100.0f, 2.0f});
+            ec.add_component(enemy, components::enemy_loop_movement{0.0f, 2000.0f, 200.0f, 800.0f, 1.0f, 0.0f, 100.0f, 2.0f, spawner.game});
             ec.emplace_component<ecs::components::gui::drawable>(enemy, ecs::components::gui::drawable{spawner.game,
                 std::container<ecs::components::gui::drawable::elements_container>::make({
                     {static_cast<ecs::entity>(spawner.game), display.factory->make_element(
@@ -241,10 +241,13 @@ export namespace game::systems {
         * @param loop_mvt The enemy loop movement component
         * @param position The position of the enemy
      */
-    void move_enemy_loop(game::components::enemy_loop_movement &loop_mvt, ecs::components::position &position)
+    void move_enemy_loop(ecs::entity_container &ec, game::components::enemy_loop_movement &loop_mvt, ecs::components::position &position)
     {
-        float delta_seconds = 0.05f;
+        auto windowSize = ec.get_entity_component<ecs::components::gui::display>(loop_mvt.game)->get().window->get_size();
+    
+        loop_mvt.speed *= -1.0f;
 
+        float delta_seconds = 0.05f;
         position.x += loop_mvt.speed * delta_seconds;
 
         if (loop_mvt.radius != 0.0f && loop_mvt.angular_speed != 0.0f) {
@@ -260,6 +263,12 @@ export namespace game::systems {
                 position.y = loop_mvt.max_y;
                 loop_mvt.speed = -std::fabs(loop_mvt.speed);
             }
+        }
+        if (position.x > windowSize.x) {
+            position.x = 0.0f;
+        }
+        if (position.x < 0.0f) {
+            position.x = windowSize.x;
         }
     }
 }
