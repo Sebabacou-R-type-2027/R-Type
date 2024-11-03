@@ -11,7 +11,6 @@ export import :systems.enemies;
 export import :systems.inputs;
 export import :systems.shader_background;
 export import :systems.stats;
-export import :systems.game_over;
 
 import std;
 import ecs;
