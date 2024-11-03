@@ -1,17 +1,9 @@
-module;
-
-#if __cpp_lib_modules < 202207L
-#include <chrono>
-#endif
-#include <SFML/Graphics.hpp>
 export module game:systems.stats;
 import :components.stats;
 import :components.enemies;
 import :components.projectiles;
 
-#if __cpp_lib_modules >= 202207L
 import std;
-#endif
 import ecs;
 import utils;
 
@@ -20,6 +12,14 @@ using namespace std::chrono_literals;
 
 export namespace game::systems {
 
+    /**
+        * @brief Update the score
+
+        * This function is used to update the score of the game.
+
+        * @param ec The entity container
+        * @param score The score component
+     */
     void update_score(ecs::entity_container &ec, components::score &score)
     {
         if (!ec.get_entity_component<components::score>(score.game)) {
@@ -38,13 +38,23 @@ export namespace game::systems {
         });
     }
 
+    /**
+        * @brief Update the life
+
+        * This function is used to update the life of the entity.
+
+        * @param e The entity
+        * @param ec The entity container
+        * @param life The health component
+        * @param box The hitbox component
+     */
     void update_life(ecs::entity e, ecs::entity_container &ec, components::health &life, ecs::components::engine::hitbox &box)
     {
         if (!box.triggered_by) {
             return;
         }
         if (auto projectile = ec.get_entity_component<components::projectile>(*box.triggered_by)) {
-            if (projectile->get().owner == e) {
+            if (projectile->get().owner == e || ec.get_entity_component<components::enemy>(e)) {
                 box.triggered_by = std::nullopt;
                 return;
             }
@@ -53,11 +63,15 @@ export namespace game::systems {
             if (ec.get_entity_component<components::enemy>(e) && score) {
                 score->get().value += ec.get_entity_component<components::enemy>(e)->get().points;
             }
-            ec.erase_entity(e);
+            if (life.value <= 0) {
+                ec.erase_entity(e);
+            }
         }
         if (auto enemy = ec.get_entity_component<components::enemy>(*box.triggered_by)) {
             life.value -= enemy->get().damage;
-            ec.erase_entity(e);
+            if (life.value <= 0) {
+                ec.erase_entity(e);
+            }
         }
     }
 }

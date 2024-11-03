@@ -1,14 +1,4 @@
-#if __cpp_lib_modules < 202207L
-#include <algorithm>
-#include <chrono>
-#include <functional>
-#include <iostream>
-#include <thread>
-#endif
-
-#if __cpp_lib_modules >= 202207L
 import std;
-#endif
 import game;
 
 int main()

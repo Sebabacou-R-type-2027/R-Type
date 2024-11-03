@@ -23,10 +23,9 @@ export import :systems.stats;
 export import :systems.map_editor;
 export import :systems.spawn_waves;
 
+export import :systems.game_over;
 
-#if __cpp_lib_modules >= 202207L
 import std;
-#endif
 import ecs;
 import utils;
 
@@ -34,9 +33,21 @@ export namespace game {
     using namespace components;
     using namespace systems;
 
+    /**
+        * @brief The game class
+
+        * This class is used to define the game. It contains the game entity and the display component.
+     */
     class game : public ecs::registry {
         ecs::entity _game;
 
+        /**
+            * @brief Initialize the game
+
+            * This function is used to initialize the game.
+
+            * @param e The entity of the game
+         */
         constexpr ecs::entity init_game(ecs::entity e) noexcept
         {
             this->emplace_component<ecs::components::gui::display>(e,
@@ -51,6 +62,14 @@ export namespace game {
             return e;
         }
 
+        /**
+            * @brief Handle text input
+
+            * This function is used to handle the text input.
+
+            * @param e The entity
+            * @param input The input component
+         */
         static constexpr void load_assets(ecs::components::gui::asset_manager &asset_manager) noexcept
         {
             asset_manager.load("arial", "assets/fonts/arial.ttf", "font");
@@ -60,8 +79,17 @@ export namespace game {
             asset_manager.load("enemy_spawner", "assets/sprites/r-typesheet24.gif", "texture");
             asset_manager.load("enemy_shooter", "assets/r-typesheet26.gif", "texture");
             asset_manager.load("bullet", "assets/Bullets/01.png", "texture");
+            asset_manager.load("boss-phase", "assets/boss/phase.gif", "texture");
         }
 
+        /**
+            * @brief Handle text input
+
+            * This function is used to handle the text input.
+
+            * @param e The entity
+            * @param input The input component
+         */
         constexpr void register_systems() noexcept
         {
             this->register_system<spawn_waves>(spawn_waves_mobs);
@@ -74,9 +102,9 @@ export namespace game {
             this->register_system<enemy_loop_movement, ecs::components::position>(move_enemy_loop);
             this->register_system<enemy_chaser, ecs::components::position>(move_enemy_chaser);
             this->register_system<enemy_spawner, ecs::components::position>(handle_enemy_spawner);
+            this->register_system<boss, ecs::components::position>(handle_boss_pattern);
             this->register_system<button, const ecs::components::position>(press_button);
             this->register_system<health, ecs::components::engine::hitbox>(update_life);
-            this->register_system<score>(update_score);
             this->register_gui_systems();
             this->register_system<components::map_editor, const ecs::components::gui::display>(handle_map_editor);
             this->register_system<components::settings, const ecs::components::gui::display>(shader_background);
@@ -84,6 +112,7 @@ export namespace game {
         }
 
         public:
+            bool _is_ready = false;
             ecs::components::gui::display &display;
             ecs::components::gui::asset_manager &asset_manager;
             std::chrono::steady_clock::duration tick_rate = 50ms;

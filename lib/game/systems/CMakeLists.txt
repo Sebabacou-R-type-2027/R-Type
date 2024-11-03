@@ -8,4 +8,5 @@ target_sources(game PUBLIC
             shader_background.cppm
             map_editor.cppm
             spawn_waves.cppm
+            game_over.cppm
 )

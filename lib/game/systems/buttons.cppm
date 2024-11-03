@@ -5,6 +5,16 @@ import ecs;
 
 using namespace ecs;
 export namespace game::systems {
+
+    /**
+        * @brief Press the button
+
+        * This function is used to press the button.
+
+        * @param ec The entity container
+        * @param button The button component
+        * @param position The position of the button
+     */
     void press_button(entity_container &ec, components::button &button, const ecs::components::position &position) noexcept
     {
         auto display = ec.get_entity(button.display).and_then([&ec](auto e){
