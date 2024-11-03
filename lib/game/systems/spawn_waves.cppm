@@ -3,6 +3,7 @@ module;
 #include <chrono>
 #include <fstream>
 #include <nlohmann/json.hpp>
+#include <iostream>
 
 export module game:systems.spawn_waves;
 import :components.enemies;
@@ -27,7 +28,7 @@ export namespace game::systems {
         ec.add_component(enemy, ecs::components::engine::velocity{-10.0f, 0.0f});
         ec.add_component(enemy, components::health{1, waves.game});
         ec.add_component(enemy, ecs::components::engine::hitbox{ecs::abstractions::rectangle<float>{500.0f, 500.0f, 34.0f, 36.0f}});
-        ec.add_component(enemy, components::enemy_loop_movement{0.0f, 2000.0f, 200.0f, 800.0f, 1.0f, 0.0f, 100.0f, 2.0f});
+        ec.add_component(enemy, components::enemy_loop_movement{0.0f, 2000.0f, 200.0f, 800.0f, 1.0f, 0.0f, 100.0f, 2.0f, waves.game});
         ec.emplace_component<ecs::components::gui::drawable>(enemy, ecs::components::gui::drawable{waves.game,
             std::container<ecs::components::gui::drawable::elements_container>::make({
                 {static_cast<ecs::entity>(waves.game), ec.get_entity_component<ecs::components::gui::display>(waves.game)->get().factory->make_element(

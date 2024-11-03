@@ -9,7 +9,9 @@ export namespace game::scenes {
     struct game_scene : public ecs::scene {
         constexpr game_scene(game &game) noexcept
             : ecs::scene(game), _game(game)
-        {}
+        {
+            _game.emplace_component<components::spawn_waves>(_game, _game, "waves.json", 1);
+        }
 
         protected:
             /**
