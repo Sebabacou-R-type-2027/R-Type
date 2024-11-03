@@ -10,3 +10,4 @@ export import :systems.buttons;
 export import :systems.projectiles;
 export import :systems.enemies;
 export import :systems.inputs;
+export import :systems.shader_background;
