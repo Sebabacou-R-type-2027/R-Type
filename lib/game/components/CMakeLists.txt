@@ -4,4 +4,5 @@ target_sources(game PUBLIC
             enemies.cppm
             buttons.cppm
             inputs.cppm
+            settings.cppm
 )
