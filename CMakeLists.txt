@@ -6,8 +6,8 @@ include(CTest)
 enable_testing()
 
 find_package(asio CONFIG REQUIRED)
+find_package(lz4 CONFIG REQUIRED)
 
-# `import std;` support
 if(${CMAKE_CXX_STANDARD} IN_LIST CMAKE_CXX_COMPILER_IMPORT_STD)
     set(CMAKE_CXX_MODULE_STD ON)
     add_compile_definitions(__cpp_lib_modules=202207L)
@@ -20,7 +20,7 @@ add_executable(r-type_server)
 add_subdirectory(src)
 add_subdirectory(lib)
 
-target_link_libraries(r-type_server PRIVATE packet asio::asio)
+target_link_libraries(r-type_server PRIVATE packet asio::asio lz4::lz4)
 
 target_include_directories(r-type_server PRIVATE
     src/server
