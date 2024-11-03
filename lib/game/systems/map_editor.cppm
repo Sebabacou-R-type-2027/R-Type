@@ -46,8 +46,12 @@ export namespace game::systems {
                     animation = display.factory->make_element(dynamic_cast<const ecs::abstractions::gui::texture &>(asset_manager.get("enemy")), {8, 1});
                 else if (mob.first == "enemy_chaser")
                     animation = display.factory->make_element(dynamic_cast<const ecs::abstractions::gui::texture &>(asset_manager.get("enemy_chaser")), {3, 1});
-                else
-                    continue;
+                else if (mob.first == "enemy_shooter")
+                    animation = display.factory->make_element(dynamic_cast<const ecs::abstractions::gui::texture &>(asset_manager.get("enemy_shooter")), {3, 1});
+                else if (mob.first == "enemy_spawner")
+                    animation = display.factory->make_element(dynamic_cast<const ecs::abstractions::gui::texture &>(asset_manager.get("enemy_spawner")), {3, 1});
+                else if (mob.first == "boss")
+                    animation = display.factory->make_element(dynamic_cast<const ecs::abstractions::gui::texture &>(asset_manager.get("boss-phase")), {3, 1});
 
                 animation->position({mob.second.x, mob.second.y});
                 animation.get()->update(std::chrono::steady_clock::now().time_since_epoch());
@@ -75,7 +79,7 @@ export namespace game::systems {
                 save_waves[std::to_string(wave.first)] = wave_json;
             }
 
-            std::ofstream file("waves.json");
+            std::ofstream file("assets/waves.json");
 
             file << save_waves.dump(4);
             file.close();
@@ -99,6 +103,12 @@ export namespace game::systems {
             map_editor.selectedMob = map_editor.mobTypes[0];
         if (display.window->is_input_active(ecs::abstractions::gui::inputs::two) || display.window->is_input_active(ecs::abstractions::gui::inputs::numpad2))
             map_editor.selectedMob = map_editor.mobTypes[1];
+        if (display.window->is_input_active(ecs::abstractions::gui::inputs::three) || display.window->is_input_active(ecs::abstractions::gui::inputs::numpad3))
+            map_editor.selectedMob = map_editor.mobTypes[2];
+        if (display.window->is_input_active(ecs::abstractions::gui::inputs::four) || display.window->is_input_active(ecs::abstractions::gui::inputs::numpad4))
+            map_editor.selectedMob = map_editor.mobTypes[3];
+        if (display.window->is_input_active(ecs::abstractions::gui::inputs::five) || display.window->is_input_active(ecs::abstractions::gui::inputs::numpad5))
+            map_editor.selectedMob = map_editor.mobTypes[4];
 
         if (display.window->is_input_active(ecs::abstractions::gui::inputs::lclick)) {
             auto position = display.window->get_cursor_position();

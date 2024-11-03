@@ -34,6 +34,13 @@ export namespace game::scenes {
             void create_entities() noexcept override
             {
                 _entities.push_back(create_player());
+
+                // _entities.push_back(create_fire_button(*_game.get_entity_component<projectile_launcher>(_entities.back())));
+                // _entities.push_back(spawn_enemy_chaser(_entities.back(), {500.0f, 500.0f}));
+                // _entities.push_back(spawn_enemy({100.0f, 100.0f}));
+                // init_waves("assets/waves.json", 1);
+                // _entities.push_back(spawn_enemy_spawner({300.0f, 300.0f}));
+                // _entities.push_back(spawn_enemy_shooter({400.0f, 400.0f}));
             }
 
             private:
