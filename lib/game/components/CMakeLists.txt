@@ -5,4 +5,5 @@ target_sources(game PUBLIC
             buttons.cppm
             stats.cppm
             inputs.cppm
+            settings.cppm
 )
