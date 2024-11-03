@@ -53,11 +53,15 @@ export namespace game::systems {
             if (ec.get_entity_component<components::enemy>(e) && score) {
                 score->get().value += ec.get_entity_component<components::enemy>(e)->get().points;
             }
-            ec.erase_entity(e);
+            if (life.value <= 0) {
+                ec.erase_entity(e);
+            }
         }
         if (auto enemy = ec.get_entity_component<components::enemy>(*box.triggered_by)) {
             life.value -= enemy->get().damage;
-            ec.erase_entity(e);
+            if (life.value <= 0) {
+                ec.erase_entity(e);
+            }
         }
     }
 }
