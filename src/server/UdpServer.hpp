@@ -9,12 +9,16 @@
 #include <thread>
 #include <unordered_map>
 #include <vector>
+#include <lz4.h>
 
 #include "Lobby.hpp"
-#include "client/client.hpp"
-#include "client/ClientSaver.hpp"
+#include "MatchmakingSystem.hpp"
+#include "MatchmakingQueue.hpp"
+#include "client.hpp"
+#include "ClientSaver.hpp"
 #include "Packet.hpp"
 #include "PacketPing.hpp"
+#include "PacketFactory.hpp"
 
 using asio::ip::udp;
 
@@ -53,7 +57,7 @@ class UdpServer {
          * @param client_endpoint L'adresse du client.
          * @return Le client correspondant à l'endpoint donné.
          */
-        const server::client get_client(const asio::ip::udp::endpoint& client_endpoint) const;
+        server::client& get_client(const asio::ip::udp::endpoint& client_endpoint);
 
     private:
         /**
@@ -123,6 +127,21 @@ class UdpServer {
          */
         void start_game(const std::string& message);
         void send_message(const std::string& message, const udp::endpoint& endpoint);
+        void add_client_to_matchmaking(const std::string& message);
+        void handle_matchmaking_queue();
+        void send_lobby_info(const std::string& message);
+        bool everyone_ready(std::vector<server::client> clients);
+        void lauch_game(const std::vector<server::client>& clients);
+        std::chrono::milliseconds set_elapsed_time(std::vector<server::client>& clients);
+        void handle_login(const std::string& message);
+        void get_best_score_cli(const server::client& client);
+        void get_best_score_cli(std::string message);
+        void new_score_cli(std::string message);
+        void execute_function(const std::string& message, std::string client_str);
+        void add_chat_message(const std::string& message, size_t bytes_recv);
+        std::string decompressString(const std::string& compressedData, size_t originalSize);
+        std::string compressString(const std::string& data);
+        void messages_to_players_lobby(const std::string& message);
 
         asio::io_context& io_context_; ///< Contexte d'entrée/sortie d'Asio.
         udp::socket socket_; ///< Socket UDP pour gérer les connexions.
@@ -139,6 +158,8 @@ class UdpServer {
         int lobby_id_ = 0; ///< Compteur d'ID pour les lobbies.
 
         std::map<std::string, std::function<void(const std::string&)>> function_map_; ///< Map des fonctions pour gérer les différents types de messages.
+        std::deque<std::string> chat_messages_; ///< File des messages de chat.
+        MatchmakingSystem matchmaking_system_; ///< Système de matchmaking pour gérer les parties.
 };
 
 #endif //UDPSERVER_HPP

@@ -30,7 +30,7 @@ export namespace game::scenes {
 
             void initUI() {
                 float width = 500.0f;
-                float height = 350.0f;
+                float height = 400.0f;
 
                 // Title
                 /**
@@ -63,11 +63,22 @@ export namespace game::scenes {
                 // Join Lobby Button
                 create_button("Join Lobby", {(_game.display.window->get_size().x - 400.0f) / 2, (_game.display.window->get_size().y - 40.0f) / 2 + 40.0f}, {400, 40}, ecs::abstractions::gui::color(14, 94, 255, 255),
                     [&](){
-                        std::cout << "Join Lobby Code: " << join_lobby.content << std::endl;
+                        auto network = _game.get_entity_component<components::network>(_game);
+                        network->get().client->send_message("join_lobby " + join_lobby.content);
                         if (_game._is_ready) {
                             _game.begin_scene(std::make_unique<game_scene>(_game));
                         }
                     });
+
+                create_button("Start Game", {(_game.display.window->get_size().x - 400.0f) / 2, (_game.display.window->get_size().y - 40.0f) / 2 + 100.0f}, {400, 40}, ecs::abstractions::gui::color(14, 94, 255, 255),
+                    [&](){
+                        auto network = _game.get_entity_component<components::network>(_game);
+                        network->get().client->send_message("start");
+                        if (_game._is_ready) {
+                            _game.begin_scene(std::make_unique<game_scene>(_game));
+                        }
+                    });
+
                 // Create Lobby Button
                 auto text = _game.display.factory->make_element("Create Lobby", _game.asset_manager.get("arial"), 24);
                 ecs::abstractions::vector<float> text_size = {text->bounds(true).width, text->bounds(true).height};
@@ -76,7 +87,9 @@ export namespace game::scenes {
 
                 create_button("Create Lobby", {(_game.display.window->get_size().x) / 2.0f - button_size.x - 20, (_game.display.window->get_size().y - height - 20.0f) / 2 + height - 50.0f}, 24, ecs::abstractions::gui::color(14, 94, 255, 255),
                     [&](){
-                        std::cout << "Create Lobby" << std::endl;
+                        auto network = _game.get_entity_component<components::network>(_game);
+                        network->get().client->send_message("create_lobby");
+//                        std::cout << "Create Lobby" << std::endl;
                     });
 
                 // Join MatchMaking Button
@@ -87,10 +100,9 @@ export namespace game::scenes {
                 create_button(" Join Match ", {(_game.display.window->get_size().x) / 2.0f + 20, (_game.display.window->get_size().y - height - 20.0f) / 2 + height - 50.0f}, 24, ecs::abstractions::gui::color(14, 94, 255, 255),
                     [&](){
                         auto settings = _game.get_entity_component<components::settings>(_game);
-                        std::cout << "Join Matchmaking with Username: " << settings->get().username << std::endl << "Password: " << settings->get().password << std::endl << "Server Address: " << settings->get().server_address << std::endl << "Port: " << settings->get().port << std::endl;
-                        if (_game._is_ready) {
-                            _game.begin_scene(std::make_unique<game_scene>(_game));
-                        }
+                        auto network = _game.get_entity_component<components::network>(_game);
+                        network->get().client->send_message("matchmaking");
+//                        std::cout << "Join Matchmaking with Username: " << settings->get().username << std::endl << "Password: " << settings->get().password << std::endl << "Server Address: " << settings->get().server_address << std::endl << "Port: " << settings->get().port << std::endl;
                     });
 
                 // background rectangle

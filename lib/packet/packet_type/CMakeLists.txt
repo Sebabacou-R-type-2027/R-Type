@@ -3,11 +3,13 @@ target_sources(packet
         PacketACK.cpp
         PacketCMD.cpp
         PacketCMDP.cpp
+        PacketMSG.cpp
     PUBLIC FILE_SET HEADERS
         FILES PacketPing.hpp
             PacketACK.hpp
             PacketCMD.hpp
             PacketCMDP.hpp
+            PacketMSG.hpp
 )
 
 target_include_directories(packet PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

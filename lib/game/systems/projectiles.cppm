@@ -2,6 +2,7 @@ export module game:systems.projectiles;
 import :components.projectiles;
 import :components.stats;
 import :components.enemies;
+import :components.network;
 
 import std;
 import ecs;
@@ -219,24 +220,57 @@ export namespace game::systems {
         if (!display.window->is_open())
             return;
         if (display.window->is_input_active(ecs::abstractions::gui::inputs::space)) {
-            if (!launcher.shot) {
-                launcher.shot = true;
-                auto projectile = ec.create_entity();
-                const ecs::components::gui::asset_manager &asset_manager = *ec.get_entity_component<const ecs::components::gui::asset_manager>(launcher.game);
-                ec.add_component(projectile, components::projectile{1, e, now, 5s});
-                ec.add_component(projectile, ecs::components::position{position.x, position.y});
-                ec.add_component(projectile, ecs::components::engine::velocity{50.0f, 0.0f});
-                ec.add_component(projectile, ecs::components::engine::hitbox{ecs::abstractions::rectangle<float>{position.x, position.y, 10.0f, 10.0f}});
-                ec.emplace_component<ecs::components::gui::drawable>(projectile, ecs::components::gui::drawable{launcher.game,
-                    std::container<ecs::components::gui::drawable::elements_container>::make({
-                        {static_cast<ecs::entity>(launcher.game), display.factory->make_element(
-                            "bullet", asset_manager.get("arial"), 12)},
-                        {static_cast<ecs::entity>(launcher.game), display.factory->make_element(
-                            dynamic_cast<const ecs::abstractions::gui::texture &>(asset_manager.get("bullet")), {1, 1}, 10ms)}
-                    })
-                });
+            auto network = ec.get_entity_component<components::network>(launcher.game);
+            auto p = ec.get_entity_component<ecs::components::engine::controllable>(e);
+            if (network->get().client->is_connected()) {
+                network->get().client->send_message("CMDP|0");
+                for (auto it = network->get().client->_commandsToDo.begin(); it != network->get().client->_commandsToDo.end(); ) {
+                    std::cout << it->first << "|" << it->second << "|" << std::to_string(p->get().network_id) << std::endl;
+                    if (it->second == "0" && it->first == std::to_string(p->get().network_id)) {
+                        if (!launcher.shot) {
+                            launcher.shot = false;
+                            auto projectile = ec.create_entity();
+                            const ecs::components::gui::asset_manager &asset_manager = *ec.get_entity_component<const ecs::components::gui::asset_manager>(launcher.game);
+                            ec.add_component(projectile, components::projectile{1, e, now, 5s});
+                            ec.add_component(projectile, ecs::components::position{position.x, position.y});
+                            ec.add_component(projectile, ecs::components::engine::velocity{50.0f, 0.0f});
+                            ec.add_component(projectile, ecs::components::engine::hitbox{ecs::abstractions::rectangle<float>{position.x, position.y, 10.0f, 10.0f}});
+                            ec.emplace_component<ecs::components::gui::drawable>(projectile, ecs::components::gui::drawable{launcher.game,
+                                std::container<ecs::components::gui::drawable::elements_container>::make({
+                                    {static_cast<ecs::entity>(launcher.game), display.factory->make_element(
+                                        "bullet", asset_manager.get("arial"), 12)},
+                                    {static_cast<ecs::entity>(launcher.game), display.factory->make_element(
+                                        dynamic_cast<const ecs::abstractions::gui::texture &>(asset_manager.get("bullet")), {1, 1}, 10ms)}
+                                })
+                            });
+                        } else {
+                            launcher.shot = false;
+                        }
+                        it = network->get().client->_commandsToDo.erase(it);
+                    } else {
+                        ++it;
+                    }
+                }
             } else {
-                launcher.shot = false;
+                if (!launcher.shot) {
+                    launcher.shot = true;
+                    auto projectile = ec.create_entity();
+                    const ecs::components::gui::asset_manager &asset_manager = *ec.get_entity_component<const ecs::components::gui::asset_manager>(launcher.game);
+                    ec.add_component(projectile, components::projectile{1, e, now, 5s});
+                    ec.add_component(projectile, ecs::components::position{position.x, position.y});
+                    ec.add_component(projectile, ecs::components::engine::velocity{50.0f, 0.0f});
+                    ec.add_component(projectile, ecs::components::engine::hitbox{ecs::abstractions::rectangle<float>{position.x, position.y, 10.0f, 10.0f}});
+                    ec.emplace_component<ecs::components::gui::drawable>(projectile, ecs::components::gui::drawable{launcher.game,
+                        std::container<ecs::components::gui::drawable::elements_container>::make({
+                            {static_cast<ecs::entity>(launcher.game), display.factory->make_element(
+                                "bullet", asset_manager.get("arial"), 12)},
+                            {static_cast<ecs::entity>(launcher.game), display.factory->make_element(
+                                dynamic_cast<const ecs::abstractions::gui::texture &>(asset_manager.get("bullet")), {1, 1}, 10ms)}
+                        })
+                    });
+                } else {
+                    launcher.shot = false;
+                }
             }
         }
     }

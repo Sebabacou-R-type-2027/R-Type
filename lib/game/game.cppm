@@ -7,6 +7,7 @@ export import :components.projectiles;
 export import :components.enemies;
 export import :components.inputs;
 export import :components.settings;
+export import :components.network;
 export import :components.stats;
 export import :components.map_editor;
 export import :components.spawn_waves;
@@ -16,6 +17,7 @@ export import :systems.enemies;
 export import :systems.inputs;
 export import :systems.shader_background;
 export import :systems.stats;
+export import :systems.controllable_network;
 export import :systems.map_editor;
 export import :systems.spawn_waves;
 
@@ -23,6 +25,7 @@ export import :systems.spawn_waves;
 import std;
 import ecs;
 import utils;
+import Client;
 
 export namespace game {
     using namespace components;
@@ -43,7 +46,7 @@ export namespace game {
 
             * @param e The entity of the game
          */
-        constexpr ecs::entity init_game(ecs::entity e) noexcept
+        ecs::entity init_game(ecs::entity e, std::shared_ptr<Client> client) noexcept
         {
             this->emplace_component<ecs::components::gui::display>(e,
                 std::make_unique<ecs::implementations::gui::SFML::window>(
@@ -51,6 +54,7 @@ export namespace game {
                     "R-Type"),
                 std::make_unique<ecs::implementations::gui::SFML::element_factory>());
             this->emplace_component<ecs::components::gui::animation_clock>(e);
+            this->emplace_component<components::network>(e, client);
             auto &asset_manager = this->emplace_component<ecs::components::gui::asset_manager>(e,
                 std::make_unique<ecs::implementations::gui::SFML::asset_loader>());
             load_assets(asset_manager);
@@ -103,7 +107,12 @@ export namespace game {
             this->register_gui_systems();
             this->register_system<components::map_editor, const ecs::components::gui::display>(handle_map_editor);
             this->register_system<components::settings, const ecs::components::gui::display>(shader_background);
-            this->register_engine_systems();
+//            this->register_engine_systems();
+
+            this->register_system<ecs::components::position, const ecs::components::engine::velocity>(ecs::systems::engine::movement);
+            this->register_system<const ecs::components::position, ecs::components::engine::hitbox>(ecs::systems::engine::update_hitbox_position);
+            this->register_system<ecs::components::position, const ecs::components::engine::controllable>(control);
+            this->register_system<ecs::components::engine::hitbox>(ecs::systems::engine::collision);
         }
 
         public:
@@ -112,8 +121,8 @@ export namespace game {
             ecs::components::gui::asset_manager &asset_manager;
             std::chrono::steady_clock::duration tick_rate = 50ms;
 
-            game() noexcept
-                : _game(init_game(this->create_entity())),
+            game(std::shared_ptr<Client> client)
+                : _game(init_game(this->create_entity(), client)),
                 asset_manager(*this->get_entity_component<ecs::components::gui::asset_manager>(_game)),
                 display(*this->get_entity_component<ecs::components::gui::display>(_game))
             {

@@ -1,8 +1,5 @@
 #include "Packet.hpp"
 
-#include <ostream>
-#include <iostream>
-
 Packet::Packet(PacketFactory::TypePacket type, uint16_t id, asio::ip::udp::socket& socket) : type_(type), socket_(socket) {
     this->set_id(id);
 }

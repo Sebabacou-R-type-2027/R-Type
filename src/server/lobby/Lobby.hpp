@@ -9,7 +9,9 @@
 #include <string>
 #include <utility>
 #include <asio.hpp>
-#include "client/client.hpp"
+#include <unordered_map>
+#include <iomanip>
+#include "client.hpp"
 
 class Lobby {
     public:
@@ -19,6 +21,7 @@ class Lobby {
         void remove_client(const server::client& cli);
         void mark_ready(const server::client& cli);
         void mark_unready(const server::client& cli);
+        void set_client_ready(const server::client& cli, bool ready);
         [[nodiscard]] bool is_everyone_ready() const;
         [[nodiscard]] std::vector<server::client> get_clients() const;
         void set_host(const server::client& cli);
@@ -29,9 +32,12 @@ class Lobby {
         [[nodiscard]] bool is_full() const;
         [[nodiscard]] bool is_empty() const;
         [[nodiscard]] bool is_lobby_id(int id) const { return id_ == id; }
+        void handle_chat_message(const std::string& message, const server::client& cli, std::size_t bytes_recv);
+        std::vector<std::string>& get_chat_history();
 
     private:
         std::vector<server::client> clients_lobby_;
+        std::vector<std::string> chat_history_;
         server::client host_;
         bool everyone_ready_ = false;
         int id_;
