@@ -39,15 +39,58 @@ export namespace game::systems {
         });
     }
 
+    void spawn_mob_shooter(ecs::entity_container &ec, components::spawn_waves &waves, ecs::components::position position)
+    {
+        auto e = ec.create_entity();
+        ec.add_component(e, position);
+        ec.add_component(e, components::enemy{1, 250, std::chrono::steady_clock::now()});
+        ec.add_component(e, components::health{1, waves.game});
+        ec.add_component(e, components::projectile_launcher{-1.0, 1s, std::chrono::steady_clock::now(), waves.game});
+        ec.add_component(e, ecs::components::engine::hitbox{rectangle<float>{position.x, position.y, 65.0f, 50.0f}});
+        ec.add_component(e, ecs::components::engine::velocity{0.0f, 0.0f});
+        ec.add_component(e, components::enemy_shooter{true, 10.0f, waves.game});
+        ec.emplace_component<ecs::components::gui::drawable>(e, ecs::components::gui::drawable{waves.game,
+            std::container<ecs::components::gui::drawable::elements_container>::make({
+                {static_cast<ecs::entity>(waves.game), ec.get_entity_component<ecs::components::gui::display>(waves.game)->get().factory->make_element(
+                    "Shooter", ec.get_entity_component<ecs::components::gui::asset_manager>(waves.game)->get().get("arial"), 12)},
+                {static_cast<ecs::entity>(waves.game), ec.get_entity_component<ecs::components::gui::display>(waves.game)->get().factory->make_element(
+                    dynamic_cast<const ecs::abstractions::gui::texture &>(ec.get_entity_component<ecs::components::gui::asset_manager>(waves.game)->get().get("enemy_shooter")), {3, 1}, 10ms)}
+            })
+        });
+    }
+
+    void spawn_mob_spawner(ecs::entity_container &ec, components::spawn_waves &waves, ecs::components::position position)
+    {
+        auto e = ec.create_entity();
+        ec.add_component(e, position);
+        ec.emplace_component<components::enemy>(e, 0, 500, std::chrono::steady_clock::now());
+        ec.emplace_component<components::health>(e, 1, waves.game);
+        ec.emplace_component<components::enemy_spawner>(e, 2s, 5.0f, waves.game);
+        ec.emplace_component<ecs::components::engine::hitbox>(e, rectangle<float>{position.x, position.y, 65.0f, 66.0f});
+        ec.emplace_component<ecs::components::engine::velocity>(e);
+        ec.emplace_component<ecs::components::gui::drawable>(e, ecs::components::gui::drawable{waves.game,
+            std::container<ecs::components::gui::drawable::elements_container>::make({
+                {static_cast<ecs::entity>(waves.game), ec.get_entity_component<ecs::components::gui::display>(waves.game)->get().factory->make_element(
+                    "Spawner", ec.get_entity_component<ecs::components::gui::asset_manager>(waves.game)->get().get("arial"), 12)},
+                {static_cast<ecs::entity>(waves.game), ec.get_entity_component<ecs::components::gui::display>(waves.game)->get().factory->make_element(
+                    dynamic_cast<const ecs::abstractions::gui::texture &>(ec.get_entity_component<ecs::components::gui::asset_manager>(waves.game)->get().get("enemy_spawner")), {5, 1}, 10ms)}
+            })
+        });
+    }
+
     void spawn_mob_type(ecs::entity_container &ec, components::spawn_waves &waves, ecs::components::position position, std::string mob_type)
     {
         if (mob_type == "enemy")
             spawn_mob(ec, waves, position);
+        if (mob_type == "enemy_shooter")
+            spawn_mob_shooter(ec, waves, position);
+        if (mob_type == "enemy_spawner")
+            spawn_mob_spawner(ec, waves, position);
     }
 
     void spawn_wave(ecs::entity_container &ec, components::spawn_waves &waves_component) noexcept
     {
-        std::ifstream file("waves.json");
+        std::ifstream file("assets/waves.json");
         if (!file.is_open())
             return;
         nlohmann::json waves;
@@ -72,7 +115,7 @@ export namespace game::systems {
         // std::cout << "Current wave: " << waves.current_wave << std::endl;
         auto now = std::chrono::steady_clock::now();
         static std::chrono::steady_clock::time_point last_spawn = now;
-        if (now - last_spawn < 5s)
+        if (now - last_spawn < 15s)
             return;
         last_spawn = now;
         spawn_wave(ec, waves);

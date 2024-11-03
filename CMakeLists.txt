@@ -4,6 +4,8 @@ project(R-Type LANGUAGES CXX)
 
 include(CTest)
 enable_testing()
+find_package(nlohmann_json CONFIG REQUIRED)
+
 
 # `import std;` support
 if(${CMAKE_CXX_STANDARD} IN_LIST CMAKE_CXX_COMPILER_IMPORT_STD)

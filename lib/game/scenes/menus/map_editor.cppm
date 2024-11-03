@@ -11,7 +11,7 @@ export namespace game::scenes {
         constexpr map_editor(game &game) noexcept
             : ecs::scene(game), _game(game)
         {
-            _game.emplace_component<components::map_editor>(_game, 1, "enemy", std::vector<std::string>{"enemy", "enemy_chaser"}, std::map<int, std::vector<std::pair<std::string, ecs::abstractions::vector<float>>>>
+            _game.emplace_component<components::map_editor>(_game, 1, "enemy", std::vector<std::string>{"enemy", "enemy_chaser", "enemy_spawner", "enemy_spawner", "boss-phase"}, std::map<int, std::vector<std::pair<std::string, ecs::abstractions::vector<float>>>>
             {
                 {1, {}},
                 {2, {}},

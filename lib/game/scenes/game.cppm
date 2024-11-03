@@ -16,20 +16,19 @@ export namespace game::scenes {
         constexpr game_scene(game &game) noexcept
             : ecs::scene(game), _game(game)
         {
-            // emplace the spawn_waves component to enable the spawning of waves
-            _game.emplace_component<components::spawn_waves>(_game, _game, "waves.json", 1);
+            _game.emplace_component<components::spawn_waves>(_game, _game, "assets/waves.json", 1);
         }
 
         protected:
             void create_entities() noexcept override
             {
                 _entities.push_back(create_player());
-
-                // _entities.push_back(spawn_enemy_chaser(_entities.back(), {500.0f, 500.0f}));
-                // _entities.push_back(spawn_enemy({100.0f, 100.0f}));
-                // init_waves("waves.json", 1);
-                // _entities.push_back(spawn_enemy_spawner({300.0f, 300.0f}));
-                // _entities.push_back(spawn_enemy_shooter({400.0f, 400.0f}));
+                std::ranges::for_each(_entities, [this](ecs::entity e) {
+                    if (auto launcher = _game.get_entity_component<components::score>(e)) {
+                        _entities.push_back(spawn_boss(e, {1000.0f, 500.0f}));
+                        _entities.push_back(spawn_enemy_chaser(e, {500.0f, 500.0f}));
+                    }
+                });
             }
 
         private:
@@ -60,6 +59,36 @@ export namespace game::scenes {
                         // }
                     }
                 }
+            }
+
+
+            /**
+                * @brief Spawn a boss
+
+                * This function is used to spawn a boss entity.
+
+                * @param target The target entity
+                * @param position The position of the boss
+                * @return The boss entity
+             */
+            ecs::entity spawn_boss(ecs::entity target, ecs::components::position position) noexcept
+            {
+                auto e = _game.create_entity();
+                _game.add_component(e, position);
+                _game.add_component(e, enemy{1, 1000, std::chrono::steady_clock::now()});
+                _game.add_component(e, health{300, _game});
+                _game.add_component(e, boss{target, _game});
+                _game.add_component(e, ecs::components::engine::hitbox{rectangle<float>{position.x, position.y, 160.0f, 212.0f}});
+                _game.add_component(e, ecs::components::engine::velocity{0.0f, 0.0f});
+                _game.emplace_component<ecs::components::gui::drawable>(e, ecs::components::gui::drawable{_game,
+                    std::container<ecs::components::gui::drawable::elements_container>::make({
+                        {static_cast<ecs::entity>(_game), _game.display.factory->make_element(
+                            "Boss", _game.asset_manager.get("arial"), 12)},
+                        {static_cast<ecs::entity>(_game), _game.display.factory->make_element(
+                            dynamic_cast<const ecs::abstractions::gui::texture &>(_game.asset_manager.get("boss-phase")), {4, 1}, 50ms)}
+                    })
+                });
+                return e;
             }
 
             ecs::entity create_player() noexcept
