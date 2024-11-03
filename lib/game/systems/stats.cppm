@@ -54,7 +54,7 @@ export namespace game::systems {
             return;
         }
         if (auto projectile = ec.get_entity_component<components::projectile>(*box.triggered_by)) {
-            if (projectile->get().owner == e || ec.get_entity_component<components::enemy>(e)) {
+            if (projectile->get().owner == e) {
                 box.triggered_by = std::nullopt;
                 return;
             }
@@ -67,6 +67,10 @@ export namespace game::systems {
                 ec.erase_entity(e);
             }
         }
+        if (auto enemy = ec.get_entity_component<components::enemy>(*box.triggered_by) && ec.get_entity_component<components::enemy>(e)) {
+            box.triggered_by = std::nullopt;
+                return; 
+            }
         if (auto enemy = ec.get_entity_component<components::enemy>(*box.triggered_by)) {
             life.value -= enemy->get().damage;
             if (life.value <= 0) {
