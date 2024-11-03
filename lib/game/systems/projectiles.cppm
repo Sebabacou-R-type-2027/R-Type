@@ -1,16 +1,9 @@
-#if __cpp_lib_modules < 202207L
-module;
-
-#include <chrono>
-#endif
 export module game:systems.projectiles;
 import :components.projectiles;
 import :components.stats;
 import :components.enemies;
 
-#if __cpp_lib_modules >= 202207L
 import std;
-#endif
 import ecs;
 import utils;
 
@@ -188,7 +181,7 @@ export namespace game::systems {
             ec.add_component(projectile, ecs::components::position{projectile_x, projectile_y});
             ec.add_component(projectile, ecs::components::engine::velocity{35.0f * std::cos(radian_angle) * launcher.direction, 35.0f * std::sin(radian_angle)});
             ec.add_component(projectile, ecs::components::engine::hitbox{ecs::abstractions::rectangle<float>{projectile_x, projectile_y, 10.0f, 10.0f}});
-            
+
             ec.emplace_component<ecs::components::gui::drawable>(projectile, ecs::components::gui::drawable{launcher.game,
                 std::container<ecs::components::gui::drawable::elements_container>::make({
                     {static_cast<ecs::entity>(launcher.game), display.factory->make_element(

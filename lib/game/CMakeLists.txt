@@ -7,7 +7,7 @@ target_sources(game PUBLIC
             scenes.cppm
 )
 
-target_link_libraries(game PUBLIC ecs sfml-graphics)
+target_link_libraries(game PUBLIC ecs)
 
 add_subdirectory(components)
 add_subdirectory(systems)

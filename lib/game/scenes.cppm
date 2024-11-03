@@ -1,15 +1,7 @@
-#if __cpp_lib_modules < 202207L
-module;
-
-#include <chrono>
-#include <memory>
-#endif
 export module game:scenes;
 import :game;
 
-#if __cpp_lib_modules >= 202207L
 import std;
-#endif
 import ecs;
 import utils;
 

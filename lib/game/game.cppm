@@ -1,9 +1,3 @@
-#if __cpp_lib_modules < 202207L
-module;
-
-#include <chrono>
-#include <memory>
-#endif
 export module game:game;
 export import :components.buttons;
 export import :components.projectiles;
@@ -18,9 +12,7 @@ export import :systems.inputs;
 export import :systems.shader_background;
 export import :systems.stats;
 
-#if __cpp_lib_modules >= 202207L
 import std;
-#endif
 import ecs;
 import utils;
 

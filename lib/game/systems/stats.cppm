@@ -1,17 +1,9 @@
-module;
-
-#if __cpp_lib_modules < 202207L
-#include <chrono>
-#endif
-#include <SFML/Graphics.hpp>
 export module game:systems.stats;
 import :components.stats;
 import :components.enemies;
 import :components.projectiles;
 
-#if __cpp_lib_modules >= 202207L
 import std;
-#endif
 import ecs;
 import utils;
 
