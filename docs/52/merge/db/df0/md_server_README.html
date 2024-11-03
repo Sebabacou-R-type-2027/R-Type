@@ -74,10 +74,10 @@ $(function() {
   <div class="headertitle"><div class="title">UDP Game Server </div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h1><a class="anchor" id="autotoc_md10"></a>
+<div class="textblock"><h1><a class="anchor" id="autotoc_md14"></a>
 Overview</h1>
 <p>This project implements a UDP-based server using the ASIO library. The server manages client connections, lobby creation, and host selection for multiplayer games based on client latency. It can handle multiple clients, allowing them to create or join lobbies and start games, with the server selecting the host dynamically.</p>
-<h1><a class="anchor" id="autotoc_md11"></a>
+<h1><a class="anchor" id="autotoc_md15"></a>
 Features</h1>
 <ul>
 <li><b>Asynchronous UDP communication</b>: Utilizes ASIO for efficient, non-blocking network operations.</li>
@@ -85,7 +85,7 @@ Features</h1>
 <li><b>Host selection</b>: The server automatically selects the client with the lowest latency to act as the game host.</li>
 <li><b>Client management</b>: Handles login, logout, and disconnect events from clients.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md12"></a>
+<h1><a class="anchor" id="autotoc_md16"></a>
 Structure</h1>
 <p>The project consists of several key components:</p>
 <ul>
@@ -93,7 +93,7 @@ Structure</h1>
 <li>**<code><a class="el" href="../../db/dea/classLobby.html">Lobby</a></code>**: Class that manages the state of individual game lobbies, including client membership and host designation.</li>
 <li><b>Main entry point</b>: The <code>main.cpp</code> file initializes and runs the server.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md13"></a>
+<h2><a class="anchor" id="autotoc_md17"></a>
 File Descriptions</h2>
 <ul>
 <li>**<code><a class="el" href="../../dc/d31/UdpServer_8cpp.html">UdpServer.cpp</a></code>**: Implementation of the <code><a class="el" href="../../d2/d88/classUdpServer.html" title="Implements a UDP server for handling client communication, lobby management, and host selection based...">UdpServer</a></code> class, which handles all client communication, lobby operations, and latency-based host selection.</li>
@@ -102,16 +102,16 @@ File Descriptions</h2>
 <li>**<code><a class="el" href="../../df/d04/Lobby_8hpp.html">Lobby.hpp</a></code>**: Header file for the <code><a class="el" href="../../db/dea/classLobby.html">Lobby</a></code> class.</li>
 <li>**<code>main.cpp</code>**: Main file that initializes the server and starts the main event loop.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md14"></a>
+<h1><a class="anchor" id="autotoc_md18"></a>
 Requirements</h1>
 <ul>
 <li><b>C++17 or later</b>: The project makes use of modern C++ features.</li>
 <li><b>ASIO</b>: A library for network and low-level I/O programming. Make sure to link with the appropriate ASIO library (or use Boost ASIO).</li>
 <li><b>CMake</b>: For building and managing the project.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md15"></a>
+<h1><a class="anchor" id="autotoc_md19"></a>
 Building and Running</h1>
-<h2><a class="anchor" id="autotoc_md16"></a>
+<h2><a class="anchor" id="autotoc_md20"></a>
 Prerequisites</h2>
 <ul>
 <li>Install the required dependencies:<ul>
@@ -120,12 +120,12 @@ Prerequisites</h2>
 </ul>
 </li>
 </ul>
-<h1><a class="anchor" id="autotoc_md17"></a>
+<h1><a class="anchor" id="autotoc_md21"></a>
 Usage</h1>
-<h2><a class="anchor" id="autotoc_md18"></a>
+<h2><a class="anchor" id="autotoc_md22"></a>
 Starting the Server</h2>
 <p>To start the server, simply run the compiled <code><a class="el" href="../../d2/d88/classUdpServer.html" title="Implements a UDP server for handling client communication, lobby management, and host selection based...">UdpServer</a></code> binary. The server will start listening for incoming client connections on the specified port.</p>
-<h2><a class="anchor" id="autotoc_md19"></a>
+<h2><a class="anchor" id="autotoc_md23"></a>
 Client Interaction</h2>
 <p>Clients can:</p><ul>
 <li><b>Create a lobby</b>: Clients can send a message to create a new lobby, and the server will assign the client as the lobby host.</li>

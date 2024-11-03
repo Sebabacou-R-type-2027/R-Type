@@ -76,43 +76,54 @@ $(function() {
 <div class="contents">
 <div class="textblock"><h1><a class="anchor" id="autotoc_md1"></a>
 Description</h1>
-<p>This project is a remake of the R-Type game, a shoot'em up game where the player controls a spaceship and has to destroy enemies and obstacles.</p>
+<p>This project is a remake of the R-Type game, a horizontal scrolling shoot'em up game where the player controls a spaceship and has to destroy enemies and obstacles.</p>
 <p>This implementation includes new features like networking and multipleyr co-op mode.</p>
 <h1><a class="anchor" id="autotoc_md2"></a>
 Installation</h1>
 <h2><a class="anchor" id="autotoc_md3"></a>
 Building from source</h2>
 <p>To build the project from source, you will need to have the following dependencies installed on your system:</p>
+<h3><a class="anchor" id="autotoc_md4"></a>
+Linux</h3>
 <ul>
-<li>C++17 compiler</li>
-<li>CMake</li>
-<li>Ninja</li>
-<li>vcpkg (see <a href="https://learn.microsoft.com/en-us/vcpkg/get_started/get-started?pivots=shell-bash">Installation tutorial</a> up to step 2.1)</li>
+<li>Clang &amp; libc++ (LLVM version 18 minimum)</li>
+<li>CMake 3.30 or later</li>
+<li>Ninja 1.11 or later</li>
 <li>Extra SFML build dependencies on Linux (see <a href="https://www.sfml-dev.org/tutorials/2.6/compile-with-cmake.php#installing-dependencies">SFML documentation</a>)</li>
 </ul>
-<p>First, clone the repository:</p>
-<div class="fragment"><div class="line">git clone https://github.com/Sebabacou-R-type-2027/R-Type.git</div>
+<h3><a class="anchor" id="autotoc_md5"></a>
+Windows</h3>
+<ul>
+<li>Visual Studio 2022 (with MSVC 14.35 minimum)</li>
+<li>CMake 3.30 or later</li>
+<li>Ninja 1.11 or later</li>
+</ul>
+<h3><a class="anchor" id="autotoc_md6"></a>
+Build instructions</h3>
+<p>First, clone the repository and it's submodules:</p>
+<div class="fragment"><div class="line">git clone https://github.com/Sebabacou-R-type-2027/R-Type.git --recurse-submodules</div>
 <div class="line">cd R-Type</div>
-</div><!-- fragment --><p>Then, select one of the available CMake presets (excluding <code>base</code>):</p>
-<div class="fragment"><div class="line">cmake --list-presets</div>
-<div class="line">Available configure presets:</div>
+</div><!-- fragment --><p>Then, run the corresponding cmake workflow:</p>
+<div class="fragment"><div class="line">cmake --workflow --list-presets</div>
+<div class="line">Available workflow presets:</div>
 <div class="line"> </div>
-<div class="line">  &quot;base&quot;</div>
-<div class="line">  &quot;default&quot; - Default</div>
-<div class="line">  &quot;release&quot; - Release</div>
-<div class="line">  &quot;ci&quot;      - CI</div>
-</div><!-- fragment --><p>Finally install the dependencies, configure, build and test the project (in release mode, for example):</p>
-<div class="fragment"><div class="line">vcpkg install</div>
-<div class="line">cmake --preset release</div>
-<div class="line">cmake --build --preset release</div>
-<div class="line">ctest --preset release</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md4"></a>
-Running the game</h1>
-<h1><a class="anchor" id="autotoc_md5"></a>
-Requirements</h1>
+<div class="line">  &quot;default&quot;</div>
+<div class="line">  &quot;default-llvm&quot;</div>
+<div class="line">  &quot;release&quot;</div>
+<div class="line">  &quot;release-llvm&quot;</div>
+</div><!-- fragment --><p>Choose the appropriate preset for your system and build toolchain. For example, to build the project with Clang and libc++ on Linux, use the <code>release-llvm</code> preset, and to build the project with MSVC on Windows, use the <code>release</code> preset.</p>
+<p>```bash cmake &ndash;workflow &ndash;preset=release-llvm </p>
+<h1><a class="anchor" id="autotoc_md7"></a>
+Install the binaries</h1>
+<p>sudo cmake &ndash;install build &ndash;config Release</p>
+<p>This will configure, build, test and package the project using the selected preset.</p>
+<h2><a class="anchor" id="autotoc_md8"></a>
+Running the game</h2>
+<h3><a class="anchor" id="autotoc_md9"></a>
+Requirements</h3>
 <p>Before running the game, ensure that you have installed all the required libraries and compiled the project. Once the compilation is successful, follow the instructions below to launch the server and client.</p>
-<h1><a class="anchor" id="autotoc_md6"></a>
-How to Launch the Game</h1>
+<h3><a class="anchor" id="autotoc_md10"></a>
+How to Launch the Game</h3>
 <ol type="1">
 <li><b>Open two terminals</b> and navigate to the same directory (repository) where the executables are located.</li>
 <li><p class="startli"><b>Run the server</b> in the first terminal using the following command:</p>
@@ -137,11 +148,11 @@ How to Launch the Game</h1>
 <p class="startli"><code>start</code></p>
 </li>
 </ol>
-<h1><a class="anchor" id="autotoc_md7"></a>
-License</h1>
+<h2><a class="anchor" id="autotoc_md11"></a>
+License</h2>
 <p>This project is licensed under the MIT License. See the <code>LICENSE</code> file for details.</p>
-<h1><a class="anchor" id="autotoc_md8"></a>
-Contributing</h1>
+<h2><a class="anchor" id="autotoc_md12"></a>
+Contributing</h2>
 <p>Contributions are welcome! Feel free to submit a pull request or open an issue for any bug reports, feature requests, or general improvements. </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
