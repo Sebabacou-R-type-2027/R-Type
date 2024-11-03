@@ -41,8 +41,8 @@ These choices inspired by **Age of Empires** enable an optimized multiplayer exp
 
 The integration of **Asio** and **Lz4** was motivated by in-depth comparative studies. You can review the details of these studies below:
 
-- [Comparative Study on Asio](./Etudes/Etude%20Comparative%20Asio.pdf): Analysis of alternatives for network communication management.
-- [Comparative Study on Lz4](./Etudes/Etude%20Comparative%20Lib%20Compression.pdf): Comparison of compression algorithms and their impact on network performance.
+- [Comparative Study on Asio](./Etudes/ComparativeStudyAsio.pdf): Analysis of alternatives for network communication management.
+- [Comparative Study on Lz4](./Etudes/ComparativeStudyCompressionLib.pdf): Comparison of compression algorithms and their impact on network performance.
 
 ### Conclusion on Technological Choices
 
