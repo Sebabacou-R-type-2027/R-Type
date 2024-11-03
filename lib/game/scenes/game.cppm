@@ -53,6 +53,7 @@ export namespace game::scenes {
             ecs::entity create_player(float x, float y, int network_id) noexcept
             {
                 auto player = _ec.create_entity();
+                std::cout << "Creating player with network id " << network_id << std::endl;
                 _game.emplace_component<ecs::components::position>(player, x, y);
                 _game.emplace_component<ecs::components::engine::velocity>(player, 0.0f, 0.0f);
                 _game.emplace_component<ecs::components::engine::controllable>(player, _game, true, 10.0f, network_id);
