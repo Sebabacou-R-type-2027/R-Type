@@ -118,7 +118,7 @@ export namespace game::scenes {
                         {static_cast<ecs::entity>(_game), _game.display.factory->make_element(
                             "Boss", _game.asset_manager.get("arial"), 12)},
                         {static_cast<ecs::entity>(_game), _game.display.factory->make_element(
-                            dynamic_cast<const ecs::abstractions::gui::texture &>(_game.asset_manager.get("boss-phase-1")), {4, 1}, 50ms)}
+                            dynamic_cast<const ecs::abstractions::gui::texture &>(_game.asset_manager.get("boss-phase")), {4, 1}, 50ms)}
                     })
                 });
                 return e;
