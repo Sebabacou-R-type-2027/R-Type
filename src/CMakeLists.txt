@@ -1,2 +1,2 @@
 add_subdirectory(server)
-add_subdirectory(sample)
+add_subdirectory(client)

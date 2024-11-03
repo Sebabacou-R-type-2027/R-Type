@@ -23,7 +23,6 @@ export import :systems.stats;
 export import :systems.map_editor;
 export import :systems.spawn_waves;
 
-export import :systems.game_over;
 
 import std;
 import ecs;
