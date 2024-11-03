@@ -3,9 +3,16 @@ module;
 
 #include <chrono>
 #include <memory>
+#include <nlohmann/json.hpp>
+#include <optional>
+#include <map>
 #endif
 export module game:scenes;
 import :game;
+import :components.map_editor;
+import :systems.map_editor;
+import :components.spawn_waves;
+
 
 #if __cpp_lib_modules >= 202207L
 import std;
@@ -13,26 +20,58 @@ import std;
 import ecs;
 import utils;
 
+
 export namespace game::scenes {
         struct game_scene : public ecs::scene {
             constexpr game_scene(game &game) noexcept
                 : ecs::scene(game), _game(game)
             {
+                // emplace the spawn_waves component to enable the spawning of waves
+                _game.emplace_component<components::spawn_waves>(_game, _game, "waves.json", 1);
             }
 
         protected:
             void create_entities() noexcept override
             {
                 _entities.push_back(create_player());
+
                 // _entities.push_back(create_fire_button(*_game.get_entity_component<projectile_launcher>(_entities.back())));
-                _entities.push_back(spawn_enemy_chaser(_entities.back(), {500.0f, 500.0f}));
-                _entities.push_back(spawn_enemy({100.0f, 100.0f}));
+                // _entities.push_back(spawn_enemy_chaser(_entities.back(), {500.0f, 500.0f}));
+                // _entities.push_back(spawn_enemy({100.0f, 100.0f}));
+                // init_waves("waves.json", 1);
                 // _entities.push_back(spawn_enemy_spawner({300.0f, 300.0f}));
                 // _entities.push_back(spawn_enemy_shooter({400.0f, 400.0f}));
             }
 
             private:
                 game &_game;
+
+            void init_waves(std::string_view path, int wave) noexcept
+            {
+                std::ifstream file(path.data());
+                if (!file.is_open())
+                    return;
+                json waves;
+                file >> waves;
+                for (auto &wave : waves) {
+                    std::vector<std::pair<std::string, ecs::abstractions::vector<float>>> mobs;
+                    for (auto &mob : wave)
+                    {
+                        ecs::components::position position{0.0f, 0.0f};
+                        position.x = mob["x"];
+                        position.y = mob["y"];
+                        _entities.push_back(spawn_enemy_shooter(position));
+                        std::cout << "Spawned enemy at " << position.x << ", " << position.y << std::endl;
+
+                        // if (mob["type"] == "enemy") {
+                        //     spawn_enemy({mob["x"], mob["y"]});
+                        // }
+                        // else if (mob["type"] == "enemy_chaser") {
+                        //     spawn_enemy_chaser(_entities.back(), {mob["x"], mob["y"]});
+                        // }
+                    }
+                }
+            }
 
             ecs::entity create_player() noexcept
             {
@@ -97,6 +136,7 @@ export namespace game::scenes {
                             dynamic_cast<const ecs::abstractions::gui::texture &>(_game.asset_manager.get("enemy")), {8, 1}, 10ms)}
                     })
                 });
+                std::cout << "Spawned enemy at " << position.x << ", " << position.y << std::endl;
                 return e;
             }
 
@@ -160,9 +200,9 @@ export namespace game::scenes {
                 });
                 return e;
             }
-    };
+        };
 
-        struct multiplayer_menu : public ecs::scene {
+    struct multiplayer_menu : public ecs::scene {
         constexpr multiplayer_menu(game &game) noexcept
             : ecs::scene(game), _game(game)
         {}
@@ -483,7 +523,6 @@ struct lobby_menu : public ecs::scene {
                     })
                 });
                 _entities.push_back(drawable);
-
             }
 
             void create_text(ecs::abstractions::vector<float> position, std::string text, ecs::abstractions::gui::color color, int size = 24) noexcept
@@ -536,6 +575,83 @@ struct lobby_menu : public ecs::scene {
             }
     };
 
+    struct map_editor : public ecs::scene {
+        constexpr map_editor(game &game) noexcept
+            : ecs::scene(game), _game(game)
+        {
+            _game.emplace_component<components::map_editor>(_game, 1, "enemy", std::vector<std::string>{"enemy", "enemy_chaser"}, std::map<int, std::vector<std::pair<std::string, ecs::abstractions::vector<float>>>>
+            {
+                {1, {}},
+                {2, {}},
+                {3, {}},
+                {4, {}},
+                {5, {}},
+                {6, {}},
+                {7, {}},
+                {8, {}},
+                {9, {}},
+                {10,{}}
+
+            }, _game);
+        }
+
+        protected:
+            void create_entities() noexcept
+            {
+                initUI();
+            }
+
+        private:
+            void init_grid()
+            {
+                ecs::abstractions::vector<float> window_size = _game.display.window->get_size();
+                ecs::abstractions::vector<float> grid_size = {window_size.x, window_size.y};
+                ecs::abstractions::gui::color grid_color = ecs::abstractions::gui::color(255, 255, 255, 255 * 0.1);
+
+                for (int i = 0; i < grid_size.x / grid_cell_size.x; i++)
+                    create_rectangle_no_outline({i * grid_cell_size.x, 0.0f}, {1.0f, grid_size.y}, grid_color);
+                for (int i = 0; i < grid_size.y / grid_cell_size.y; i++)
+                    create_rectangle_no_outline({0.0f, i * grid_cell_size.y}, {grid_size.x, 1.0f}, grid_color);
+            }
+            void initUI() {
+                init_grid();
+            }
+
+            void create_rectangle_no_outline(ecs::abstractions::vector<float> position, ecs::abstractions::vector<float> size, ecs::abstractions::gui::color color) noexcept
+            {
+                auto rectangle = _game.display.factory->make_element(size, color);
+                rectangle->position(position);
+
+                auto drawable = _game.create_entity();
+                _game.emplace_component<ecs::components::gui::drawable>(drawable, ecs::components::gui::drawable{_game,
+                    std::container<ecs::components::gui::drawable::elements_container>::make({
+                        {static_cast<ecs::entity>(_game), std::move(rectangle)}
+                    })
+                });
+                _entities.push_back(drawable);
+            }
+
+            void create_rectangle(ecs::abstractions::vector<float> position, ecs::abstractions::vector<float> size, ecs::abstractions::gui::color color, ecs::abstractions::gui::color outlineColor = ecs::abstractions::gui::color::blue) noexcept
+            {
+                auto rectangle = _game.display.factory->make_element(size, color);
+                rectangle->set_outline_color(outlineColor);
+                rectangle->set_outline_thickness(2.0f);
+                rectangle->position(position);
+
+                auto drawable = _game.create_entity();
+                _game.emplace_component<ecs::components::gui::drawable>(drawable, ecs::components::gui::drawable{_game,
+                    std::container<ecs::components::gui::drawable::elements_container>::make({
+                        {static_cast<ecs::entity>(_game), std::move(rectangle)}
+                    })
+                });
+                _entities.push_back(drawable);
+            }
+
+            ecs::abstractions::vector<float> grid_cell_size = {32.0f, 32.0f};
+
+            game &_game;
+    };
+
     struct menu : public ecs::scene {
         constexpr menu(game &game) noexcept
             : ecs::scene(game), _game(game)
@@ -577,7 +693,7 @@ struct lobby_menu : public ecs::scene {
                 start_y += button_height + spacing;
 
                 button_height = create_centered_button("Map Editor", start_y, fontSize, button_color, [&game = _game](){
-                    game.begin_scene(std::make_unique<game_scene>(game));
+                    game.begin_scene(std::make_unique<map_editor>(game));
                 });
                 start_y += button_height + spacing;
 
